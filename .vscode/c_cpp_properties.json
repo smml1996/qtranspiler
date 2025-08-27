@@ -6,9 +6,9 @@
                 "${workspaceFolder}/**",
                 "/opt/homebrew/Cellar/antlr4-cpp-runtime/4.13.2/include/antlr4-runtime/"
             ],
-            "compilerPath": "/usr/bin/clang",
+            "compilerPath": "/usr/bin/clang++",
             "cStandard": "${default}",
-            "cppStandard": "${default}",
+            "cppStandard": "c++17",
             "intelliSenseMode": "macos-clang-arm64",
             "compilerArgs": [
                 ""

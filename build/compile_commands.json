@@ -1,0 +1,20 @@
+[
+{
+  "directory": "/Users/stefaniemuroyalei/Documents/ist/probabilistic_hoare_triples/build",
+  "command": "/usr/bin/clang++ -I/Users/stefaniemuroyalei/Documents/ist/probabilistic_hoare_triples/grammars/assertions -I/Users/stefaniemuroyalei/Documents/ist/probabilistic_hoare_triples -I/opt/homebrew/Cellar/antlr4-cpp-runtime/4.13.2/include/antlr4-runtime -g -std=gnu++17 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk -o CMakeFiles/main.dir/main.cpp.o -c /Users/stefaniemuroyalei/Documents/ist/probabilistic_hoare_triples/main.cpp",
+  "file": "/Users/stefaniemuroyalei/Documents/ist/probabilistic_hoare_triples/main.cpp",
+  "output": "CMakeFiles/main.dir/main.cpp.o"
+},
+{
+  "directory": "/Users/stefaniemuroyalei/Documents/ist/probabilistic_hoare_triples/build",
+  "command": "/usr/bin/clang++ -I/Users/stefaniemuroyalei/Documents/ist/probabilistic_hoare_triples/grammars/assertions -I/Users/stefaniemuroyalei/Documents/ist/probabilistic_hoare_triples -I/opt/homebrew/Cellar/antlr4-cpp-runtime/4.13.2/include/antlr4-runtime -g -std=gnu++17 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk -o CMakeFiles/main.dir/grammars/assertions/AssertionLexer.cpp.o -c /Users/stefaniemuroyalei/Documents/ist/probabilistic_hoare_triples/grammars/assertions/AssertionLexer.cpp",
+  "file": "/Users/stefaniemuroyalei/Documents/ist/probabilistic_hoare_triples/grammars/assertions/AssertionLexer.cpp",
+  "output": "CMakeFiles/main.dir/grammars/assertions/AssertionLexer.cpp.o"
+},
+{
+  "directory": "/Users/stefaniemuroyalei/Documents/ist/probabilistic_hoare_triples/build",
+  "command": "/usr/bin/clang++ -I/Users/stefaniemuroyalei/Documents/ist/probabilistic_hoare_triples/grammars/assertions -I/Users/stefaniemuroyalei/Documents/ist/probabilistic_hoare_triples -I/opt/homebrew/Cellar/antlr4-cpp-runtime/4.13.2/include/antlr4-runtime -g -std=gnu++17 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk -o CMakeFiles/main.dir/grammars/assertions/AssertionParser.cpp.o -c /Users/stefaniemuroyalei/Documents/ist/probabilistic_hoare_triples/grammars/assertions/AssertionParser.cpp",
+  "file": "/Users/stefaniemuroyalei/Documents/ist/probabilistic_hoare_triples/grammars/assertions/AssertionParser.cpp",
+  "output": "CMakeFiles/main.dir/grammars/assertions/AssertionParser.cpp.o"
+}
+]

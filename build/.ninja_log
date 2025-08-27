@@ -1,0 +1,5 @@
+# ninja log v6
+1	1131	1756299287353849510	CMakeFiles/main.dir/main.cpp.o	f2fa0ea026939f3b
+1	1225	1756299287354153637	CMakeFiles/main.dir/grammars/assertions/AssertionLexer.cpp.o	b0ab1eae3e2a139e
+1	1653	1756299287354340387	CMakeFiles/main.dir/grammars/assertions/AssertionParser.cpp.o	5f88d00bb0fae280
+1653	1720	1756299289006369441	main	fe71254fd3fd2c57
