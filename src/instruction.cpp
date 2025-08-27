@@ -87,7 +87,10 @@ Instruction::Instruction(const json &json_val) {
         case Rzx:
             assert(false);
         case Cz:
-            assert(false);
+            int control = json_val["control"];
+            this->controls.push_back(control);
+            this->instruction_type = InstructionType::UnitaryMultiQubit;
+            break;
         case Ch:
             assert(false);
         case Swap:
