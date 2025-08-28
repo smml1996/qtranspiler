@@ -7,6 +7,7 @@ enum InstructionType {
     Classical,
     UnitarySingleQubit,
     UnitaryMultiQubit,
+    Projector
 };
 
 class Instruction {
@@ -17,10 +18,12 @@ class Instruction {
         GateName gate_name;
         vector<double> params;
         InstructionType instruction_type;
-        Instruction(const GateName &gate_name, int target);
-        Instruction(const GateName &gate_name, int target, vector<double> &params); // for single-qubit parametric gates
-        Instruction(const GateName &gate_name, vector<int> controls, int target); // for multiqubit gates
-        Instruction(const GateName &gate_name, int target, int c_target); // for measurements
+        Instruction() = default;
+        Instruction(GateName gate_name, int target);
+        Instruction(GateName gate_name, int target, vector<double> params); // for single-qubit parametric gates
+        Instruction(GateName gate_name, vector<int> controls, int target); // for multiqubit gates
+        Instruction(GateName gate_name, vector<int> controls, int target, vector<double> params); // for multiqubit gates with parameters
+        Instruction(GateName gate_name, int target, int c_target); // for measurements
         Instruction(const json &json_val);
         
         InstructionType get_instruction_type();

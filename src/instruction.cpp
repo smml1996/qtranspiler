@@ -3,32 +3,43 @@
 
 using namespace std;
 
-Instruction::Instruction(const GateName &gate_name, int target) {
+Instruction::Instruction(GateName gate_name, int target) {
     this->gate_name = gate_name;
     if (gate_name == GateName::Write0 || gate_name == GateName::Write1) {
         this->instruction_type = InstructionType::Classical;
         this->c_target = target;
+    } else if(gate_name == GateName::P0 || gate_name == GateName::P1) {
+        this->instruction_type = InstructionType::Projector;
+        this->target = target;
     } else {
         this->instruction_type = InstructionType::UnitarySingleQubit;
         this->target = target;
     }
 }
 
-Instruction::Instruction(const GateName &gate_name, int target, vector<double> &params) {
+Instruction::Instruction(GateName gate_name, int target, vector<double> params) {
     this->gate_name = gate_name;
     this->target = target;
-    this->params = std::move(params);
+    this->params = params;
     this->instruction_type = InstructionType::UnitarySingleQubit;
 }
 
-Instruction::Instruction(const GateName &gate_name, vector<int> controls, int target) {
+Instruction::Instruction(GateName gate_name, vector<int> controls, int target, vector<double> params) {
+    this->gate_name = gate_name;
+    this->controls = controls;
+    this->target = target;
+    this->params = params;
+    this->instruction_type = InstructionType::UnitarySingleQubit;
+}
+
+Instruction::Instruction(GateName gate_name, vector<int> controls, int target) {
     this->gate_name = gate_name;
     this->controls = std::move(controls);
     this->target = target;
     this->instruction_type = InstructionType::UnitaryMultiQubit;
 }
 
-Instruction::Instruction(const GateName &gate_name, int target, int c_target) {
+Instruction::Instruction(GateName gate_name, int target, int c_target) {
     this->gate_name = gate_name;
     this->target = target;
     this->c_target= c_target;

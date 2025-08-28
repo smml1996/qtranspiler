@@ -26,6 +26,10 @@ enum GateName {
     Meas,
     Custom,
 
+    // projector
+    P0,
+    P1,
+
     // MULTI-QUBIT GATES
     Cnot,
     Ecr,

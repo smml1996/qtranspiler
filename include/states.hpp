@@ -1,22 +1,31 @@
 #include<unordered_map>
 #include<vector>
+#include "instruction.hpp"
 
 using namespace std;
 
 class QuantumState {
     vector<int> qubits_used;
     int precision;
+    pair<complex<double>, complex<double>> get_qubit_amplitudes() const;
+    QuantumState *get_qubit_from_basis(int basis, int target) const;
+    int glue_qubit_in_basis(int basis, int address, int value) const;
+    pair<QuantumState*, double> get_sequence_probability(vector<Instruction> seq) const;
+    QuantumState* eval_qubit_unitary(const Instruction &instruction) const;
+    QuantumState* eval_multiqubit_gate(const Instruction &instruction) const;
+    QuantumState* eval_single_qubit_gate(const Instruction &instruction) const;
+    bool are_controls_true(int basis, vector<int> controls) const;
     public:
         unordered_map<int, complex<double>>  sparse_vector; // stores amplitudes for computational basis
-        QuantumState(vector<int> qubits_used, int &precision);
+        QuantumState(vector<int> qubits_used, int precision);
         complex<double> get_amplitude(const int &basis) const;
         bool is_qubit() const;
         bool is_qubit_0() const;
-        pair<complex<double>, complex<double>> get_qubit_amplitudes();
         bool insert_amplitude(const int &basis, const complex<double> &amplitude);
         bool add_amplitude(const int &basis, const complex<double> &amplitude);
         void normalize();
-        bool operator==(const QuantumState& other);
+        bool operator==(const QuantumState& other) const;
+        QuantumState* apply_instruction(const Instruction &instruction, bool normalize=true) const;
 };
 
 complex<double> get_inner_product(const QuantumState &qs1, const QuantumState &qs2);
@@ -27,11 +36,12 @@ class ClassicalState {
     unordered_map<int, bool> sparse_vector;
     public:
         ClassicalState() = default;
-        ClassicalState(ClassicalState &cs);
+        ClassicalState(const ClassicalState &cs);
         bool operator==(const ClassicalState&other) const;
         int get_memory_val() const;
         bool read(const int &address) const;
-        ClassicalState* write(const int &address, bool &value);
+        ClassicalState* write(const int &address, bool value) const;
+        ClassicalState* apply_instruction(const Instruction &instruction) const;
 };
 
 class HybridState {
@@ -40,4 +50,5 @@ class HybridState {
 
     public:
         HybridState(QuantumState *quantum_state, ClassicalState *classical_state);
+        HybridState *apply_instruction(const Instruction &instruction) const;
 };
