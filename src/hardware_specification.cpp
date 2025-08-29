@@ -2,6 +2,7 @@
 #include <iostream>
 #include <filesystem>
 #include <fstream>
+#include "../include/channels.hpp"
 
 using namespace std;
 

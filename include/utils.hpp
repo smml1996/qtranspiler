@@ -1,3 +1,6 @@
+#ifndef UTILS_H
+#define UTILS_H
+
 #include <complex>
 
 using namespace std;
@@ -9,3 +12,5 @@ template <typename T>
 T weighted_choice(const std::vector<T> &elements, const std::vector<double> &weights);
 double round_to(double value, int decimals);
 string to_binary(int basis);
+
+#endif

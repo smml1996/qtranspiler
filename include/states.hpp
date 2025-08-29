@@ -1,3 +1,6 @@
+#ifndef STATES_H
+#define STATES_H
+
 #include<unordered_map>
 #include<vector>
 #include "instruction.hpp"
@@ -10,7 +13,6 @@ class QuantumState {
     pair<complex<double>, complex<double>> get_qubit_amplitudes() const;
     QuantumState *get_qubit_from_basis(int basis, int target) const;
     int glue_qubit_in_basis(int basis, int address, int value) const;
-    pair<QuantumState*, double> get_sequence_probability(vector<Instruction> seq) const;
     QuantumState* eval_qubit_unitary(const Instruction &instruction) const;
     QuantumState* eval_multiqubit_gate(const Instruction &instruction) const;
     QuantumState* eval_single_qubit_gate(const Instruction &instruction) const;
@@ -28,6 +30,7 @@ class QuantumState {
         QuantumState* apply_instruction(const Instruction &instruction, bool normalize=true) const;
 };
 
+pair<QuantumState*, double> get_sequence_probability(QuantumState &quantum_state0, vector<Instruction> seq, int precision);
 complex<double> get_inner_product(const QuantumState &qs1, const QuantumState &qs2);
 double get_fidelity(const QuantumState &qs1, const QuantumState &qs2);
 
@@ -37,7 +40,7 @@ class ClassicalState {
     public:
         ClassicalState() = default;
         ClassicalState(const ClassicalState &cs);
-        bool operator==(const ClassicalState&other) const;
+        bool operator==(const ClassicalState &other) const;
         int get_memory_val() const;
         bool read(const int &address) const;
         ClassicalState* write(const int &address, bool value) const;
@@ -45,10 +48,12 @@ class ClassicalState {
 };
 
 class HybridState {
-    QuantumState *quantum_state;
-    ClassicalState *classical_state;
-
     public:
+        QuantumState *quantum_state;
+        ClassicalState *classical_state;
         HybridState(QuantumState *quantum_state, ClassicalState *classical_state);
         HybridState *apply_instruction(const Instruction &instruction) const;
+        bool operator==(HybridState &other) const;
 };
+
+#endif

@@ -28,3 +28,19 @@ MeasurementChannel::MeasurementChannel(json &json_val) {
     this->correct_1 = json_val["1"]["1"];
     this->incorrect_1 = json_val["1"]["0"];
 }
+
+double MeasurementChannel::get_ind_probability(int ideal_outcome, int noisy_outcome) const{
+    if (ideal_outcome ==  noisy_outcome) {
+        if (noisy_outcome == 0) {
+            return this->correct_0;
+        } else {
+            return this->correct_1;
+        }
+    } else {
+        if (ideal_outcome == 0) {
+            return this->incorrect_0;
+        } else {
+            return this->incorrect_1;
+        }
+    }
+}

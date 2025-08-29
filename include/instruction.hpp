@@ -1,3 +1,6 @@
+#ifndef INSTRUCTION_H
+#define INSTRUCTION_H
+
 #include "quantum_gates.hpp"
 #include "json.hpp"
 using json = nlohmann::json;
@@ -38,3 +41,4 @@ struct InstructionHash {
 struct InstructionPtrEqual {
     bool operator()(const Instruction* a, const Instruction* b) const;
 };
+#endif

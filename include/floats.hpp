@@ -1,6 +1,8 @@
 //
 // Created by Stefanie Muroya Lei on 28.01.24.
 //
+#ifndef FLOATS_H
+#define FLOATS_H
 #include<vector>
 #include <cassert>
 #include <string>
@@ -65,3 +67,4 @@ MyFloat max(MyFloat const &a, MyFloat const &b);
 MyFloat min(MyFloat const &a, MyFloat const &b);
 
 
+#endif

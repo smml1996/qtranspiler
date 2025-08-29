@@ -220,9 +220,8 @@ bool QuantumState::operator==(const QuantumState& other) const {
     return is_close(inner_product, 1, this->precision);
 }
 
-pair<QuantumState*, double> QuantumState::get_sequence_probability(vector<Instruction> seq) const {
+pair<QuantumState*, double> get_sequence_probability(QuantumState quantum_state0, vector<Instruction> seq, int precision) {
     int count_meas = 0;
-    QuantumState quantum_state0 = *this;
     QuantumState *quantum_state = &quantum_state0;
     QuantumState* prev_quantum_state = nullptr;
     for (auto instruction : seq) {
@@ -242,9 +241,9 @@ pair<QuantumState*, double> QuantumState::get_sequence_probability(vector<Instru
 
     auto prob = get_inner_product(*quantum_state, *quantum_state);
     
-    assert(is_close(prob.imag(), 0.0, this->precision));
+    assert(is_close(prob.imag(), 0.0, precision));
     // round down was here
-    auto prob_answer = round_to(prob.real(), this->precision);
+    auto prob_answer = round_to(prob.real(), precision);
     quantum_state->normalize();
     return make_pair(quantum_state, prob_answer);
 }
@@ -292,11 +291,11 @@ QuantumState* QuantumState::apply_instruction(const Instruction &instruction, bo
     } else {
         if (instruction.gate_name == GateName::Reset){
             auto meas_instruction = Instruction(GateName::Meas, instruction.target, instruction.target);
-            auto pair0 = this->get_sequence_probability(vector<Instruction>({Instruction(GateName::P0, instruction.target)}));
+            auto pair0 = get_sequence_probability(*this, vector<Instruction>({Instruction(GateName::P0, instruction.target)}), this->precision);
             auto q0 = pair0.first;
             auto prob0 = pair0.second;
 
-            auto pair1 = this->get_sequence_probability(vector<Instruction>({Instruction(GateName::P1, instruction.target)}));
+            auto pair1 = get_sequence_probability(*this, vector<Instruction>({Instruction(GateName::P1, instruction.target)}), this->precision);
             auto q1 = pair1.first;
             auto prob1 = pair1.second;
             auto result0 = weighted_choice(vector<QuantumState*>({q0, q1}), vector<double>({prob0, prob1}));
@@ -536,4 +535,8 @@ HybridState *HybridState::apply_instruction(const Instruction &instruction) cons
     }
 
     return new HybridState(new_qs, new_cs);
+}
+
+bool HybridState::operator==(HybridState &other) const {
+    return (*this->quantum_state  == *other.quantum_state)  && (*this->classical_state  == *other.classical_state);
 }

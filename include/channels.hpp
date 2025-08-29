@@ -1,4 +1,7 @@
 
+#ifndef CHANNELS_H
+#define CHANNELS_H
+
 #include "instruction.hpp"
 #include <vector>
 #include "json.hpp"
@@ -14,9 +17,8 @@ public:
 
 
 class QuantumChannel : public Channel {
-    vector<pair<vector<Instruction>, double>>errors_to_probs;
-
 public:
+    vector<pair<vector<Instruction>, double>>errors_to_probs;
     QuantumChannel(json &data);
 };
 
@@ -27,4 +29,6 @@ class MeasurementChannel : public Channel {
     double incorrect_1; // probability of receiving 1 and that it is actually 0
     public:
         MeasurementChannel(json &data);
+        double get_ind_probability(int ideal_outcome, int noisy_outcome) const;
 };
+#endif

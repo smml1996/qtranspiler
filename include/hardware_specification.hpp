@@ -1,10 +1,11 @@
+#ifndef HARDWARE_SPEC_H
+#define HARDWARE_SPEC_H
 #include <iostream>
 #include <filesystem>  // C++17 and above
 #include <string>
 #include <unordered_set>
 #include "quantum_gates.hpp"
 #include "instruction.hpp"
-#include "quantum_channels.hpp"
 
 using namespace std;
 
@@ -74,9 +75,9 @@ class HardwareSpecification {
     BasisGates basis_gates_type;
     unordered_set<GateName> basis_gates;
     int num_qubits;
-    unordered_map<Instruction*, Channel*, InstructionHash, InstructionPtrEqual>instructions_to_channels;
-
     public:
+        unordered_map<Instruction*, Channel*, InstructionHash, InstructionPtrEqual>instructions_to_channels;
         HardwareSpecification(const QuantumHardware &quantum_hardware, const bool &thermal_relaxation);
         
 };
+#endif
