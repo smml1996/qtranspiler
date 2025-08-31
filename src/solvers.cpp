@@ -22,6 +22,7 @@ pair<Algorithm*, MyFloat> SingleDistributionSolver::get_bellman_value(const Beli
         }
     }
     assert(current_classical_state >= 0);
+    POMDPAction * HALT_ACTION = new POMDPAction("HALT__", {}, -1, {});
     auto halt_algorithm = new Algorithm(HALT_ACTION, current_classical_state, 0);
     if (horizon == 0) {
         return make_pair(halt_algorithm, curr_belief_val);
@@ -32,7 +33,7 @@ pair<Algorithm*, MyFloat> SingleDistributionSolver::get_bellman_value(const Beli
     bellman_values.emplace_back(halt_algorithm, curr_belief_val);
     
     for(auto it = pomdp.actions.begin(); it != pomdp.actions.end(); it++) {
-        string action = it->name;
+        POMDPAction * action = &(*it);
 
         // build next_beliefs, separate them by different observables
         map<int, Belief> obs_to_next_beliefs;
@@ -41,7 +42,7 @@ pair<Algorithm*, MyFloat> SingleDistributionSolver::get_bellman_value(const Beli
         for(auto & prob : current_belief.probs) {
             auto current_v = prob.first;
             if(prob.second > zero) {
-                for (auto &it_next_v: pomdp.transition_matrix[current_v][action]) {
+                for (const auto &it_next_v: pomdp.transition_matrix[current_v][action]) {
                     if (it_next_v.second > zero) {
                         auto successor = it_next_v.first;
                         obs_to_next_beliefs[it_next_v.first->hybrid_state->classical_state->get_memory_val()].add_val(successor,

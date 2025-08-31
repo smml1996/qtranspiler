@@ -132,6 +132,39 @@ bool Instruction::operator==(const Instruction& other) const {
         && params == other.params;
 }
 
+string to_string(const Instruction &instruction) {
+    
+    switch (instruction.instruction_type) {
+        case Measurement: 
+            return "x" + to_string(instruction.c_target) + " := measure(q"+ to_string(instruction.target) +"); ";
+        case Classical:
+            if (instruction.gate_name == GateName::Write0) {
+                return "x" + to_string(instruction.c_target) + " := 0; ";
+            } else {
+                return "x" + to_string(instruction.c_target) + " := 1; ";
+            }
+        default:
+            assert(instruction.instruction_type == InstructionType::UnitaryMultiQubit || instruction.instruction_type == InstructionType::UnitaryMultiQubit);
+            string str_qvars = "";
+
+            for (auto control : instruction.controls) {
+                if (!str_qvars.empty()) {
+                    str_qvars+=", ";
+                }
+                str_qvars +=  "q"+ to_string(control);
+            }
+
+            if (!str_qvars.empty()) {
+                str_qvars +=",";
+            }
+            str_qvars += "q" + to_string(instruction.target);
+
+            return to_string(instruction.gate_name) + "([" + str_qvars + "]); ";
+
+    }
+}
+
+
 bool InstructionPtrEqual::operator()(const Instruction* a, const Instruction* b) const {
     return *a == *b;
 }

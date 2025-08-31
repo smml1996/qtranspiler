@@ -33,6 +33,8 @@ class Instruction {
         bool operator==(const Instruction& other) const;
 };
 
+string to_string(const Instruction &instruction);
+
 // Custom hash
 struct InstructionHash {
     std::size_t operator()(const Instruction *instruction) const;
