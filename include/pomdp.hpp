@@ -2,6 +2,7 @@
 #include "states.hpp"
 #include "channels.hpp"
 #include "hardware_specification.hpp"
+#include "floats.hpp"
 
 #ifndef POMDP_H
 #define POMDP_H
@@ -58,7 +59,7 @@ class POMDPAction {
 class POMDP {
     vector<POMDPVertex> states;
     vector<POMDPAction> actions;
-    unordered_map<POMDPVertex*, unordered_map<string, unordered_map<POMDPVertex*, double, POMDPVertexHash, POMDPVertexPtrEqual>>, POMDPVertexHash, POMDPVertexPtrEqual> transition_matrix;
+    unordered_map<POMDPVertex*, unordered_map<string, unordered_map<POMDPVertex*, MyFloat,POMDPVertexHash, POMDPVertexPtrEqual>>, POMDPVertexHash, POMDPVertexPtrEqual> transition_matrix;
     POMDPVertex *initial_state;
     int precision;
 
@@ -66,7 +67,7 @@ class POMDP {
     POMDPVertex* create_new_vertex(HybridState *hybrid_state, int hidden_index);
     public:
         POMDP(int precision);
-        POMDP(POMDPVertex *initialState, vector<POMDPVertex> &states, vector<POMDPAction> &actions, unordered_map<POMDPVertex*, unordered_map<string, unordered_map<POMDPVertex*, double, POMDPVertexHash, POMDPVertexPtrEqual>>, POMDPVertexHash, POMDPVertexPtrEqual> &transition_matrix);
+        POMDP(POMDPVertex *initialState, vector<POMDPVertex> &states, vector<POMDPAction> &actions, unordered_map<POMDPVertex*, unordered_map<string, unordered_map<POMDPVertex*, MyFloat, POMDPVertexHash, POMDPVertexPtrEqual>>, POMDPVertexHash, POMDPVertexPtrEqual> &transition_matrix);
         void build_pomdp(const vector<POMDPAction> &actions, HardwareSpecification &hardware_specification, int horizon, unordered_map<int, int> embedding, HybridState *initial_state, const vector<pair<HybridState*, double>> &initial_distribution, vector<int> &qubits_used, guard_type guard, bool set_hidden_index=false);
 
 

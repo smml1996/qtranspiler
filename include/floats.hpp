@@ -40,11 +40,12 @@ class MyFloat {
     vector<short> mantissa;
     bool is_negative;
 
+    MyFloat(const double &probability__, int custom_precision);
+    explicit MyFloat(const string& probability__ = "0", int custom_precision=-1);
+
     static MyFloat abs(MyFloat const &n);
 
     friend std::ostream &operator<<(ostream& os, const MyFloat& myfloat);
-
-    explicit MyFloat(const string& probability__ = "0", int custom_precision=-1);
 
     MyFloat operator+(MyFloat const &other);
 

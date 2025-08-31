@@ -236,7 +236,7 @@ POMDP::POMDP(int precision) {
     this->precision = precision;
 }
 
-POMDP::POMDP(POMDPVertex *initial_state, vector<POMDPVertex> &states, vector<POMDPAction> &actions, unordered_map<POMDPVertex*, unordered_map<string, unordered_map<POMDPVertex*, double, POMDPVertexHash, POMDPVertexPtrEqual>>, POMDPVertexHash, POMDPVertexPtrEqual>  &transition_matrix) {
+POMDP::POMDP(POMDPVertex *initial_state, vector<POMDPVertex> &states, vector<POMDPAction> &actions, unordered_map<POMDPVertex*, unordered_map<string, unordered_map<POMDPVertex*, MyFloat, POMDPVertexHash, POMDPVertexPtrEqual>>, POMDPVertexHash, POMDPVertexPtrEqual>  &transition_matrix) {
     this->initial_state = initial_state;
     this->states = states;
     this->actions = actions;
@@ -262,8 +262,8 @@ void POMDP::build_pomdp(const vector<POMDPAction> &actions, HardwareSpecificatio
         if (!is_close(total, 1.0, this->precision)){
             throw invalid_argument("Initial distribution must sum to 1");
         }
-        this->transition_matrix[initial_v] = unordered_map<string, unordered_map<POMDPVertex*, double, POMDPVertexHash, POMDPVertexPtrEqual>>();
-        this->transition_matrix[initial_v][INIT_CHANNEL] = unordered_map<POMDPVertex*, double, POMDPVertexHash, POMDPVertexPtrEqual>();
+        this->transition_matrix[initial_v] = unordered_map<string, unordered_map<POMDPVertex*, MyFloat, POMDPVertexHash, POMDPVertexPtrEqual>>();
+        this->transition_matrix[initial_v][INIT_CHANNEL] = unordered_map<POMDPVertex*, MyFloat, POMDPVertexHash, POMDPVertexPtrEqual>();
             int hidden_index;
             for (int index = 0; index < initial_distribution.size(); index ++) {
                 auto hybrid_state = initial_distribution[index].first;
@@ -275,7 +275,7 @@ void POMDP::build_pomdp(const vector<POMDPAction> &actions, HardwareSpecificatio
                 }
                 auto v =  create_new_vertex(hybrid_state, hidden_index);
                 assert (this->transition_matrix[initial_v][INIT_CHANNEL].find(v) != this->transition_matrix[initial_v][INIT_CHANNEL].end());
-                this->transition_matrix[initial_v][INIT_CHANNEL][v] = prob;
+                this->transition_matrix[initial_v][INIT_CHANNEL][v] = MyFloat(prob, this->precision * (horizon+1));
                 q.push(make_pair(v, 0)); // second element denotes that this vertex is at horizon 0
             }
     }
@@ -301,14 +301,14 @@ void POMDP::build_pomdp(const vector<POMDPAction> &actions, HardwareSpecificatio
         visited.insert(current_v);
 
         if (this->transition_matrix.find(current_v)!= this->transition_matrix.end()) {
-            this->transition_matrix[current_v] = unordered_map<string, unordered_map<POMDPVertex*, double, POMDPVertexHash, POMDPVertexPtrEqual>>();
+            this->transition_matrix[current_v] = unordered_map<string, unordered_map<POMDPVertex*, MyFloat, POMDPVertexHash, POMDPVertexPtrEqual>>();
         }
 
         for (auto action : actions) {
             if (guard(current_v, embedding, action)) {
                 assert(this->transition_matrix[current_v].find(action.name) == this->transition_matrix[current_v].end());
 
-                this->transition_matrix[current_v][action.name] = unordered_map<POMDPVertex*, double, POMDPVertexHash, POMDPVertexPtrEqual>();
+                this->transition_matrix[current_v][action.name] = unordered_map<POMDPVertex*, MyFloat, POMDPVertexHash, POMDPVertexPtrEqual>();
                 
                 auto successors = action.get_successor_states(hardware_specification, *current_v);
 
@@ -321,7 +321,7 @@ void POMDP::build_pomdp(const vector<POMDPAction> &actions, HardwareSpecificatio
                     auto new_vertex = this->create_new_vertex(succ->hybrid_state, succ->hiddent_index);
                     
                     if (this->transition_matrix[current_v][action.name].find(new_vertex) != this->transition_matrix[current_v][action.name].end()) {
-                        this->transition_matrix[current_v][action.name][new_vertex] = 0.0;
+                        this->transition_matrix[current_v][action.name][new_vertex] = MyFloat(0.0, this->precision * (horizon+1));
                     }
 
                     this->transition_matrix[current_v][action.name][new_vertex] += prob;

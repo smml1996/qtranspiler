@@ -9,6 +9,7 @@
 
 using namespace std;
 
+MyFloat::MyFloat(const double &probability__, int custom_precision)  : MyFloat(to_string(probability__), custom_precision) {};
 
 void MyFloat::check_digit(const short &digit) {
     assert(digit > -1);

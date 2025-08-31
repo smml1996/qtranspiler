@@ -78,6 +78,5 @@ class HardwareSpecification {
     public:
         unordered_map<Instruction*, Channel*, InstructionHash, InstructionPtrEqual>instructions_to_channels;
         HardwareSpecification(const QuantumHardware &quantum_hardware, const bool &thermal_relaxation);
-        
 };
 #endif
