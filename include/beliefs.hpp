@@ -1,0 +1,27 @@
+#include "floats.hpp"
+#include "pomdp.hpp"
+#ifndef BELIEFS_H
+#define BELIEFS_H
+
+
+class Belief {
+    MyFloat get_sum();
+public:
+    unordered_map<POMDPVertex *, MyFloat, POMDPVertexHash, POMDPVertexPtrEqual> probs;
+
+    MyFloat get(POMDPVertex *v);
+
+    void set_val(POMDPVertex* v, const MyFloat &prob);
+
+    void add_val(POMDPVertex* v, const MyFloat &val);
+
+    void check();
+
+    bool operator==(const Belief& other) const;
+};
+
+struct BeliefHash {
+    std::size_t operator()(const Belief &instruction) const;
+};
+
+#endif

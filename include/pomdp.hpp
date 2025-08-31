@@ -58,18 +58,17 @@ class POMDPAction {
 
 class POMDP {
     vector<POMDPVertex> states;
-    vector<POMDPAction> actions;
-    unordered_map<POMDPVertex*, unordered_map<string, unordered_map<POMDPVertex*, MyFloat,POMDPVertexHash, POMDPVertexPtrEqual>>, POMDPVertexHash, POMDPVertexPtrEqual> transition_matrix;
     POMDPVertex *initial_state;
     int precision;
 
     POMDPVertex* get_vertex(POMDPVertex *vertex);
     POMDPVertex* create_new_vertex(HybridState *hybrid_state, int hidden_index);
     public:
+        unordered_map<POMDPVertex*, unordered_map<string, unordered_map<POMDPVertex*, MyFloat,POMDPVertexHash, POMDPVertexPtrEqual>>, POMDPVertexHash, POMDPVertexPtrEqual> transition_matrix;
+        vector<POMDPAction> actions;
+        POMDP() = default;
         POMDP(int precision);
         POMDP(POMDPVertex *initialState, vector<POMDPVertex> &states, vector<POMDPAction> &actions, unordered_map<POMDPVertex*, unordered_map<string, unordered_map<POMDPVertex*, MyFloat, POMDPVertexHash, POMDPVertexPtrEqual>>, POMDPVertexHash, POMDPVertexPtrEqual> &transition_matrix);
         void build_pomdp(const vector<POMDPAction> &actions, HardwareSpecification &hardware_specification, int horizon, unordered_map<int, int> embedding, HybridState *initial_state, const vector<pair<HybridState*, double>> &initial_distribution, vector<int> &qubits_used, guard_type guard, bool set_hidden_index=false);
-
-
 };
 #endif

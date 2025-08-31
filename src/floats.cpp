@@ -6,6 +6,7 @@
 #include <cassert>
 #include <iostream>
 #include <algorithm>
+#include <sstream>
 
 using namespace std;
 
@@ -225,16 +226,23 @@ MyFloat MyFloat::abs(MyFloat const &n) {
 }
 
 ostream& operator<<(ostream& os, const MyFloat& myfloat) {
-    if(myfloat.is_negative){
+    if (myfloat.is_negative) {
         os << "-";
     }
-    for (int i = myfloat.exponent.size()-1 ; i >= 0; i--) {
-        os << to_string(myfloat.exponent[i]);
+
+    // Print exponent digits (most significant first)
+    for (int i = myfloat.exponent.size() - 1; i >= 0; --i) {
+        os << myfloat.exponent[i]; // no need for to_string if it's int < 10
     }
-    os << ".";
-    for (int i = myfloat.mantissa.size()-1 ; i >= 0; i--) {
-        os << to_string(myfloat.mantissa[i]);
+
+    if (!myfloat.mantissa.empty()) {
+        os << ".";
+        // Print mantissa digits (most significant first)
+        for (int i = myfloat.mantissa.size() - 1; i >= 0; --i) {
+            os << myfloat.mantissa[i];
+        }
     }
+
     return os;
 }
 
@@ -328,7 +336,7 @@ MyFloat MyFloat::operator+(MyFloat const &other){
     return result;
 }
 
-MyFloat MyFloat::operator*(MyFloat const &other) {
+MyFloat MyFloat::operator*(MyFloat const &other) const {
     // We treat it as integer multiplication
     vector<short> n1;
     vector<short> n2;
@@ -482,6 +490,12 @@ MyFloat min(MyFloat const &a, MyFloat const &b) {
         return a;
     }
     return b;
+}
+
+std::string to_string(const MyFloat& myfloat) {
+    std::ostringstream oss;
+    oss << myfloat;  // uses your operator<<
+    return oss.str();
 }
 
 
