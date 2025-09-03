@@ -4,6 +4,9 @@
 #include<unordered_map>
 #include<vector>
 #include "instruction.hpp"
+#include <numbers>
+#define _USE_MATH_DEFINES
+auto pi = M_PI;
 
 using namespace std;
 
@@ -28,6 +31,7 @@ class QuantumState {
         void normalize();
         bool operator==(const QuantumState& other) const;
         QuantumState* apply_instruction(const Instruction &instruction, bool normalize=true) const;
+        vector<vector<complex<double>>> multi_partial_trace(const vector<int> &remove_indices) const;
 };
 
 pair<QuantumState*, double> get_sequence_probability(QuantumState &quantum_state0, vector<Instruction> seq, int precision);

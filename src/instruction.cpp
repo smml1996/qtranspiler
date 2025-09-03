@@ -190,3 +190,13 @@ std::size_t InstructionHash::operator()(const Instruction *instruction) const {
 
     return seed;
 }
+
+bool is_identity(const vector<Instruction> &seq) {
+    for (auto s : seq) {
+        // if isinstance(s, KrausOperator)
+        //     return False
+        if (s.gate_name != GateName::I) return false;
+    }
+        
+    return true;
+}

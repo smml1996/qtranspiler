@@ -52,7 +52,7 @@ class POMDPAction {
         vector<Instruction> pseudo_instruction_sequence;
         POMDPAction(const string &name, const vector<Instruction> &instruction_sequence, int precision, const vector<Instruction> &pseudo_instruction_sequence);
         vertex_dict get_successor_states(HardwareSpecification &hardware_specification, const POMDPVertex &current_vertex);
-        bool operator==(const POMDPAction &other) const;
+        bool operator==(const POMDPAction &other) const; 
 };
 
 string to_string(const POMDPAction &action);
@@ -70,12 +70,12 @@ struct POMDPActionPtrEqual {
 
 class POMDP {
     vector<POMDPVertex> states;
-    POMDPVertex *initial_state;
     int precision;
 
     POMDPVertex* get_vertex(POMDPVertex *vertex);
     POMDPVertex* create_new_vertex(HybridState *hybrid_state, int hidden_index);
     public:
+        POMDPVertex *initial_state;
         unordered_map<POMDPVertex*, unordered_map<POMDPAction*, unordered_map<POMDPVertex*, MyFloat,POMDPVertexHash, POMDPVertexPtrEqual>,POMDPActionHash, POMDPActionPtrEqual>, POMDPVertexHash, POMDPVertexPtrEqual> transition_matrix;
         vector<POMDPAction> actions;
         POMDP() = default;

@@ -43,4 +43,6 @@ struct InstructionHash {
 struct InstructionPtrEqual {
     bool operator()(const Instruction* a, const Instruction* b) const;
 };
+
+bool is_identity(const vector<Instruction> &seq);
 #endif

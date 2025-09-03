@@ -1,9 +1,10 @@
 #include "../include/solvers.hpp"
 #include <cassert>
 
-SingleDistributionSolver::SingleDistributionSolver(const POMDP &pomdp, f_reward_type &get_reward) {
+SingleDistributionSolver::SingleDistributionSolver(const POMDP &pomdp, const f_reward_type &get_reward, int precision) {
     this->pomdp = pomdp;
     this->get_reward = get_reward;
+    this->precision = precision;
 }
 
 pair<Algorithm*, MyFloat> SingleDistributionSolver::get_bellman_value(const Belief &current_belief, const int &horizon){
@@ -12,7 +13,13 @@ pair<Algorithm*, MyFloat> SingleDistributionSolver::get_bellman_value(const Beli
         return temp_it->second;
     }
 
-    MyFloat curr_belief_val = this->get_reward(current_belief);
+    MyFloat curr_belief_val;
+    if (this->get_reward(current_belief)) {
+        curr_belief_val = MyFloat("1");
+    } else {
+        curr_belief_val = MyFloat("0");
+    }
+    
     int current_classical_state = -1;
     for(auto & prob : current_belief.probs) {
         if (current_classical_state == -1) {
@@ -53,7 +60,7 @@ pair<Algorithm*, MyFloat> SingleDistributionSolver::get_bellman_value(const Beli
         }
         
         if (!obs_to_next_beliefs.empty()) {
-            Algorithm *new_alg_node = new Algorithm(action, current_classical_state);
+            Algorithm *new_alg_node = new Algorithm(action, current_classical_state, this->precision);
             MyFloat bellman_val;
 
             int max_depth = 0;

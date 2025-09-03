@@ -1,11 +1,13 @@
 #include "../include/algorithm.hpp"
 #include <fstream>
+#include <utils.hpp>
 
-Algorithm::Algorithm(POMDPAction* action, int classical_state, int depth=-1) {
+Algorithm::Algorithm(POMDPAction* action, int classical_state, int precision, int depth=-1) {
     this->action = action;
     this->classical_state = classical_state;
     this->depth = depth;
     this->children_probs = unordered_map<int, double>();
+    this->precision = precision;
 } 
 
       
@@ -17,6 +19,44 @@ bool Algorithm::exist_child_with_cstate(const int &cstate) {
         }
     }
     return false;
+}
+
+bool Algorithm::operator==(const Algorithm &other) const {
+    if (other.action != this->action) {
+        return false;
+    }
+
+    if (this->classical_state != other.classical_state) {
+        return false;
+    }
+
+    if (this->children.size() != other.children.size()) {
+        return false;
+    }
+
+    int c = 0;
+
+    for (Algorithm * child : this->children) {
+        double prob_child = this->children_probs.at(c);
+        bool found = false;
+        int c2 = 0;
+        for (Algorithm* other_child : other.children) {
+            double prob_other = other.children_probs.at(c2);
+
+            if (is_close(prob_other, prob_child, this->precision)) {
+                if (*other_child == *child) {
+                    found = true;
+                    break;
+                }
+            }
+            c2 += 1;
+        }
+        c += 1;
+        if (!found) {
+            return false;
+        }
+    }
+    return true;
 }
 
 string to_string(Algorithm* algorithm, const string& tabs="") {
@@ -44,9 +84,18 @@ bool dump_to_file(const fs::path &path, Algorithm * algorithm) {
         std::cerr << "Failed to open file: " << path << "\n";
         return 0;
     }
-
-
     out << to_string(algorithm);
 
     out.close();
+}
+
+int get_algorithm_from_list(const vector<Algorithm *> &algorithms, Algorithm* new_algorithm) {
+    int index = 0;
+    for (auto algorithm : algorithms) {
+        if (*algorithm == *new_algorithm) {
+            return index;
+        }
+        index++;
+    }
+    return -1;
 }

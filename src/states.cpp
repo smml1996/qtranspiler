@@ -4,13 +4,9 @@
 #include <cassert>
 #include "../include/utils.hpp"
 #include "states.hpp"
-#include <numbers>
-#define _USE_MATH_DEFINES
 #include <cmath>
 
 using namespace std;
-
-auto pi = M_PI;
 
 // Quantum states
 QuantumState::QuantumState(vector<int> qubits_used, int precision) {
@@ -451,6 +447,131 @@ QuantumState* QuantumState::eval_multiqubit_gate(const Instruction &instruction)
     }
 
     assert (result->sparse_vector.size() > 0);
+    return result;
+}
+
+int  _get_real_index(const vector<int> &qubits_used,const int&index) {
+    for(int index_ = 0; index_ < qubits_used.size(); index_++) {
+        auto q = qubits_used[index_];
+        if (q == index) {
+            return index_;
+        }
+    }
+
+    throw invalid_argument("Could not get real index");
+}
+
+string int_to_bin(int n, int zero_padding=-1) {
+    assert(n >= 0);
+    string result;
+    while (n > 0) {
+        if ((n % 2) == 1) result += "1";
+        else 
+            result += "0";
+        n = floor(n / 2);
+    }
+
+    if (zero_padding > -1) {
+        while (result.size() < zero_padding)
+            result += "0";
+    }
+    if (result.size() == 0)
+        return "0";
+    return result;
+}
+
+string remove_unused(const string &bin_string, const vector<int> &used_qubits, int padding) {
+    string answer;
+
+    for (int index = 0; index < bin_string.size(); index++) {
+        char c = bin_string.at(index);
+        if (std::find(used_qubits.begin(), used_qubits.end(), index) != used_qubits.end()) {
+            assert (c == '0');
+        } else {
+            answer += c;
+        }   
+    }
+    
+    if (padding > -1) {
+        while (answer.size() < padding) answer += "0";
+    }
+    
+    return answer;
+}
+
+string remove_char_at_indices(const string &s, const vector<int> &remove_indices) {
+    string answer;
+    for (int index = 0; index < s.size(); index++) {
+        char c = s.at(index);
+        if (std::find(remove_indices.begin(), remove_indices.end(), index) == remove_indices.end()) 
+            answer += c;
+    }
+        
+    return answer;
+}
+
+int bin_to_int(const string &bin) {
+    int result = 0;
+    for (int power = 0; power < bin.size(); power++) {
+        char b = bin.at(power);
+        assert (b=='0' || b == '1');
+        result += int(b-'0')*(pow(2,power));
+    }
+        
+    return result;
+}
+
+bool are_all_indices_equal(const string &s1, const string &s2, const vector<int> &indices) {
+    for (auto index : indices) {
+        if (s1.at(index) != s2.at(index))
+            return false;
+    }
+    return true;
+}
+
+vector<vector<complex<double>>> QuantumState::multi_partial_trace(const vector<int> &remove_indices) const {
+    vector<vector<complex<double>>> result;
+
+    
+    vector<int> qubits_used;
+    for (auto q : this->qubits_used) {
+        qubits_used.push_back(q);
+    }
+    auto initial_dim = pow(2, qubits_used.size());
+
+    auto final_dim = pow(2 ,(qubits_used.size() - remove_indices.size()));
+    
+    vector<int> real_indices;
+
+    for (int index : remove_indices) {
+        real_indices.push_back(_get_real_index(qubits_used, index));
+    }
+        
+    for (int i = 0; i < final_dim; i++) {
+        vector<complex<double>> temp;
+        for (int j = 0; j < final_dim; j++) {
+            temp.push_back(0);
+        }
+        result.push_back(temp);
+    }
+    for (auto it : this->sparse_vector) {
+        int ket = it.first;
+    
+        auto bin_ket = int_to_bin(ket, qubits_used.size());
+        auto bin_ket_ = remove_unused(bin_ket, qubits_used, qubits_used.size());
+        auto bin_new_ket = remove_char_at_indices(bin_ket_, real_indices);
+        auto index_new_ket = bin_to_int(bin_new_ket); // index of the row in the result(-ing density matrix)
+        for (auto it2 : this->sparse_vector) {
+            int bra = it2.first;
+            auto current_val = real(this->get_amplitude(ket) * conj(this->get_amplitude(bra)));
+            auto bin_bra = int_to_bin(bra, qubits_used.size()); // original bra
+            auto bin_bra_ = remove_unused(bin_bra, qubits_used, qubits_used.size());
+            auto bin_new_bra = remove_char_at_indices(bin_bra_, real_indices);
+            auto index_new_bra = bin_to_int(bin_new_bra);
+            if (are_all_indices_equal(bin_ket_, bin_bra_, real_indices))
+                result[index_new_ket][index_new_bra] += current_val;
+        }
+    }
     return result;
 }
 

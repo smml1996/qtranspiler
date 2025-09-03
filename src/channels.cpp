@@ -20,6 +20,17 @@ QuantumChannel::QuantumChannel(json &data) {
         this->errors_to_probs.push_back(make_pair(final_errors, probability));
 
     }
+
+    //estimating success probability
+    this->estimated_success_prob = 0.5;
+    for (auto it : this->errors_to_probs) {
+        auto instruction_seq = it.first;
+        auto prob = it.second;
+        if (is_identity(instruction_seq) or prob > 0.5) {
+                this->estimated_success_prob = max(this->estimated_success_prob, prob);
+        }
+    }
+        
 }
 
 MeasurementChannel::MeasurementChannel(json &json_val) {

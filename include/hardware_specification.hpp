@@ -66,17 +66,24 @@ enum QuantumHardware {
     Vigo,
     Washington,
     Yorktown,
+
+    count
 };
 
 string to_string(const QuantumHardware &quantum_hardware); // gets the string representation of the enum QuantumHardware
 
 class HardwareSpecification {
     QuantumHardware quantum_hardware;
-    BasisGates basis_gates_type;
-    unordered_set<GateName> basis_gates;
-    int num_qubits;
+    unordered_map<int, int> qubit_to_indegree;
     public:
+        int num_qubits;
+        BasisGates basis_gates_type;
         unordered_map<Instruction*, Channel*, InstructionHash, InstructionPtrEqual>instructions_to_channels;
+        unordered_set<GateName> basis_gates;
         HardwareSpecification(const QuantumHardware &quantum_hardware, const bool &thermal_relaxation);
+        string get_hardware_name();
+        vector<Instruction> to_basis_gates_impl(const Instruction &current_ins) const;
+        int get_qubit_indegree(int qubit) const;
+        vector<pair<int, double>> get_sorted_qubit_couplers(int target) const;
 };
 #endif
