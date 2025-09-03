@@ -1,7 +1,7 @@
 #include "../../include/experiments.hpp"
 
-bool are_adjacent_qubits(const unordered_map<int, unordered_set<int>> &graph,
-                         int qubit1, int qubit2, int qubit3) {
+bool are_adjacent_qubits(const unordered_map<int, unordered_set<int>> &graph, int qubit1,
+                         const unordered_set<int> &qubits) {
     queue<int> q;
     unordered_set<int> visited;
 
@@ -16,7 +16,7 @@ bool are_adjacent_qubits(const unordered_map<int, unordered_set<int>> &graph,
         if (it != graph.end()) {
             for (int succ : it->second) {
                 if (visited.find(succ) == visited.end()) {
-                    if (succ == qubit2 || succ == qubit3) {
+                    if (qubits.find(succ) != qubits.end()) {
                         visited.insert(succ);
                         q.push(succ);
                     }
@@ -24,9 +24,12 @@ bool are_adjacent_qubits(const unordered_map<int, unordered_set<int>> &graph,
             }
         }
     }
-
-    return (visited.find(qubit2) != visited.end() &&
-            visited.find(qubit3) != visited.end());
+    for (auto qubit : qubits) {
+        if (visited.find(qubit) == visited.end()) {
+            return false;
+        }
+    }
+    return true;
 }
 
 bool is_repeated_embedding(const vector<unordered_map<int, int>> all_embeddings, const unordered_map<int, int> &current) {
@@ -106,7 +109,7 @@ class GHZStatePreparation3 : public Experiment {
                     for (int qubit3 = 0; qubit3 < hardware_spec.num_qubits; qubit3++) {
                         unordered_set<int >current_set({qubit1, qubit2, qubit3});
                         if (current_set.size() == 3) {
-                            if (are_adjacent_qubits(hardware_spec.digraph, qubit1, qubit2, qubit3)) {
+                            if (are_adjacent_qubits(hardware_spec.digraph, qubit1, {qubit1, qubit2, qubit3})) {
                                     unordered_map<int, int> d_temp;
                                     d_temp[0] = qubit1;
                                     d_temp[1] = qubit2;
@@ -152,6 +155,27 @@ class GHZStatePreparation4 : public GHZStatePreparation3 {
         }
 
         virtual vector<unordered_map<int, int>> get_hardware_scenarios(HardwareSpecification const & hardware_spec) const override {
-            throw std::logic_error("Function not yet implemented");
+            vector<unordered_map<int, int>> result;
+            for (int qubit1 = 0; qubit1 < hardware_spec.num_qubits; qubit1++) {
+                for (int qubit2 = 0; qubit2 < hardware_spec.num_qubits; qubit2++) {
+                    for (int qubit3 = 0; qubit3 < hardware_spec.num_qubits; qubit3++) {
+                        for (int qubit4 = 0; qubit4 < hardware_spec.num_qubits; qubit4++) {
+                            unordered_set<int >current_set({qubit1, qubit2, qubit3, qubit4});
+                            if (current_set.size() == 4) {
+                                if (are_adjacent_qubits(hardware_spec.digraph, qubit1, {qubit1, qubit2, qubit3, qubit4})) {
+                                        unordered_map<int, int> d_temp;
+                                        d_temp[0] = qubit1;
+                                        d_temp[1] = qubit2;
+                                        d_temp[2] = qubit3;
+                                        d_temp[3] = qubit4;
+                                        if (!is_repeated_embedding(result, d_temp))
+                                            result.push_back(d_temp);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return result;
         }
 };
