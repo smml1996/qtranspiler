@@ -29,8 +29,17 @@ class ResetProblem : public Experiment {
             return result;
         }
 
-        MyFloat postcondition(const Belief &belief) const override {
+        MyFloat postcondition(const Belief &belief, const unordered_map<int, int> &embedding) const override {
+            unique_ptr<QuantumState> state0(new QuantumState({embedding.at(0)}, this->precision));
+            MyFloat answer("0");
 
+            for(auto it : belief.probs) {
+                if (*(it.first->hybrid_state->quantum_state) == *state0) {
+                    answer = answer + it.second;
+                }
+            }
+
+            return answer;
         }
 
         vector<POMDPAction> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) {
@@ -50,5 +59,21 @@ class ResetProblem : public Experiment {
                 {Instruction(GateName::Meas, embedding.at(0), 0)});
 
             return {X0, P0};
+        }
+
+        vector<unordered_map<int, int>> get_hardware_scenarios(HardwareSpecification const & hardware_spec) const override {
+
+            vector<unordered_map<int, int>> result;
+            unordered_set<int> parsed_pivots;
+            auto pivot_qubits = get_meas_pivot_qubits(hardware_spec);
+            for (auto target: pivot_qubits) {
+                unordered_map<int, int> d_temp;
+                d_temp[0] = target;
+                result.push_back(d_temp);
+                parsed_pivots.insert(target);
+            }
+                
+            return result;
+
         }
 };
