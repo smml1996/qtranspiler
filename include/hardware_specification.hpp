@@ -78,6 +78,7 @@ class HardwareSpecification {
     public:
         int num_qubits;
         BasisGates basis_gates_type;
+        unordered_map<int, unordered_set<int>> digraph;
         unordered_map<Instruction*, Channel*, InstructionHash, InstructionPtrEqual>instructions_to_channels;
         unordered_set<GateName> basis_gates;
         HardwareSpecification(const QuantumHardware &quantum_hardware, const bool &thermal_relaxation);

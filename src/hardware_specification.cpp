@@ -96,6 +96,21 @@ HardwareSpecification::HardwareSpecification(const QuantumHardware &quantum_hard
             this->qubit_to_indegree[target]++;
         }
     }
+
+    // compute digraph
+    for (auto it : this->instructions_to_channels) {
+        auto instruction = it.first;
+        assert (instruction->controls.size() == 1);
+        if (instruction->instruction_type == InstructionType::UnitaryMultiQubit) {
+            int source = instruction->controls[0];
+            int target = instruction->target;
+            
+            if (this->digraph.find(source) == this->digraph.end()) {
+                this->digraph[source] = unordered_set<int>();
+            }
+            this->digraph[source].insert(target);
+        }       
+    }
     
 }
 
