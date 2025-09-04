@@ -57,7 +57,7 @@ enum BasisGates {
     TYPE5,
     TYPE6,
 
-    count
+    BasisGatesCount
 };
 
 unordered_set<GateName> get_value(const BasisGates& basis_gates);

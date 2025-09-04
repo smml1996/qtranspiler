@@ -4,10 +4,7 @@
 #ifndef FLOATS_H
 #define FLOATS_H
 #include<vector>
-#include <cassert>
 #include <string>
-#include <iostream>
-#include <algorithm>
 
 using namespace std;
 

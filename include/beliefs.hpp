@@ -1,7 +1,7 @@
-#include "floats.hpp"
-#include "pomdp.hpp"
 #ifndef BELIEFS_H
 #define BELIEFS_H
+#include "floats.hpp"
+#include "pomdp.hpp"
 
 
 class Belief {

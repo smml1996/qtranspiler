@@ -26,21 +26,21 @@ class ConvexDistributionSolver {
     int precision;
     unordered_map<int, int> embedding;
     int initial_classical_state;
-    pair<vector<double>, double> solve_lp_maximin(const unordered_map<int, unordered_map<int, double>> &maximin_matrix, const int &n_algorithms, const int &n_initial_states) const;
-    public:
-        ConvexDistributionSolver(const POMDP &pomdp, const f_reward_type &get_reward, int precision, const unordered_map<int, int> & embedding);
-        pair<Algorithm*, double> solve(const vector<POMDPVertex*> &initial_states, const int &horizon);
-        void get_matrix_maximin(const vector<POMDPVertex*> &initial_states, 
-            Algorithm *current_algorithm, 
+    void get_matrix_maximin(const vector<POMDPVertex*> &initial_states,
+            Algorithm *current_algorithm,
             unordered_map<int, unordered_map<int, double>> &minimax_matrix,
             const int &max_horizon,
             unordered_map<int, Algorithm*> &mapping_index_algorithm);
 
-        void set_minimax_values( 
-                Algorithm* algorithm, 
-                const vector<POMDPVertex*> &initial_states,
-                unordered_map<int, unordered_map<int, double>> &minimax_matrix,
-                unordered_map<int, Algorithm*> &mapping_index_algorithm);
+    void set_minimax_values(
+            Algorithm* algorithm,
+            const vector<POMDPVertex*> &initial_states,
+            unordered_map<int, unordered_map<int, double>> &minimax_matrix,
+            unordered_map<int, Algorithm*> &mapping_index_algorithm);
+    pair<vector<double>, double> solve_lp_maximin(const unordered_map<int, unordered_map<int, double>> &maximin_matrix, const int &n_algorithms, const int &n_initial_states) const;
+    public:
+        ConvexDistributionSolver(const POMDP &pomdp, const f_reward_type &get_reward, int precision, const unordered_map<int, int> & embedding);
+        pair<Algorithm*, double> solve(const vector<POMDPVertex*> &initial_states, const int &horizon);
 };
 
 #endif

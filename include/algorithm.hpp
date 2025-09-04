@@ -6,13 +6,12 @@
 #include <unordered_map>
 #include "pomdp.hpp"
 #include <filesystem>
-#include <iostream>
 
 using namespace std;
 
 namespace fs = std::filesystem;
 
-POMDPAction random_branch("RANDOM_BRANCH", {}, 1, {});
+inline POMDPAction random_branch("RANDOM_BRANCH", {}, 1, {});
 
 class Algorithm {
 public:

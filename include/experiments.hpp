@@ -1,4 +1,6 @@
-#include <iostream>
+#ifndef EXPERIMENTS_H
+#define EXPERIMENTS_H
+
 #include "beliefs.hpp"
 #include "hardware_specification.hpp"
 #include <filesystem>
@@ -30,6 +32,8 @@ class Experiment {
     vector<HardwareSpecification> get_hardware_specs() const;
     Belief get_initial_belief(const POMDP &pomdp) const;
 
+        vector<POMDPVertex *> get_initial_states(const POMDP &pomdp) const;
+
     public:
         virtual ~Experiment() = default;
         Experiment() = default;
@@ -53,3 +57,5 @@ class ReadoutNoise {
 };
 
 unordered_set<int> get_meas_pivot_qubits(const HardwareSpecification &hardware_spec);
+
+#endif

@@ -50,7 +50,7 @@ bool Experiment::setup_working_dir() const {
         }
     }
 
-    fs::path dir_path = fs::path("..") / "results" / this->name / "algorithms";
+    dir_path = fs::path("..") / "results" / this->name / "algorithms";
     
     if (!fs::exists(dir_path)) {
         if (fs::create_directories(dir_path)) {
@@ -66,7 +66,7 @@ bool Experiment::setup_working_dir() const {
 vector<QuantumHardware> Experiment::get_allowed_hardware() const {
     vector<QuantumHardware> hardware_specs;
 
-    for(int i = 0; i < QuantumHardware::count; i++)  {
+    for(int i = 0; i < QuantumHardware::HardwareCount; i++)  {
         hardware_specs.push_back(static_cast<QuantumHardware>(i));
     }
 
@@ -105,6 +105,22 @@ Belief Experiment::get_initial_belief(const POMDP &pomdp) const {
         initial_belief.set_val(pomdp.initial_state, MyFloat("1"));
     }
     return initial_belief;
+}
+
+vector<POMDPVertex*> Experiment::get_initial_states(const POMDP &pomdp) const {
+    vector<POMDPVertex*> initial_states;
+
+    POMDPAction* INIT_CHANNEL = new POMDPAction("INIT__", {}, this->precision, {});
+
+    if (pomdp.transition_matrix.at(pomdp.initial_state).find(INIT_CHANNEL) ==  pomdp.transition_matrix.at(pomdp.initial_state).end()) {
+        for(auto it : pomdp.transition_matrix.at(pomdp.initial_state).at(INIT_CHANNEL)) {
+            initial_states.push_back(it.first);
+        }
+    } else {
+        initial_states.push_back(pomdp.initial_state);
+    }
+
+    return initial_states;
 }
 
 void Experiment::run() const {
@@ -169,25 +185,32 @@ void Experiment::run() const {
 
             // initial belief
             auto initial_belief = this->get_initial_belief(pomdp);
+            auto initial_states = this->get_initial_states(pomdp);
 
             for (int horizon = this->min_horizon; horizon <= this->max_horizon; horizon++) {
                 for (auto method : this->method_types) {
                     long long method_time;
-                    pair<Algorithm *, MyFloat> result = make_pair(nullptr, MyFloat("0.0"));
+                    pair<Algorithm *, double> result = make_pair(nullptr, 0);
                     if (method == MethodType::SingleDistBellman) {
-                        SingleDistributionSolver solver(pomdp, actual_reward_f, this->precision);
+                        SingleDistributionSolver solver(pomdp, actual_reward_f, this->precision, embedding);
 
                         auto start_method = chrono::high_resolution_clock::now();
-                        result = solver.get_bellman_value(initial_belief, horizon);
+                        auto result_temp = solver.get_bellman_value(initial_belief, horizon);
                         auto end_method = chrono::high_resolution_clock::now();
+                        result = make_pair(result_temp.first, to_double(result_temp.second));
+
 
                         method_time = (end_method - start_method).count();
                     } else if (method == MethodType::SingleDistPBVI) {
-                        SingleDistributionSolver solver(pomdp, actual_reward_f, this->precision);
+                        SingleDistributionSolver solver(pomdp, actual_reward_f, this->precision, embedding);
                         // TODO
 
                     } else {
-                        // TODO: convex solver
+                        ConvexDistributionSolver solver (pomdp, actual_reward_f, this->precision, embedding);
+                        auto start_method = chrono::high_resolution_clock::now();
+                        result = solver.solve(initial_states, horizon);
+                        auto end_method = chrono::high_resolution_clock::now();
+                        method_time = (end_method - start_method).count();
                     }
 
                     int algorithm_index = get_algorithm_from_list(unique_algorithms, result.first);

@@ -1,15 +1,14 @@
 #ifndef HARDWARE_SPEC_H
 #define HARDWARE_SPEC_H
-#include <iostream>
-#include <filesystem>  // C++17 and above
 #include <string>
 #include <unordered_set>
 #include "quantum_gates.hpp"
 #include "instruction.hpp"
+#include "channels.hpp"
 
 using namespace std;
 
-// all hardware specifications we can ran experiments on
+// all hardware specifications we can run experiments on
 enum QuantumHardware { 
     Algiers,
     Almaden,
@@ -67,7 +66,7 @@ enum QuantumHardware {
     Washington,
     Yorktown,
 
-    count
+    HardwareCount
 };
 
 string to_string(const QuantumHardware &quantum_hardware); // gets the string representation of the enum QuantumHardware
