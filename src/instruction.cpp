@@ -17,19 +17,21 @@ Instruction::Instruction(GateName gate_name, int target) {
     }
 }
 
-Instruction::Instruction(GateName gate_name, int target, vector<double> params) {
+Instruction::Instruction(GateName gate_name, int target, const vector<double> &params) {
     this->gate_name = gate_name;
     this->target = target;
     this->params = params;
     this->instruction_type = InstructionType::UnitarySingleQubit;
+    this->c_target = -1;
 }
 
-Instruction::Instruction(GateName gate_name, vector<int> controls, int target, vector<double> params) {
+Instruction::Instruction(GateName gate_name, const vector<int> &controls, int target, const vector<double> &params) {
     this->gate_name = gate_name;
     this->controls = controls;
     this->target = target;
     this->params = params;
     this->instruction_type = InstructionType::UnitarySingleQubit;
+    this->c_target = -1;
 }
 
 Instruction::Instruction(GateName gate_name, vector<int> controls, int target) {
@@ -37,6 +39,7 @@ Instruction::Instruction(GateName gate_name, vector<int> controls, int target) {
     this->controls = std::move(controls);
     this->target = target;
     this->instruction_type = InstructionType::UnitaryMultiQubit;
+    this->c_target = -1;
 }
 
 Instruction::Instruction(GateName gate_name, int target, int c_target) {
@@ -48,17 +51,13 @@ Instruction::Instruction(GateName gate_name, int target, int c_target) {
 
 Instruction::Instruction(const json &json_val) {
     string raw_gate_name = json_val["op"];
-    GateName gate_name = get_enum_obj(raw_gate_name);
-    this->gate_name = gate_name;
+    this->gate_name = get_enum_obj(raw_gate_name);;
 
-    int target = json_val["target"];
-    this->target = target;
+    this->target = json_val["target"];
 
     this->c_target = -1;
-
-    vector<int> controls;
     
-    InstructionType instruction_type = InstructionType::UnitarySingleQubit;
+    this->instruction_type = InstructionType::UnitarySingleQubit;
 
     
     switch (gate_name) {
@@ -81,25 +80,22 @@ Instruction::Instruction(const json &json_val) {
         case Ry:
         case Rx:
         case Reset:
-        case Meas:
+        case GateName::Meas:
             this->instruction_type = InstructionType::Measurement;
             this->c_target = target;
             break;
-        case Custom:
+        case GateName::Custom:
             assert(false);
-        // Multi-qubit gates
-        case Cnot:
-            int control = json_val["control"];
-            this->controls.push_back(control);
+        case GateName::Cnot:
+            this->controls.push_back(json_val["control"]);
             this->instruction_type = InstructionType::UnitaryMultiQubit;
             break;
-        case Ecr:
-            assert (false);
-        case Rzx:
+        case GateName::Ecr:
             assert(false);
-        case Cz:
-            int control = json_val["control"];
-            this->controls.push_back(control);
+        case GateName::Rzx:
+            assert(false);
+        case GateName::Cz:
+            this->controls.push_back(json_val["control"]);
             this->instruction_type = InstructionType::UnitaryMultiQubit;
             break;
         case Ch:
@@ -120,7 +116,7 @@ Instruction::Instruction(const json &json_val) {
     
 }
 
-InstructionType Instruction::get_instruction_type() {
+InstructionType Instruction::get_instruction_type() const {
     return this->instruction_type;
 }
 

@@ -33,7 +33,6 @@ string MyFloat::remove_initial_zeros(const string &original) {
         } else if(c != '0') {
             found_non_zero = true;
             result += c;
-            if(c == '.'){}
         }
     }
     if (result.empty()){
@@ -47,10 +46,9 @@ vector<short> MyFloat::integer_addition(const vector<short> &v1, const vector<sh
     assert(v1.size() == v2.size());
 
     int carry = 0;
-    short val;
     for(int i = 0; i < v1.size(); i++) {
-        val = (short) (v1[i] + v2[i] + carry);
-        result.push_back((short) (val % 10));
+        short val = static_cast<short>(v1[i] + v2[i] + carry);
+        result.push_back(static_cast<short>(val % 10));
         carry = val > 9 ? 1 : 0;
     }
 
@@ -245,7 +243,7 @@ ostream& operator<<(ostream& os, const MyFloat& myfloat) {
     return os;
 }
 
-explicit MyFloat::MyFloat(const string& probability__ = "0", int custom_precision=-1){
+MyFloat::MyFloat(const string& probability__, int custom_precision){
     string probability_;
     if (probability__[0] == '-') {
         this->is_negative = true;
@@ -263,9 +261,9 @@ explicit MyFloat::MyFloat(const string& probability__ = "0", int custom_precisio
         if(c == '.') {
             dot_found = true;
         }else if (!dot_found) {
-            this->exponent.push_back(short(c - '0'));
+            this->exponent.push_back(static_cast<short>(c - '0'));
         } else if (this->mantissa.size() < actual_precision){
-            this->mantissa.push_back(short(c - '0'));
+            this->mantissa.push_back(static_cast<short>(c - '0'));
         }
     }
 
@@ -276,7 +274,7 @@ explicit MyFloat::MyFloat(const string& probability__ = "0", int custom_precisio
     reverse(this->mantissa.begin(), this->mantissa.end()); // operations need to start from the least significant decimal
 }
 
-MyFloat MyFloat::operator+(MyFloat const &other){
+MyFloat MyFloat::operator+(MyFloat const &other) const {
 
     if (this->is_negative != other.is_negative) {
         return MyFloat::subtraction(*this, other);
@@ -289,8 +287,8 @@ MyFloat MyFloat::operator+(MyFloat const &other){
     for(int i = 0; i < this->mantissa.size(); i++) {
         MyFloat::check_digit(this->mantissa[i]);
         MyFloat::check_digit(other.mantissa[i]);
-        auto val = (short) (carry + this-> mantissa[i] + other.mantissa[i]);
-        result.mantissa.push_back((short) (val % 10));
+        const auto val = static_cast<short>(carry + this->mantissa[i] + other.mantissa[i]);
+        result.mantissa.push_back(static_cast<short>(val % 10));
         if (val > 9) {
             carry = 1;
         } else {
@@ -305,15 +303,15 @@ MyFloat MyFloat::operator+(MyFloat const &other){
             if (i < other.exponent.size()) {
                 // we consider both
                 MyFloat::check_digit(other.exponent[i]);
-                val = (short) (other.exponent[i] + this->exponent[i] + carry);
+                val = static_cast<short>(other.exponent[i] + this->exponent[i] + carry);
             } else {
                 // we just consider this->
-                val = (short) (this->exponent[i] + carry);
+                val = static_cast<short>(this->exponent[i] + carry);
             }
         } else {
             // we just consider other.
             MyFloat::check_digit(other.exponent[i]);
-            val = (short) (other.exponent[i] + carry);
+            val = static_cast<short>(other.exponent[i] + carry);
         }
         result.exponent.push_back(val % 10);
 
@@ -369,8 +367,6 @@ MyFloat MyFloat::operator*(MyFloat const &other) const {
     }
 
     // actual multiplication
-    int carry;
-    int val;
     for(int shift_digit = 0; shift_digit < n2.size(); shift_digit++) {
         // perform multiplication of n1 times the digit at position shift_digit in n2
         vector<short> n1_times_digit;
@@ -380,14 +376,14 @@ MyFloat MyFloat::operator*(MyFloat const &other) const {
             n1_times_digit.push_back(0);
         }
 
-        carry = 0;
+        int carry = 0;
 
         for (auto d : n1) {
-            val = d*n2[shift_digit] + carry;
-            n1_times_digit.push_back((short) (val%10));
+            int val = d * n2[shift_digit] + carry;
+            n1_times_digit.push_back(static_cast<short>(val % 10));
             carry = val / 10;
         }
-        n1_times_digit.push_back((short) carry);
+        n1_times_digit.push_back(static_cast<short>(carry));
         assert(n1_times_digit.size() <= 2*n1.size());
 
         while(n1_times_digit.size() < 2*n1.size()) {
@@ -436,7 +432,7 @@ bool MyFloat::operator==(const MyFloat &rhs) const {
     return MyFloat::are_vectors_equal(this->mantissa, rhs.mantissa);
 }
 
-inline bool MyFloat::operator!=(const MyFloat &rhs) {
+inline bool MyFloat::operator!=(const MyFloat &rhs) const {
     return !(*this == rhs);
 }
 
@@ -473,9 +469,6 @@ inline bool MyFloat::operator>(const MyFloat &other) const {
 inline bool MyFloat::operator<(const MyFloat &other) const {
     return !(*this > other) && !(*this == other);
 }
-
-int MyFloat::precision = 80;
-int MyFloat::tolerance = 80;
 
 MyFloat max(MyFloat const &a, MyFloat const &b) {
     if(b > a) {

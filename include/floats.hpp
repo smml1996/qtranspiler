@@ -38,13 +38,13 @@ class MyFloat {
 
     friend std::ostream &operator<<(ostream& os, const MyFloat& myfloat);
 
-    MyFloat operator+(MyFloat const &other);
+    MyFloat operator+(MyFloat const &other) const;
 
     MyFloat operator*(MyFloat const &other) const;
 
     bool operator==(const MyFloat &rhs) const;
 
-    inline bool operator!=(const MyFloat &rhs);
+    inline bool operator!=(const MyFloat &rhs) const;
 
     inline bool operator>(const MyFloat &other) const;
 

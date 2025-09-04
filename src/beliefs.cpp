@@ -1,6 +1,6 @@
 #include "beliefs.hpp"
 
-MyFloat Belief::get_sum(){
+MyFloat Belief::get_sum() const {
     MyFloat result;
 
     for (auto & prob : this->probs) {
@@ -18,7 +18,7 @@ MyFloat Belief::get(POMDPVertex *v) {
 }
 
 void Belief::set_val(POMDPVertex *v, const MyFloat &prob) {
-    if (prob == MyFloat(0)) return;
+    if (prob == MyFloat("0")) return;
 
     this->probs[v] = prob;
 }
@@ -26,13 +26,13 @@ void Belief::set_val(POMDPVertex *v, const MyFloat &prob) {
 void Belief::add_val(POMDPVertex *v, const MyFloat &val) {
     this->probs[v] = this->get(v) + val;
 
-    if (this->probs[v] == MyFloat(0)) {
+    if (this->probs[v] == MyFloat("0")) {
         this->probs.erase(v);
     }
 }
 
 
-void Belief::check() {
+void Belief::check() const {
     if (this->get_sum() != MyFloat("1")) {
         assert(false);
     }
@@ -55,10 +55,10 @@ bool Belief::operator==(const Belief& other) const {
 
 std::size_t BeliefHash::operator()(const Belief &belief) const {
     std::size_t seed = 0;
-    POMDPVertexHash vertex_hasher;
-    std::hash<std::string> float_hasher;
 
     for (const auto &kv : belief.probs) {
+        std::hash<std::string> float_hasher;
+        POMDPVertexHash vertex_hasher;
         std::size_t h1 = vertex_hasher(kv.first);
         std::size_t h2 = float_hasher(to_string(kv.second));
 

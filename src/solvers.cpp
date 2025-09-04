@@ -1,7 +1,9 @@
 #include "solvers.hpp"
 #include "ortools/linear_solver/linear_solver.h"
+#include <iostream>
 
 #include <cassert>
+
 
 SingleDistributionSolver::SingleDistributionSolver(const POMDP &pomdp, const f_reward_type &get_reward, int precision, const unordered_map<int, int> & embedding) {
     this->pomdp = pomdp;
@@ -108,7 +110,7 @@ ConvexDistributionSolver::ConvexDistributionSolver(const POMDP &pomdp, const f_r
     this->initial_classical_state = -1;
 }
 
-MyFloat get_algorithm_acc(POMDP &pomdp, Algorithm*& algorithm, Belief &current_belief, const f_reward_type &get_reward, const unordered_map<int, int> &embedding) {
+MyFloat get_algorithm_acc(POMDP &pomdp, Algorithm*& algorithm, const Belief &current_belief, const f_reward_type &get_reward, const unordered_map<int, int> &embedding) {
     MyFloat curr_belief_val = get_reward(current_belief, embedding);
 
     if (algorithm == nullptr) {
@@ -185,7 +187,7 @@ void ConvexDistributionSolver::set_minimax_values(
 
 
 
-int get_succ_classical_state(Algorithm *current) {
+int get_succ_classical_state(const Algorithm *current) {
     assert(!current->has_meas());
     if (current->is_unitary()) {
         return current->classical_state;
@@ -300,7 +302,7 @@ int get_classical_state(const vector<POMDPVertex*> &states) {
     return answer;
 }
 
-pair<vector<double>, double> ConvexDistributionSolver::solve_lp_maximin(const unordered_map<int, unordered_map<int, double>> &maximin_matrix, const int &n_algorithms, const int &n_initial_states) const {
+pair<vector<double>, double> ConvexDistributionSolver::solve_lp_maximin(const unordered_map<int, unordered_map<int, double>> &maximin_matrix, const int &n_algorithms, const int &n_initial_states) {
 
 
     // for (int i = 0; i < maximin_matrix.size(); i++) {
@@ -332,7 +334,7 @@ pair<vector<double>, double> ConvexDistributionSolver::solve_lp_maximin(const un
         operations_research::MPConstraint* c = solver.MakeRowConstraint(0.0, solver.infinity());
         for (int i = 0; i < n_algorithms; ++i) {
             auto temp = *maximin_matrix.find(i);
-            c->SetCoefficient(x[i], (*(temp.second.find(j))).second);
+            c->SetCoefficient(x[i], ((temp.second.find(j)))->second);
         }
         c->SetCoefficient(v, -1.0); // sum_i(...) - v >= 0  → sum_i(...) >= v
     }

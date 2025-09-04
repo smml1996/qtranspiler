@@ -1,5 +1,6 @@
 #include "algorithm.hpp"
 #include <fstream>
+#include <iostream>
 #include "utils.hpp"
 
 Algorithm::Algorithm(POMDPAction* action, int classical_state, int precision, int depth) {
@@ -12,7 +13,7 @@ Algorithm::Algorithm(POMDPAction* action, int classical_state, int precision, in
 
 
 
-bool Algorithm::exist_child_with_cstate(const int &cstate) {
+bool Algorithm::exist_child_with_cstate(const int &cstate) const {
     for (auto child : this->children) {
         if(child->classical_state == cstate) {
             return true;
@@ -102,14 +103,15 @@ bool dump_to_file(const fs::path &path, Algorithm * algorithm) {
     std::ofstream out(path);  // creates the file or overwrites if it exists
     if (!out) {
         std::cerr << "Failed to open file: " << path << "\n";
-        return 0;
+        return false;
     }
     out << to_string(algorithm);
 
     out.close();
+    return true;
 }
 
-int get_algorithm_from_list(const vector<Algorithm *> &algorithms, Algorithm* new_algorithm) {
+int get_algorithm_from_list(const vector<Algorithm *> &algorithms, const Algorithm* new_algorithm) {
     int index = 0;
     for (auto algorithm : algorithms) {
         if (*algorithm == *new_algorithm) {
@@ -120,7 +122,7 @@ int get_algorithm_from_list(const vector<Algorithm *> &algorithms, Algorithm* ne
     return -1;
 }
 
-Algorithm* algorithm_exists(unordered_map<int, Algorithm*> &mapping_index_algorithm, Algorithm *algorithm) {
+Algorithm* algorithm_exists(const unordered_map<int, Algorithm*> &mapping_index_algorithm, const Algorithm *algorithm) {
     for (auto it : mapping_index_algorithm) {
         if (*it.second == *algorithm) {
             return it.second;

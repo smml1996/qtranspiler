@@ -1,6 +1,7 @@
 #include <fstream>
 #include <sstream>
 #include <chrono>
+#include <iostream>
 #include "experiments.hpp"
 #include "solvers.hpp"
 
@@ -17,13 +18,10 @@ string to_string(const MethodType &method) {
     switch(method) {
         case MethodType::SingleDistBellman:
             return "bellman";
-            break;
         case MethodType::SingleDistPBVI:
             return "PBVI";
-            break;
         case MethodType::ConvexDist:
             return "convex";
-            break;
         default:
             assert(false);
     }
@@ -84,7 +82,7 @@ vector<HardwareSpecification> Experiment::get_hardware_specs() const {
     return result;
 }
 
-vector<int> Experiment::get_qubits_used(unordered_map<int, int> &embedding) const {
+vector<int> Experiment::get_qubits_used(const unordered_map<int, int> &embedding) {
     vector<int> result;
     for (auto it : embedding) {
         result.push_back(it.second);

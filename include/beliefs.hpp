@@ -5,7 +5,7 @@
 
 
 class Belief {
-    MyFloat get_sum();
+    MyFloat get_sum() const;
 public:
     unordered_map<POMDPVertex *, MyFloat, POMDPVertexHash, POMDPVertexPtrEqual> probs;
 
@@ -15,7 +15,7 @@ public:
 
     void add_val(POMDPVertex* v, const MyFloat &val);
 
-    void check();
+    void check() const;
 
     bool operator==(const Belief& other) const;
 };

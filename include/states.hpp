@@ -4,9 +4,8 @@
 #include<unordered_map>
 #include<vector>
 #include "instruction.hpp"
-#include <numbers>
 #define _USE_MATH_DEFINES
-auto pi = M_PI;
+inline auto pi = M_PI;
 
 using namespace std;
 
@@ -15,14 +14,16 @@ class QuantumState {
     int precision;
     pair<complex<double>, complex<double>> get_qubit_amplitudes() const;
     QuantumState *get_qubit_from_basis(int basis, int target) const;
-    int glue_qubit_in_basis(int basis, int address, int value) const;
+
+    static int glue_qubit_in_basis(int basis, int address, int value);
     QuantumState* eval_qubit_unitary(const Instruction &instruction) const;
     QuantumState* eval_multiqubit_gate(const Instruction &instruction) const;
     QuantumState* eval_single_qubit_gate(const Instruction &instruction) const;
-    bool are_controls_true(int basis, vector<int> controls) const;
+
+    static bool are_controls_true(int basis, const vector<int> &controls);
     public:
         unordered_map<int, complex<double>>  sparse_vector; // stores amplitudes for computational basis
-        QuantumState(vector<int> qubits_used, int precision);
+        QuantumState(const vector<int> &qubits_used, int precision);
         complex<double> get_amplitude(const int &basis) const;
         bool is_qubit() const;
         bool is_qubit_0() const;
@@ -57,7 +58,7 @@ class HybridState {
         ClassicalState *classical_state;
         HybridState(QuantumState *quantum_state, ClassicalState *classical_state);
         HybridState *apply_instruction(const Instruction &instruction) const;
-        bool operator==(HybridState &other) const;
+        bool operator==(const HybridState &other) const;
 };
 
 #endif

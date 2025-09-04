@@ -37,7 +37,8 @@ class ConvexDistributionSolver {
             const vector<POMDPVertex*> &initial_states,
             unordered_map<int, unordered_map<int, double>> &minimax_matrix,
             unordered_map<int, Algorithm*> &mapping_index_algorithm);
-    pair<vector<double>, double> solve_lp_maximin(const unordered_map<int, unordered_map<int, double>> &maximin_matrix, const int &n_algorithms, const int &n_initial_states) const;
+
+    static pair<vector<double>, double> solve_lp_maximin(const unordered_map<int, unordered_map<int, double>> &maximin_matrix, const int &n_algorithms, const int &n_initial_states);
     public:
         ConvexDistributionSolver(const POMDP &pomdp, const f_reward_type &get_reward, int precision, const unordered_map<int, int> & embedding);
         pair<Algorithm*, double> solve(const vector<POMDPVertex*> &initial_states, const int &horizon);

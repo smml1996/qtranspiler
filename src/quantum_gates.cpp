@@ -7,36 +7,30 @@ unordered_set<GateName> get_value(const BasisGates& basis_gates) {
     unordered_set<GateName> result;
 
     switch (basis_gates) {
-        TYPE1:
+        case BasisGates::TYPE1:
             return unordered_set<GateName>({
                 GateName::Cnot, GateName::Meas, GateName::Reset, GateName::Rz, GateName::Sx, GateName::X
             });
-            break;
-        TYPE2:
+        case BasisGates::TYPE2:
             return unordered_set({
                 GateName::Cz, GateName::Meas, GateName::Reset, GateName::Rz, GateName::Sx, GateName::X
             });
-            break;
-        TYPE3:
+        case BasisGates::TYPE3:
             return unordered_set({
                 GateName::U1, GateName::Reset, GateName::U3, GateName::Meas, GateName::U2, GateName::Cnot
             });
-            break;
-        TYPE4:
+        case BasisGates::TYPE4:
             return unordered_set({
                 GateName::Reset, GateName::Meas, GateName::Rz, GateName::Sx, GateName::X
             });
-            break;
-        TYPE5:
+        case BasisGates::TYPE5:
             return unordered_set({
                 GateName::Rz, GateName::Meas, GateName::Reset, GateName::Sx, GateName::Ecr, GateName::X
             });
-            break;
-        TYPE6:
+        case BasisGates::TYPE6:
             return unordered_set({
                 GateName::Rz, GateName::Meas, GateName::Reset, GateName::Sx, GateName::Ecr, GateName::X, GateName::Cnot
             });
-            break;
         default:
             assert(false);
     }
@@ -83,13 +77,12 @@ inline std::string to_string(GateName gate) {
         case Cz:       return "CZ";
         case Ch:       return "CH";
         case Swap:     return "SWAP";
-        case Toffoli:  return "TOFFOLI";
+        case Toffoli:  return "sTOFFOLI";
 
         case Write0:   return "WRITE0";
         case Write1:   return "WRITE1";
+        default: return "UNKNOWN";
     }
-
-    throw std::invalid_argument("Unknown GateName enum value");
 }
 
 GateName get_enum_obj(const string &raw_gate) {

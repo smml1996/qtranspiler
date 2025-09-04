@@ -14,7 +14,7 @@ vector<pair<int, int>> get_selected_couplers(const HardwareSpecification &hardwa
 }
 
 
-bool does_result_contains_d(vector<unordered_map<int, int>> &result, const unordered_map<int, int> &d) {
+bool does_result_contains_d(const vector<unordered_map<int, int>> &result, const unordered_map<int, int> &d) {
     for (auto d_ : result) {
         unordered_set<int> controls1({d.at(0), d.at(1)});
         unordered_set<int> controls2({d_.at(0), d_.at(1)});
@@ -76,7 +76,7 @@ class IPMABitflip : public Experiment {
 
         }
 
-        bool guard(const POMDPVertex& vertex, const unordered_map<int, int>& embedding, const POMDPAction& action) const override {
+        [[nodiscard]] bool guard(const POMDPVertex& vertex, const unordered_map<int, int>& embedding, const POMDPAction& action) const override {
             if (action.instruction_sequence[0].gate_name != GateName::Meas) return true;
             auto qs = vertex.hybrid_state->quantum_state;
             auto P0 = Instruction(GateName::P0, embedding.at(2));
@@ -146,7 +146,7 @@ class IPMABitflip : public Experiment {
             return result;
         }
 
-        vector<POMDPAction> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) {
+    virtual vector<POMDPAction> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) {
 
             assert(embedding.size() == 3);
             assert(embedding.find(0) != embedding.end());
@@ -208,7 +208,7 @@ class IPMA2Bitflip : IPMABitflip {
         this->name = "bitflip_ipma2";
     }
 
-    vector<POMDPAction> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) {
+    vector<POMDPAction> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) override {
 
             assert(embedding.size() == 3);
             assert(embedding.find(0) != embedding.end());
@@ -247,7 +247,7 @@ class IPMA3Bitflip : IPMABitflip {
         this->name = "bitflip_ipma2";
     }
 
-    vector<POMDPAction> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) {
+    vector<POMDPAction> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) override {
 
             assert(embedding.size() == 3);
             assert(embedding.find(0) != embedding.end());
@@ -291,7 +291,7 @@ class CXHBitflip : IPMABitflip {
             this->max_horizon = 7;
     };
 
-    vector<POMDPAction> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) {
+    vector<POMDPAction> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) override {
 
             assert(embedding.size() == 3);
             assert(embedding.find(0) != embedding.end());

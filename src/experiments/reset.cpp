@@ -1,4 +1,5 @@
 #include "experiments.hpp"
+#include <complex>
 
 class ResetProblem : public Experiment {
     public:
@@ -19,7 +20,7 @@ class ResetProblem : public Experiment {
             auto X0 = Instruction(GateName::X, embedding.at(0));
 
             // prepare first bell state
-            QuantumState*  state0 = new QuantumState(get_qubits_used(embedding), this->precision);
+            auto state0 = new QuantumState(get_qubits_used(embedding), this->precision);
             result.push_back(make_pair(new HybridState(state0, classical_state), 0.5));
 
             // prepare second bell state
@@ -42,7 +43,7 @@ class ResetProblem : public Experiment {
             return answer;
         }
 
-        vector<POMDPAction> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) {
+        vector<POMDPAction> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) const override {
 
             assert(embedding.size() == 3);
             assert(embedding.find(0) != embedding.end());

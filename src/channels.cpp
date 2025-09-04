@@ -12,8 +12,8 @@ QuantumChannel::QuantumChannel(json &data) {
         double probability = probabilities[i];
 
         
-        for (int j = 0; j < all_errors[i].size(); j++){
-            Instruction instruction = Instruction(all_errors[i][j]);
+        for (const auto & j : all_errors[i]){
+            Instruction instruction = Instruction(j);
             final_errors.push_back(instruction);
         }
         

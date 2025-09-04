@@ -32,7 +32,7 @@ bool are_adjacent_qubits(const unordered_map<int, unordered_set<int>> &graph, in
     return true;
 }
 
-bool is_repeated_embedding(const vector<unordered_map<int, int>> all_embeddings, const unordered_map<int, int> &current) {
+bool is_repeated_embedding(const vector<unordered_map<int, int>> &all_embeddings, const unordered_map<int, int> &current) {
     unordered_set<int> current_set;
     for (auto it : current) {
         current_set.insert(it.second);
@@ -50,7 +50,6 @@ bool is_repeated_embedding(const vector<unordered_map<int, int>> all_embeddings,
 
 // GHZ state preparation of 3 qubits
 class GHZStatePreparation3 : public Experiment {
-    QuantumState * target_state;
     public:
         GHZStatePreparation3() : Experiment() {
             this->name = "ghz_state_preparation";
@@ -91,14 +90,14 @@ class GHZStatePreparation3 : public Experiment {
         MyFloat postcondition(const Belief &belief, const unordered_map<int, int> &embedding) const override {
             MyFloat answer("0");
 
-            auto target_state = this->get_target_state(embedding);
+            auto local_target_state = this->get_target_state(embedding);
             for (auto it : belief.probs) {
-                if(*it.first->hybrid_state->quantum_state == *target_state) {
+                if(*it.first->hybrid_state->quantum_state == *local_target_state) {
                     answer = answer + it.second;
                 }
             }
 
-            delete target_state;
+            delete local_target_state;
             return answer;
         }
 

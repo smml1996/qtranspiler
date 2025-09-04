@@ -23,7 +23,7 @@ public:
     unordered_map<int, double> children_probs;
 
     Algorithm(POMDPAction* action, int classical_state, int precision, int depth=-1); 
-    bool exist_child_with_cstate(const int &cstate);
+    bool exist_child_with_cstate(const int &cstate) const;
     bool operator==(const Algorithm &algorithm) const;
     bool has_meas() const;
     bool has_classical_instruction() const;
@@ -34,9 +34,9 @@ public:
 string to_string(Algorithm * algorithm, const string& tabs="");
 bool dump_to_file(const fs::path &, Algorithm *);
 
-int get_algorithm_from_list(const vector<Algorithm *> &algorithms, Algorithm* new_algorithm);
+int get_algorithm_from_list(const vector<Algorithm *> &algorithms, const Algorithm* new_algorithm);
 
-Algorithm* algorithm_exists(unordered_map<int, Algorithm*> &mapping_index_algorithm, Algorithm *algorithm);
+Algorithm* algorithm_exists(const unordered_map<int, Algorithm*> &mapping_index_algorithm, const Algorithm *algorithm);
 
 Algorithm* deep_copy_algorithm(Algorithm *algorithm);
 

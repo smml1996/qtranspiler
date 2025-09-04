@@ -28,7 +28,8 @@ class Experiment {
 
     fs::path get_wd() const;
     bool setup_working_dir() const;
-    vector<int> get_qubits_used(unordered_map<int, int> &embedding) const;
+
+        static vector<int> get_qubits_used(const unordered_map<int, int> &embedding);
     vector<HardwareSpecification> get_hardware_specs() const;
     Belief get_initial_belief(const POMDP &pomdp) const;
 

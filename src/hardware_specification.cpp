@@ -3,7 +3,6 @@
 #include <filesystem>
 #include <fstream>
 #include "channels.hpp"
-#include <numbers>
 #define _USE_MATH_DEFINES
 auto pi = M_PI;
 
@@ -174,30 +173,29 @@ std::string to_string(const QuantumHardware &quantum_hardware) {
     }
 }
 
-string HardwareSpecification::get_hardware_name() {
+string HardwareSpecification::get_hardware_name() const {
     return to_string(this->quantum_hardware);
 }
 
-vector<Instruction> HardwareSpecification::to_basis_gates_impl(const Instruction &current_ins) const{
-    const auto basis_gates = this->basis_gates;
-    const auto basis_gates_type = this->basis_gates_type;
+vector<Instruction> HardwareSpecification::to_basis_gates_impl(const Instruction &current_ins) const {
     if ((basis_gates.find(current_ins.gate_name) != basis_gates.end() )  ||(current_ins.instruction_type == InstructionType::Measurement) || (current_ins.instruction_type == InstructionType::Classical)) return {current_ins};
-        auto temp = unordered_set<BasisGates>({BasisGates::TYPE2, BasisGates::TYPE2, BasisGates::TYPE5, BasisGates::TYPE4, BasisGates::TYPE6});
-        if (temp.find(basis_gates_type) != temp.end()){
-            vector<Instruction> sx({Instruction(GateName::Sx, current_ins.target)});
-            if (current_ins.gate_name == GateName::Ry){
-                return {
-                    Instruction(GateName::Sx, current_ins.target),
-                    Instruction(GateName::Rz, current_ins.target, vector<double>({current_ins.params[0] + pi})),
-                    Instruction(GateName::Sx, current_ins.target),
-                    Instruction(GateName::Rz, current_ins.target, vector<double>({3*pi}))
-                };
-            }
-            if( current_ins.gate_name == GateName::H){
-                return {Instruction(GateName::Rz, current_ins.target, vector<double>({pi/2})),
+    auto temp = unordered_set<BasisGates>({BasisGates::TYPE2, BasisGates::TYPE2, BasisGates::TYPE5, BasisGates::TYPE4, BasisGates::TYPE6});
+    if (temp.find(basis_gates_type) != temp.end()){
+        vector<Instruction> sx({Instruction(GateName::Sx, current_ins.target)});
+        if (current_ins.gate_name == GateName::Ry){
+            return {
                 Instruction(GateName::Sx, current_ins.target),
-                Instruction(GateName::Rz, current_ins.target, vector<double>({pi/2})),
+                Instruction(GateName::Rz, current_ins.target, vector<double>({current_ins.params[0] + pi})),
+                Instruction(GateName::Sx, current_ins.target),
+                Instruction(GateName::Rz, current_ins.target, vector<double>({3*pi}))
             };
+        }
+        if( current_ins.gate_name == GateName::H) {
+            return {Instruction(GateName::Rz, current_ins.target, vector<double>({pi/2})),
+            Instruction(GateName::Sx, current_ins.target),
+            Instruction(GateName::Rz, current_ins.target, vector<double>({pi/2})),
+            };
+        }
 
             if (current_ins.gate_name == GateName::Z)
                 return {Instruction(GateName::Rz, current_ins.target, vector<double>({pi}))};
@@ -272,7 +270,7 @@ vector<Instruction> HardwareSpecification::to_basis_gates_impl(const Instruction
                 return {Instruction(GateName::U3, current_ins.target, vector<double>({current_ins.params[0], -pi/2, pi/2}))};
             if (current_ins.gate_name == GateName::X)
                 return {Instruction(GateName::U3, current_ins.target, vector<double>({pi, 0, pi}))};
-        } 
+        }
         throw invalid_argument("cannot translate to basis gates");
-}
+    }
 

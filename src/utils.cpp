@@ -1,5 +1,7 @@
 #include "utils.hpp"
 
+#include <random>
+
 
 double get_rel_tol(const int &precision) {
     return 1/(pow(10,(precision-1)));
@@ -34,7 +36,7 @@ T weighted_choice(const std::vector<T> &elements, const std::vector<double> &wei
     static std::random_device rd;
     static std::mt19937 gen(rd());
 
-    std::discrete_distribution<> dist(weights.begin(), weights.end());
+    discrete_distribution<> dist(weights.begin(), weights.end());
     return elements[dist(gen)];
 }
 
@@ -65,7 +67,7 @@ bool are_matrices_equal(const vector<vector<complex<double>>> &arr1, const vecto
         for (int v_element= 0 ; v_element < row1.size(); v_element++) {
             auto v1 = row1[v_element];
             auto v2 = row2[v_element];
-            if (!is_close(v2, v2, precision)) {
+            if (!is_close(v1, v2, precision)) {
                 return false;
             }
         }
