@@ -143,7 +143,8 @@ void Experiment::run() const {
         "probability",
         "method",
         "method_time",
-        "algorithm_index"})
+        "algorithm_index",
+        "error"})
         , ",") << "\n";
 
 
@@ -189,6 +190,7 @@ void Experiment::run() const {
                 for (auto method : this->method_types) {
                     long long method_time;
                     pair<Algorithm *, double> result = make_pair(nullptr, 0);
+                    double error = 0.0;
                     if (method == MethodType::SingleDistBellman) {
                         SingleDistributionSolver solver(pomdp, actual_reward_f, this->precision, embedding);
 
@@ -196,13 +198,15 @@ void Experiment::run() const {
                         auto result_temp = solver.get_bellman_value(initial_belief, horizon);
                         auto end_method = chrono::high_resolution_clock::now();
                         result = make_pair(result_temp.first, to_double(result_temp.second));
-
-
                         method_time = (end_method - start_method).count();
                     } else if (method == MethodType::SingleDistPBVI) {
                         SingleDistributionSolver solver(pomdp, actual_reward_f, this->precision, embedding);
-                        // TODO
-
+                        auto start_method = chrono::high_resolution_clock::now();
+                        auto result_temp = solver.PBVI_solve(initial_belief, horizon);
+                        auto end_method = chrono::high_resolution_clock::now();
+                        result = make_pair(result_temp.first, to_double(result_temp.second));
+                        method_time = (end_method - start_method).count();
+                        error = solver.get_error(horizon);
                     } else {
                         ConvexDistributionSolver solver (pomdp, actual_reward_f, this->precision, embedding);
                         auto start_method = chrono::high_resolution_clock::now();
@@ -222,7 +226,8 @@ void Experiment::run() const {
                                                     to_string(result.second),
                                                     to_string(method),
                                                     to_string(method_time),
-                                                    to_string(algorithm_index)})
+                                                    to_string(algorithm_index),
+                                                    to_string(error)})
                                                     , ",") << "\n";
                 }
             }

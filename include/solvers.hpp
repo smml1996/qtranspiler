@@ -29,7 +29,10 @@ class SingleDistributionSolver {
     public:
         SingleDistributionSolver(const POMDP &pomdp, const f_reward_type &get_reward, int precision, const unordered_map<int, int> & embedding);
         pair<Algorithm*, MyFloat> get_bellman_value(const Belief &current_belief, const int &horizon);
+
+        // PBVI
         pair<Algorithm*, MyFloat> PBVI_solve(const Belief &current_beliefs, const int &horizon);
+        double get_error(const int &horizon) const;
 
 };
 

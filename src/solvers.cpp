@@ -222,6 +222,10 @@ pair<Algorithm*, MyFloat> SingleDistributionSolver::PBVI_solve(const Belief &cur
     return result;
 }
 
+double SingleDistributionSolver::get_error(const int &horizon) const {
+    return to_double(this->error) * horizon;
+}
+
 
 ConvexDistributionSolver::ConvexDistributionSolver(const POMDP &pomdp, const f_reward_type &get_reward, int precision, const unordered_map<int, int> &embedding) {
     this->pomdp = pomdp;
