@@ -1,9 +1,8 @@
-#include "../include/states.hpp"
+#include "states.hpp"
 #include <complex>
 #include <algorithm>
 #include <cassert>
-#include "../include/utils.hpp"
-#include "states.hpp"
+#include "utils.hpp"
 #include <cmath>
 
 using namespace std;

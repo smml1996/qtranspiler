@@ -1,5 +1,5 @@
-#include "../../include/experiments.hpp"
-#include "../../include/utils.hpp"
+#include "experiments.hpp"
+#include "utils.hpp"
 #include <complex>
 #include <unordered_set>
 

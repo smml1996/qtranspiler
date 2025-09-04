@@ -1,8 +1,8 @@
 #include <fstream>
 #include <sstream>
 #include <chrono>
-#include "../include/experiments.hpp"
-#include "../include/solvers.hpp"
+#include "experiments.hpp"
+#include "solvers.hpp"
 
 std::string join(const std::vector<std::string>& parts, const std::string& delimiter) {
     std::ostringstream oss;

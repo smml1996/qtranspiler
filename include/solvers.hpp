@@ -4,6 +4,7 @@
 #include "pomdp.hpp"
 #include "beliefs.hpp"
 #include "algorithm.hpp"
+#include <functional>
 
 using f_reward_type = std::function<MyFloat(const Belief&, const unordered_map<int, int> &)>;
 
@@ -12,14 +13,34 @@ class SingleDistributionSolver {
     f_reward_type get_reward;
     int precision;
     unordered_map<Belief, pair<Algorithm*, MyFloat>, BeliefHash> beliefs_to_rewards;
+    unordered_map<int, int> embedding;
     public:
-        SingleDistributionSolver(const POMDP &pomdp, const f_reward_type &get_reward, int precision);
+        SingleDistributionSolver(const POMDP &pomdp, const f_reward_type &get_reward, int precision, const unordered_map<int, int> & embedding);
         pair<Algorithm*, MyFloat> get_bellman_value(const Belief &current_belief, const int &horizon);
 };
 
 
 class ConvexDistributionSolver {
+    POMDP pomdp;
+    f_reward_type get_reward;
+    int precision;
+    unordered_map<int, int> embedding;
+    int initial_classical_state;
+    pair<vector<double>, double> solve_lp_maximin(const unordered_map<int, unordered_map<int, double>> &maximin_matrix, const int &n_algorithms, const int &n_initial_states) const;
+    public:
+        ConvexDistributionSolver(const POMDP &pomdp, const f_reward_type &get_reward, int precision, const unordered_map<int, int> & embedding);
+        pair<Algorithm*, double> solve(const vector<POMDPVertex*> &initial_states, const int &horizon);
+        void get_matrix_maximin(const vector<POMDPVertex*> &initial_states, 
+            Algorithm *current_algorithm, 
+            unordered_map<int, unordered_map<int, double>> &minimax_matrix,
+            const int &max_horizon,
+            unordered_map<int, Algorithm*> &mapping_index_algorithm);
 
+        void set_minimax_values( 
+                Algorithm* algorithm, 
+                const vector<POMDPVertex*> &initial_states,
+                unordered_map<int, unordered_map<int, double>> &minimax_matrix,
+                unordered_map<int, Algorithm*> &mapping_index_algorithm);
 };
 
 #endif

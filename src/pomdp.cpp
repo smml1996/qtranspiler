@@ -1,6 +1,6 @@
 
-#include "../include/pomdp.hpp"
-#include "../include/utils.hpp"
+#include "pomdp.hpp"
+#include "utils.hpp"
 #include<queue>
 
 POMDPVertex::POMDPVertex(HybridState *hybrid_state, int hidden_index=-1) {
@@ -35,12 +35,11 @@ POMDPAction::POMDPAction(const string &name, const vector<Instruction> &instruct
     this->pseudo_instruction_sequence = pseudo_instruction_sequence;
 }
 
-vertex_dict POMDPAction::get_successor_states(HardwareSpecification &hardware_specification, const POMDPVertex &current_vertex) {
+vertex_dict POMDPAction::get_successor_states(HardwareSpecification &hardware_specification, const POMDPVertex &current_vertex) const {
     return this->__dfs(hardware_specification, current_vertex, 0);
 }
 
-
-vertex_dict POMDPAction::__handle_measure_instruction(const Instruction &instruction, const MeasurementChannel &channel, const POMDPVertex &vertex, bool is_meas1=true, vertex_dict result = {}) {
+vertex_dict POMDPAction::__handle_measure_instruction(const Instruction &instruction, const MeasurementChannel &channel, const POMDPVertex &vertex, bool is_meas1=true, vertex_dict result = {}) const {
     /*
     applies a measurement instruction to a given hybrid state (POMDP vertex)
 
@@ -98,7 +97,7 @@ vertex_dict POMDPAction::__handle_measure_instruction(const Instruction &instruc
     }
 }
 
-vertex_dict POMDPAction::__handle_unitary_instruction(const Instruction &instruction, const QuantumChannel &channel, const POMDPVertex &vertex, vertex_dict result = {}) {
+vertex_dict POMDPAction::__handle_unitary_instruction(const Instruction &instruction, const QuantumChannel &channel, const POMDPVertex &vertex, vertex_dict result = {}) const {
     for (int index = 0; index < channel.errors_to_probs.size(); index++) {
         auto err_seq = channel.errors_to_probs[index].first;
         auto prob = channel.errors_to_probs[index].second;
@@ -120,7 +119,7 @@ vertex_dict POMDPAction::__handle_unitary_instruction(const Instruction &instruc
 }
 
 
-vertex_dict POMDPAction::__handle_reset_instruction(const Instruction &instruction, const QuantumChannel &channel, const POMDPVertex &vertex, bool is_meas1=true, vertex_dict result = {}) {
+vertex_dict POMDPAction::__handle_reset_instruction(const Instruction &instruction, const QuantumChannel &channel, const POMDPVertex &vertex, bool is_meas1=true, vertex_dict result = {}) const {
     assert (instruction.gate_name == GateName::Reset);
     Instruction projector;
 
@@ -156,7 +155,7 @@ vertex_dict POMDPAction::__handle_reset_instruction(const Instruction &instructi
     }   
 }
 
-vertex_dict POMDPAction::__dfs(HardwareSpecification &hardware_specification, const POMDPVertex &current_vertex, int index_ins) {
+vertex_dict POMDPAction::__dfs(HardwareSpecification &hardware_specification, const POMDPVertex &current_vertex, int index_ins) const {
     /* perform a dfs to compute successors states of the sequence of instructions.
         It applies the instruction at index self.instructions_seq[index_ins] along with errors recursively
 

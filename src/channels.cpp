@@ -1,4 +1,4 @@
-#include "../include/channels.hpp"
+#include "channels.hpp"
 
 QuantumChannel::QuantumChannel(json &data) {
 

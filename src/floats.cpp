@@ -1,10 +1,9 @@
 //
 // Created by Stefanie Muroya Lei on 28.01.24.
 //
-#include "../include/floats.hpp"
+#include "floats.hpp"
 #include <vector>
 #include <cassert>
-#include <iostream>
 #include <algorithm>
 #include <sstream>
 
@@ -496,6 +495,10 @@ std::string to_string(const MyFloat& myfloat) {
     std::ostringstream oss;
     oss << myfloat;  // uses your operator<<
     return oss.str();
+}
+
+double to_double(const MyFloat &myfloat) {
+    return stod(to_string(myfloat));
 }
 
 

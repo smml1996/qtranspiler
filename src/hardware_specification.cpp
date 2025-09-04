@@ -1,8 +1,8 @@
-#include "../include/hardware_specification.hpp"
+#include "hardware_specification.hpp"
 #include <iostream>
 #include <filesystem>
 #include <fstream>
-#include "../include/channels.hpp"
+#include "channels.hpp"
 #include <numbers>
 #define _USE_MATH_DEFINES
 auto pi = M_PI;

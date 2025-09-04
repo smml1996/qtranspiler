@@ -1,4 +1,4 @@
-#include "../include/utils.hpp"
+#include "utils.hpp"
 
 
 double get_rel_tol(const int &precision) {
@@ -16,11 +16,11 @@ bool is_close(const double &a, const double &b, const int &precision) {
 }
 
 bool is_close(const complex<double> &a, const complex<double> &b, const int &precision) {
-    double rel_tol = get_rel_tol(precision);
-    double abs_tol = get_abs_tol(precision);
+    const double rel_tol = get_rel_tol(precision);
+    const double abs_tol = get_abs_tol(precision);
 
-    double diff = std::abs(a - b);          // |a - b|
-    double scale = std::max(std::abs(a), std::abs(b)); // max(|a|, |b|)
+    const double diff = std::abs(a - b);          // |a - b|
+    const double scale = std::max(std::abs(a), std::abs(b)); // max(|a|, |b|)
 
     return diff <= std::max(rel_tol * scale, abs_tol);
 }

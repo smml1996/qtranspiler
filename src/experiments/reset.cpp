@@ -1,9 +1,9 @@
-#include "../../include/experiments.hpp"
+#include "experiments.hpp"
 
 class ResetProblem : public Experiment {
     public:
         ResetProblem () : Experiment() {
-            this-> name = "sigle_dist_reset";
+            this-> name = "reset";
             this->precision = 8;
             this->with_thermalization = false;
             this->min_horizon = 2;
@@ -30,7 +30,7 @@ class ResetProblem : public Experiment {
         }
 
         MyFloat postcondition(const Belief &belief, const unordered_map<int, int> &embedding) const override {
-            unique_ptr<QuantumState> state0(new QuantumState({embedding.at(0)}, this->precision));
+            const unique_ptr<QuantumState> state0(new QuantumState({embedding.at(0)}, this->precision));
             MyFloat answer("0");
 
             for(auto it : belief.probs) {

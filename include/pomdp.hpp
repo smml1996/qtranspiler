@@ -38,21 +38,23 @@ struct POMDPVertexPtrEqual {
 class POMDPAction {
     int precision;
 
-    vertex_dict __handle_measure_instruction(const Instruction &instruction, const MeasurementChannel &channel, const POMDPVertex &vertex, bool is_meas1=true, vertex_dict result = {});
+    vertex_dict __handle_measure_instruction(const Instruction &instruction, const MeasurementChannel &channel, const POMDPVertex &vertex, bool is_meas1=true, vertex_dict result = {}) const;
     
-    vertex_dict __handle_unitary_instruction(const Instruction &instruction, const QuantumChannel &channel, const POMDPVertex &vertex,vertex_dict result = {});
+    vertex_dict __handle_unitary_instruction(const Instruction &instruction, const QuantumChannel &channel, const POMDPVertex &vertex,vertex_dict result = {}) const;
 
-    vertex_dict __handle_reset_instruction(const Instruction &instruction, const QuantumChannel &channel, const POMDPVertex &vertex, bool is_meas1=true, vertex_dict result = {});
+    vertex_dict __handle_reset_instruction(const Instruction &instruction, const QuantumChannel &channel, const POMDPVertex &vertex, bool is_meas1=true, vertex_dict result = {}) const;
 
-    vertex_dict __dfs(HardwareSpecification &hardware_specification, const POMDPVertex &vertex, int index_ins);
+    vertex_dict __dfs(HardwareSpecification &hardware_specification, const POMDPVertex &vertex, int index_ins) const;
 
     public:
         string name;
         vector<Instruction> instruction_sequence;
         vector<Instruction> pseudo_instruction_sequence;
         POMDPAction(const string &name, const vector<Instruction> &instruction_sequence, int precision, const vector<Instruction> &pseudo_instruction_sequence);
-        vertex_dict get_successor_states(HardwareSpecification &hardware_specification, const POMDPVertex &current_vertex);
+        vertex_dict get_successor_states(HardwareSpecification &hardware_specification, const POMDPVertex &current_vertex) const;
         bool operator==(const POMDPAction &other) const; 
+
+        void POMDPAction::get_successor_classical_states(const int &current_classical_state, unordered_set<int> &result) const;
 };
 
 string to_string(const POMDPAction &action);

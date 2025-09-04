@@ -1,4 +1,4 @@
-#include "../include/quantum_gates.hpp"
+#include "quantum_gates.hpp"
 #include <cassert>
 
 using namespace std;

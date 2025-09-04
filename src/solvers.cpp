@@ -1,10 +1,13 @@
-#include "../include/solvers.hpp"
+#include "solvers.hpp"
+#include "ortools/linear_solver/linear_solver.h"
+
 #include <cassert>
 
-SingleDistributionSolver::SingleDistributionSolver(const POMDP &pomdp, const f_reward_type &get_reward, int precision) {
+SingleDistributionSolver::SingleDistributionSolver(const POMDP &pomdp, const f_reward_type &get_reward, int precision, const unordered_map<int, int> & embedding) {
     this->pomdp = pomdp;
     this->get_reward = get_reward;
     this->precision = precision;
+    this->embedding = embedding;
 }
 
 pair<Algorithm*, MyFloat> SingleDistributionSolver::get_bellman_value(const Belief &current_belief, const int &horizon){
@@ -13,12 +16,7 @@ pair<Algorithm*, MyFloat> SingleDistributionSolver::get_bellman_value(const Beli
         return temp_it->second;
     }
 
-    MyFloat curr_belief_val;
-    if (this->get_reward(current_belief)) {
-        curr_belief_val = MyFloat("1");
-    } else {
-        curr_belief_val = MyFloat("0");
-    }
+    MyFloat curr_belief_val = this->get_reward(current_belief, this->embedding);
     
     int current_classical_state = -1;
     for(auto & prob : current_belief.probs) {
@@ -29,7 +27,7 @@ pair<Algorithm*, MyFloat> SingleDistributionSolver::get_bellman_value(const Beli
         }
     }
     assert(current_classical_state >= 0);
-    POMDPAction * HALT_ACTION = new POMDPAction("HALT__", {}, -1, {});
+    auto HALT_ACTION = new POMDPAction("HALT__", {}, -1, {});
     auto halt_algorithm = new Algorithm(HALT_ACTION, current_classical_state, 0);
     if (horizon == 0) {
         return make_pair(halt_algorithm, curr_belief_val);
@@ -39,8 +37,8 @@ pair<Algorithm*, MyFloat> SingleDistributionSolver::get_bellman_value(const Beli
 
     bellman_values.emplace_back(halt_algorithm, curr_belief_val);
     
-    for(auto it = pomdp.actions.begin(); it != pomdp.actions.end(); it++) {
-        POMDPAction * action = &(*it);
+    for (auto & it : pomdp.actions) {
+        POMDPAction * action = &it;
 
         // build next_beliefs, separate them by different observables
         map<int, Belief> obs_to_next_beliefs;
@@ -60,7 +58,7 @@ pair<Algorithm*, MyFloat> SingleDistributionSolver::get_bellman_value(const Beli
         }
         
         if (!obs_to_next_beliefs.empty()) {
-            Algorithm *new_alg_node = new Algorithm(action, current_classical_state, this->precision);
+            auto new_alg_node = new Algorithm(action, current_classical_state, this->precision);
             MyFloat bellman_val;
 
             int max_depth = 0;
@@ -99,4 +97,275 @@ pair<Algorithm*, MyFloat> SingleDistributionSolver::get_bellman_value(const Beli
         }
     }
     assert(false);
+}
+
+
+ConvexDistributionSolver::ConvexDistributionSolver(const POMDP &pomdp, const f_reward_type &get_reward, int precision, const unordered_map<int, int> &embedding) {
+    this->pomdp = pomdp;
+    this->get_reward = get_reward;
+    this->precision = precision;
+    this->embedding = embedding;
+    this->initial_classical_state = -1;
+}
+
+MyFloat get_algorithm_acc(POMDP &pomdp, Algorithm*& algorithm, Belief &current_belief, const f_reward_type &get_reward, const unordered_map<int, int> &embedding) {
+    MyFloat curr_belief_val = get_reward(current_belief, embedding);
+
+    if (algorithm == nullptr) {
+        return curr_belief_val;
+    }
+    POMDPAction* action = algorithm->action;
+    POMDPAction * HALT_ACTION = new POMDPAction("HALT__", {}, -1, {});
+    if (action == HALT_ACTION) {
+        return curr_belief_val;
+    }
+
+    // build next_beliefs, separate them by different observables
+    unordered_map<int, Belief> obs_to_next_beliefs;
+
+    MyFloat zero;
+    for(auto & prob : current_belief.probs) {
+        POMDPVertex* current_v = prob.first;
+        if(prob.second > zero) {
+            for (auto &it_next_v: pomdp.transition_matrix[current_v][action]) {
+                if (it_next_v.second > zero) {
+                    obs_to_next_beliefs[it_next_v.first->hybrid_state->classical_state->get_memory_val()].add_val(it_next_v.first,
+                                                                              prob.second * it_next_v.second);
+                }else {
+                    assert(it_next_v.second == zero);
+                }
+            }
+        }
+    }
+    assert(algorithm->children.size() == obs_to_next_beliefs.size());
+
+    if (!obs_to_next_beliefs.empty()) {
+        MyFloat bellman_val;
+        
+        for (int i = 0; i < algorithm->children.size(); i++) {
+            assert(obs_to_next_beliefs.find(algorithm->children[i]->classical_state) != obs_to_next_beliefs.end());
+            bellman_val = bellman_val + get_algorithm_acc(pomdp, algorithm->children[i], obs_to_next_beliefs[algorithm->children[i]->classical_state], get_reward, embedding);
+        }
+        return bellman_val;
+    } else {
+        return curr_belief_val;
+    }
+}
+
+void ConvexDistributionSolver::set_minimax_values( 
+    Algorithm* algorithm, 
+    const vector<POMDPVertex*> &initial_states,
+    unordered_map<int, unordered_map<int, double>> &minimax_matrix,
+    unordered_map<int, Algorithm*> &mapping_index_algorithm) {
+    
+    // Algorithm *old_algorithm = algorithm_exists(mapping_index_algorithm, algorithm);
+    // if(old_algorithm != nullptr) {
+    //     write_algorithm_file(old_algorithm, "temp_old.json");
+    //     write_algorithm_file(algorithm, "temp_new.json");
+    //     assert(false);
+    // }
+
+    int current_alg_index = minimax_matrix.size();
+    mapping_index_algorithm[current_alg_index] = deep_copy_algorithm(algorithm);
+    
+    // the current algorithm index should not exist
+    assert(minimax_matrix.find(current_alg_index) == minimax_matrix.end());
+    minimax_matrix[current_alg_index] = unordered_map<int, double>();
+
+    for (int index = 0; index < initial_states.size(); index++) {
+        assert(minimax_matrix[current_alg_index].find(index) == minimax_matrix[current_alg_index].end());
+
+        Belief initial_belief;
+        initial_belief.set_val(initial_states[index], MyFloat("1"));
+
+        minimax_matrix[current_alg_index][index] = to_double(get_algorithm_acc(pomdp,algorithm, initial_belief, this->get_reward, this->embedding));
+    }
+    // write_algorithm_file(algorithm, "alg_" +to_string(current_alg_index) + ".json");
+}
+
+
+
+int get_succ_classical_state(Algorithm *current) {
+    assert(!current->has_meas());
+    if (current->is_unitary()) {
+        return current->classical_state;
+    }
+
+    assert(current->has_classical_instruction());
+
+    int answer = current->classical_state;
+    for(Instruction instruction : current->action->instruction_sequence) {
+        
+        if(instruction.instruction_type == InstructionType::Classical) {
+            if (instruction.gate_name == GateName::Write1) {
+                answer = answer | (1 << instruction.c_target);
+            } else {
+                assert(instruction.gate_name == GateName::Write0);
+                answer &= ~(1 << instruction.c_target);
+            }
+            
+        }
+    }
+
+    return answer;
+
+}
+
+
+
+void ConvexDistributionSolver::get_matrix_maximin(const vector<POMDPVertex*> &initial_states, 
+    Algorithm *current_algorithm, 
+    unordered_map<int, unordered_map<int, double>> &minimax_matrix,
+    const int &max_horizon,
+    unordered_map<int, Algorithm*> &mapping_index_algorithm) {
+        if(algorithm_exists(mapping_index_algorithm, current_algorithm) != nullptr) {
+            return;
+        }
+        this->set_minimax_values(current_algorithm, initial_states, minimax_matrix, mapping_index_algorithm);
+
+        vector<Algorithm *> end_nodes;
+        if (current_algorithm != nullptr)
+            get_algorithm_end_nodes(current_algorithm, end_nodes);
+
+        if (current_algorithm == nullptr) {
+            
+            for (auto action : pomdp.actions) {
+                Algorithm * new_node = new Algorithm(&action, this->initial_classical_state, this->precision, 1); // assumes initial classical state is 0
+                get_matrix_maximin(initial_states, new_node, minimax_matrix, max_horizon, mapping_index_algorithm);
+                delete new_node;
+            }
+            
+            
+        } else {
+            for (Algorithm* end_node : end_nodes) {
+                if (end_node->depth < max_horizon) {
+                    for (POMDPAction action : pomdp.actions) {
+                        if (end_node->has_meas()){
+                            int next_cstate = 0;
+                            if (end_node->children.size() == 0) {
+                                Algorithm * new_node = new Algorithm(&action, next_cstate, end_node->depth + 1);
+                                end_node->children.push_back(new_node);
+                                get_matrix_maximin(initial_states, current_algorithm, minimax_matrix, max_horizon, mapping_index_algorithm);
+                                end_node->children.pop_back();
+                                delete new_node;
+
+                                next_cstate = 1;
+                                new_node = new Algorithm(&action, next_cstate, end_node->depth + 1);
+                                end_node->children.push_back(new_node);
+                                get_matrix_maximin(initial_states, current_algorithm, minimax_matrix, max_horizon, mapping_index_algorithm);
+                                end_node->children.pop_back();
+                                delete new_node;
+
+                            } else {
+                                assert(end_node->children.size() == 1);
+
+                                if (end_node->children[0]->classical_state == 0) {
+                                    next_cstate = 1;
+                                    Algorithm * new_node = new Algorithm(&action, next_cstate, end_node->depth + 1);
+                                    end_node->children.push_back(new_node);
+                                    get_matrix_maximin(initial_states, current_algorithm, minimax_matrix, max_horizon, mapping_index_algorithm);
+                                    end_node->children.pop_back();
+                                    delete new_node;
+                                }
+                            }
+
+                            
+
+                        } else {
+                            assert(end_node->children.size() == 0);
+                            int next_classical_state = get_succ_classical_state(end_node);
+                            Algorithm * new_node = new Algorithm(&action, next_classical_state, end_node->depth + 1);
+                            assert(!end_node->exist_child_with_cstate(next_classical_state));
+                            end_node->children.push_back(new_node);
+                            get_matrix_maximin(initial_states, current_algorithm, minimax_matrix, max_horizon, mapping_index_algorithm);
+                            end_node->children.pop_back();
+                            delete new_node;
+                        }
+                    }
+                }
+            }   
+        }
+}
+
+int get_classical_state(const vector<POMDPVertex*> &states) {
+    int answer = -1;
+    for (auto state: states) {
+        if (answer == -1) {
+            answer = state->hybrid_state->classical_state->get_memory_val();
+        } else {
+            assert(answer == state->hybrid_state->classical_state->get_memory_val());
+        }
+    }
+
+    return answer;
+}
+
+pair<vector<double>, double> ConvexDistributionSolver::solve_lp_maximin(const unordered_map<int, unordered_map<int, double>> &maximin_matrix, const int &n_algorithms, const int &n_initial_states) const {
+
+
+    // for (int i = 0; i < maximin_matrix.size(); i++) {
+    //     for(int j = 0; j < (*maximin_matrix.find(i)).second.size(); j++) {
+    //         cout << " " << (*(*maximin_matrix.find(i)).second.find(j)).second;
+    //     }
+    //     cout << endl;
+    // }
+
+    operations_research::MPSolver solver("max_v", operations_research::MPSolver::GLOP_LINEAR_PROGRAMMING);
+
+    // Variables: x_i >= 0
+    std::vector<operations_research::MPVariable*> x(n_algorithms);
+    for (int i = 0; i < n_algorithms; ++i) {
+        x[i] = solver.MakeNumVar(0.0, 1.0, "x_" + std::to_string(i));
+    }
+
+    // Variable: v
+    operations_research::MPVariable* v = solver.MakeNumVar(0.0, INFINITY, "v");
+
+    // Constraint: sum_i x_i = 1
+    operations_research::MPConstraint* prob_sum = solver.MakeRowConstraint(1.0, 1.0);
+    for (int i = 0; i < n_algorithms; ++i) {
+        prob_sum->SetCoefficient(x[i], 1.0);
+    }
+
+    // Constraints: sum_i x_i * M_ij >= v  for all j
+    for (int j = 0; j < n_initial_states; ++j) {
+        operations_research::MPConstraint* c = solver.MakeRowConstraint(0.0, solver.infinity());
+        for (int i = 0; i < n_algorithms; ++i) {
+            auto temp = *maximin_matrix.find(i);
+            c->SetCoefficient(x[i], (*(temp.second.find(j))).second);
+        }
+        c->SetCoefficient(v, -1.0); // sum_i(...) - v >= 0  → sum_i(...) >= v
+    }
+
+    // Objective: maximize v
+    operations_research::MPObjective* objective = solver.MutableObjective();
+    objective->SetCoefficient(v, 1.0);
+    objective->SetMaximization();
+
+    // Solve
+    auto result = solver.Solve();
+    vector<double> mixed_algorithm;
+    cout << "v: " << v->solution_value() << endl;
+    double final_value = v->solution_value();
+    if (result == operations_research::MPSolver::OPTIMAL) {
+        for (int i = 0; i < n_algorithms; ++i) {
+            mixed_algorithm.push_back(x[i]->solution_value());
+        }
+    }
+
+    return make_pair(mixed_algorithm, final_value);
+}
+
+pair<Algorithm*, double> ConvexDistributionSolver::solve(const vector<POMDPVertex*> &initial_states, const int &horizon) {
+    unordered_map<int, unordered_map<int, double>> maximin_matrix;
+    unordered_map<int, Algorithm *> mapping_index_algorithm;
+    
+    this->initial_classical_state = get_classical_state(initial_states);
+
+    this->get_matrix_maximin(initial_states, nullptr, maximin_matrix, horizon, mapping_index_algorithm);
+
+    auto result = this->solve_lp_maximin(maximin_matrix, maximin_matrix.size(), initial_states.size());
+
+    Algorithm * mixed_algorithm = get_mixed_algorithm(result.first, mapping_index_algorithm);
+    return make_pair(mixed_algorithm, result.second);
 }
