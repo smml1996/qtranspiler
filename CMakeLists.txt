@@ -41,7 +41,4 @@ set(SOURCES
 
 add_executable(main ${SOURCES})
 
-target_link_libraries(main PRIVATE /opt/homebrew/Cellar/antlr4-cpp-runtime/4.13.2/lib/libantlr4-runtime.a)
-
-# Link against OR-Tools libraries
-target_link_libraries(SOURCES ortools)
+target_link_libraries(main PRIVATE /opt/homebrew/Cellar/antlr4-cpp-runtime/4.13.2/lib/libantlr4-runtime.a ortools)
