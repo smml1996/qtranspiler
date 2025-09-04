@@ -42,6 +42,8 @@ class MyFloat {
 
     MyFloat operator*(MyFloat const &other) const;
 
+    MyFloat operator/(MyFloat const &other) const;
+
     bool operator==(const MyFloat &rhs) const;
 
     inline bool operator!=(const MyFloat &rhs) const;
@@ -57,6 +59,7 @@ int MyFloat::tolerance = 80;
 MyFloat max(MyFloat const &a, MyFloat const &b);
 
 MyFloat min(MyFloat const &a, MyFloat const &b);
+MyFloat abs(const MyFloat &f);
 
 std::string to_string(const MyFloat& myfloat);
 

@@ -416,6 +416,10 @@ MyFloat MyFloat::operator*(MyFloat const &other) const {
     return MyFloat(res);
 }
 
+MyFloat MyFloat::operator/(MyFloat const &other) const {
+    return MyFloat(to_string(to_double(*this) / to_double(other))); // convert to built-in float
+}
+
 bool MyFloat::operator==(const MyFloat &rhs) const {
     assert(this->mantissa.size() == rhs.mantissa.size());
 
@@ -482,6 +486,12 @@ MyFloat min(MyFloat const &a, MyFloat const &b) {
         return a;
     }
     return b;
+}
+
+MyFloat abs(const MyFloat &f) {
+    auto result = MyFloat(to_string(f));
+    result.is_negative = false;
+    return result;
 }
 
 std::string to_string(const MyFloat& myfloat) {

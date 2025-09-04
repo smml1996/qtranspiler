@@ -12,6 +12,7 @@ using namespace std;
 namespace fs = std::filesystem;
 
 inline POMDPAction random_branch("RANDOM_BRANCH", {}, 1, {});
+inline POMDPAction HALT_ACTION("HALT__", {}, -1, {});
 
 class Algorithm {
 public:

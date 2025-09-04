@@ -15,7 +15,7 @@ public:
 
     void add_val(POMDPVertex* v, const MyFloat &val);
 
-    void check() const;
+    bool is_normalized(int precision) const;
 
     bool operator==(const Belief& other) const;
 };
@@ -23,5 +23,9 @@ public:
 struct BeliefHash {
     std::size_t operator()(const Belief &instruction) const;
 };
+
+MyFloat l1_norm(const Belief &b1, const Belief &b2);
+
+Belief normalize_belief(const Belief &belief);
 
 #endif

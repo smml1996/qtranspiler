@@ -5,15 +5,53 @@
 #include <cassert>
 
 
+PBVISolution::PBVISolution(Algorithm *alg, const MyFloat &guarantee, const MyFloat &error) {
+    this->algorithm = alg;
+    this->guarantee = guarantee;
+    this->error = error;
+}
+
+bool SingleDistributionSolver::is_belief_visited(const Belief &belief) const {
+    for (auto it : this->beliefs_to_rewards) {
+        auto existing_belief = it.first;
+        if (existing_belief == belief) {
+                return true;
+        }
+    }
+    return false;
+}
+
+MyFloat SingleDistributionSolver::get_closest_L1(const Belief &belief) const {
+    MyFloat result("-1");
+    bool first = true;
+    for (auto it : this->beliefs_to_rewards) {
+        auto existing_belief = it.first;
+        auto current_l1_norm = l1_norm(existing_belief, belief);
+        if (first || result > current_l1_norm) {
+            first = false;
+            result = current_l1_norm;
+        }
+    }
+
+    if (first) {
+        throw runtime_error("This should not be reachable");
+    }
+
+    return result;
+}
+
 SingleDistributionSolver::SingleDistributionSolver(const POMDP &pomdp, const f_reward_type &get_reward, int precision, const unordered_map<int, int> & embedding) {
     this->pomdp = pomdp;
     this->get_reward = get_reward;
     this->precision = precision;
     this->embedding = embedding;
+    this->error = MyFloat("0");
 }
 
 pair<Algorithm*, MyFloat> SingleDistributionSolver::get_bellman_value(const Belief &current_belief, const int &horizon){
-    auto temp_it = this->beliefs_to_rewards.find(current_belief);
+    Belief curr_belief_normalized = normalize_belief(current_belief);
+
+    auto temp_it = this->beliefs_to_rewards.find(curr_belief_normalized);
     if (temp_it != this->beliefs_to_rewards.end()) {
         return temp_it->second;
     }
@@ -29,8 +67,7 @@ pair<Algorithm*, MyFloat> SingleDistributionSolver::get_bellman_value(const Beli
         }
     }
     assert(current_classical_state >= 0);
-    auto HALT_ACTION = new POMDPAction("HALT__", {}, -1, {});
-    auto halt_algorithm = new Algorithm(HALT_ACTION, current_classical_state, 0);
+    auto halt_algorithm = new Algorithm(&HALT_ACTION, current_classical_state, 0);
     if (horizon == 0) {
         return make_pair(halt_algorithm, curr_belief_val);
     }
@@ -45,16 +82,15 @@ pair<Algorithm*, MyFloat> SingleDistributionSolver::get_bellman_value(const Beli
         // build next_beliefs, separate them by different observables
         map<int, Belief> obs_to_next_beliefs;
 
-        MyFloat zero;
         for(auto & prob : current_belief.probs) {
+            MyFloat zero;
             auto current_v = prob.first;
-            if(prob.second > zero) {
-                for (const auto &it_next_v: pomdp.transition_matrix[current_v][action]) {
-                    if (it_next_v.second > zero) {
-                        auto successor = it_next_v.first;
-                        obs_to_next_beliefs[it_next_v.first->hybrid_state->classical_state->get_memory_val()].add_val(successor,
-                                                                                  prob.second * it_next_v.second);
-                    }
+            assert(prob.second > zero);
+            for (const auto &it_next_v: pomdp.transition_matrix[current_v][action]) {
+                if (it_next_v.second > zero) {
+                    auto successor = it_next_v.first;
+                    obs_to_next_beliefs[it_next_v.first->hybrid_state->classical_state->get_memory_val()].add_val(successor,
+                                                                              prob.second * it_next_v.second);
                 }
             }
         }
@@ -94,11 +130,96 @@ pair<Algorithm*, MyFloat> SingleDistributionSolver::get_bellman_value(const Beli
 
     for(auto & bellman_value : bellman_values) {
         if (bellman_value.second == max_val and bellman_value.first->depth == shortest_alg_with_max_val) {
-            this->beliefs_to_rewards.insert({current_belief, bellman_value});
+            this->beliefs_to_rewards.insert({curr_belief_normalized, bellman_value});
             return bellman_value;
         }
     }
     assert(false);
+}
+
+
+
+pair<Algorithm*, MyFloat> SingleDistributionSolver::PBVI_solve(const Belief &current_belief, const int &horizon) {
+    Belief curr_belief_normalized = normalize_belief(current_belief);
+
+    auto temp_it = this->beliefs_to_rewards.find(curr_belief_normalized);
+    if (temp_it != this->beliefs_to_rewards.end()) {
+        return temp_it->second;
+    }
+
+    MyFloat curr_belief_val = this->get_reward(current_belief, this->embedding);
+
+    int current_classical_state = -1;
+    for(auto & prob : current_belief.probs) {
+        if (current_classical_state == -1) {
+            current_classical_state = prob.first->hybrid_state->classical_state->get_memory_val();
+        } else {
+            assert(prob.first->hybrid_state->classical_state->get_memory_val() == current_classical_state);
+        }
+    }
+    assert(current_classical_state >= 0);
+    auto halt_algorithm = new Algorithm(&HALT_ACTION, current_classical_state, 0);
+    if (horizon == 0) {
+        return make_pair(halt_algorithm, curr_belief_val);
+    }
+
+    vector<pair<Belief, map<int, Belief>>> candidate_beliefs;
+
+    // for picking candidate belief that has the highest distance
+    unordered_map<int, Belief> temp;
+    temp[current_classical_state] = current_belief;
+    pair<Belief, unordered_map<int, Belief>> best_candidate = make_pair(curr_belief_normalized, temp);
+    MyFloat furthest_value("0");
+    POMDPAction* best_action = &HALT_ACTION;
+
+    for (auto & it : pomdp.actions) {
+        POMDPAction * action = &it;
+
+        unordered_map<int, Belief> obs_to_next_beliefs; // for each belief we compute the sub-distributions to which it leads
+        Belief next_belief; // we also compute the real belief which should be normalized
+
+        for(auto & prob : current_belief.probs) {
+            MyFloat zero;
+            auto current_v = prob.first;
+
+            assert(prob.second > zero);
+            for (const auto &it_next_v: pomdp.transition_matrix.at(current_v).at(action)) {
+                if (it_next_v.second > zero) {
+                    auto successor = it_next_v.first;
+                    obs_to_next_beliefs[it_next_v.first->hybrid_state->classical_state->get_memory_val()].add_val(successor,
+                                                                          prob.second * it_next_v.second);
+                    next_belief.add_val(successor,prob.second * it_next_v.second);
+                }
+            }
+        }
+
+        next_belief = normalize_belief((next_belief));
+        if (!this->is_belief_visited(next_belief)) {
+            MyFloat closest_value = this->get_closest_L1(next_belief);
+            if (furthest_value == MyFloat("-1") || furthest_value < closest_value) {
+                furthest_value = closest_value;
+                best_candidate = make_pair(next_belief, obs_to_next_beliefs);
+                best_action = action;
+            }
+        }
+    }
+
+    auto new_alg_node = new Algorithm(best_action, current_classical_state, this->precision);
+    MyFloat bellman_val;
+
+    int max_depth = 0;
+    for(auto & obs_to_next_belief : best_candidate.second) {
+        auto temp2 = get_bellman_value(obs_to_next_belief.second, horizon-1);
+        new_alg_node->children.push_back(temp2.first);
+        max_depth = max(temp2.first->depth, max_depth);
+        bellman_val = bellman_val + temp2.second;
+    }
+
+    new_alg_node->depth = max_depth + 1;
+    pair<Algorithm*, MyFloat> result = make_pair(new_alg_node, bellman_val);
+    this->beliefs_to_rewards.insert({curr_belief_normalized, result});
+    this->error = max(this->error, furthest_value);
+    return result;
 }
 
 
@@ -117,8 +238,7 @@ MyFloat get_algorithm_acc(POMDP &pomdp, Algorithm*& algorithm, const Belief &cur
         return curr_belief_val;
     }
     POMDPAction* action = algorithm->action;
-    POMDPAction * HALT_ACTION = new POMDPAction("HALT__", {}, -1, {});
-    if (action == HALT_ACTION) {
+    if (*action == HALT_ACTION) {
         return curr_belief_val;
     }
 
