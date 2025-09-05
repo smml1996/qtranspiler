@@ -1,8 +1,5 @@
 #include "utils.hpp"
 
-#include <random>
-
-
 double get_rel_tol(const int &precision) {
     return 1/(pow(10,(precision-1)));
 }
@@ -25,19 +22,6 @@ bool is_close(const complex<double> &a, const complex<double> &b, const int &pre
     const double scale = std::max(std::abs(a), std::abs(b)); // max(|a|, |b|)
 
     return diff <= std::max(rel_tol * scale, abs_tol);
-}
-
-template <typename T>
-T weighted_choice(const std::vector<T> &elements, const std::vector<double> &weights) {
-    if (elements.size() != weights.size() || elements.empty()) {
-        throw std::invalid_argument("Elements and weights must have the same non-zero size.");
-    }
-
-    static std::random_device rd;
-    static std::mt19937 gen(rd());
-
-    discrete_distribution<> dist(weights.begin(), weights.end());
-    return elements[dist(gen)];
 }
 
 double round_to(double value, int decimals) {

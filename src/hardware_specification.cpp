@@ -1,4 +1,6 @@
 #include "hardware_specification.hpp"
+#include <nlohmann/json.hpp>
+#include <cassert>
 #include <iostream>
 #include <filesystem>
 #include <fstream>

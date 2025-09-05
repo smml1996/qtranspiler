@@ -3,6 +3,9 @@
 #include <chrono>
 #include <iostream>
 #include "experiments.hpp"
+
+#include <cassert>
+
 #include "solvers.hpp"
 
 std::string join(const std::vector<std::string>& parts, const std::string& delimiter) {

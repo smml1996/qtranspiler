@@ -1,7 +1,12 @@
 
 #include "pomdp.hpp"
+
+#include <cassert>
+
 #include "utils.hpp"
 #include<queue>
+
+int POMDPVertex::local_counter = 1;
 
 POMDPVertex::POMDPVertex(HybridState *hybrid_state, int hidden_index) {
     this->id = POMDPVertex::local_counter;
@@ -47,7 +52,7 @@ vertex_dict POMDPAction::__handle_measure_instruction(const Instruction &instruc
         instruction1 = Instruction(GateName::P1, instruction.target);
     }
 
-    auto temp = get_sequence_probability(*vertex.hybrid_state->quantum_state, {instruction1}, this->precision);
+    auto temp = get_sequence_probability(vertex.hybrid_state->quantum_state, {instruction1}, this->precision);
     auto q = temp.first;
     auto meas_prob = temp.second;
 
@@ -96,7 +101,7 @@ vertex_dict POMDPAction::__handle_unitary_instruction(const Instruction &instruc
         assert (err_seq.size() > 0);
 
         QuantumState* new_qs = vertex.hybrid_state->quantum_state->apply_instruction(instruction);
-        auto temp = get_sequence_probability(*new_qs, err_seq, this->precision);
+        auto temp = get_sequence_probability(new_qs, err_seq, this->precision);
         auto errored_seq = temp.first;
         auto seq_prob = temp.second;
         if (seq_prob > 0.0) {
@@ -124,7 +129,7 @@ vertex_dict POMDPAction::__handle_reset_instruction(const Instruction &instructi
     for (int index = 0; index < channel.errors_to_probs.size(); index++) {
         auto err_seq = channel.errors_to_probs[index].first;
         auto prob = channel.errors_to_probs[index].second;
-        auto temp = get_sequence_probability(*vertex.hybrid_state->quantum_state, {projector}, this->precision);
+        auto temp = get_sequence_probability(vertex.hybrid_state->quantum_state, {projector}, this->precision);
         auto new_qs = temp.first;
         auto prob_new_qs = temp.second;
         if (prob_new_qs > 0) {
@@ -132,7 +137,7 @@ vertex_dict POMDPAction::__handle_reset_instruction(const Instruction &instructi
                 auto x_instruction = Instruction(GateName::X, instruction.target);
                 new_qs = new_qs->apply_instruction(x_instruction);
             }
-            auto temp2 = get_sequence_probability(*new_qs, err_seq, this->precision);
+            auto temp2 = get_sequence_probability(new_qs, err_seq, this->precision);
             auto errored_seq = temp2.first;
             auto seq_prob = temp2.second;
             seq_prob = round_to(prob_new_qs * seq_prob, this->precision);
@@ -251,9 +256,9 @@ bool POMDPActionPtrEqual::operator()(const POMDPAction* a, const POMDPAction* b)
     return *a == *b;
 }
 
-POMDPVertex* POMDP::get_vertex(const POMDPVertex *vertex) const {
-    for (auto v : this->states) {
-        if (v == *vertex) return &v;
+POMDPVertex* POMDP::get_vertex(const POMDPVertex *vertex) {
+    for (int i = 0; i < this->states.size(); i++) {
+        if (this->states.at(i) == *vertex) return &this->states.at(i);
     }
     return nullptr;
 }
@@ -273,7 +278,7 @@ POMDP::POMDP(int precision) {
     this->precision = precision;
 }
 
-POMDP::POMDP(POMDPVertex *initial_state, const vector<POMDPVertex> &states, const vector<POMDPAction> &actions, unordered_map<POMDPVertex*, unordered_map<POMDPAction*, unordered_map<POMDPVertex*, MyFloat,POMDPVertexHash, POMDPVertexPtrEqual>,POMDPActionHash, POMDPActionPtrEqual>, POMDPVertexHash, POMDPVertexPtrEqual>  &xtransition_matrix) {
+POMDP::POMDP(POMDPVertex *initial_state, const vector<POMDPVertex> &states, const vector<POMDPAction> &actions, unordered_map<POMDPVertex*, unordered_map<POMDPAction*, unordered_map<POMDPVertex*, MyFloat,POMDPVertexHash, POMDPVertexPtrEqual>,POMDPActionHash, POMDPActionPtrEqual>, POMDPVertexHash, POMDPVertexPtrEqual>  &transition_matrix) {
     this->initial_state = initial_state;
     this->states = states;
     this->actions = actions;

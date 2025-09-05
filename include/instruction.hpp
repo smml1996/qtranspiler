@@ -2,7 +2,8 @@
 #define INSTRUCTION_H
 
 #include "quantum_gates.hpp"
-#include "json.hpp"
+#include <nlohmann/json.hpp>
+
 using json = nlohmann::json;
 
 enum InstructionType {

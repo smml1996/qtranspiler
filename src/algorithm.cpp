@@ -1,4 +1,6 @@
 #include "algorithm.hpp"
+
+#include <cassert>
 #include <fstream>
 #include <iostream>
 #include "utils.hpp"

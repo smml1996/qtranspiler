@@ -22,8 +22,6 @@ class POMDPVertex {
         ClassicalState *get_obs() const;
 };
 
-int POMDPVertex::local_counter = 1;
-
 // Custom hash
 struct POMDPVertexHash {
     std::size_t operator()(const POMDPVertex *instruction) const;
@@ -74,7 +72,7 @@ class POMDP {
     vector<POMDPVertex> states;
     int precision;
 
-    POMDPVertex* get_vertex(const POMDPVertex *vertex) const;
+    POMDPVertex* get_vertex(const POMDPVertex *vertex);
     POMDPVertex* create_new_vertex(const HybridState *hybrid_state, int hidden_index);
     public:
         POMDPVertex *initial_state;

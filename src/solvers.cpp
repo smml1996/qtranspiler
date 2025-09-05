@@ -492,6 +492,6 @@ pair<Algorithm*, double> ConvexDistributionSolver::solve(const vector<POMDPVerte
 
     auto result = this->solve_lp_maximin(maximin_matrix, maximin_matrix.size(), initial_states.size());
 
-    Algorithm * mixed_algorithm = get_mixed_algorithm(result.first, mapping_index_algorithm);
+    Algorithm * mixed_algorithm = get_mixed_algorithm(result.first, mapping_index_algorithm, this->initial_classical_state);
     return make_pair(mixed_algorithm, result.second);
 }

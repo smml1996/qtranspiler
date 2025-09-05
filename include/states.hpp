@@ -1,9 +1,11 @@
 #ifndef STATES_H
 #define STATES_H
 
-#include<unordered_map>
-#include<vector>
+#include <unordered_map>
+#include <complex>
+#include <vector>
 #include "instruction.hpp"
+#include "states.hpp"
 #define _USE_MATH_DEFINES
 inline auto pi = M_PI;
 
@@ -35,7 +37,7 @@ class QuantumState {
         vector<vector<complex<double>>> multi_partial_trace(const vector<int> &remove_indices) const;
 };
 
-pair<QuantumState*, double> get_sequence_probability(QuantumState &quantum_state0, vector<Instruction> seq, int precision);
+pair<QuantumState*, double> get_sequence_probability(QuantumState * const &quantum_state0, const vector<Instruction> &seq, int precision);
 complex<double> get_inner_product(const QuantumState &qs1, const QuantumState &qs2);
 double get_fidelity(const QuantumState &qs1, const QuantumState &qs2);
 

@@ -43,6 +43,6 @@ Algorithm* deep_copy_algorithm(Algorithm *algorithm);
 
 void get_algorithm_end_nodes(Algorithm *algorithm, vector<Algorithm *> &end_nodes);
 
-Algorithm* get_mixed_algorithm(const vector<double> &x, const unordered_map<int, Algorithm *> &mapping_index_algorithm);
+Algorithm* get_mixed_algorithm(const vector<double> &x, const unordered_map<int, Algorithm *> &mapping_index_algorithm, int initial_classical_state);
 
 #endif

@@ -219,9 +219,9 @@ bool QuantumState::operator==(const QuantumState& other) const {
     return is_close(inner_product, 1, this->precision);
 }
 
-pair<QuantumState*, double> get_sequence_probability(QuantumState quantum_state0, const vector<Instruction> &seq, int precision) {
+pair<QuantumState*, double> get_sequence_probability(QuantumState * const &quantum_state0, const vector<Instruction> &seq, int precision) {
     int count_meas = 0;
-    QuantumState *quantum_state = &quantum_state0;
+    QuantumState* quantum_state = quantum_state0;
     QuantumState* prev_quantum_state = nullptr;
     for (auto instruction : seq) {
         assert(instruction.gate_name != GateName::Meas);
@@ -271,7 +271,10 @@ QuantumState* QuantumState::apply_instruction(const Instruction &instruction, bo
             auto result2 = result1->apply_instruction(RZ1, normalize=false);
             auto result3 = result2->apply_instruction(CX01, normalize=false);
             result = result3->apply_instruction(H1, normalize=false);
-            delete result0, result1, result2, result3;
+            delete result0;
+            delete result1;
+            delete result2;
+            delete result3;
         } else if (instruction.gate_name == GateName::Ecr) {
             assert (instruction.controls.size() == 1);
             auto angle = pi / 4;
@@ -281,7 +284,8 @@ QuantumState* QuantumState::apply_instruction(const Instruction &instruction, bo
             auto result0 = this->apply_instruction(RZX, normalize=false);
             auto result1 = result0->apply_instruction(X0, normalize=false);
             result = result1->apply_instruction(RZXneg, normalize=false);
-            delete result0, result1;
+            delete result0;
+            delete result1;
         } else {
             assert (instruction.gate_name == GateName::Cnot);
             result = this->eval_multiqubit_gate(instruction);
@@ -289,11 +293,12 @@ QuantumState* QuantumState::apply_instruction(const Instruction &instruction, bo
     } else {
         if (instruction.gate_name == GateName::Reset){
             auto meas_instruction = Instruction(GateName::Meas, instruction.target, instruction.target);
-            auto pair0 = get_sequence_probability(*this, vector<Instruction>({Instruction(GateName::P0, instruction.target)}), this->precision);
+            QuantumState quantum_state = *this;
+            auto pair0 = get_sequence_probability(&quantum_state, vector<Instruction>({Instruction(GateName::P0, instruction.target)}), this->precision);
             auto q0 = pair0.first;
             auto prob0 = pair0.second;
 
-            auto pair1 = get_sequence_probability(*this, vector<Instruction>({Instruction(GateName::P1, instruction.target)}), this->precision);
+            auto pair1 = get_sequence_probability(&quantum_state, vector<Instruction>({Instruction(GateName::P1, instruction.target)}), this->precision);
             auto q1 = pair1.first;
             auto prob1 = pair1.second;
             auto result0 = weighted_choice(vector<QuantumState*>({q0, q1}), vector<double>({prob0, prob1}));

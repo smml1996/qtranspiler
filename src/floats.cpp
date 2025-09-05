@@ -9,6 +9,9 @@
 
 using namespace std;
 
+int MyFloat::precision = 80;
+int MyFloat::tolerance = 80;
+
 MyFloat::MyFloat(const double &probability__, int custom_precision)  : MyFloat(to_string(probability__), custom_precision) {};
 
 void MyFloat::check_digit(const short &digit) {
@@ -436,7 +439,7 @@ bool MyFloat::operator==(const MyFloat &rhs) const {
     return MyFloat::are_vectors_equal(this->mantissa, rhs.mantissa);
 }
 
-inline bool MyFloat::operator!=(const MyFloat &rhs) const {
+bool MyFloat::operator!=(const MyFloat &rhs) const {
     return !(*this == rhs);
 }
 

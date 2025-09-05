@@ -4,7 +4,7 @@
 
 #include "instruction.hpp"
 #include <vector>
-#include "json.hpp"
+#include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
 using namespace std;

@@ -46,15 +46,12 @@ class MyFloat {
 
     bool operator==(const MyFloat &rhs) const;
 
-    inline bool operator!=(const MyFloat &rhs) const;
+    bool operator!=(const MyFloat &rhs) const;
 
-    inline bool operator>(const MyFloat &other) const;
+    bool operator>(const MyFloat &other) const;
 
-    inline bool operator<(const MyFloat &other) const;
+    bool operator<(const MyFloat &other) const;
 };
-
-int MyFloat::precision = 80;
-int MyFloat::tolerance = 80;
 
 MyFloat max(MyFloat const &a, MyFloat const &b);
 
