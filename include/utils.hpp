@@ -26,4 +26,10 @@ string to_binary(int basis);
 bool are_matrices_equal(const vector<vector<complex<double>>> &arr1, const vector<vector<complex<double>>> &arr2, int precision);
 bool is_matrix_in_list(const vector<vector<complex<double>>> & matrix, const vector<vector<vector<complex<double>>>> &matrix_list, int precision);
 
+inline double round_to(double value, int decimals) {
+    double power = pow(10.0, decimals);
+    return std::round(value * power) / power;
+}
+
+
 #endif

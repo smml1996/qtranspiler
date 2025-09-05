@@ -43,6 +43,7 @@ class Experiment {
         vector<POMDPVertex *> get_initial_states(const POMDP &pomdp) const;
 
     public:
+    static int round_in_file;
         Experiment(const string &name, int precision, bool with_thermalization, int min_horizon, int max_horizon,
             bool set_hidden_index, const set<MethodType> &method_types, const set<QuantumHardware> &hw_list);
         virtual ~Experiment() = default;

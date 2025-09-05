@@ -31,6 +31,7 @@ int main(int argc, char* argv[]) {
         ("max_horizon", "Maximum horizon", cxxopts::value<int>())
         ("precision", "Precision", cxxopts::value<int>()->default_value("8"))
         ("with_thermalization", "Enable thermalization", cxxopts::value<bool>()->default_value("false"))
+        ("round_in_file", "files generated will round to the given number", cxxopts::value<int>()->default_value("5"))
         ("h,help", "Print usage");
 
     auto result = options.parse(argc, argv);
@@ -39,6 +40,8 @@ int main(int argc, char* argv[]) {
         cout << options.help() << "\n";
         return 0;
     }
+
+    Experiment::round_in_file =  result["round_in_file"].as<int>();
 
     // 1. Experiment name validation
     std::string experiment = result["experiment"].as<std::string>();

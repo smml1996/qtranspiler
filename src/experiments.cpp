@@ -3,10 +3,13 @@
 #include <chrono>
 #include <iostream>
 #include "experiments.hpp"
+#include <cmath>
 
 #include <cassert>
 
 #include "solvers.hpp"
+#include "utils.hpp"
+using namespace  std;
 
 std::string join(const std::vector<std::string>& parts, const std::string& delimiter) {
     std::ostringstream oss;
@@ -139,7 +142,7 @@ Belief Experiment::get_initial_belief(const POMDP &pomdp) const {
             initial_belief.add_val(it.first, it.second);
         }
     } else {
-        initial_belief.set_val(pomdp.initial_state, MyFloat("1"));
+        initial_belief.set_val(pomdp.initial_state, Rational("1", "1", this->precision));
     }
     return initial_belief;
 }
@@ -271,14 +274,15 @@ void Experiment::run() const {
                         algorithm_index = unique_algorithms.size();
                         unique_algorithms.push_back(result.first);
                     }
+
                     results_file << join(vector<string>({hardware_name, 
-                                                    to_string(embedding_index), 
-                                                    to_string(pomdp_build_time),
-                                                    to_string(result.second),
+                                                    to_string(embedding_index),
+                                                    to_string(round_to(pomdp_build_time, Experiment::round_in_file)),
+                                                    to_string(round_to(result.second, Experiment::round_in_file)),
                                                     to_string(method),
-                                                    to_string(method_time),
+                                                    to_string(round_to(method_time, Experiment::round_in_file)),
                                                     to_string(algorithm_index),
-                                                    to_string(error)})
+                                                    to_string(round_to(error, Experiment::round_in_file))})
                                                     , ",") << "\n";
                 }
             }
@@ -353,3 +357,5 @@ unordered_set<int> get_meas_pivot_qubits(const HardwareSpecification &hardware_s
     }
     return result;
 }
+
+int Experiment::round_in_file = 5;
