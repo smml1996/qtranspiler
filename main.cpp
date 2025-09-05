@@ -107,12 +107,12 @@ int main(int argc, char* argv[]) {
         reset_problem.run();
     }
     else if (experiment == "ghz3") {
-        // GHZStatePreparation3 ghz3_problem = GHZStatePreparation3(custom_name, precision, with_thermalization,min_horizon, max_horizon, methods, hw_list);
-        // ghz3_problem.run();
+        GHZStatePreparation3 ghz3_problem = GHZStatePreparation3(custom_name, precision, with_thermalization,min_horizon, max_horizon, methods, hw_list);
+        ghz3_problem.run();
     }
     else if (experiment == "ghz4") {
-        // GHZStatePreparation4 ghz3_problem = GHZStatePreparation4(custom_name, precision, with_thermalization,min_horizon, max_horizon, methods, hw_list);
-        // ghz3_problem.run();
+        GHZStatePreparation4 ghz3_problem = GHZStatePreparation4(custom_name, precision, with_thermalization,min_horizon, max_horizon, methods, hw_list);
+        ghz3_problem.run();
 
     } else {
         throw std::invalid_argument("Invalid experiment: " + experiment);

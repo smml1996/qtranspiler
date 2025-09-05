@@ -24,11 +24,6 @@ bool is_close(const complex<double> &a, const complex<double> &b, const int &pre
     return diff <= std::max(rel_tol * scale, abs_tol);
 }
 
-double round_to(double value, int decimals) {
-    double factor = std::pow(10.0, decimals);
-    return std::round(value * factor) / factor;
-}
-
 // helper: convert integer to binary string (no leading zeros)
 string to_binary(int basis) {
     if (basis == 0) return "0";

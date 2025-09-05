@@ -1,5 +1,7 @@
 #ifndef GHZ_H
 #define GHZ_H
+#include <absl/strings/internal/str_format/extension.h>
+
 #include "experiments.hpp"
 
 inline bool are_adjacent_qubits(const unordered_map<int, unordered_set<int>> &graph, int qubit1,
@@ -121,6 +123,42 @@ Experiment(name, precision, with_thermalization, min_horizon, max_horizon, false
                                     if (!is_repeated_embedding(result, d_temp))
                                         result.push_back(d_temp);
                             }
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
+        vector<POMDPAction> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) const override {
+            vector<POMDPAction> result;
+            for (auto it : embedding) {
+                result.push_back(
+                    POMDPAction("H" + to_string(it.first),
+                        hardware_spec.to_basis_gates_impl(Instruction(GateName::H, it.second)),
+                        this->precision,
+                        {Instruction(GateName::H, it.second)}
+                        )
+                    );
+            }
+
+            for (auto it1 : embedding) {
+                int v_control = it1.first;
+                int control = it1.second;
+                for (auto it2 : embedding) {
+                    int v_target = it2.first;
+                    int target = it2.second;
+                    if (control != target) {
+                        unique_ptr<Instruction> instruction = make_unique<Instruction>(GateName::Cnot, vector<int>({control}), target);
+                        if (hardware_spec.instructions_to_channels.find(instruction.get()) != hardware_spec.instructions_to_channels.end() ) {
+                            result.push_back(
+                                POMDPAction(
+                                    "CX" + to_string(v_control)+"-"+to_string(v_target),
+                                    {*instruction},
+                                    this->precision,
+                                    {*instruction}
+                                    )
+                                );
                         }
                     }
                 }
