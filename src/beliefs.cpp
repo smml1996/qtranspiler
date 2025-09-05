@@ -2,8 +2,8 @@
 
 #include "utils.hpp"
 
-MyFloat Belief::get_sum() const {
-    MyFloat result;
+Rational Belief::get_sum() const {
+    Rational result;
 
     for (auto & prob : this->probs) {
         result = result + prob.second;
@@ -12,23 +12,23 @@ MyFloat Belief::get_sum() const {
     return result;
 }
 
-MyFloat Belief::get(POMDPVertex *v) {
+Rational Belief::get(POMDPVertex *v) {
     if(this->probs.find(v) == this->probs.end()){
-        return MyFloat();
+        return Rational();
     }
     return this->probs[v];
 }
 
-void Belief::set_val(POMDPVertex *v, const MyFloat &prob) {
-    if (prob == MyFloat("0")) return;
+void Belief::set_val(POMDPVertex *v, const Rational &prob) {
+    if (prob == Rational("0", "1", prob.precision)) return;
 
     this->probs[v] = prob;
 }
 
-void Belief::add_val(POMDPVertex *v, const MyFloat &val) {
+void Belief::add_val(POMDPVertex *v, const Rational &val) {
     this->probs[v] = this->get(v) + val;
 
-    if (this->probs[v] == MyFloat("0")) {
+    if (this->probs[v] == Rational("0", "1", val.precision)) {
         this->probs.erase(v);
     }
 }
@@ -64,7 +64,7 @@ std::size_t BeliefHash::operator()(const Belief &belief) const {
         std::hash<std::string> float_hasher;
         POMDPVertexHash vertex_hasher;
         std::size_t h1 = vertex_hasher(kv.first);
-        std::size_t h2 = float_hasher(to_string(kv.second));
+        std::size_t h2 = float_hasher(to_string(kv.second.numerator) + to_string(kv.second.denominator));
 
         // combine (boost::hash_combine style)
         seed ^= h1 + 0x9e3779b9 + (seed << 6) + (seed >> 2);
@@ -73,12 +73,13 @@ std::size_t BeliefHash::operator()(const Belief &belief) const {
     return seed;
 }
 
-MyFloat l1_norm(const Belief &b1, const Belief &b2) {
-    MyFloat result;
+Rational l1_norm(const Belief &b1, const Belief &b2) {
+    Rational result;
     for (auto it = b1.probs.begin(); it != b1.probs.end(); it++) {
         auto it2 = b2.probs.find(it->first);
         if (it2 != b2.probs.end()) {
-            auto temp = MyFloat("-1") * it2->second ;
+            int precision = it2->second.precision;
+            auto temp = Rational("-1", "1", precision) * it2->second ;
             result = result + abs(it->second + temp);
         }
     }
@@ -87,16 +88,14 @@ MyFloat l1_norm(const Belief &b1, const Belief &b2) {
 
 Belief normalize_belief(const Belief &belief) {
     Belief result;
-    MyFloat total_;
+    Rational total;
     for (auto it : belief.probs) {
-        total_ = total_ + it.second;
+        total = total + it.second;
     }
 
-    double total = to_double(total_);
-
     for (auto it : belief.probs) {
-        double value = to_double(it.second) / total;
-        result.set_val(it.first, MyFloat(to_string(value)));
+        Rational value = it.second / total;
+        result.set_val(it.first, value);
     }
 
     return result;

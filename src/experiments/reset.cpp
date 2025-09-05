@@ -36,9 +36,9 @@ Experiment(name, precision, with_thermalization, min_horizon, max_horizon, false
             return result;
         }
 
-        MyFloat postcondition(const Belief &belief, const unordered_map<int, int> &embedding) const override {
+        Rational postcondition(const Belief &belief, const unordered_map<int, int> &embedding) const override {
             const unique_ptr<QuantumState> state0(new QuantumState({embedding.at(0)}, this->precision));
-            MyFloat answer("0");
+            Rational answer("0", "1", this->precision*(this->max_horizon+1));
 
             for(auto it : belief.probs) {
                 if (*(it.first->hybrid_state->quantum_state) == *state0) {

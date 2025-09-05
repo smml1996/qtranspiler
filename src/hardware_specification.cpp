@@ -123,7 +123,6 @@ HardwareSpecification::HardwareSpecification(const QuantumHardware &quantum_hard
 }
 
 std::string to_string(const QuantumHardware &quantum_hardware) {
-    cout << quantum_hardware << " " << QuantumHardware::HardwareCount << endl;
     switch(quantum_hardware) {
         case Algiers: return "algiers";
         case Almaden: return "almaden";

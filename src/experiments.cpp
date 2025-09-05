@@ -205,7 +205,7 @@ void Experiment::run() const {
         return this->guard(v, m, a);
     };
 
-    auto actual_reward_f = [this](const Belief &b, const unordered_map<int, int> &embedding) -> MyFloat {
+    auto actual_reward_f = [this](const Belief &b, const unordered_map<int, int> &embedding) -> Rational {
         return this->postcondition(b, embedding);
     };
 
@@ -243,7 +243,7 @@ void Experiment::run() const {
                     pair<Algorithm *, double> result = make_pair(nullptr, 0);
                     double error = 0.0;
                     if (method == MethodType::SingleDistBellman) {
-                        SingleDistributionSolver solver(pomdp, actual_reward_f, this->precision, embedding);
+                        SingleDistributionSolver solver(pomdp, actual_reward_f, this->precision * (max_horizon+1), embedding);
 
                         auto start_method = chrono::high_resolution_clock::now();
                         auto result_temp = solver.get_bellman_value(initial_belief, horizon);
@@ -251,7 +251,7 @@ void Experiment::run() const {
                         result = make_pair(result_temp.first, to_double(result_temp.second));
                         method_time = (end_method - start_method).count();
                     } else if (method == MethodType::SingleDistPBVI) {
-                        SingleDistributionSolver solver(pomdp, actual_reward_f, this->precision, embedding);
+                        SingleDistributionSolver solver(pomdp, actual_reward_f, this->precision * (max_horizon+1), embedding);
                         auto start_method = chrono::high_resolution_clock::now();
                         auto result_temp = solver.PBVI_solve(initial_belief, horizon);
                         auto end_method = chrono::high_resolution_clock::now();
@@ -259,7 +259,7 @@ void Experiment::run() const {
                         method_time = (end_method - start_method).count();
                         error = solver.get_error(horizon);
                     } else {
-                        ConvexDistributionSolver solver (pomdp, actual_reward_f, this->precision, embedding);
+                        ConvexDistributionSolver solver (pomdp, actual_reward_f, this->precision * (max_horizon+1), embedding);
                         auto start_method = chrono::high_resolution_clock::now();
                         result = solver.solve(initial_states, horizon);
                         auto end_method = chrono::high_resolution_clock::now();
@@ -282,7 +282,6 @@ void Experiment::run() const {
                                                     , ",") << "\n";
                 }
             }
-
             embedding_index++;
         }
     }

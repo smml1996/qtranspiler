@@ -14,8 +14,8 @@ bool SingleDistributionSolver::is_belief_visited(const Belief &belief) const {
     return false;
 }
 
-MyFloat SingleDistributionSolver::get_closest_L1(const Belief &belief) const {
-    MyFloat result("-1");
+Rational SingleDistributionSolver::get_closest_L1(const Belief &belief) const {
+    Rational result("-1", "1", this->precision);
     bool first = true;
     for (auto it : this->beliefs_to_rewards) {
         auto existing_belief = it.first;
@@ -38,10 +38,10 @@ SingleDistributionSolver::SingleDistributionSolver(const POMDP &pomdp, const f_r
     this->get_reward = get_reward;
     this->precision = precision;
     this->embedding = embedding;
-    this->error = MyFloat("0");
+    this->error = Rational("0", "1", this->precision);
 }
 
-pair<Algorithm*, MyFloat> SingleDistributionSolver::get_bellman_value(const Belief &current_belief, const int &horizon){
+pair<Algorithm*, Rational> SingleDistributionSolver::get_bellman_value(const Belief &current_belief, const int &horizon){
     Belief curr_belief_normalized = normalize_belief(current_belief);
 
     auto temp_it = this->beliefs_to_rewards.find(curr_belief_normalized);
@@ -49,7 +49,7 @@ pair<Algorithm*, MyFloat> SingleDistributionSolver::get_bellman_value(const Beli
         return temp_it->second;
     }
 
-    MyFloat curr_belief_val = this->get_reward(current_belief, this->embedding);
+    Rational curr_belief_val = this->get_reward(current_belief, this->embedding);
     
     int current_classical_state = -1;
     for(auto & prob : current_belief.probs) {
@@ -65,7 +65,7 @@ pair<Algorithm*, MyFloat> SingleDistributionSolver::get_bellman_value(const Beli
         return make_pair(halt_algorithm, curr_belief_val);
     }
 
-    vector< pair< Algorithm*, MyFloat > > bellman_values;
+    vector< pair< Algorithm*, Rational > > bellman_values;
 
     bellman_values.emplace_back(halt_algorithm, curr_belief_val);
     
@@ -76,7 +76,7 @@ pair<Algorithm*, MyFloat> SingleDistributionSolver::get_bellman_value(const Beli
         map<int, Belief> obs_to_next_beliefs;
 
         for(auto & prob : current_belief.probs) {
-            MyFloat zero;
+            Rational zero("0", "1", this->precision);
             auto current_v = prob.first;
             assert(prob.second > zero);
             for (const auto &it_next_v: pomdp.transition_matrix[current_v][action]) {
@@ -90,7 +90,7 @@ pair<Algorithm*, MyFloat> SingleDistributionSolver::get_bellman_value(const Beli
         
         if (!obs_to_next_beliefs.empty()) {
             auto new_alg_node = new Algorithm(action, current_classical_state, this->precision);
-            MyFloat bellman_val;
+            Rational bellman_val("0", "1", this->precision);
 
             int max_depth = 0;
             for(auto & obs_to_next_belief : obs_to_next_beliefs) {
@@ -105,7 +105,7 @@ pair<Algorithm*, MyFloat> SingleDistributionSolver::get_bellman_value(const Beli
         }
     }
 
-    MyFloat max_val; // this is initialized as zero
+    Rational max_val("0", "1", this->precision); // this is initialized as zero
     for(auto & bellman_value : bellman_values) {
         max_val = min(max_val, bellman_value.second);
     }
@@ -132,7 +132,7 @@ pair<Algorithm*, MyFloat> SingleDistributionSolver::get_bellman_value(const Beli
 
 
 
-pair<Algorithm*, MyFloat> SingleDistributionSolver::PBVI_solve(const Belief &current_belief, const int &horizon) {
+pair<Algorithm*, Rational> SingleDistributionSolver::PBVI_solve(const Belief &current_belief, const int &horizon) {
     Belief curr_belief_normalized = normalize_belief(current_belief);
 
     auto temp_it = this->beliefs_to_rewards.find(curr_belief_normalized);
@@ -140,7 +140,7 @@ pair<Algorithm*, MyFloat> SingleDistributionSolver::PBVI_solve(const Belief &cur
         return temp_it->second;
     }
 
-    MyFloat curr_belief_val = this->get_reward(current_belief, this->embedding);
+    Rational curr_belief_val = this->get_reward(current_belief, this->embedding);
 
     int current_classical_state = -1;
     for(auto & prob : current_belief.probs) {
@@ -162,7 +162,7 @@ pair<Algorithm*, MyFloat> SingleDistributionSolver::PBVI_solve(const Belief &cur
     unordered_map<int, Belief> temp;
     temp[current_classical_state] = current_belief;
     pair<Belief, unordered_map<int, Belief>> best_candidate = make_pair(curr_belief_normalized, temp);
-    MyFloat furthest_value("0");
+    Rational furthest_value("0");
     POMDPAction* best_action = &HALT_ACTION;
 
     for (auto & it : pomdp.actions) {
@@ -172,7 +172,7 @@ pair<Algorithm*, MyFloat> SingleDistributionSolver::PBVI_solve(const Belief &cur
         Belief next_belief; // we also compute the real belief which should be normalized
 
         for(auto & prob : current_belief.probs) {
-            MyFloat zero;
+            Rational zero;
             auto current_v = prob.first;
 
             assert(prob.second > zero);
@@ -188,8 +188,8 @@ pair<Algorithm*, MyFloat> SingleDistributionSolver::PBVI_solve(const Belief &cur
 
         next_belief = normalize_belief((next_belief));
         if (!this->is_belief_visited(next_belief)) {
-            MyFloat closest_value = this->get_closest_L1(next_belief);
-            if (furthest_value == MyFloat("-1") || furthest_value < closest_value) {
+            Rational closest_value = this->get_closest_L1(next_belief);
+            if (furthest_value == Rational("-1", "1", this->precision) || furthest_value < closest_value) {
                 furthest_value = closest_value;
                 best_candidate = make_pair(next_belief, obs_to_next_beliefs);
                 best_action = action;
@@ -198,7 +198,7 @@ pair<Algorithm*, MyFloat> SingleDistributionSolver::PBVI_solve(const Belief &cur
     }
 
     auto new_alg_node = new Algorithm(best_action, current_classical_state, this->precision);
-    MyFloat bellman_val;
+    Rational bellman_val("0", "1", this->precision);
 
     int max_depth = 0;
     for(auto & obs_to_next_belief : best_candidate.second) {
@@ -209,7 +209,7 @@ pair<Algorithm*, MyFloat> SingleDistributionSolver::PBVI_solve(const Belief &cur
     }
 
     new_alg_node->depth = max_depth + 1;
-    pair<Algorithm*, MyFloat> result = make_pair(new_alg_node, bellman_val);
+    pair<Algorithm*, Rational> result = make_pair(new_alg_node, bellman_val);
     this->beliefs_to_rewards.insert({curr_belief_normalized, result});
     this->error = max(this->error, furthest_value);
     return result;
@@ -228,8 +228,8 @@ ConvexDistributionSolver::ConvexDistributionSolver(const POMDP &pomdp, const f_r
     this->initial_classical_state = -1;
 }
 
-MyFloat get_algorithm_acc(POMDP &pomdp, Algorithm*& algorithm, const Belief &current_belief, const f_reward_type &get_reward, const unordered_map<int, int> &embedding) {
-    MyFloat curr_belief_val = get_reward(current_belief, embedding);
+Rational get_algorithm_acc(POMDP &pomdp, Algorithm*& algorithm, const Belief &current_belief, const f_reward_type &get_reward, const unordered_map<int, int> &embedding, int precision) {
+    Rational curr_belief_val = get_reward(current_belief, embedding);
 
     if (algorithm == nullptr) {
         return curr_belief_val;
@@ -242,7 +242,7 @@ MyFloat get_algorithm_acc(POMDP &pomdp, Algorithm*& algorithm, const Belief &cur
     // build next_beliefs, separate them by different observables
     unordered_map<int, Belief> obs_to_next_beliefs;
 
-    MyFloat zero;
+    Rational zero("0", "1", precision);
     for(auto & prob : current_belief.probs) {
         POMDPVertex* current_v = prob.first;
         if(prob.second > zero) {
@@ -259,11 +259,11 @@ MyFloat get_algorithm_acc(POMDP &pomdp, Algorithm*& algorithm, const Belief &cur
     assert(algorithm->children.size() == obs_to_next_beliefs.size());
 
     if (!obs_to_next_beliefs.empty()) {
-        MyFloat bellman_val;
+        Rational bellman_val("0", "1", precision);
         
         for (int i = 0; i < algorithm->children.size(); i++) {
             assert(obs_to_next_beliefs.find(algorithm->children[i]->classical_state) != obs_to_next_beliefs.end());
-            bellman_val = bellman_val + get_algorithm_acc(pomdp, algorithm->children[i], obs_to_next_beliefs[algorithm->children[i]->classical_state], get_reward, embedding);
+            bellman_val = bellman_val + get_algorithm_acc(pomdp, algorithm->children[i], obs_to_next_beliefs[algorithm->children[i]->classical_state], get_reward, embedding, precision);
         }
         return bellman_val;
     } else {
@@ -297,7 +297,7 @@ void ConvexDistributionSolver::set_minimax_values(
         Belief initial_belief;
         initial_belief.set_val(initial_states[index], MyFloat("1"));
 
-        minimax_matrix[current_alg_index][index] = to_double(get_algorithm_acc(pomdp,algorithm, initial_belief, this->get_reward, this->embedding));
+        minimax_matrix[current_alg_index][index] = to_double(get_algorithm_acc(pomdp,algorithm, initial_belief, this->get_reward, this->embedding, precision));
     }
     // write_algorithm_file(algorithm, "alg_" +to_string(current_alg_index) + ".json");
 }

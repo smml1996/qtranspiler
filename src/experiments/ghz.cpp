@@ -92,8 +92,8 @@ Experiment(name, precision, with_thermalization, min_horizon, max_horizon, false
             return result;
         }
 
-        MyFloat postcondition(const Belief &belief, const unordered_map<int, int> &embedding) const override {
-            MyFloat answer("0");
+        Rational postcondition(const Belief &belief, const unordered_map<int, int> &embedding) const override {
+            Rational answer("0", "1", this->precision*(this->max_horizon+1));
 
             auto local_target_state = this->get_target_state(embedding);
             for (auto it : belief.probs) {

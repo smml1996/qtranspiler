@@ -1,19 +1,19 @@
 #ifndef BELIEFS_H
 #define BELIEFS_H
-#include "floats.hpp"
+#include "rationals.hpp"
 #include "pomdp.hpp"
 
 
 class Belief {
-    MyFloat get_sum() const;
+    Rational get_sum() const;
 public:
-    unordered_map<POMDPVertex *, MyFloat, POMDPVertexHash, POMDPVertexPtrEqual> probs;
+    unordered_map<POMDPVertex *, Rational, POMDPVertexHash, POMDPVertexPtrEqual> probs;
 
-    MyFloat get(POMDPVertex *v);
+    Rational get(POMDPVertex *v);
 
-    void set_val(POMDPVertex* v, const MyFloat &prob);
+    void set_val(POMDPVertex* v, const Rational &prob);
 
-    void add_val(POMDPVertex* v, const MyFloat &val);
+    void add_val(POMDPVertex* v, const Rational &val);
 
     bool is_normalized(int precision) const;
 
@@ -24,7 +24,7 @@ struct BeliefHash {
     std::size_t operator()(const Belief &instruction) const;
 };
 
-MyFloat l1_norm(const Belief &b1, const Belief &b2);
+Rational l1_norm(const Belief &b1, const Belief &b2);
 
 Belief normalize_belief(const Belief &belief);
 

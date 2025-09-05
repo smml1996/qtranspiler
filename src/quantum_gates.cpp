@@ -77,7 +77,7 @@ inline std::string to_string(GateName gate) {
         case Cz:       return "CZ";
         case Ch:       return "CH";
         case Swap:     return "SWAP";
-        case Toffoli:  return "sTOFFOLI";
+        case Toffoli:  return "TOFFOLI";
 
         case Write0:   return "WRITE0";
         case Write1:   return "WRITE1";

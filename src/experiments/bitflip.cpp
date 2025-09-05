@@ -144,8 +144,8 @@ class IPMABitflip : public Experiment {
             return result;
         }
 
-        MyFloat postcondition(const Belief &belief, const unordered_map<int, int> &embedding) const override {
-            MyFloat result("0");
+        Rational postcondition(const Belief &belief, const unordered_map<int, int> &embedding) const override {
+            Rational result("0", "1", this->precision*(this->max_horizon+1));
             for (auto it : belief.probs) {
                 auto hybrid_state = it.first->hybrid_state;
                 auto qs = hybrid_state->quantum_state;

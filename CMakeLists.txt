@@ -34,6 +34,8 @@ set(SOURCES
         src/experiments/bitflip.cpp
         src/experiments/ghz.cpp
         src/experiments/reset.cpp
+        include/rationals.hpp
+        src/rationals.cpp
 )
 
 add_executable(main ${SOURCES})

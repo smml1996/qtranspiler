@@ -42,8 +42,6 @@ class MyFloat {
 
     MyFloat operator*(MyFloat const &other) const;
 
-    MyFloat operator/(MyFloat const &other) const;
-
     bool operator==(const MyFloat &rhs) const;
 
     bool operator!=(const MyFloat &rhs) const;

@@ -419,10 +419,6 @@ MyFloat MyFloat::operator*(MyFloat const &other) const {
     return MyFloat(res);
 }
 
-MyFloat MyFloat::operator/(MyFloat const &other) const {
-    return MyFloat(to_string(to_double(*this) / to_double(other))); // convert to built-in float
-}
-
 bool MyFloat::operator==(const MyFloat &rhs) const {
     assert(this->mantissa.size() == rhs.mantissa.size());
 
