@@ -7,10 +7,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/experiments
 )
-
-# Homebrew nlohmann-json path
-list(APPEND CMAKE_PREFIX_PATH "/opt/homebrew/opt/nlohmann-json/include")
 
 # Tell CMake where to find OR-Tools
 find_package(ortools REQUIRED)

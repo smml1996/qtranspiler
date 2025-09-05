@@ -17,6 +17,31 @@ std::string join(const std::vector<std::string>& parts, const std::string& delim
     return oss.str();
 }
 
+string get_method_string(MethodType method) {
+    if (method == MethodType::ConvexDist) {
+        return "convex";
+    }
+
+    if (method == MethodType::SingleDistBellman) {
+        return "exact_bellman";
+    }
+
+    if (method == MethodType::SingleDistBellman) {
+        return "pbvi";
+    }
+
+    throw invalid_argument("Method type not recognized");
+}
+
+set<string> get_solver_methods_strings() {
+    set<string> solver_methods;
+    for (int i = 0; i < MethodType::MethodCount; i++) {
+        solver_methods.insert(to_string(static_cast<MethodType>(i)));
+    }
+
+    return solver_methods;
+}
+
 string to_string(const MethodType &method) {
     switch(method) {
         case MethodType::SingleDistBellman:
@@ -28,6 +53,16 @@ string to_string(const MethodType &method) {
         default:
             assert(false);
     }
+}
+
+MethodType str_to_method_type(const string &method) {
+    for (int i = 0; i < MethodType::MethodCount; i++) {
+        string m_str = to_string(static_cast<MethodType>(i));
+        if (m_str == method) {
+            return static_cast<MethodType>(i);
+        }
+    }
+    throw invalid_argument("Method type not recognized: " + method);
 }
 
 bool Experiment::guard(const POMDPVertex&, const unordered_map<int, int>&, const POMDPAction&) const {
@@ -64,18 +99,19 @@ bool Experiment::setup_working_dir() const {
     return true;
 }
 
-vector<QuantumHardware> Experiment::get_allowed_hardware() const {
-    vector<QuantumHardware> hardware_specs;
+set<QuantumHardware> Experiment::get_allowed_hardware() const {
+    if (!this->hw_list.empty()) return this->hw_list;
+    set<QuantumHardware> hardware_specs;
 
     for(int i = 0; i < QuantumHardware::HardwareCount; i++)  {
-        hardware_specs.push_back(static_cast<QuantumHardware>(i));
+        hardware_specs.insert(static_cast<QuantumHardware>(i));
     }
 
     return hardware_specs;
 }
 
 vector<HardwareSpecification> Experiment::get_hardware_specs() const {
-    vector<QuantumHardware>  quantum_hardwares = this->get_allowed_hardware();
+    auto  quantum_hardwares = this->get_allowed_hardware();
     vector<HardwareSpecification> result;
     
     for (QuantumHardware qw : quantum_hardwares) {
@@ -122,6 +158,18 @@ vector<POMDPVertex*> Experiment::get_initial_states(const POMDP &pomdp) const {
     }
 
     return initial_states;
+}
+
+Experiment::Experiment(const string &name, int precision, bool with_thermalization, int min_horizon, int max_horizon,
+    bool set_hidden_index, const set<MethodType> &method_types, const set<QuantumHardware> &hw_list) {
+    this->name = name;
+    this->precision = precision;
+    this->with_thermalization = with_thermalization;
+    this->min_horizon = min_horizon;
+    this->max_horizon = max_horizon;
+    this->set_hidden_index = set_hidden_index;
+    this->method_types = method_types;
+    this->hw_list = hw_list;
 }
 
 void Experiment::run() const {

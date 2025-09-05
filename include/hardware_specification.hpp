@@ -2,6 +2,7 @@
 #define HARDWARE_SPEC_H
 #include <string>
 #include <unordered_set>
+#include <set>
 #include "quantum_gates.hpp"
 #include "instruction.hpp"
 #include "channels.hpp"
@@ -70,6 +71,7 @@ enum QuantumHardware {
 };
 
 string to_string(const QuantumHardware &quantum_hardware); // gets the string representation of the enum QuantumHardware
+QuantumHardware to_quantum_hardware(const string &quantum_hardware);
 
 class HardwareSpecification {
     QuantumHardware quantum_hardware;
@@ -86,4 +88,6 @@ class HardwareSpecification {
         int get_qubit_indegree(int qubit) const;
         vector<pair<int, double>> get_sorted_qubit_couplers(int target) const;
 };
+
+set<string> get_hardware_strings();
 #endif

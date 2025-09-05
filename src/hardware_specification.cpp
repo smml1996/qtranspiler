@@ -1,9 +1,9 @@
 #include "hardware_specification.hpp"
-#include <nlohmann/json.hpp>
 #include <cassert>
-#include <iostream>
 #include <filesystem>
 #include <fstream>
+#include <iostream>
+#include <nlohmann/json.hpp>
 #include "channels.hpp"
 #define _USE_MATH_DEFINES
 auto pi = M_PI;
@@ -39,7 +39,14 @@ vector<pair<int, double>> HardwareSpecification::get_sorted_qubit_couplers(int t
     });
     return result;
 }
-   
+
+set<string> get_hardware_strings() {
+    set<string> result;
+    for (int i = 0; i < QuantumHardware::HardwareCount;  i++) {
+        result.insert(to_string(static_cast<QuantumHardware>(i)));
+    }
+    return result;
+}
 
 
 HardwareSpecification::HardwareSpecification(const QuantumHardware &quantum_hardware, const bool &thermal_relaxation) {
@@ -116,6 +123,7 @@ HardwareSpecification::HardwareSpecification(const QuantumHardware &quantum_hard
 }
 
 std::string to_string(const QuantumHardware &quantum_hardware) {
+    cout << quantum_hardware << " " << QuantumHardware::HardwareCount << endl;
     switch(quantum_hardware) {
         case Algiers: return "algiers";
         case Almaden: return "almaden";
@@ -160,6 +168,7 @@ std::string to_string(const QuantumHardware &quantum_hardware) {
         case Perth: return "perth";
         case Poughkeepsie: return "poughkeepsie";
         case Prague: return "prague";
+        case Singapore: return "singapore";
         case Quito: return "quito";
         case Rochester: return "rochester";
         case Rome: return "rome";
@@ -173,6 +182,16 @@ std::string to_string(const QuantumHardware &quantum_hardware) {
         case Yorktown: return "yorktown";
         default: throw invalid_argument( "Cannot retrieve string representation of quantum hardware" );
     }
+}
+
+QuantumHardware to_quantum_hardware(const string &quantum_hardware) {
+    for (int i = 0; i < QuantumHardware::HardwareCount; i++) {
+        auto str_curr = to_string(static_cast<QuantumHardware>(i));
+        if (str_curr == quantum_hardware) {
+            return static_cast<QuantumHardware>(i);
+        }
+    }
+    throw std::invalid_argument( "QuantumHardware string is not an quantum hardware: " + quantum_hardware);
 }
 
 string HardwareSpecification::get_hardware_name() const {

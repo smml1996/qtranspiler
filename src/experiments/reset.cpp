@@ -1,8 +1,14 @@
+#ifndef RESET_H
+#define RESET_H
+#include <cassert>
+
 #include "experiments.hpp"
-#include <complex>
 
 class ResetProblem : public Experiment {
     public:
+    ResetProblem(const string &name, int precision, bool with_thermalization, int min_horizon, int max_horizon,
+const set<MethodType> &method_types, const set<QuantumHardware> &hw_list) :
+Experiment(name, precision, with_thermalization, min_horizon, max_horizon, false, method_types, hw_list){};
         ResetProblem () : Experiment() {
             this-> name = "reset";
             this->precision = 8;
@@ -78,3 +84,4 @@ class ResetProblem : public Experiment {
 
         }
 };
+#endif

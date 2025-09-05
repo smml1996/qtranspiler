@@ -4,13 +4,6 @@
 
 #include <cassert>
 
-
-PBVISolution::PBVISolution(Algorithm *alg, const MyFloat &guarantee, const MyFloat &error) {
-    this->algorithm = alg;
-    this->guarantee = guarantee;
-    this->error = error;
-}
-
 bool SingleDistributionSolver::is_belief_visited(const Belief &belief) const {
     for (auto it : this->beliefs_to_rewards) {
         auto existing_belief = it.first;

@@ -11,10 +11,16 @@ namespace fs = std::filesystem;
 enum MethodType {
     SingleDistBellman,
     SingleDistPBVI,
-    ConvexDist
+    ConvexDist,
+
+    MethodCount
 };
 
+string get_method_string(MethodType method);
+set<string> get_solver_methods_strings();
+
 string to_string(const MethodType &method);
+MethodType str_to_method_type(const string &method);
 
 class Experiment {
     protected:
@@ -24,7 +30,8 @@ class Experiment {
         int min_horizon;
         int max_horizon;
         bool set_hidden_index;
-    unordered_set<MethodType> method_types;
+        set<MethodType> method_types;
+        set<QuantumHardware> hw_list;
 
     fs::path get_wd() const;
     bool setup_working_dir() const;
@@ -36,10 +43,12 @@ class Experiment {
         vector<POMDPVertex *> get_initial_states(const POMDP &pomdp) const;
 
     public:
+        Experiment(const string &name, int precision, bool with_thermalization, int min_horizon, int max_horizon,
+            bool set_hidden_index, const set<MethodType> &method_types, const set<QuantumHardware> &hw_list);
         virtual ~Experiment() = default;
         Experiment() = default;
 
-        virtual vector<QuantumHardware> get_allowed_hardware() const;
+        virtual set<QuantumHardware> get_allowed_hardware() const;
         virtual void run() const;
         virtual bool guard(const POMDPVertex&, const unordered_map<int, int>&, const POMDPAction&) const;
 

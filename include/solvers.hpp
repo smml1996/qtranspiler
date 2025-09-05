@@ -8,13 +8,6 @@
 
 using f_reward_type = std::function<MyFloat(const Belief&, const unordered_map<int, int> &)>;
 
-class PBVISolution {
-public:
-    Algorithm* algorithm;
-    MyFloat guarantee;
-    MyFloat error;
-    PBVISolution(Algorithm* alg, const MyFloat &guarantee, const MyFloat &error);
-};
 class SingleDistributionSolver {
     POMDP pomdp;
     f_reward_type get_reward;
@@ -60,5 +53,4 @@ class ConvexDistributionSolver {
         ConvexDistributionSolver(const POMDP &pomdp, const f_reward_type &get_reward, int precision, const unordered_map<int, int> & embedding);
         pair<Algorithm*, double> solve(const vector<POMDPVertex*> &initial_states, const int &horizon);
 };
-
 #endif

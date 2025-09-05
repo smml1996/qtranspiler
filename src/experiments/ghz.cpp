@@ -1,6 +1,8 @@
+#ifndef GHZ_H
+#define GHZ_H
 #include "experiments.hpp"
 
-bool are_adjacent_qubits(const unordered_map<int, unordered_set<int>> &graph, int qubit1,
+inline bool are_adjacent_qubits(const unordered_map<int, unordered_set<int>> &graph, int qubit1,
                          const unordered_set<int> &qubits) {
     queue<int> q;
     unordered_set<int> visited;
@@ -32,7 +34,7 @@ bool are_adjacent_qubits(const unordered_map<int, unordered_set<int>> &graph, in
     return true;
 }
 
-bool is_repeated_embedding(const vector<unordered_map<int, int>> &all_embeddings, const unordered_map<int, int> &current) {
+inline bool is_repeated_embedding(const vector<unordered_map<int, int>> &all_embeddings, const unordered_map<int, int> &current) {
     unordered_set<int> current_set;
     for (auto it : current) {
         current_set.insert(it.second);
@@ -51,8 +53,11 @@ bool is_repeated_embedding(const vector<unordered_map<int, int>> &all_embeddings
 // GHZ state preparation of 3 qubits
 class GHZStatePreparation3 : public Experiment {
     public:
+    GHZStatePreparation3(const string &name, int precision, bool with_thermalization, int min_horizon, int max_horizon,
+    const set<MethodType> &method_types, const set<QuantumHardware>& hw_list) :
+Experiment(name, precision, with_thermalization, min_horizon, max_horizon, false, method_types, hw_list){};
         GHZStatePreparation3() : Experiment() {
-            this->name = "ghz_state_preparation";
+            this->name = "ghz_state_preparation3";
             this->precision = 8;
             this->with_thermalization = false;
             this->min_horizon = 3;
@@ -127,8 +132,9 @@ class GHZStatePreparation3 : public Experiment {
 // GHZ state preparation of 4 qubits
 class GHZStatePreparation4 : public GHZStatePreparation3 {
     public:
+        GHZStatePreparation4(const string &name, int precision, bool with_thermalization, int min_horizon, int max_horizon, const set<MethodType> &method_types, const set<QuantumHardware>& hw_list) : GHZStatePreparation3(name, precision, with_thermalization, min_horizon, max_horizon, method_types, hw_list){};
         GHZStatePreparation4() : GHZStatePreparation3() {
-            this->name = "ghz_state_preparation";
+            this->name = "ghz_state_preparation4";
             this->precision = 8;
             this->with_thermalization = false;
             this->min_horizon = 4;
@@ -153,7 +159,7 @@ class GHZStatePreparation4 : public GHZStatePreparation3 {
             return qs;
         }
 
-        virtual vector<unordered_map<int, int>> get_hardware_scenarios(HardwareSpecification const & hardware_spec) const override {
+        vector<unordered_map<int, int>> get_hardware_scenarios(HardwareSpecification const & hardware_spec) const override {
             vector<unordered_map<int, int>> result;
             for (int qubit1 = 0; qubit1 < hardware_spec.num_qubits; qubit1++) {
                 for (int qubit2 = 0; qubit2 < hardware_spec.num_qubits; qubit2++) {
@@ -178,3 +184,4 @@ class GHZStatePreparation4 : public GHZStatePreparation3 {
             return result;
         }
 };
+#endif

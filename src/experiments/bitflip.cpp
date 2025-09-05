@@ -1,3 +1,8 @@
+#ifndef BITFLIP_H
+#define BITFLIP_H
+
+#include <cassert>
+
 #include "experiments.hpp"
 #include "utils.hpp"
 #include <complex>
@@ -5,7 +10,7 @@
 
 using namespace std;
 
-vector<pair<int, int>> get_selected_couplers(const HardwareSpecification &hardware_spec, int target) {
+inline vector<pair<int, int>> get_selected_couplers(const HardwareSpecification &hardware_spec, int target) {
     vector<pair<int, double>> couplers = hardware_spec.get_sorted_qubit_couplers(target);
     pair<int, int> first_pair = {couplers[0].first, couplers[1].first}; // most noisy pair of couplers for this target
 
@@ -14,7 +19,7 @@ vector<pair<int, int>> get_selected_couplers(const HardwareSpecification &hardwa
 }
 
 
-bool does_result_contains_d(const vector<unordered_map<int, int>> &result, const unordered_map<int, int> &d) {
+inline bool does_result_contains_d(const vector<unordered_map<int, int>> &result, const unordered_map<int, int> &d) {
     for (auto d_ : result) {
         unordered_set<int> controls1({d.at(0), d.at(1)});
         unordered_set<int> controls2({d_.at(0), d_.at(1)});
@@ -32,6 +37,10 @@ class IPMABitflip : public Experiment {
     bool is_even_parity_bell_state(const QuantumState &qs);
 
     public:
+    IPMABitflip(const string &name, int precision, bool with_thermalization, int min_horizon, int max_horizon,
+        const set<MethodType>& method_types, const set<QuantumHardware>& hw_list) :
+            Experiment(name, precision, with_thermalization, min_horizon, max_horizon,
+                false, method_types, hw_list) {this->setup();};
         IPMABitflip() : Experiment() {
             this->name = "bitflip_ipma";
             this->precision = 8;
@@ -40,7 +49,11 @@ class IPMABitflip : public Experiment {
             this->max_horizon = 7;
             this->set_hidden_index = false;
             this->method_types.erase(MethodType::ConvexDist);
+            this->setup();
 
+        }
+
+        void setup() {
             this->BELL0 = vector<vector<complex<double>>>(
                 4, vector<complex<double>>(4)
             );
@@ -73,7 +86,6 @@ class IPMABitflip : public Experiment {
             this->BELL3[1][2] = complex<double>(-0.5, 0.0);
             this->BELL3[2][1] = complex<double>(-0.5, 0.0);
             this->BELL3[2][2] = complex<double>(0.5, 0.0);
-
         }
 
         [[nodiscard]] bool guard(const POMDPVertex& vertex, const unordered_map<int, int>& embedding, const POMDPAction& action) const override {
@@ -146,7 +158,7 @@ class IPMABitflip : public Experiment {
             return result;
         }
 
-    virtual vector<POMDPAction> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) {
+    virtual vector<POMDPAction> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) const override {
 
             assert(embedding.size() == 3);
             assert(embedding.find(0) != embedding.end());
@@ -203,12 +215,16 @@ class IPMABitflip : public Experiment {
 };
 
 
-class IPMA2Bitflip : IPMABitflip {
+class IPMA2Bitflip : public IPMABitflip {
+public:
+    IPMA2Bitflip(const string &name, int precision, bool with_thermalization, int min_horizon, int max_horizon,
+        const set<MethodType> &method_types, const set<QuantumHardware>& hw_list) :
+    IPMABitflip(name, precision, with_thermalization, min_horizon, max_horizon, method_types, hw_list){};
     IPMA2Bitflip() : IPMABitflip() {
         this->name = "bitflip_ipma2";
     }
 
-    vector<POMDPAction> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) override {
+    vector<POMDPAction> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) const override {
 
             assert(embedding.size() == 3);
             assert(embedding.find(0) != embedding.end());
@@ -241,13 +257,16 @@ class IPMA2Bitflip : IPMABitflip {
         }
 };
 
-class IPMA3Bitflip : IPMABitflip {
+class IPMA3Bitflip : public IPMABitflip {
     public:
+    IPMA3Bitflip(const string &name, int precision, bool with_thermalization, int min_horizon, int max_horizon,
+        const set<MethodType> &method_types, const set<QuantumHardware>& hw_list) :
+    IPMABitflip(name, precision, with_thermalization, min_horizon, max_horizon, method_types, hw_list){};
     IPMA3Bitflip() : IPMABitflip() {
         this->name = "bitflip_ipma2";
     }
 
-    vector<POMDPAction> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) override {
+    vector<POMDPAction> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) const override {
 
             assert(embedding.size() == 3);
             assert(embedding.find(0) != embedding.end());
@@ -283,15 +302,18 @@ class IPMA3Bitflip : IPMABitflip {
         }
 };
 
-class CXHBitflip : IPMABitflip {
+class CXHBitflip : public IPMABitflip {
     public:
+    CXHBitflip(const string &name, int precision, bool with_thermalization, int min_horizon, int max_horizon,
+        const set<MethodType> &method_types, const set<QuantumHardware>& hw_list) :
+    IPMABitflip(name, precision, with_thermalization, min_horizon, max_horizon, method_types, hw_list){};
     CXHBitflip() : IPMABitflip() {
             this->name = "bitflip_cxh";
             this->min_horizon = 4;
             this->max_horizon = 7;
     };
 
-    vector<POMDPAction> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) override {
+    vector<POMDPAction> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) const override {
 
             assert(embedding.size() == 3);
             assert(embedding.find(0) != embedding.end());
@@ -322,3 +344,4 @@ class CXHBitflip : IPMABitflip {
             return {H2, H1, CX21, CX01, P2};
         }
 };
+#endif
