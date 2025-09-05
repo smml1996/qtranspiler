@@ -30,13 +30,14 @@ inline bool does_result_contains_d(const vector<unordered_map<int, int>> &result
     
 
 class IPMABitflip : public Experiment {
+
+    bool is_even_parity_bell_state(const QuantumState &qs);
+
+    public:
     vector<vector<complex<double>>> BELL0;
     vector<vector<complex<double>>> BELL1;
     vector<vector<complex<double>>> BELL2;
     vector<vector<complex<double>>> BELL3;
-    bool is_even_parity_bell_state(const QuantumState &qs);
-
-    public:
     IPMABitflip(const string &name, int precision, bool with_thermalization, int min_horizon, int max_horizon,
         const set<MethodType>& method_types, const set<QuantumHardware>& hw_list) :
             Experiment(name, precision, with_thermalization, min_horizon, max_horizon,
@@ -343,5 +344,64 @@ class CXHBitflip : public IPMABitflip {
 
             return {H2, H1, CX21, CX01, P2};
         }
+};
+
+// CONVEX experiments
+class BellStateDiscrimination2: public IPMA2Bitflip {
+    map<int, vector<vector<complex<double>>>> indices_to_matrix;
+public:
+    BellStateDiscrimination2(const string &name, int precision, bool with_thermalization, int min_horizon, int max_horizon,
+        const set<MethodType> &method_types, const set<QuantumHardware>& hw_list) : IPMA2Bitflip(name, precision, with_thermalization, min_horizon, max_horizon, method_types, hw_list) {
+
+        this->set_hidden_index = true;
+        this->indices_to_matrix[0] = this->BELL0;
+        this->indices_to_matrix[1] = this->BELL1;
+        this->indices_to_matrix[2] = this->BELL2;
+        this->indices_to_matrix[3] = this->BELL3;
+    };
+
+    Rational postcondition(const Belief &belief, const unordered_map<int, int> &embedding) const override {
+        Rational result("0", "1", this->precision*(this->max_horizon+1));
+        for (auto it : belief.probs) {
+            auto hybrid_state = it.first->hybrid_state;
+            auto qs = hybrid_state->quantum_state;
+            auto current_rho = qs->multi_partial_trace(vector<int>({embedding.at(2)}));
+            assert (current_rho.size() == 4);
+
+            for (auto it2 : this->indices_to_matrix) {
+                if (are_matrices_equal(current_rho, it2.second, this->precision)) {
+                    if (it2.first == it.first->hidden_index) {
+                        result = result + it.second;
+                    } else {
+                        break;
+                    }
+
+                }
+            }
+        }
+        return result;
+    }
+
+};
+
+class BellStateDiscrimination3: public BellStateDiscrimination2, IPMA3Bitflip {
+    map<int, vector<vector<complex<double>>>> indices_to_matrix;
+public:
+    BellStateDiscrimination3(const string &name, int precision, bool with_thermalization, int min_horizon, int max_horizon,
+        const set<MethodType> &method_types, const set<QuantumHardware>& hw_list) : BellStateDiscrimination2(name, precision, with_thermalization, min_horizon, max_horizon, method_types, hw_list) {
+    };
+
+    Rational postcondition(const Belief &belief, const unordered_map<int, int> &embedding) const override {
+        return BellStateDiscrimination2::postcondition(belief, embedding);
+    }
+
+    vector<POMDPAction> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) const override {
+        return IPMA3Bitflip::get_actions(hardware_spec, embedding);
+    }
+
+    void run() const override{
+        return BellStateDiscrimination2::run();
+    }
+
 };
 #endif
