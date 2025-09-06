@@ -71,6 +71,7 @@ enum QuantumHardware {
 };
 
 string to_string(const QuantumHardware &quantum_hardware); // gets the string representation of the enum QuantumHardware
+string to_string(const set<QuantumHardware> &quantum_hardware);
 QuantumHardware to_quantum_hardware(const string &quantum_hardware);
 
 class HardwareSpecification {

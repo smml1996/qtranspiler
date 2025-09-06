@@ -36,6 +36,17 @@ string get_method_string(MethodType method) {
     throw invalid_argument("Method type not recognized");
 }
 
+string to_string(set<MethodType> methods) {
+    string result;
+    for (auto m : methods) {
+        if (!result.empty()) {
+            result += ", ";
+        }
+        result += to_string(m);
+    }
+    return result;
+}
+
 set<string> get_solver_methods_strings() {
     set<string> solver_methods;
     for (int i = 0; i < MethodType::MethodCount; i++) {
@@ -70,6 +81,25 @@ MethodType str_to_method_type(const string &method) {
 
 bool Experiment::guard(const POMDPVertex&, const unordered_map<int, int>&, const POMDPAction&) const {
     return true;
+}
+
+void Experiment::make_setup_file() const {
+    // write a text file that contains the setup of this experiment
+    fs::path setup_path =  this->get_wd() / "setup.txt";
+    ofstream setup_file(setup_path);
+    if (!setup_file.is_open()) {
+        std::cerr << "Failed to open file: " << setup_path << "\n";
+        return;
+    }
+
+    setup_file << "name: " << this->name << "\n";
+    setup_file << "precision: " << this->precision << "\n";
+    setup_file << "thermalization: " << with_thermalization << "\n";
+    setup_file << "min. horizon: " << this->min_horizon << "\n";
+    setup_file << "max. horizon: " << this->max_horizon << "\n";
+    setup_file << "hidden index: " << this->set_hidden_index << "\n";
+    setup_file << "methods: " << to_string(this->method_types) << endl;
+    setup_file << "quantum hardware: " << to_string(this->hw_list) << endl;
 }
 
 fs::path Experiment::get_wd() const {
@@ -179,6 +209,9 @@ void Experiment::run() const {
     if (!setup_working_dir()) {
         return;
     }
+
+    this->make_setup_file();
+
 
     fs::path results_path = this->get_wd() / "stats.csv";
 

@@ -17,6 +17,7 @@ enum MethodType {
 };
 
 string get_method_string(MethodType method);
+string to_string(set<MethodType> methods);
 set<string> get_solver_methods_strings();
 
 string to_string(const MethodType &method);
@@ -52,6 +53,7 @@ class Experiment {
         virtual set<QuantumHardware> get_allowed_hardware() const;
         virtual void run() const;
         virtual bool guard(const POMDPVertex&, const unordered_map<int, int>&, const POMDPAction&) const;
+        virtual void make_setup_file() const;
 
         // for an experiment we need to define at least these functions
         virtual vector<pair<HybridState*, double>> get_initial_distribution(unordered_map<int, int> &embedding) const = 0;

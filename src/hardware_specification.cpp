@@ -183,6 +183,19 @@ std::string to_string(const QuantumHardware &quantum_hardware) {
     }
 }
 
+string to_string(const set<QuantumHardware> &quantum_hardware) {
+    string result;
+
+    for (auto hw : quantum_hardware) {
+        if (!result.empty()) {
+            result += ", ";
+        }
+        result += to_string(hw);
+    }
+
+    return result;
+}
+
 QuantumHardware to_quantum_hardware(const string &quantum_hardware) {
     for (int i = 0; i < QuantumHardware::HardwareCount; i++) {
         auto str_curr = to_string(static_cast<QuantumHardware>(i));
