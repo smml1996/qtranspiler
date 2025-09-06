@@ -36,6 +36,7 @@ set(SOURCES
         src/experiments/reset.cpp
         include/rationals.hpp
         src/rationals.cpp
+        src/experiments/discrimination.cpp
 )
 
 add_executable(main ${SOURCES})

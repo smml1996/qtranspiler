@@ -9,14 +9,25 @@
 #include "bitflip.cpp"
 #include "ghz.cpp"
 #include "reset.cpp"
+#include "discrimination.cpp"
 
 using namespace std;
 
 
 int main(int argc, char* argv[]) {
     // Valid sets
-    set<string> valid_experiments = {"ghz3", "ghz4", "bitflip_ipma",
-        "bitflip_ipma2", "bitflip_ipma3","bitlfip_cxh" "reset", "bell_state_discr_ipma2", "bell_state_discr_ipma3"};
+    set<string> valid_experiments = {
+        "ghz3",
+        "ghz4",
+        "bitflip_ipma",
+        "bitflip_ipma2",
+        "bitflip_ipma3",
+        "bitlfip_cxh",
+        "reset",
+        "bell_state_discr_ipma2",
+        "bell_state_discr_ipma3",
+        "basis_state_discr"
+    };
     set<string> valid_methods = get_solver_methods_strings();
     set<string> valid_hardware = get_hardware_strings();
 
@@ -121,6 +132,10 @@ int main(int argc, char* argv[]) {
     else if (experiment == "bell_state_discr_ipma3") {
         auto bell_state_discr_problem = BellStateDiscrimination3(custom_name, precision, with_thermalization,min_horizon, max_horizon, methods, hw_list);
         bell_state_discr_problem.run();
+    }
+    else if (experiment == "basis_state_discr") {
+        auto basis_state_discr_problem = BasisStatesDiscrimination(custom_name, precision, with_thermalization,min_horizon, max_horizon, methods, hw_list);
+        basis_state_discr_problem.run();
     }
     else {
         throw std::invalid_argument("Invalid experiment: " + experiment);
