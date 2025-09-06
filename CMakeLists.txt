@@ -1,8 +1,8 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.18)
 project(probabilistc_hoare_triples)
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
+
+include(FetchContent)
 
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
@@ -46,3 +46,24 @@ target_link_libraries(main PRIVATE
         nlohmann_json::nlohmann_json
         c++      # libc++
 )
+
+# testing
+
+# Download and build GoogleTest automatically
+FetchContent_Declare(
+        googletest
+        URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
+)
+# For Windows/MSVC only: avoid overriding parent project's compiler settings
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(googletest)
+
+add_executable(test_example tests/test_example.cpp)
+
+# Link with gtest targets
+target_link_libraries(test_example GTest::gtest_main)
+
+include(GoogleTest)
+gtest_discover_tests(test_example)
+
+
