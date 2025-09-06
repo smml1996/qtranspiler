@@ -306,4 +306,3 @@ vector<Instruction> HardwareSpecification::to_basis_gates_impl(const Instruction
         }
         throw invalid_argument("cannot translate to basis gates");
     }
-

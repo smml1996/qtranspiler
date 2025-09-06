@@ -22,27 +22,36 @@ int main(int argc, char* argv[]) {
         "bitflip_ipma",
         "bitflip_ipma2",
         "bitflip_ipma3",
-        "bitlfip_cxh",
+        "bitflip_cxh",
         "reset",
         "bell_state_discr_ipma2",
         "bell_state_discr_ipma3",
-        "basis_state_discr"
+        "basis_state_discr",
+        "cbasis_state_discr",
+        "basic_zero_plus_discr"
     };
+    string all_experiments_str;
+    for (auto e : valid_experiments) {
+        if (!all_experiments_str.empty()) {
+            all_experiments_str += ", ";
+        }
+        all_experiments_str += e;
+    }
     set<string> valid_methods = get_solver_methods_strings();
     set<string> valid_hardware = get_hardware_strings();
 
-    cxxopts::Options options("main", "Run quantum experiments with POMDPs");
+    cxxopts::Options options("main", "Synthesize quantum algorithms using POMDPs");
 
     options.add_options()
-        ("experiment", "Experiment name", cxxopts::value<std::string>())
-        ("custom_name", "Custom name", cxxopts::value<std::string>()->default_value(""))
-        ("method", "Method name", cxxopts::value<std::vector<std::string>>())
-        ("hardware", "Comma-separated list of hardware specs", cxxopts::value<std::string>()->default_value(""))
+        ("experiment", "can be any of the following: " + all_experiments_str +".", cxxopts::value<std::string>())
+        ("custom_name", "a directory will be created with this name in results/.", cxxopts::value<std::string>()->default_value(""))
+        ("method", "can be any of the following: bellman, pbvi, convex.", cxxopts::value<std::vector<std::string>>())
+        ("hardware", "Comma-separated list of hardware specs. Check hardware_specifications/ directory. E.g. almaden", cxxopts::value<std::string>()->default_value(""))
         ("min_horizon", "Minimum horizon", cxxopts::value<int>())
         ("max_horizon", "Maximum horizon", cxxopts::value<int>())
-        ("precision", "Precision", cxxopts::value<int>()->default_value("8"))
+        ("precision", "precision of the POMDP", cxxopts::value<int>()->default_value("8"))
         ("with_thermalization", "Enable thermalization", cxxopts::value<bool>()->default_value("false"))
-        ("round_in_file", "files generated will round to the given number", cxxopts::value<int>()->default_value("5"))
+        ("round_in_file", "All numbers in the generated files will be formatted to show no more than this number of decimal places.", cxxopts::value<int>()->default_value("5"))
         ("h,help", "Print usage");
 
     auto result = options.parse(argc, argv);
@@ -136,6 +145,14 @@ int main(int argc, char* argv[]) {
     else if (experiment == "basis_state_discr") {
         auto basis_state_discr_problem = BasisStatesDiscrimination(custom_name, precision, with_thermalization,min_horizon, max_horizon, methods, hw_list);
         basis_state_discr_problem.run();
+    }
+    else if (experiment == "basic_zero_plus_discr") {
+        auto basic_zero_plus_discr = BasicZeroPlusDiscrimination(custom_name, precision, with_thermalization,min_horizon, max_horizon, methods, hw_list);
+        basic_zero_plus_discr.run();
+    }
+    else if (experiment == "cbasis_state_discr") {
+        auto cbasis_state_discr_problem = CBasisStatesDiscrimination(custom_name, precision, with_thermalization,min_horizon, max_horizon, methods, hw_list);
+        cbasis_state_discr_problem.run();
     }
     else {
         throw std::invalid_argument("Invalid experiment: " + experiment);

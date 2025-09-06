@@ -364,19 +364,10 @@ public:
         Rational result("0", "1", this->precision*(this->max_horizon+1));
         for (auto it : belief.probs) {
             auto hybrid_state = it.first->hybrid_state;
-            auto qs = hybrid_state->quantum_state;
-            auto current_rho = qs->multi_partial_trace(vector<int>({embedding.at(2)}));
-            assert (current_rho.size() == 4);
+            auto cs = hybrid_state->classical_state;
 
-            for (auto it2 : this->indices_to_matrix) {
-                if (are_matrices_equal(current_rho, it2.second, this->precision)) {
-                    if (it2.first == it.first->hidden_index) {
-                        result = result + it.second;
-                    } else {
-                        break;
-                    }
-
-                }
+            if (cs->get_memory_val() == it.first->hidden_index) {
+                result = result + it.second;
             }
         }
         return result;

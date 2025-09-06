@@ -51,10 +51,8 @@ Experiment(name, precision, with_thermalization, min_horizon, max_horizon, false
 
         vector<POMDPAction> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) const override {
 
-            assert(embedding.size() == 3);
+            assert(embedding.size() == 1);
             assert(embedding.find(0) != embedding.end());
-            assert(embedding.find(1) != embedding.end());
-            assert(embedding.find(2) != embedding.end());
 
             
             auto X0 = POMDPAction("X0", hardware_spec.to_basis_gates_impl(Instruction(GateName::X, 
