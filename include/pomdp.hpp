@@ -17,14 +17,14 @@ class POMDPVertex {
         int hidden_index;
         int id;
         POMDPVertex() = default;
-        POMDPVertex(HybridState *hybrid_state, int hidden_index=-1);
+        explicit POMDPVertex(HybridState *hybrid_state, int hidden_index=-1);
         bool operator==(const POMDPVertex &other) const;
-        ClassicalState *get_obs() const;
+        [[nodiscard]] ClassicalState *get_obs() const;
 };
 
 // Custom hash
 struct POMDPVertexHash {
-    std::size_t operator()(const POMDPVertex *instruction) const;
+    std::size_t operator()(const POMDPVertex *v) const;
 };
 
 struct POMDPVertexPtrEqual {
@@ -36,11 +36,11 @@ typedef unordered_map<POMDPVertex*, double, POMDPVertexHash, POMDPVertexPtrEqual
 class POMDPAction {
     int precision;
 
-    vertex_dict __handle_measure_instruction(const Instruction &instruction, const MeasurementChannel &channel, const POMDPVertex &vertex, bool is_meas1=true, vertex_dict result = {}) const;
+    void __handle_measure_instruction(const Instruction &instruction, const MeasurementChannel &channel, const POMDPVertex &vertex, vertex_dict &result, bool is_meas1=true) const;
     
-    vertex_dict __handle_unitary_instruction(const Instruction &instruction, const QuantumChannel &channel, const POMDPVertex &vertex,vertex_dict result = {}) const;
+    void __handle_unitary_instruction(const Instruction &instruction, const QuantumChannel &channel, const POMDPVertex &vertex, vertex_dict &result) const;
 
-    vertex_dict __handle_reset_instruction(const Instruction &instruction, const QuantumChannel &channel, const POMDPVertex &vertex, bool is_meas1=true, vertex_dict result = {}) const;
+    void __handle_reset_instruction(const Instruction &instruction, const QuantumChannel &channel, const POMDPVertex &vertex, vertex_dict &result, bool is_meas1=true) const;
 
     vertex_dict __dfs(HardwareSpecification &hardware_specification, POMDPVertex *vertex, int index_ins) const;
 
@@ -71,10 +71,7 @@ typedef function<bool(POMDPVertex, unordered_map<int, int>, POMDPAction)> guard_
 class POMDP {
     vector<POMDPVertex> states;
     int precision;
-
-    POMDPVertex* get_vertex(const POMDPVertex *vertex);
-    POMDPVertex* create_new_vertex(const HybridState *hybrid_state, int hidden_index);
-    public:
+public:
         POMDPVertex *initial_state;
         unordered_map<POMDPVertex *, unordered_map<POMDPAction *, unordered_map<POMDPVertex *, Rational, POMDPVertexHash,
             POMDPVertexPtrEqual>, POMDPActionHash, POMDPActionPtrEqual>, POMDPVertexHash, POMDPVertexPtrEqual>
@@ -83,6 +80,8 @@ class POMDP {
         POMDP() = default;
         POMDP(int precision);
         POMDP(POMDPVertex *initialState, const vector<POMDPVertex> &states, const vector<POMDPAction> &actions, unordered_map<POMDPVertex*, unordered_map<POMDPAction*, unordered_map<POMDPVertex*, Rational,POMDPVertexHash, POMDPVertexPtrEqual>,POMDPActionHash, POMDPActionPtrEqual>, POMDPVertexHash, POMDPVertexPtrEqual> &transition_matrix);
+        POMDPVertex* get_vertex(const POMDPVertex *vertex);
+        POMDPVertex* create_new_vertex(const HybridState *hybrid_state, int hidden_index);
         void build_pomdp(const vector<POMDPAction> &actions, HardwareSpecification &hardware_specification, int horizon, unordered_map<int, int> embedding, HybridState *initial_state, const vector<pair<HybridState*, double>> &initial_distribution, vector<int> &qubits_used, guard_type guard, bool set_hidden_index=false);
 };
 #endif

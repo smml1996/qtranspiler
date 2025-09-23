@@ -17,10 +17,10 @@ enum MethodType {
 };
 
 string get_method_string(MethodType method);
-string to_string(set<MethodType> methods);
+string gate_to_string(set<MethodType> methods);
 set<string> get_solver_methods_strings();
 
-string to_string(const MethodType &method);
+string gate_to_string(const MethodType &method);
 MethodType str_to_method_type(const string &method);
 
 class Experiment {

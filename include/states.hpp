@@ -12,6 +12,7 @@ inline auto pi = M_PI;
 using namespace std;
 
 class QuantumState {
+public:
     vector<int> qubits_used;
     int precision;
     pair<complex<double>, complex<double>> get_qubit_amplitudes() const;
@@ -23,7 +24,7 @@ class QuantumState {
     QuantumState* eval_single_qubit_gate(const Instruction &instruction) const;
 
     static bool are_controls_true(int basis, const vector<int> &controls);
-    public:
+
         unordered_map<int, complex<double>>  sparse_vector; // stores amplitudes for computational basis
         QuantumState(const vector<int> &qubits_used, int precision);
         complex<double> get_amplitude(const int &basis) const;

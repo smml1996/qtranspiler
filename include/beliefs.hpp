@@ -5,8 +5,8 @@
 
 
 class Belief {
-    Rational get_sum() const;
 public:
+    [[nodiscard]] Rational get_sum(int precision) const;
     unordered_map<POMDPVertex *, Rational, POMDPVertexHash, POMDPVertexPtrEqual> probs;
 
     Rational get(POMDPVertex *v);
@@ -24,8 +24,8 @@ struct BeliefHash {
     std::size_t operator()(const Belief &instruction) const;
 };
 
-Rational l1_norm(const Belief &b1, const Belief &b2);
+Rational l1_norm(const Belief &b1, const Belief &b2, int precision);
 
-Belief normalize_belief(const Belief &belief);
+Belief normalize_belief(const Belief &belief, int precision);
 
 #endif

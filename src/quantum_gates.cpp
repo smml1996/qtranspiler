@@ -48,7 +48,7 @@ BasisGates get_basis_gates_type(const unordered_set<GateName> &basis_gates) {
     throw std::invalid_argument("Unknown basis_gates set");
 }
 
-inline std::string to_string(GateName gate) {
+std::string gate_to_string(GateName gate) {
     switch (gate) {
         case I:        return "I";
         case X:        return "X";
@@ -88,7 +88,7 @@ inline std::string to_string(GateName gate) {
 GateName get_enum_obj(const string &raw_gate) {
     for (int i = 0; i < GateName::count; i++) {
         GateName g = static_cast<GateName>(i);
-        if(to_string(g) == raw_gate) {
+        if(gate_to_string(g) == raw_gate) {
             return g;
         }
     }

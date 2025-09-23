@@ -11,8 +11,8 @@ public:
     MyFloat numerator;
     MyFloat denominator;
     int precision;
-    Rational(const string &numerator="0", const string &denominator = "1", int custom_precision=-1);
-    Rational(const MyFloat & numerator, const MyFloat & denominator = MyFloat("1"));
+    explicit Rational(const string &numerator="0", const string &denominator = "1", int custom_precision=-1);
+    explicit Rational(const MyFloat & numerator, const MyFloat & denominator = MyFloat("1"));
     friend std::ostream &operator<<(ostream& os, const Rational& rational);
     Rational operator+(Rational const &rhs) const;
     Rational operator*(Rational const &rhs) const;

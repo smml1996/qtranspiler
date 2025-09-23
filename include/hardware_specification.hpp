@@ -85,8 +85,8 @@ class HardwareSpecification {
         unordered_set<GateName> basis_gates;
         HardwareSpecification(const QuantumHardware &quantum_hardware, const bool &thermal_relaxation);
         string get_hardware_name() const;
-        vector<Instruction> to_basis_gates_impl(const Instruction &current_ins) const;
         int get_qubit_indegree(int qubit) const;
+        vector<Instruction> to_basis_gates_impl(const Instruction &current_ins) const;
         vector<pair<int, double>> get_sorted_qubit_couplers(int target) const;
 };
 

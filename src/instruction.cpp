@@ -4,6 +4,9 @@
 using namespace std;
 
 Instruction::Instruction(GateName gate_name, int target) {
+    assert (gate_name != GateName::Meas);
+    assert (target > -1);
+    this->c_target = -1;
     this->gate_name = gate_name;
     if (gate_name == GateName::Write0 || gate_name == GateName::Write1) {
         this->instruction_type = InstructionType::Classical;
@@ -18,6 +21,8 @@ Instruction::Instruction(GateName gate_name, int target) {
 }
 
 Instruction::Instruction(GateName gate_name, int target, const vector<double> &params) {
+    this->c_target = -1;
+    assert (target > -1);
     this->gate_name = gate_name;
     this->target = target;
     this->params = params;
@@ -26,15 +31,24 @@ Instruction::Instruction(GateName gate_name, int target, const vector<double> &p
 }
 
 Instruction::Instruction(GateName gate_name, const vector<int> &controls, int target, const vector<double> &params) {
+    for (auto control : controls) {
+        assert (control > -1);
+    }
+    assert (target > -1);
+    this->c_target = -1;
     this->gate_name = gate_name;
     this->controls = controls;
     this->target = target;
     this->params = params;
-    this->instruction_type = InstructionType::UnitarySingleQubit;
+    this->instruction_type = InstructionType::UnitaryMultiQubit;
     this->c_target = -1;
 }
 
 Instruction::Instruction(GateName gate_name, vector<int> controls, int target) {
+    for (auto control : controls) {
+        assert (control > -1);
+    }
+    assert (target > -1);
     this->gate_name = gate_name;
     this->controls = std::move(controls);
     this->target = target;
@@ -51,7 +65,7 @@ Instruction::Instruction(GateName gate_name, int target, int c_target) {
 
 Instruction::Instruction(const json &json_val) {
     string raw_gate_name = json_val["op"];
-    this->gate_name = get_enum_obj(raw_gate_name);;
+    this->gate_name = get_enum_obj(raw_gate_name);
 
     this->target = json_val["target"];
 
@@ -62,53 +76,62 @@ Instruction::Instruction(const json &json_val) {
     
     switch (gate_name) {
         // One-qubit gates
-        case I:
-        case X:
-        case Y:
-        case Z:
-        case H:
-        case S:
-        case Sd:
-        case Sx:
-        case Sxd:
-        case U1:
-        case U2:
-        case U3:
-        case T:
-        case Td:
-        case Rz:
-        case Ry:
-        case Rx:
-        case Reset:
+        case I:break;
+        case X: break;
+        case Y:break;
+        case Z:break;
+        case H:break;
+        case S:break;
+        case Sd:break;
+        case Sx:break;
+        case Sxd:break;
+        case U1:break;
+        case U2:break;
+        case U3:break;
+        case T:break;
+        case Td:break;
+        case Rz:break;
+        case Ry:break;
+        case Rx:break;
+        case Reset:break;
         case GateName::Meas:
             this->instruction_type = InstructionType::Measurement;
             this->c_target = target;
             break;
         case GateName::Custom:
             assert(false);
+            break;
         case GateName::Cnot:
             this->controls.push_back(json_val["control"]);
             this->instruction_type = InstructionType::UnitaryMultiQubit;
             break;
         case GateName::Ecr:
-            assert(false);
+            this->controls.push_back(json_val["control"]);
+            this->instruction_type = InstructionType::UnitaryMultiQubit;
+            break;
         case GateName::Rzx:
             assert(false);
+            break;
         case GateName::Cz:
             this->controls.push_back(json_val["control"]);
             this->instruction_type = InstructionType::UnitaryMultiQubit;
             break;
         case Ch:
             assert(false);
+            break;
         case Swap:
             assert(false);
+            break;
         case Toffoli:
             assert(false);
+            break;
         // Classical gates
         case Write0:
             assert(false);
+            break;
         case Write1:
             assert(false);
+            break;
         default:
             std::cerr << "Coult not get instruction for " + to_string(json_val) << endl;
             break;
@@ -140,7 +163,7 @@ string to_string(const Instruction &instruction) {
                 return "x" + to_string(instruction.c_target) + " := 1; ";
             }
         default:
-            assert(instruction.instruction_type == InstructionType::UnitaryMultiQubit || instruction.instruction_type == InstructionType::UnitaryMultiQubit);
+            assert(instruction.instruction_type == InstructionType::UnitarySingleQubit || instruction.instruction_type == InstructionType::UnitaryMultiQubit);
             string str_qvars = "";
 
             for (auto control : instruction.controls) {
@@ -155,7 +178,7 @@ string to_string(const Instruction &instruction) {
             }
             str_qvars += "q" + to_string(instruction.target);
 
-            return to_string(instruction.gate_name) + "([" + str_qvars + "]); ";
+            return gate_to_string(instruction.gate_name) + "([" + str_qvars + "]); ";
 
     }
 }

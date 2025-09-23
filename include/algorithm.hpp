@@ -28,8 +28,8 @@ public:
     bool operator==(const Algorithm &algorithm) const;
     bool has_meas() const;
     bool has_classical_instruction() const;
-    bool is_unitary() const;
-    void get_successor_classical_states(const int &current_classical_state, unordered_set<int> &result) const;
+    bool is_unitary() const; // returns true if all instructions used by the action of the current node use only unitary instructions (children are not checked)
+    void get_successor_classical_states(const int &current_classical_state, unordered_set<int> &result) const; // returns a set containing all reachable classical states by executing the current acction (children are not checked)
 };
 
 string to_string(Algorithm * algorithm, const string& tabs="");

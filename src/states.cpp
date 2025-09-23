@@ -4,6 +4,7 @@
 #include <cassert>
 #include "utils.hpp"
 #include <cmath>
+#include <iostream>
 
 using namespace std;
 
@@ -19,9 +20,10 @@ QuantumState::QuantumState(const vector<int> &qubits_used, int precision) {
 
 QuantumState* QuantumState::eval_qubit_unitary(const Instruction &instruction) const {
     assert (this->is_qubit());
-    assert (instruction.instruction_type == InstructionType::UnitarySingleQubit);
+    assert (instruction.instruction_type == InstructionType::UnitarySingleQubit || instruction.instruction_type == InstructionType::Projector);
 
     auto result = new QuantumState(this->qubits_used, this->precision);
+    result->sparse_vector.clear();
 
     auto qubit_amplitudes = this->get_qubit_amplitudes();
     auto a0 = qubit_amplitudes.first;
@@ -122,11 +124,11 @@ QuantumState* QuantumState::eval_qubit_unitary(const Instruction &instruction) c
         result->insert_amplitude(0, 1.0);
     } else if (instruction.instruction_type == InstructionType::Projector){
         if (instruction.gate_name == GateName::P0) {
-            if (a0 == complex<double>(0, 0)) return nullptr;
+            if (a0 == complex<double>(0, 0)) {return nullptr;}
             result->insert_amplitude(0, complex<double>(1.0, 0.0));
         } else {
             assert (instruction.gate_name == GateName::P1);
-            if (a1 == complex<double>(0,0)) return nullptr;
+            if (a1 == complex<double>(0,0)) {return nullptr;}
             result->insert_amplitude(1, complex<double>(1, 0.0));
         }
     } else {
@@ -151,7 +153,7 @@ bool QuantumState::is_qubit() const {
     }
 
     for (auto it : this->sparse_vector) {
-        if (it.first > 0) {
+        if (it.first > 1) {
             return false;
         }
     }
@@ -220,9 +222,11 @@ bool QuantumState::operator==(const QuantumState& other) const {
 }
 
 pair<QuantumState*, double> get_sequence_probability(QuantumState * const &quantum_state0, const vector<Instruction> &seq, int precision) {
+    assert(quantum_state0 != nullptr);
     int count_meas = 0;
     QuantumState* quantum_state = quantum_state0;
     QuantumState* prev_quantum_state = nullptr;
+    int index = 0;
     for (auto instruction : seq) {
         assert(instruction.gate_name != GateName::Meas);
         if (instruction.gate_name== GateName::P0 or instruction.gate_name== GateName::P1){
@@ -231,7 +235,10 @@ pair<QuantumState*, double> get_sequence_probability(QuantumState * const &quant
         }
         prev_quantum_state = quantum_state;
         quantum_state = quantum_state->apply_instruction(instruction, false);
-        delete prev_quantum_state;
+        if (prev_quantum_state != nullptr && index > 1) {
+            delete prev_quantum_state;
+        }
+        index++;
         if (quantum_state == nullptr) {
             return make_pair(nullptr, 0.0);
         }
@@ -318,12 +325,14 @@ QuantumState* QuantumState::apply_instruction(const Instruction &instruction, bo
             result->normalize();
         }
         assert(result->sparse_vector.size() > 0);
+        assert(is_close(get_fidelity(*result, *result), 1, this->precision));
     }
     return result;
 }
 
 QuantumState *QuantumState::get_qubit_from_basis(int basis, int target) const {
     auto result = new QuantumState({target}, this->precision);
+    result->sparse_vector.clear();
     std::string bin_number = to_binary(basis);  // reversed already
     if (target >= static_cast<int>(bin_number.size())) {
         result->insert_amplitude(0, complex<double>(1.0, 0.0));
@@ -362,6 +371,7 @@ int QuantumState::glue_qubit_in_basis(int basis, int address, int value) {
 
 QuantumState* QuantumState::eval_single_qubit_gate(const Instruction &instruction) const {
     auto result = new QuantumState(this->qubits_used, this->precision);
+    result->sparse_vector.clear();
     bool at_least_one_perform_op = false;
     auto op = instruction.gate_name;
     int address = instruction.target;
@@ -393,10 +403,14 @@ QuantumState* QuantumState::eval_single_qubit_gate(const Instruction &instructio
                 result->add_amplitude(basis0, a0);
                 result->add_amplitude(basis1, a1);
                 at_least_one_perform_op = true;
-                delete new_qubit;
+                if (new_qubit != nullptr) {
+                    delete new_qubit;
+                }
             }
         } else {
-            delete old_qubit;
+            if (old_qubit != nullptr) {
+                delete old_qubit;
+            }
         }
     }
     if (not at_least_one_perform_op) {delete result; return nullptr;}
@@ -420,12 +434,14 @@ QuantumState* QuantumState::eval_multiqubit_gate(const Instruction &instruction)
     auto controls = instruction.controls;
     auto address = instruction.target;
     auto result = new QuantumState(this->qubits_used, this->precision);
+    result->sparse_vector.clear();
 
     for (auto it : this->sparse_vector) {
         auto basis = it.first;
         auto value = it.second;
         if (this->are_controls_true(basis, controls)) {
             auto basis_state = new QuantumState(this->qubits_used, this->precision);
+            basis_state->sparse_vector.clear();
             basis_state->insert_amplitude(basis, value);
             Instruction new_instruction;
             if (op == GateName::Cnot){
@@ -447,7 +463,9 @@ QuantumState* QuantumState::eval_multiqubit_gate(const Instruction &instruction)
                     auto v = it2.second;
                     result->add_amplitude(b, v);
                 }
-                delete written_basis;
+                if (written_basis != nullptr) {
+                    delete written_basis;
+                }
             } else {
                 throw invalid_argument("written basis is none");
             }

@@ -36,13 +36,13 @@ string get_method_string(MethodType method) {
     throw invalid_argument("Method type not recognized");
 }
 
-string to_string(set<MethodType> methods) {
+string gate_to_string(set<MethodType> methods) {
     string result;
     for (auto m : methods) {
         if (!result.empty()) {
             result += ", ";
         }
-        result += to_string(m);
+        result += gate_to_string(m);
     }
     return result;
 }
@@ -50,13 +50,13 @@ string to_string(set<MethodType> methods) {
 set<string> get_solver_methods_strings() {
     set<string> solver_methods;
     for (int i = 0; i < MethodType::MethodCount; i++) {
-        solver_methods.insert(to_string(static_cast<MethodType>(i)));
+        solver_methods.insert(gate_to_string(static_cast<MethodType>(i)));
     }
 
     return solver_methods;
 }
 
-string to_string(const MethodType &method) {
+string gate_to_string(const MethodType &method) {
     switch(method) {
         case MethodType::SingleDistBellman:
             return "bellman";
@@ -71,7 +71,7 @@ string to_string(const MethodType &method) {
 
 MethodType str_to_method_type(const string &method) {
     for (int i = 0; i < MethodType::MethodCount; i++) {
-        string m_str = to_string(static_cast<MethodType>(i));
+        string m_str = gate_to_string(static_cast<MethodType>(i));
         if (m_str == method) {
             return static_cast<MethodType>(i);
         }
@@ -98,7 +98,7 @@ void Experiment::make_setup_file() const {
     setup_file << "min. horizon: " << this->min_horizon << "\n";
     setup_file << "max. horizon: " << this->max_horizon << "\n";
     setup_file << "hidden index: " << this->set_hidden_index << "\n";
-    setup_file << "methods: " << to_string(this->method_types) << endl;
+    setup_file << "methods: " << gate_to_string(this->method_types) << endl;
     setup_file << "quantum hardware: " << to_string(this->hw_list) << endl;
 }
 
@@ -312,7 +312,7 @@ void Experiment::run() const {
                                                     to_string(embedding_index),
                                                     to_string(round_to(pomdp_build_time, Experiment::round_in_file)),
                                                     to_string(round_to(result.second, Experiment::round_in_file)),
-                                                    to_string(method),
+                                                    gate_to_string(method),
                                                     to_string(round_to(method_time, Experiment::round_in_file)),
                                                     to_string(algorithm_index),
                                                     to_string(round_to(error, Experiment::round_in_file))})

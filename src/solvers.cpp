@@ -19,7 +19,7 @@ Rational SingleDistributionSolver::get_closest_L1(const Belief &belief) const {
     bool first = true;
     for (auto it : this->beliefs_to_rewards) {
         auto existing_belief = it.first;
-        auto current_l1_norm = l1_norm(existing_belief, belief);
+        auto current_l1_norm = l1_norm(existing_belief, belief, this->precision);
         if (first || result > current_l1_norm) {
             first = false;
             result = current_l1_norm;
@@ -42,7 +42,7 @@ SingleDistributionSolver::SingleDistributionSolver(const POMDP &pomdp, const f_r
 }
 
 pair<Algorithm*, Rational> SingleDistributionSolver::get_bellman_value(const Belief &current_belief, const int &horizon){
-    Belief curr_belief_normalized = normalize_belief(current_belief);
+    Belief curr_belief_normalized = normalize_belief(current_belief, this->precision);
 
     auto temp_it = this->beliefs_to_rewards.find(curr_belief_normalized);
     if (temp_it != this->beliefs_to_rewards.end()) {
@@ -133,7 +133,7 @@ pair<Algorithm*, Rational> SingleDistributionSolver::get_bellman_value(const Bel
 
 
 pair<Algorithm*, Rational> SingleDistributionSolver::PBVI_solve(const Belief &current_belief, const int &horizon) {
-    Belief curr_belief_normalized = normalize_belief(current_belief);
+    Belief curr_belief_normalized = normalize_belief(current_belief, this->precision);
 
     auto temp_it = this->beliefs_to_rewards.find(curr_belief_normalized);
     if (temp_it != this->beliefs_to_rewards.end()) {
@@ -186,7 +186,7 @@ pair<Algorithm*, Rational> SingleDistributionSolver::PBVI_solve(const Belief &cu
             }
         }
 
-        next_belief = normalize_belief((next_belief));
+        next_belief = normalize_belief(next_belief, this->precision);
         if (!this->is_belief_visited(next_belief)) {
             Rational closest_value = this->get_closest_L1(next_belief);
             if (furthest_value == Rational("-1", "1", this->precision) || furthest_value < closest_value) {
@@ -295,7 +295,7 @@ void ConvexDistributionSolver::set_minimax_values(
         assert(minimax_matrix[current_alg_index].find(index) == minimax_matrix[current_alg_index].end());
 
         Belief initial_belief;
-        initial_belief.set_val(initial_states[index], MyFloat("1"));
+        initial_belief.set_val(initial_states[index], Rational("1", "1", this->precision));
 
         minimax_matrix[current_alg_index][index] = to_double(get_algorithm_acc(pomdp,algorithm, initial_belief, this->get_reward, this->embedding, precision));
     }

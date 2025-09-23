@@ -5,6 +5,7 @@
 #include "rationals.hpp"
 
 #include <cassert>
+#include <iostream>
 #include <string>
 #include <ostream>
 
@@ -12,18 +13,40 @@ using namespace std;
 
 Rational::Rational(const string &numerator, const string &denominator, int custom_precision) {
     assert(custom_precision != -1);
-    this->numerator = MyFloat(numerator, custom_precision);
-    this->denominator = MyFloat(denominator, custom_precision);
     this->precision = custom_precision;
+    this->numerator = MyFloat(numerator, custom_precision);
+    if (this->numerator == MyFloat("0", this->precision)) {
+        this->denominator = MyFloat("1", this->precision);
+    } else {
+        this->denominator = MyFloat(denominator, custom_precision);
+    }
+
+    if (this->denominator.is_negative) {
+        this->denominator.is_negative = false;
+        this->numerator.is_negative = !this->numerator.is_negative;
+    }
+    if (this->denominator == MyFloat("0")) {
+        throw invalid_argument("denominator cannot be zero");
+    }
 }
 
 Rational::Rational(const MyFloat &numerator, const MyFloat &denominator) {
-    this->numerator = numerator;
-    this->denominator = denominator;
+    assert(numerator.precision != -1);
     assert (numerator.precision == denominator.precision);
     this->precision = numerator.precision;
+    this->numerator = numerator;
+    if (this->numerator == MyFloat("0", this->precision)) {
+        this->denominator = MyFloat("1", this->precision);
+    } else {
+        this->denominator = denominator;
+    }
+
     if (denominator == MyFloat("0")) {
         throw invalid_argument("denominator cannot be zero");
+    }
+    if (this->denominator.is_negative) {
+        this->denominator.is_negative = false;
+        this->numerator.is_negative = !this->numerator.is_negative;
     }
 }
 
@@ -56,11 +79,16 @@ Rational Rational::operator/(Rational const &rhs) const {
 }
 
 bool Rational::operator==(Rational const &rhs) const {
-    return numerator == rhs.numerator && denominator == rhs.denominator;
+    if (this->numerator == MyFloat("0", this->precision) && rhs.numerator == MyFloat("0", this->precision)) {
+        return true;
+    }
+    auto temp = *this / rhs;
+    auto one = MyFloat("1", this->precision);
+    return (temp.numerator == temp.denominator) || (temp.numerator == one && temp.denominator == one);
 }
 
 bool Rational::operator!=(Rational const &rhs) const {
-    return numerator != rhs.numerator || denominator != rhs.denominator;
+    return !(*this == rhs);
 }
 
 bool Rational::operator<(Rational const &rhs) const {
@@ -90,8 +118,8 @@ Rational min(Rational const &rational1, Rational const &rational2) {
 }
 
 double to_double(const Rational &rational) {
-    double numerator = stod(to_string(rational.numerator));
-    double denominator = stod(to_string(rational.denominator));
+    double numerator = stod(gate_to_string(rational.numerator));
+    double denominator = stod(gate_to_string(rational.denominator));
     return numerator / denominator;
 }
 

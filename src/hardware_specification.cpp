@@ -50,19 +50,21 @@ set<string> get_hardware_strings() {
 
 
 HardwareSpecification::HardwareSpecification(const QuantumHardware &quantum_hardware, const bool &thermal_relaxation) {
+    std::filesystem::path source_path(__FILE__);
+    std::filesystem::path source_dir = source_path.parent_path();
     this->quantum_hardware = quantum_hardware;
     
     // determining hardware specification path
-    string spec_path;
+    std::filesystem::path spec_path;
     if (thermal_relaxation) {
-        spec_path = "../with_thermalization/fake_" + to_string(quantum_hardware) + ".json";
+        spec_path = source_dir / ("../hardware_specifications/with_thermalization/fake_" + to_string(quantum_hardware) + ".json");
     } else {
-        spec_path = "../no_thermalization/fake_" + to_string(quantum_hardware) + ".json";
+        spec_path = source_dir / ("../hardware_specifications/no_thermalization/fake_" + to_string(quantum_hardware) + ".json");
     }
 
     std::ifstream f(spec_path);
     if (!f.is_open()) {
-        std::cerr << "Failed to open file: " + spec_path << endl;
+        std::cerr << "(Failed to open file: "  << spec_path << endl;
     }
     json json_hardware_spec = json::parse(f);
     f.close();
@@ -108,8 +110,9 @@ HardwareSpecification::HardwareSpecification(const QuantumHardware &quantum_hard
     // compute digraph
     for (auto it : this->instructions_to_channels) {
         auto instruction = it.first;
-        assert (instruction->controls.size() == 1);
+
         if (instruction->instruction_type == InstructionType::UnitaryMultiQubit) {
+            assert (instruction->controls.size() == 1);
             int source = instruction->controls[0];
             int target = instruction->target;
             
@@ -212,23 +215,24 @@ string HardwareSpecification::get_hardware_name() const {
 
 vector<Instruction> HardwareSpecification::to_basis_gates_impl(const Instruction &current_ins) const {
     if ((basis_gates.find(current_ins.gate_name) != basis_gates.end() )  ||(current_ins.instruction_type == InstructionType::Measurement) || (current_ins.instruction_type == InstructionType::Classical)) return {current_ins};
-    auto temp = unordered_set<BasisGates>({BasisGates::TYPE2, BasisGates::TYPE2, BasisGates::TYPE5, BasisGates::TYPE4, BasisGates::TYPE6});
-    if (temp.find(basis_gates_type) != temp.end()){
-        vector<Instruction> sx({Instruction(GateName::Sx, current_ins.target)});
-        if (current_ins.gate_name == GateName::Ry){
-            return {
+    auto temp = unordered_set<BasisGates>({BasisGates::TYPE1, BasisGates::TYPE2, BasisGates::TYPE3, BasisGates::TYPE5, BasisGates::TYPE4, BasisGates::TYPE6});
+    if (temp.find(basis_gates_type) != temp.end()) {
+        if (basis_gates_type != BasisGates::TYPE3) {
+            vector<Instruction> sx({Instruction(GateName::Sx, current_ins.target)});
+            if (current_ins.gate_name == GateName::Ry){
+                return {
+                    Instruction(GateName::Sx, current_ins.target),
+                    Instruction(GateName::Rz, current_ins.target, vector<double>({current_ins.params[0] + pi})),
+                    Instruction(GateName::Sx, current_ins.target),
+                    Instruction(GateName::Rz, current_ins.target, vector<double>({3*pi}))
+                };
+            }
+            if( current_ins.gate_name == GateName::H) {
+                return {Instruction(GateName::Rz, current_ins.target, vector<double>({pi/2})),
                 Instruction(GateName::Sx, current_ins.target),
-                Instruction(GateName::Rz, current_ins.target, vector<double>({current_ins.params[0] + pi})),
-                Instruction(GateName::Sx, current_ins.target),
-                Instruction(GateName::Rz, current_ins.target, vector<double>({3*pi}))
-            };
-        }
-        if( current_ins.gate_name == GateName::H) {
-            return {Instruction(GateName::Rz, current_ins.target, vector<double>({pi/2})),
-            Instruction(GateName::Sx, current_ins.target),
-            Instruction(GateName::Rz, current_ins.target, vector<double>({pi/2})),
-            };
-        }
+                Instruction(GateName::Rz, current_ins.target, vector<double>({pi/2})),
+                };
+            }
 
             if (current_ins.gate_name == GateName::Z)
                 return {Instruction(GateName::Rz, current_ins.target, vector<double>({pi}))};
@@ -289,8 +293,7 @@ vector<Instruction> HardwareSpecification::to_basis_gates_impl(const Instruction
 
                 return result;
             }
-        }
-        if (basis_gates_type == BasisGates::TYPE3) {
+        } else {
             if (current_ins.gate_name == GateName::H)
                 return {Instruction(GateName::U2, current_ins.target, vector<double>({0, pi}))};
             if (current_ins.gate_name == GateName::S)
@@ -304,5 +307,6 @@ vector<Instruction> HardwareSpecification::to_basis_gates_impl(const Instruction
             if (current_ins.gate_name == GateName::X)
                 return {Instruction(GateName::U3, current_ins.target, vector<double>({pi, 0, pi}))};
         }
-        throw invalid_argument("cannot translate to basis gates");
     }
+        throw invalid_argument("cannot translate to basis gates");
+}

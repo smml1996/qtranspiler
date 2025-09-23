@@ -178,10 +178,12 @@ bool Algorithm::is_unitary() const {
 
     return true;
 }
-void Algorithm::get_successor_classical_states(const int &current_classical_state, unordered_set<int> &result) const {
+void Algorithm::get_successor_classical_states(const int &current_classical_state,
+    unordered_set<int> &result) const {
     // get all bits that might change
     unordered_set<int> bits;
     for (auto instruction : this->action->instruction_sequence) {
+        assert(instruction.instruction_type != InstructionType::Classical);
         if (instruction.instruction_type == InstructionType::Measurement) {
             bits.insert(instruction.c_target);
         }
@@ -205,9 +207,7 @@ void get_algorithm_end_nodes(Algorithm *algorithm, vector<Algorithm *> &end_node
         algorithm->get_successor_classical_states(algorithm->classical_state, all_c_succs);
         if (algorithm->children.size() < all_c_succs.size()) {
             // TODO: this can be better (some classical states cannot happen)
-
             assert(algorithm->children.size() == 1);
-
             if (algorithm->children[0]->classical_state == 0) {
                 end_nodes.push_back(algorithm);
             }

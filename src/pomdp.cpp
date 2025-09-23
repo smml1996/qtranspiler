@@ -2,6 +2,7 @@
 #include "pomdp.hpp"
 
 #include <cassert>
+#include <iostream>
 
 #include "utils.hpp"
 #include<queue>
@@ -33,7 +34,7 @@ bool POMDPVertexPtrEqual::operator()(const POMDPVertex* a, const POMDPVertex* b)
 }
 
 
-vertex_dict POMDPAction::__handle_measure_instruction(const Instruction &instruction, const MeasurementChannel &channel, const POMDPVertex &vertex, bool is_meas1, vertex_dict result) const {
+void POMDPAction::__handle_measure_instruction(const Instruction &instruction, const MeasurementChannel &channel, const POMDPVertex &vertex, vertex_dict &result, bool is_meas1) const {
     /*
     applies a measurement instruction to a given hybrid state (POMDP vertex)
 
@@ -53,6 +54,7 @@ vertex_dict POMDPAction::__handle_measure_instruction(const Instruction &instruc
     }
 
     auto temp = get_sequence_probability(vertex.hybrid_state->quantum_state, {instruction1}, this->precision);
+
     auto q = temp.first;
     auto meas_prob = temp.second;
 
@@ -89,11 +91,9 @@ vertex_dict POMDPAction::__handle_measure_instruction(const Instruction &instruc
         }
         assert(is_close(channel.get_ind_probability(is_meas1, is_meas1) + channel.get_ind_probability(is_meas1, not is_meas1), 1, this->precision));
     }
-
-    return result;
 }
 
-vertex_dict POMDPAction::__handle_unitary_instruction(const Instruction &instruction, const QuantumChannel &channel, const POMDPVertex &vertex, vertex_dict result) const {
+void POMDPAction::__handle_unitary_instruction(const Instruction &instruction, const QuantumChannel &channel, const POMDPVertex &vertex, vertex_dict &result) const {
     for (int index = 0; index < channel.errors_to_probs.size(); index++) {
         auto err_seq = channel.errors_to_probs[index].first;
         auto prob = channel.errors_to_probs[index].second;
@@ -112,11 +112,9 @@ vertex_dict POMDPAction::__handle_unitary_instruction(const Instruction &instruc
             result[new_vertex] += round_to(seq_prob * prob, this->precision);
         }
     }
-
-    return result;
 }
 
-vertex_dict POMDPAction::__handle_reset_instruction(const Instruction &instruction, const QuantumChannel &channel, const POMDPVertex &vertex, bool is_meas1, vertex_dict result) const {
+void POMDPAction::__handle_reset_instruction(const Instruction &instruction, const QuantumChannel &channel, const POMDPVertex &vertex, vertex_dict &result, bool is_meas1) const {
     assert (instruction.gate_name == GateName::Reset);
     Instruction projector;
 
@@ -150,7 +148,6 @@ vertex_dict POMDPAction::__handle_reset_instruction(const Instruction &instructi
             }
         }
     }
-    return result;
 }
 
 vertex_dict POMDPAction::__dfs(HardwareSpecification &hardware_specification, POMDPVertex* current_vertex, int index_ins) const {
@@ -165,11 +162,13 @@ vertex_dict POMDPAction::__dfs(HardwareSpecification &hardware_specification, PO
         Returns:
             Dict[POMDPVertex, float]: returns a dictionary where the key is a successors POMDPVertex and the corresponding probability of reaching it from current_vertex
     */
+
     if (index_ins == this->instruction_sequence.size()) {
         vertex_dict result;
         result[current_vertex] = 1.0;
         return result;
     }
+
     assert(index_ins < this->instruction_sequence.size());
 
     auto current_instruction = this->instruction_sequence[index_ins];
@@ -182,15 +181,15 @@ vertex_dict POMDPAction::__dfs(HardwareSpecification &hardware_specification, PO
         Channel *instruction_channel = hardware_specification.instructions_to_channels.find(&current_instruction)->second;
         if (current_instruction.instruction_type == InstructionType::Measurement) {
             // get successors for 0-measurements
-            this->__handle_measure_instruction(current_instruction, *static_cast<MeasurementChannel*>(instruction_channel), *current_vertex, false, temp_result);
+            this->__handle_measure_instruction(current_instruction, *static_cast<MeasurementChannel*>(instruction_channel), *current_vertex, temp_result, false );
 
             // get successors for 1-measurements
-            this->__handle_measure_instruction(current_instruction, *static_cast<MeasurementChannel*>(instruction_channel), *current_vertex, true, temp_result);
+            this->__handle_measure_instruction(current_instruction, *static_cast<MeasurementChannel*>(instruction_channel), *current_vertex, temp_result, true);
         } else if (current_instruction.gate_name == GateName::Reset){
             // WARNING: use of reset not known in all models, check when using real hardware specifications
-            this->__handle_reset_instruction(current_instruction, *static_cast<QuantumChannel*>(instruction_channel), *current_vertex, false, temp_result);
+            this->__handle_reset_instruction(current_instruction, *static_cast<QuantumChannel*>(instruction_channel), *current_vertex, temp_result, false);
 
-            this->__handle_reset_instruction(current_instruction, *static_cast<QuantumChannel*>(instruction_channel), *current_vertex, true, temp_result);
+            this->__handle_reset_instruction(current_instruction, *static_cast<QuantumChannel*>(instruction_channel), *current_vertex, temp_result, true);
         } else {
             this->__handle_unitary_instruction(current_instruction, *static_cast<QuantumChannel*>(instruction_channel), *current_vertex, temp_result);
         }
@@ -199,7 +198,7 @@ vertex_dict POMDPAction::__dfs(HardwareSpecification &hardware_specification, PO
     for (auto it : temp_result) {
         auto successor = it.first;
         auto prob = it.second;
-        auto successors2 = this->__dfs(hardware_specification, successor, index_ins=index_ins+1);
+        auto successors2 = this->__dfs(hardware_specification, successor, index_ins+1);
         for (auto it2 : successors2) {
             auto succ2 = it2.first;
             auto prob2 = it2.second;
@@ -212,7 +211,7 @@ vertex_dict POMDPAction::__dfs(HardwareSpecification &hardware_specification, PO
         auto prob = it.second;
         result[s] = round_to(prob, this->precision);
     }
-    assert (temp_result.size() > 0);
+    assert (!result.empty());
     return result;
 }
 

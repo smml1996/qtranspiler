@@ -26,6 +26,9 @@ bool is_close(const complex<double> &a, const complex<double> &b, const int &pre
 
 // helper: convert integer to binary string (no leading zeros)
 string to_binary(int basis) {
+    if (basis < 0) {
+        throw invalid_argument("basis must be non-negative");
+    }
     if (basis == 0) return "0";
     std::string result;
     while (basis > 0) {

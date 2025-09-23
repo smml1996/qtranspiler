@@ -60,10 +60,14 @@ enum BasisGates {
     BasisGatesCount
 };
 
+std::string gate_to_string(GateName gate);
+
 unordered_set<GateName> get_value(const BasisGates& basis_gates);
 
 BasisGates get_basis_gates_type(const unordered_set<GateName> &basis_gates);
 
 GateName get_enum_obj(const string &raw_gate);
+
+
 
 #endif

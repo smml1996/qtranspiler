@@ -6,6 +6,7 @@
 #include <cassert>
 #include <algorithm>
 #include <sstream>
+#include <iostream>
 
 using namespace std;
 
@@ -15,8 +16,9 @@ int MyFloat::tolerance = 80;
 MyFloat::MyFloat(const double &probability__, int custom_precision)  : MyFloat(to_string(probability__), custom_precision) {};
 
 void MyFloat::check_digit(const short &digit) {
-    assert(digit > -1);
-    assert(digit < 10);
+    if (digit < -0 || digit > 9) {
+        throw invalid_argument("digit can only be a number between 0 and 9");
+    }
 }
 
 string MyFloat::remove_initial_zeros(const string &original) {
@@ -97,7 +99,7 @@ MyFloat MyFloat::subtraction(const MyFloat& f1, const MyFloat& f2) {
     MyFloat abs_f2 = MyFloat::abs(f2);
 
     if (abs_f1 == abs_f2) {
-        return MyFloat();
+        return MyFloat("0", max(abs_f1.precision, abs_f2.precision));
     }
     MyFloat small_f = min(abs_f1, abs_f2);
     MyFloat big_f = max(abs_f1, abs_f2);
@@ -222,7 +224,7 @@ MyFloat MyFloat::abs(MyFloat const &n) {
     }
     
     reverse(s.begin(), s.end());
-    return MyFloat(s);
+    return MyFloat(s, n.precision);
 }
 
 ostream& operator<<(ostream& os, const MyFloat& myfloat) {
@@ -257,6 +259,7 @@ MyFloat::MyFloat(const string& probability__, int custom_precision){
     }
     string probability = MyFloat::remove_initial_zeros(probability_);
     int actual_precision = custom_precision == -1 ? MyFloat::precision : custom_precision;
+    this->precision = actual_precision;
     assert(!probability.empty());
     bool dot_found = false;
     for (auto c : probability) {
@@ -395,8 +398,6 @@ MyFloat MyFloat::operator*(MyFloat const &other) const {
         result = MyFloat::integer_addition(n1_times_digit, result);
     }
 
-
-
     // convert result to string. Note: by creating a float it trims it to the actual precision
     string res;
     for(int i = 0; i < 2*this->mantissa.size(); i++) {
@@ -412,11 +413,9 @@ MyFloat MyFloat::operator*(MyFloat const &other) const {
         // if the numbers have diff. signs
         res += "-";
     }
-
     reverse(res.begin(), res.end());
     // res = MyFloat::remove_initial_zeros(res);
-    
-    return MyFloat(res);
+    return MyFloat(res, this->precision);
 }
 
 bool MyFloat::operator==(const MyFloat &rhs) const {
@@ -488,19 +487,19 @@ MyFloat min(MyFloat const &a, MyFloat const &b) {
 }
 
 MyFloat abs(const MyFloat &f) {
-    auto result = MyFloat(to_string(f));
+    auto result = MyFloat(gate_to_string(f), f.precision);
     result.is_negative = false;
     return result;
 }
 
-std::string to_string(const MyFloat& myfloat) {
+std::string gate_to_string(const MyFloat& myfloat) {
     std::ostringstream oss;
     oss << myfloat;  // uses your operator<<
     return oss.str();
 }
 
 double to_double(const MyFloat &myfloat) {
-    return stod(to_string(myfloat));
+    return stod(gate_to_string(myfloat));
 }
 
 
