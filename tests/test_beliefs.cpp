@@ -23,15 +23,15 @@ protected:
 };
 
 TEST_F(BeliefTest, GetAndSet) {
-    EXPECT_EQ(b.get(&v1), Rational("1", "2", 10));
-    EXPECT_EQ(b.get(&v2), Rational("1", "2", 10));
+    EXPECT_EQ(b.get(&v1, 10), Rational("1", "2", 10));
+    EXPECT_EQ(b.get(&v2, 10), Rational("1", "2", 10));
     b.set_val(&v1, Rational("3", "4", 10));
-    EXPECT_EQ(b.get(&v1), Rational("3", "4", 10));
+    EXPECT_EQ(b.get(&v1, 10), Rational("3", "4", 10));
 }
 
 TEST_F(BeliefTest, AddVal) {
     b.add_val(&v1, Rational("1", "4", 10));  // 0.5 + 0.25 = 0.75
-    EXPECT_EQ(b.get(&v1), Rational("3", "4", 10));
+    EXPECT_EQ(b.get(&v1, 10), Rational("3", "4", 10));
 }
 
 TEST_F(BeliefTest, SumIsCorrect) {
@@ -61,8 +61,8 @@ TEST_F(BeliefTest, NormalizeBelief) {
     auto b_norm = normalize_belief(b2, 10);
 
     EXPECT_TRUE(b_norm.is_normalized(10));
-    EXPECT_EQ(b_norm.get(&v1), Rational("1", "2", 10));
-    EXPECT_EQ(b_norm.get(&v2), Rational("1", "2", 10));
+    EXPECT_EQ(b_norm.get(&v1, 10), Rational("1", "2", 10));
+    EXPECT_EQ(b_norm.get(&v2, 10), Rational("1", "2", 10));
 }
 
 TEST_F(BeliefTest, L1Norm) {

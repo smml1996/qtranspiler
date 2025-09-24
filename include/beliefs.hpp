@@ -9,7 +9,7 @@ public:
     [[nodiscard]] Rational get_sum(int precision) const;
     unordered_map<POMDPVertex *, Rational, POMDPVertexHash, POMDPVertexPtrEqual> probs;
 
-    Rational get(POMDPVertex *v);
+    Rational get(POMDPVertex *v, int precision);
 
     void set_val(POMDPVertex* v, const Rational &prob);
 

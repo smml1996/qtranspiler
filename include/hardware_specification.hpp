@@ -13,7 +13,7 @@ using namespace std;
 enum QuantumHardware { 
     Algiers,
     Almaden,
-    Armonk,
+    // Armonk,
     Athens,
     Auckland,
     Belem,

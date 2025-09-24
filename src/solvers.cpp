@@ -27,7 +27,8 @@ Rational SingleDistributionSolver::get_closest_L1(const Belief &belief) const {
     }
 
     if (first) {
-        throw runtime_error("This should not be reachable");
+        assert (this->beliefs_to_rewards.size() == 0);
+        return Rational("0", "1", this->precision);
     }
 
     return result;
@@ -38,12 +39,12 @@ SingleDistributionSolver::SingleDistributionSolver(const POMDP &pomdp, const f_r
     this->get_reward = get_reward;
     this->precision = precision;
     this->embedding = embedding;
+    assert(precision != -1);
     this->error = Rational("0", "1", this->precision);
 }
 
 pair<Algorithm*, Rational> SingleDistributionSolver::get_bellman_value(const Belief &current_belief, const int &horizon){
     Belief curr_belief_normalized = normalize_belief(current_belief, this->precision);
-
     auto temp_it = this->beliefs_to_rewards.find(curr_belief_normalized);
     if (temp_it != this->beliefs_to_rewards.end()) {
         return temp_it->second;
@@ -81,7 +82,13 @@ pair<Algorithm*, Rational> SingleDistributionSolver::get_bellman_value(const Bel
             assert(prob.second > zero);
             for (const auto &it_next_v: pomdp.transition_matrix[current_v][action]) {
                 if (it_next_v.second > zero) {
+
                     auto successor = it_next_v.first;
+                    assert(prob.first->hybrid_state != nullptr);
+                    assert(successor != nullptr);
+                    assert(successor->hybrid_state != nullptr);
+                    assert (it_next_v.first->hybrid_state != nullptr);
+                    assert (it_next_v.first->hybrid_state->classical_state != nullptr);
                     obs_to_next_beliefs[it_next_v.first->hybrid_state->classical_state->get_memory_val()].add_val(successor,
                                                                               prob.second * it_next_v.second);
                 }
@@ -107,7 +114,7 @@ pair<Algorithm*, Rational> SingleDistributionSolver::get_bellman_value(const Bel
 
     Rational max_val("0", "1", this->precision); // this is initialized as zero
     for(auto & bellman_value : bellman_values) {
-        max_val = min(max_val, bellman_value.second);
+        max_val = max(max_val, bellman_value.second);
     }
 
     int shortest_alg_with_max_val = -1;
@@ -122,7 +129,7 @@ pair<Algorithm*, Rational> SingleDistributionSolver::get_bellman_value(const Bel
     }
 
     for(auto & bellman_value : bellman_values) {
-        if (bellman_value.second == max_val and bellman_value.first->depth == shortest_alg_with_max_val) {
+        if (bellman_value.second == max_val && bellman_value.first->depth == shortest_alg_with_max_val) {
             this->beliefs_to_rewards.insert({curr_belief_normalized, bellman_value});
             return bellman_value;
         }
@@ -162,7 +169,7 @@ pair<Algorithm*, Rational> SingleDistributionSolver::PBVI_solve(const Belief &cu
     unordered_map<int, Belief> temp;
     temp[current_classical_state] = current_belief;
     pair<Belief, unordered_map<int, Belief>> best_candidate = make_pair(curr_belief_normalized, temp);
-    Rational furthest_value("0");
+    Rational furthest_value("0", "1", this->precision);
     POMDPAction* best_action = &HALT_ACTION;
 
     for (auto & it : pomdp.actions) {
@@ -172,16 +179,20 @@ pair<Algorithm*, Rational> SingleDistributionSolver::PBVI_solve(const Belief &cu
         Belief next_belief; // we also compute the real belief which should be normalized
 
         for(auto & prob : current_belief.probs) {
-            Rational zero;
+            Rational zero("0", "1", this->precision);
             auto current_v = prob.first;
 
             assert(prob.second > zero);
-            for (const auto &it_next_v: pomdp.transition_matrix.at(current_v).at(action)) {
-                if (it_next_v.second > zero) {
-                    auto successor = it_next_v.first;
-                    obs_to_next_beliefs[it_next_v.first->hybrid_state->classical_state->get_memory_val()].add_val(successor,
-                                                                          prob.second * it_next_v.second);
-                    next_belief.add_val(successor,prob.second * it_next_v.second);
+            if (pomdp.transition_matrix.find(current_v) != pomdp.transition_matrix.end()) {
+                if (pomdp.transition_matrix.at(current_v).find(action) != pomdp.transition_matrix.at(current_v).end()) {
+                    for (const auto &it_next_v: pomdp.transition_matrix.at(current_v).at(action)) {
+                        if (it_next_v.second > zero) {
+                            auto successor = it_next_v.first;
+                            obs_to_next_beliefs[it_next_v.first->hybrid_state->classical_state->get_memory_val()].add_val(successor,
+                                                                                  prob.second * it_next_v.second);
+                            next_belief.add_val(successor,prob.second * it_next_v.second);
+                        }
+                    }
                 }
             }
         }

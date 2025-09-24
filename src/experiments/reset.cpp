@@ -3,7 +3,8 @@
 #include <cassert>
 
 #include "experiments.hpp"
-
+#include <iostream>
+using namespace std;
 class ResetProblem : public Experiment {
     public:
     ResetProblem(const string &name, int precision, bool with_thermalization, int min_horizon, int max_horizon,
@@ -27,11 +28,12 @@ Experiment(name, precision, with_thermalization, min_horizon, max_horizon, false
 
             // prepare first bell state
             auto state0 = new QuantumState(get_qubits_used(embedding), this->precision);
-            result.push_back(make_pair(new HybridState(state0, classical_state), 0.5));
+            result.emplace_back(new HybridState(state0, classical_state), 0.5);
 
             // prepare second bell state
             auto state1 = state0->apply_instruction(X0);
-            result.push_back(make_pair(new HybridState(state1, classical_state), 0.5));
+            assert (!(*state1 == *state0));
+            result.emplace_back(new HybridState(state1, classical_state), 0.5);
 
             return result;
         }

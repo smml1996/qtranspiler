@@ -20,6 +20,7 @@ class POMDPVertex {
         explicit POMDPVertex(HybridState *hybrid_state, int hidden_index=-1);
         bool operator==(const POMDPVertex &other) const;
         [[nodiscard]] ClassicalState *get_obs() const;
+        friend std::ostream &operator<<(ostream& os, const POMDPVertex& v);
 };
 
 // Custom hash
@@ -69,7 +70,7 @@ struct POMDPActionPtrEqual {
 typedef function<bool(POMDPVertex, unordered_map<int, int>, POMDPAction)> guard_type;
 
 class POMDP {
-    vector<POMDPVertex> states;
+    vector<POMDPVertex*> states;
     int precision;
 public:
         POMDPVertex *initial_state;
@@ -79,9 +80,11 @@ public:
         vector<POMDPAction> actions;
         POMDP() = default;
         POMDP(int precision);
-        POMDP(POMDPVertex *initialState, const vector<POMDPVertex> &states, const vector<POMDPAction> &actions, unordered_map<POMDPVertex*, unordered_map<POMDPAction*, unordered_map<POMDPVertex*, Rational,POMDPVertexHash, POMDPVertexPtrEqual>,POMDPActionHash, POMDPActionPtrEqual>, POMDPVertexHash, POMDPVertexPtrEqual> &transition_matrix);
+        POMDP(POMDPVertex *initialState, const vector<POMDPVertex*> &states, const vector<POMDPAction> &actions, unordered_map<POMDPVertex*, unordered_map<POMDPAction*, unordered_map<POMDPVertex*, Rational,POMDPVertexHash, POMDPVertexPtrEqual>,POMDPActionHash, POMDPActionPtrEqual>, POMDPVertexHash, POMDPVertexPtrEqual> &transition_matrix);
         POMDPVertex* get_vertex(const POMDPVertex *vertex);
         POMDPVertex* create_new_vertex(const HybridState *hybrid_state, int hidden_index);
         void build_pomdp(const vector<POMDPAction> &actions, HardwareSpecification &hardware_specification, int horizon, unordered_map<int, int> embedding, HybridState *initial_state, const vector<pair<HybridState*, double>> &initial_distribution, vector<int> &qubits_used, guard_type guard, bool set_hidden_index=false);
+        void print_pomdp() const;
+        void check_pomdp() const;
 };
 #endif

@@ -150,3 +150,26 @@ add_executable(test_algorithms tests/test_algorithms.cpp
         src/utils.cpp)
 target_link_libraries(test_algorithms GTest::gtest_main nlohmann_json::nlohmann_json)
 gtest_discover_tests(test_algorithms)
+
+
+# test algorithms
+add_executable(test_experiments tests/test_experiments.cpp
+        src/solvers.cpp
+        src/experiments.cpp
+        src/experiments/bitflip.cpp
+        src/experiments/discrimination.cpp
+        src/experiments/ghz.cpp
+        src/experiments/reset.cpp
+        src/algorithm.cpp
+        src/pomdp.cpp
+        src/beliefs.cpp
+        src/hardware_specification.cpp
+        src/channels.cpp
+        src/states.cpp
+        src/quantum_gates.cpp
+        src/instruction.cpp
+        src/floats.cpp
+        src/rationals.cpp
+        src/utils.cpp)
+target_link_libraries(test_experiments GTest::gtest_main ortools::ortools nlohmann_json::nlohmann_json)
+gtest_discover_tests(test_experiments)

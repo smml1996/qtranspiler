@@ -196,7 +196,6 @@ INSTANTIATE_TEST_SUITE_P(
     ::testing::Values(
         QuantumHardware::Algiers,
         QuantumHardware::Almaden,
-        QuantumHardware::Armonk,
         QuantumHardware::Athens,
         QuantumHardware::Auckland,
         QuantumHardware::Belem,

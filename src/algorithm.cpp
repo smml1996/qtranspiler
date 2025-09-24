@@ -6,7 +6,9 @@
 #include "utils.hpp"
 
 Algorithm::Algorithm(POMDPAction* action, int classical_state, int precision, int depth) {
-    this->action = action;
+    assert(action != nullptr);
+    assert(action->name.size() > 0);
+    this->action = new POMDPAction(*action);
     this->classical_state = classical_state;
     this->depth = depth;
     this->children_probs = unordered_map<int, double>();
@@ -40,11 +42,22 @@ bool Algorithm::operator==(const Algorithm &other) const {
     int c = 0;
 
     for (Algorithm * child : this->children) {
-        double prob_child = this->children_probs.at(c);
+        double prob_child;
+        if (this->children_probs.find(c) != this->children_probs.end()) {
+            prob_child = this->children_probs.at(c);
+        } else {
+            prob_child = 0;
+        }
         bool found = false;
         int c2 = 0;
         for (Algorithm* other_child : other.children) {
-            double prob_other = other.children_probs.at(c2);
+            double prob_other;
+            if (other.children_probs.find(c2) != other.children_probs.end()) {
+                prob_other = other.children_probs.at(c2);
+            } else {
+                prob_other = 0;
+            }
+
 
             if (is_close(prob_other, prob_child, this->precision)) {
                 if (*other_child == *child) {

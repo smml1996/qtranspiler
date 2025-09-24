@@ -14,9 +14,9 @@ Rational Belief::get_sum(int precision) const {
     return result;
 }
 
-Rational Belief::get(POMDPVertex *v) {
+Rational Belief::get(POMDPVertex *v, int precision) {
     if(this->probs.find(v) == this->probs.end()){
-        return Rational();
+        return Rational("0", "1", precision);
     }
     return this->probs[v];
 }
@@ -27,9 +27,10 @@ void Belief::set_val(POMDPVertex *v, const Rational &prob) {
 }
 
 void Belief::add_val(POMDPVertex *v, const Rational &val) {
-    this->probs[v] = this->get(v) + val;
-
-    if (this->probs[v].numerator == MyFloat("0", val.precision)) {
+    assert(v != nullptr);
+    assert(v->hybrid_state != nullptr);
+    this->probs.insert_or_assign(v, this->get(v, val.precision) + val);
+    if (this->probs.at(v).numerator == MyFloat("0", val.precision)) {
         this->probs.erase(v);
     }
 }

@@ -12,7 +12,9 @@
 using namespace std;
 
 Rational::Rational(const string &numerator, const string &denominator, int custom_precision) {
-    assert(custom_precision != -1);
+    if (custom_precision == -1) {
+
+    }
     this->precision = custom_precision;
     this->numerator = MyFloat(numerator, custom_precision);
     if (this->numerator == MyFloat("0", this->precision)) {
@@ -54,7 +56,7 @@ Rational Rational::operator+(Rational const &rhs) const {
     MyFloat new_num = numerator * rhs.denominator + rhs.numerator * denominator;
     MyFloat new_den = denominator * rhs.denominator;
 
-    if (new_den == MyFloat("0")) {
+    if (new_den == MyFloat("0", this->precision)) {
         throw runtime_error("Rational::operator+: denominator is zero");
     }
     return Rational(new_num, new_den);
@@ -79,8 +81,14 @@ Rational Rational::operator/(Rational const &rhs) const {
 }
 
 bool Rational::operator==(Rational const &rhs) const {
-    if (this->numerator == MyFloat("0", this->precision) && rhs.numerator == MyFloat("0", this->precision)) {
+    const auto ZERO = MyFloat("0", this->precision);
+    if (this->numerator == ZERO && rhs.numerator == ZERO) {
         return true;
+    }
+
+    // If exactly one is zero, they are not equal
+    if ((this->numerator == ZERO) != (rhs.numerator == ZERO)) {
+        return false;
     }
     auto temp = *this / rhs;
     auto one = MyFloat("1", this->precision);
@@ -127,3 +135,5 @@ ostream & operator<<(ostream &os, const Rational &rational) {
     os << rational.numerator << "/" << rational.denominator;
     return os;
 }
+
+int Rational::LOCAL_PRECISION = -1;

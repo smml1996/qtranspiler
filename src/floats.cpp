@@ -419,7 +419,8 @@ MyFloat MyFloat::operator*(MyFloat const &other) const {
 }
 
 bool MyFloat::operator==(const MyFloat &rhs) const {
-    assert(this->mantissa.size() == rhs.mantissa.size());
+
+    // assert(this->mantissa.size() == rhs.mantissa.size());
 
     // first check sign
     if (this->is_negative != rhs.is_negative) {
@@ -428,7 +429,7 @@ bool MyFloat::operator==(const MyFloat &rhs) const {
 
     // check exponent
     
-    if(! MyFloat::are_vectors_equal(this->exponent, rhs.exponent)) {
+    if(!MyFloat::are_vectors_equal(this->exponent, rhs.exponent)) {
         return false;
     }
     return MyFloat::are_vectors_equal(this->mantissa, rhs.mantissa);

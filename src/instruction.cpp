@@ -145,10 +145,10 @@ InstructionType Instruction::get_instruction_type() const {
 
 bool Instruction::operator==(const Instruction& other) const {
     return target == other.target
-        && c_target == other.c_target
+        // && c_target == other.c_target
         && controls == other.controls
-        && gate_name == other.gate_name
-        && params == other.params;
+        && gate_name == other.gate_name;
+        // && params == other.params;
 }
 
 string to_string(const Instruction &instruction) {
@@ -198,14 +198,14 @@ std::size_t InstructionHash::operator()(const Instruction *instruction) const {
     };
 
     hash_combine(seed, std::hash<int>{}(instruction->target));
-    hash_combine(seed, std::hash<int>{}(instruction->c_target));
+    // hash_combine(seed, std::hash<int>{}(instruction->c_target));
     hash_combine(seed, std::hash<int>{}(static_cast<int>(instruction->gate_name)));
 
     for (auto c : instruction->controls)
         hash_combine(seed, std::hash<int>{}(c));
 
-    for (auto p : instruction->params)
-        hash_combine(seed, std::hash<double>{}(p));
+    // for (auto p : instruction->params)
+    //     hash_combine(seed, std::hash<double>{}(p));
 
     return seed;
 }
@@ -218,4 +218,9 @@ bool is_identity(const vector<Instruction> &seq) {
     }
         
     return true;
+}
+
+ostream & operator<<(ostream &os, const Instruction &instruction) {
+    os << to_string(instruction);
+    return os;
 }

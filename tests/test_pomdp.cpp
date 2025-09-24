@@ -12,11 +12,9 @@ TEST(POMDVertexTest, VertexConstructor) {
     HybridState s(new QuantumState({0}, precision), cs);
     const POMDPVertex vertex1(&s);
 
-    EXPECT_EQ(vertex1.hybrid_state, &s);
     EXPECT_EQ(*vertex1.hybrid_state, s);
     EXPECT_EQ(vertex1.hidden_index, -1);
     EXPECT_EQ(vertex1.id, 1);
-    EXPECT_EQ(vertex1.get_obs(), cs);
     EXPECT_EQ(*vertex1.get_obs(), *cs);
     EXPECT_EQ(vertex1, vertex1);
 
@@ -36,7 +34,7 @@ protected:
     HybridState hybrid_state{ &qs, &cs };
     POMDPVertex vertex{ &hybrid_state, 0 };
 
-    HardwareSpecification hardware{ QuantumHardware::Armonk, false };
+    HardwareSpecification hardware{ QuantumHardware::Algiers, false };
 
     Instruction meas_ins{ GateName::Meas, 0 , 0};
     Instruction x_ins{ GateName::X, 0 };

@@ -25,17 +25,18 @@ public:
 
     static bool are_controls_true(int basis, const vector<int> &controls);
 
-        unordered_map<int, complex<double>>  sparse_vector; // stores amplitudes for computational basis
-        QuantumState(const vector<int> &qubits_used, int precision);
-        complex<double> get_amplitude(const int &basis) const;
-        bool is_qubit() const;
-        bool is_qubit_0() const;
-        bool insert_amplitude(const int &basis, const complex<double> &amplitude);
-        bool add_amplitude(const int &basis, const complex<double> &amplitude);
-        void normalize();
-        bool operator==(const QuantumState& other) const;
-        QuantumState* apply_instruction(const Instruction &instruction, bool normalize=true) const;
-        vector<vector<complex<double>>> multi_partial_trace(const vector<int> &remove_indices) const;
+    unordered_map<int, complex<double>>  sparse_vector; // stores amplitudes for computational basis
+    QuantumState(const vector<int> &qubits_used, int precision);
+    complex<double> get_amplitude(const int &basis) const;
+    bool is_qubit() const;
+    bool is_qubit_0() const;
+    bool insert_amplitude(const int &basis, const complex<double> &amplitude);
+    bool add_amplitude(const int &basis, const complex<double> &amplitude);
+    void normalize();
+    bool operator==(const QuantumState& other) const;
+    QuantumState* apply_instruction(const Instruction &instruction, bool normalize=true) const;
+    vector<vector<complex<double>>> multi_partial_trace(const vector<int> &remove_indices) const;
+    friend std::ostream &operator<<(ostream& os, const QuantumState& quantum_state);
 };
 
 pair<QuantumState*, double> get_sequence_probability(QuantumState * const &quantum_state0, const vector<Instruction> &seq, int precision);
@@ -53,15 +54,18 @@ class ClassicalState {
         bool read(const int &address) const;
         ClassicalState* write(const int &address, bool value) const;
         ClassicalState* apply_instruction(const Instruction &instruction) const;
+        friend std::ostream &operator<<(ostream& os, const ClassicalState& classical_state);
 };
 
 class HybridState {
     public:
         QuantumState *quantum_state;
         ClassicalState *classical_state;
+
         HybridState(QuantumState *quantum_state, ClassicalState *classical_state);
         HybridState *apply_instruction(const Instruction &instruction) const;
         bool operator==(const HybridState &other) const;
+        friend std::ostream &operator<<(ostream& os, const HybridState& hybrid_state);
 };
 
 #endif

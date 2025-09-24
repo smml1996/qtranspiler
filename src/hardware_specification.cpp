@@ -129,7 +129,7 @@ std::string to_string(const QuantumHardware &quantum_hardware) {
     switch(quantum_hardware) {
         case Algiers: return "algiers";
         case Almaden: return "almaden";
-        case Armonk: return "armonk";
+        // case Armonk: return "armonk";
         case Athens: return "athens";
         case Auckland: return "auckland";
         case Belem: return "belem";

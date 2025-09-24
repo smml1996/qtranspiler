@@ -8,10 +8,12 @@
 
 class Rational {
 public:
+    static int LOCAL_PRECISION;
     MyFloat numerator;
     MyFloat denominator;
     int precision;
-    explicit Rational(const string &numerator="0", const string &denominator = "1", int custom_precision=-1);
+    Rational() = default;
+    explicit Rational(const string &numerator, const string &denominator, int custom_precision);
     explicit Rational(const MyFloat & numerator, const MyFloat & denominator = MyFloat("1"));
     friend std::ostream &operator<<(ostream& os, const Rational& rational);
     Rational operator+(Rational const &rhs) const;

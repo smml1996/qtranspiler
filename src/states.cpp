@@ -6,6 +6,8 @@
 #include <cmath>
 #include <iostream>
 
+#include "rationals.hpp"
+
 using namespace std;
 
 // Quantum states
@@ -99,8 +101,8 @@ QuantumState* QuantumState::eval_qubit_unitary(const Instruction &instruction) c
     } else if ( instruction.gate_name == GateName::Ry){
         assert (instruction.params.size() == 1);
         auto temp_v = vector<double>({instruction.params[0], 0, 0});
-        Instruction u3_instruction(GateName::U3, 
-            instruction.target, 
+        Instruction u3_instruction(GateName::U3,
+            instruction.target,
             temp_v);
         delete result;
         return this->eval_qubit_unitary(u3_instruction);
@@ -187,7 +189,7 @@ bool QuantumState::add_amplitude(const int &basis, const complex<double> &amplit
         // if both the real and the imaginary part of the amplitude are 0 then we return False because we do not add any amplitude
         return false;
     }
-    
+
     complex<double> prev_amplitude = this->get_amplitude(basis);
     complex<double>current_amplitude = prev_amplitude + amplitude;
     if (is_close(current_amplitude.real(), 0.0, this->precision) and is_close(current_amplitude.imag(), 0.0, this->precision)){
@@ -214,7 +216,7 @@ void QuantumState::normalize() {
 
 bool QuantumState::operator==(const QuantumState& other) const {
     if (this->sparse_vector.size() != other.sparse_vector.size()) return false;
-        
+
     // here we check for global phases: two states are equal if they only differ by a global factor
     double inner_product = get_fidelity(*this, other);
     assert(inner_product >= 0);
@@ -245,7 +247,7 @@ pair<QuantumState*, double> get_sequence_probability(QuantumState * const &quant
     }
 
     auto prob = get_inner_product(*quantum_state, *quantum_state);
-    
+
     assert(is_close(prob.imag(), 0.0, precision));
     // round down was here
     auto prob_answer = round_to(prob.real(), precision);
@@ -261,7 +263,7 @@ QuantumState* QuantumState::apply_instruction(const Instruction &instruction, bo
             assert(instruction.controls.size() == 1);
             auto index1 = instruction.target;
             auto index2 = instruction.controls[0];
-            
+
             auto result0 = this->apply_instruction(Instruction(GateName::Cnot, vector<int>({index1}), index2), normalize=false);
             auto result1 = result0->apply_instruction(Instruction(GateName::Cnot, vector<int>({index2}), index1), normalize=false);
             result = result1->apply_instruction(Instruction(GateName::Cnot, vector<int>({index1}), index2), normalize=false);
@@ -315,7 +317,7 @@ QuantumState* QuantumState::apply_instruction(const Instruction &instruction, bo
             } else {
                 result = result0;
             }
-            delete result0;       
+            delete result0;
         } else {
             result = this->eval_single_qubit_gate(instruction);
         }
@@ -608,12 +610,9 @@ complex<double> get_inner_product(const QuantumState &qs1, const QuantumState &q
 
     for (const auto &it : qs1.sparse_vector) {
         const auto &val1 = it.second;
+        const auto &val2 = qs2.get_amplitude(it.first);
+        inner_product += val1 * std::conj(val2);
 
-        auto it2 = qs2.sparse_vector.find(it.first);
-        if (it2 != qs2.sparse_vector.end()) {
-            const auto &val2 = it2->second;
-            inner_product += val1 * std::conj(val2);
-        }
     }
     return inner_product;
 }
@@ -668,8 +667,10 @@ ClassicalState* ClassicalState::apply_instruction(const Instruction &instruction
 }
 
 HybridState::HybridState(QuantumState *quantum_state, ClassicalState *classical_state) {
-    this->quantum_state = quantum_state;
-    this->classical_state = classical_state;
+    assert (quantum_state != nullptr);
+    assert (classical_state != nullptr);
+    this->quantum_state = new QuantumState(*quantum_state);
+    this->classical_state = new ClassicalState(*classical_state);
 }
 
 HybridState *HybridState::apply_instruction(const Instruction &instruction) const
@@ -687,5 +688,31 @@ HybridState *HybridState::apply_instruction(const Instruction &instruction) cons
 }
 
 bool HybridState::operator==(const HybridState &other) const {
+    assert (other.classical_state != nullptr);
+    assert (other.quantum_state!= nullptr);
+    assert (this->quantum_state!= nullptr);
+    assert (this->classical_state!= nullptr);
     return (*this->quantum_state  == *other.quantum_state)  && (*this->classical_state  == *other.classical_state);
+}
+
+std::ostream &operator<<(ostream& os, const QuantumState& quantum_state) {
+    bool is_first = true;
+    for (auto it : quantum_state.sparse_vector) {
+        if (!is_first) {
+            os <<" + ";
+        }
+        os << it.second << "|" << it.first << ">";
+        is_first = false;
+    }
+    return os;
+}
+
+std::ostream &operator<<(ostream& os, const ClassicalState& classical_state) {
+    os << classical_state.get_memory_val();
+    return os;
+}
+
+std::ostream &operator<<(ostream& os, const HybridState& hybrid_state) {
+    os << *hybrid_state.quantum_state << " --------- " << *hybrid_state.classical_state;
+    return os;
 }

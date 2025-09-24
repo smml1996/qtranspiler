@@ -1,0 +1,8 @@
+name: test_reset_test
+precision: 10
+thermalization: 0
+min. horizon: 1
+max. horizon: 3
+hidden index: 0
+methods: PBVI
+quantum hardware: almaden

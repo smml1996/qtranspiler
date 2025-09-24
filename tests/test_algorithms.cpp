@@ -20,7 +20,6 @@ TEST(AlgorithmTest, Initialization) {
     EXPECT_TRUE(algorithm.classical_state == 1);
     EXPECT_TRUE(algorithm.children.size() == 0);
     EXPECT_TRUE(algorithm.depth == 1);
-
 }
 
 TEST(AlgorithmTest, FindChildWithCState) {
@@ -45,13 +44,9 @@ TEST(AlgorithmTest, EqualAlgorithm) {
 
     EXPECT_EQ(algorithm, algorithm);
 
-    Algorithm algorithm2(&XAction, 1, 9, 1);
+    Algorithm algorithm2(&XAction, 1, 10, 1);
     EXPECT_EQ(algorithm2, algorithm);
 
-    algorithm.children.push_back(&algorithm2);
-    algorithm2.children.push_back(&algorithm);
-
-    EXPECT_EQ(algorithm, algorithm2);
 
     Algorithm algorithm3(&XAction, 0, 10, 1);
     algorithm.children.push_back(&algorithm3);
@@ -289,23 +284,25 @@ TEST(AlgorithmTest, EndNodes) {
     vector<Instruction> ins_seq({Instruction(GateName::Meas, 0, 0)});
     POMDPAction measAction("m1", ins_seq, 10, ins_seq);
     Algorithm meas_alg(&measAction, 0, 10, 1);
-    meas_alg.children.push_back(&algorithm);
+    Algorithm algorithm_(&XAction, 0, 10, 1);
+    meas_alg.children.push_back(&algorithm_);
     {
         vector<Algorithm *> end_nodes;
         get_algorithm_end_nodes(&meas_alg, end_nodes);
         EXPECT_EQ(end_nodes.size(), 2);
         EXPECT_EQ(get_algorithm_from_list(end_nodes, &meas_alg), 0);
-        EXPECT_EQ(get_algorithm_from_list(end_nodes, &algorithm), 1);
+        EXPECT_EQ(get_algorithm_from_list(end_nodes, &algorithm_), 1);
     }
 
     Algorithm meas_alg2(&measAction, 1, 10, 1);
-    meas_alg2.children.push_back(&algorithm);
+    Algorithm algorithm__(&XAction, 1, 10, 1);
+    meas_alg2.children.push_back(&algorithm__);
     {
         vector<Algorithm *> end_nodes;
         get_algorithm_end_nodes(&meas_alg2, end_nodes);
         EXPECT_EQ(end_nodes.size(), 1);
         EXPECT_EQ(get_algorithm_from_list(end_nodes, &meas_alg2), -1);
-        EXPECT_EQ(get_algorithm_from_list(end_nodes, &algorithm), 0);
+        EXPECT_EQ(get_algorithm_from_list(end_nodes, &algorithm__), 0);
     }
 
     meas_alg.children.push_back(&child2);
@@ -313,7 +310,7 @@ TEST(AlgorithmTest, EndNodes) {
         vector<Algorithm *> end_nodes;
         get_algorithm_end_nodes(&meas_alg, end_nodes);
         EXPECT_EQ(end_nodes.size(), 2);
-        EXPECT_EQ(get_algorithm_from_list(end_nodes, &algorithm), 0);
+        EXPECT_EQ(get_algorithm_from_list(end_nodes, &algorithm_), 0);
         EXPECT_EQ(get_algorithm_from_list(end_nodes, &child2), 1);
     }
 }

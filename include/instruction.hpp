@@ -34,6 +34,7 @@ class Instruction {
         
         InstructionType get_instruction_type() const;
         bool operator==(const Instruction& other) const;
+        friend std::ostream &operator<<(ostream& os, const Instruction&);
 };
 
 string to_string(const Instruction &instruction);
