@@ -11,7 +11,7 @@
 
 using namespace std;
 
-int precision = 8;
+int precision = 5;
 bool with_thermalization = false;
 
 

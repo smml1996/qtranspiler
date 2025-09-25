@@ -18,14 +18,20 @@ public:
     bool is_normalized(int precision) const;
 
     bool operator==(const Belief& other) const;
+
+    void print() const;
 };
 
 struct BeliefHash {
-    std::size_t operator()(const Belief &instruction) const;
+    std::size_t operator()(const Belief &) const;
 };
 
 Rational l1_norm(const Belief &b1, const Belief &b2, int precision);
 
 Belief normalize_belief(const Belief &belief, int precision);
+
+int get_belief_cs(const Belief &belief);
+
+
 
 #endif

@@ -6,8 +6,7 @@
 
 bool SingleDistributionSolver::is_belief_visited(const Belief &belief) const {
     for (auto it : this->beliefs_to_rewards) {
-        auto existing_belief = it.first;
-        if (existing_belief == belief) {
+        if (it.first == belief) {
                 return true;
         }
     }
@@ -45,21 +44,19 @@ SingleDistributionSolver::SingleDistributionSolver(const POMDP &pomdp, const f_r
 
 pair<Algorithm*, Rational> SingleDistributionSolver::get_bellman_value(const Belief &current_belief, const int &horizon){
     Belief curr_belief_normalized = normalize_belief(current_belief, this->precision);
-    auto temp_it = this->beliefs_to_rewards.find(curr_belief_normalized);
-    if (temp_it != this->beliefs_to_rewards.end()) {
-        return temp_it->second;
-    }
+    // auto temp_it = this->beliefs_to_rewards.find(curr_belief_normalized);
+    // if (temp_it != this->beliefs_to_rewards.end()) {
+    //     auto horizon_it = temp_it->second.find(horizon);
+    //     if (horizon_it != temp_it->second.end()) {
+    //         return horizon_it->second;
+    //     }
+    // } else {
+    //     this->beliefs_to_rewards[curr_belief_normalized] = {};
+    // }
 
     Rational curr_belief_val = this->get_reward(current_belief, this->embedding);
     
-    int current_classical_state = -1;
-    for(auto & prob : current_belief.probs) {
-        if (current_classical_state == -1) {
-            current_classical_state = prob.first->hybrid_state->classical_state->get_memory_val();
-        } else {
-            assert(prob.first->hybrid_state->classical_state->get_memory_val() == current_classical_state);
-        }
-    }
+    int current_classical_state = get_belief_cs(current_belief);
     assert(current_classical_state >= 0);
     auto halt_algorithm = new Algorithm(&HALT_ACTION, current_classical_state, 0);
     if (horizon == 0) {
@@ -130,7 +127,7 @@ pair<Algorithm*, Rational> SingleDistributionSolver::get_bellman_value(const Bel
 
     for(auto & bellman_value : bellman_values) {
         if (bellman_value.second == max_val && bellman_value.first->depth == shortest_alg_with_max_val) {
-            this->beliefs_to_rewards.insert({curr_belief_normalized, bellman_value});
+            this->beliefs_to_rewards[curr_belief_normalized][horizon] = bellman_value;
             return bellman_value;
         }
     }
@@ -141,10 +138,15 @@ pair<Algorithm*, Rational> SingleDistributionSolver::get_bellman_value(const Bel
 
 pair<Algorithm*, Rational> SingleDistributionSolver::PBVI_solve(const Belief &current_belief, const int &horizon) {
     Belief curr_belief_normalized = normalize_belief(current_belief, this->precision);
-
     auto temp_it = this->beliefs_to_rewards.find(curr_belief_normalized);
     if (temp_it != this->beliefs_to_rewards.end()) {
-        return temp_it->second;
+        auto horizon_it = temp_it->second.find(horizon);
+        if (horizon_it != temp_it->second.end()) {
+            return horizon_it->second;
+        }
+    } else {
+        this->beliefs_to_rewards.insert({curr_belief_normalized,{}
+    });
     }
 
     Rational curr_belief_val = this->get_reward(current_belief, this->embedding);
@@ -172,6 +174,7 @@ pair<Algorithm*, Rational> SingleDistributionSolver::PBVI_solve(const Belief &cu
     Rational furthest_value("0", "1", this->precision);
     POMDPAction* best_action = &HALT_ACTION;
 
+
     for (auto & it : pomdp.actions) {
         POMDPAction * action = &it;
 
@@ -198,36 +201,45 @@ pair<Algorithm*, Rational> SingleDistributionSolver::PBVI_solve(const Belief &cu
         }
 
         next_belief = normalize_belief(next_belief, this->precision);
-        if (!this->is_belief_visited(next_belief)) {
-            Rational closest_value = this->get_closest_L1(next_belief);
-            if (furthest_value == Rational("-1", "1", this->precision) || furthest_value < closest_value) {
-                furthest_value = closest_value;
-                best_candidate = make_pair(next_belief, obs_to_next_beliefs);
-                best_action = action;
-            }
+
+        Rational closest_value = this->get_closest_L1(next_belief);
+        if (furthest_value < closest_value) {
+            furthest_value = closest_value;
+            best_candidate = make_pair(next_belief, obs_to_next_beliefs);
+            best_action = action;
         }
+
     }
 
     auto new_alg_node = new Algorithm(best_action, current_classical_state, this->precision);
     Rational bellman_val("0", "1", this->precision);
-
-    int max_depth = 0;
-    for(auto & obs_to_next_belief : best_candidate.second) {
-        auto temp2 = get_bellman_value(obs_to_next_belief.second, horizon-1);
-        new_alg_node->children.push_back(temp2.first);
-        max_depth = max(temp2.first->depth, max_depth);
-        bellman_val = bellman_val + temp2.second;
+    if (best_action->name == HALT_ACTION.name) {
+        bellman_val = curr_belief_val;
+    } else {
+        int max_depth = 0;
+        for(auto & obs_to_next_belief : best_candidate.second) {
+            auto temp2 = this->PBVI_solve(obs_to_next_belief.second, horizon-1);
+            new_alg_node->children.push_back(temp2.first);
+            max_depth = max(temp2.first->depth, max_depth);
+            bellman_val = bellman_val + temp2.second;
+        }
+        new_alg_node->depth = max_depth + 1;
     }
 
-    new_alg_node->depth = max_depth + 1;
-    pair<Algorithm*, Rational> result = make_pair(new_alg_node, bellman_val);
-    this->beliefs_to_rewards.insert({curr_belief_normalized, result});
+    this->beliefs_to_rewards.at(curr_belief_normalized).insert({horizon, {new_alg_node, bellman_val}});
     this->error = max(this->error, furthest_value);
-    return result;
+    return this->beliefs_to_rewards.at(curr_belief_normalized).at(horizon);
 }
 
 double SingleDistributionSolver::get_error(const int &horizon) const {
     return to_double(this->error) * horizon;
+}
+
+void SingleDistributionSolver::print_all_beliefs() const {
+
+    for (auto it : this->beliefs_to_rewards) {
+        it.first.print();
+    }
 }
 
 

@@ -82,12 +82,16 @@ Rational Rational::operator/(Rational const &rhs) const {
 
 bool Rational::operator==(Rational const &rhs) const {
     const auto ZERO = MyFloat("0", this->precision);
-    if (this->numerator == ZERO && rhs.numerator == ZERO) {
-        return true;
-    }
 
     // If exactly one is zero, they are not equal
-    if ((this->numerator == ZERO) != (rhs.numerator == ZERO)) {
+    if (this->numerator == ZERO) {
+        if (rhs.numerator == ZERO) {
+            return true;
+        }
+        return false;
+    }
+
+    if (rhs.numerator == ZERO) {
         return false;
     }
     auto temp = *this / rhs;
@@ -95,7 +99,7 @@ bool Rational::operator==(Rational const &rhs) const {
     return (temp.numerator == temp.denominator) || (temp.numerator == one && temp.denominator == one);
 }
 
-bool Rational::operator!=(Rational const &rhs) const {
+bool Rational::operator!=(const Rational &rhs) const {
     return !(*this == rhs);
 }
 

@@ -434,7 +434,7 @@ void POMDP::print_pomdp() const {
     cout << "states: " << endl;
 
     for (auto s : states) {
-        cout <<  s << endl;
+        cout <<  *s << endl;
     }
     cout << "transitions: " << endl;
     for (auto it : this->transition_matrix) {

@@ -73,3 +73,20 @@ TEST_F(BeliefTest, L1Norm) {
     Rational dist = l1_norm(b, b2, 10); // |0.5-0.75| + |0.5-0.25| = 0.5
     EXPECT_EQ(dist, Rational("1", "2", 10));
 }
+
+TEST_F(BeliefTest, BeliefHasher) {
+    Belief belief;
+
+    belief.set_val(&v1, Rational("3", "4", 10)); // 0.75
+    belief.set_val(&v2, Rational("1", "4", 10)); // 0.25
+
+    BeliefHash bh;
+
+    EXPECT_EQ(bh(belief), bh(belief));
+
+    Belief belief2;
+    belief2.set_val(&v1, Rational("1", "2", 10)); // 0.75
+    belief2.set_val(&v2, Rational("1", "2", 10)); // 0.25
+    EXPECT_FALSE(bh(belief) == bh(belief2));
+
+}

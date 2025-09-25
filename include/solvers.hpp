@@ -12,7 +12,6 @@ class SingleDistributionSolver {
     POMDP pomdp;
     f_reward_type get_reward;
     int precision;
-    unordered_map<Belief, pair<Algorithm*, Rational>, BeliefHash> beliefs_to_rewards;
     unordered_map<int, int> embedding;
     Rational error;
     int max_horizon;
@@ -21,12 +20,14 @@ class SingleDistributionSolver {
     bool is_belief_visited(const Belief &belief) const;
     Rational get_closest_L1(const Belief &belief) const;
     public:
+        unordered_map<Belief, unordered_map<int, pair<Algorithm*, Rational>>, BeliefHash> beliefs_to_rewards;
         SingleDistributionSolver(const POMDP &pomdp, const f_reward_type &get_reward, int precision, const unordered_map<int, int> & embedding);
         pair<Algorithm*, Rational> get_bellman_value(const Belief &current_belief, const int &horizon);
 
         // PBVI
         pair<Algorithm*, Rational> PBVI_solve(const Belief &current_beliefs, const int &horizon);
         double get_error(const int &horizon) const;
+        void print_all_beliefs() const;
 
 };
 

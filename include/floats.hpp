@@ -15,7 +15,7 @@ class MyFloat {
 
     vector<short> exponent;
     vector<short> mantissa;
-    bool is_negative;
+    bool is_negative = false;
 
     MyFloat(const double &probability__, int custom_precision);
     explicit MyFloat(const string& probability__ = "0", int custom_precision=-1);

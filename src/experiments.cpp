@@ -257,7 +257,6 @@ void Experiment::run() const {
         for (auto embedding : embeddings) {
             // initial distribution
             auto initial_distribution = this->get_initial_distribution(embedding);
-
             // actions
             auto actions = this->get_actions(hardware_spec, embedding);
 
@@ -268,18 +267,25 @@ void Experiment::run() const {
             pomdp.build_pomdp(actions, hardware_spec, this->max_horizon, embedding, nullptr, initial_distribution, qubits_used, actual_guard, this->set_hidden_index);
             auto end_pomdp_build = chrono::high_resolution_clock::now();    // end time
             auto pomdp_build_time = chrono::duration<double>(end_pomdp_build - start_pomdp_build).count();
-            pomdp.print_pomdp();
+            cout << pomdp_build_time << endl;
+            // pomdp.print_pomdp();
             // initial belief
             auto initial_belief = this->get_initial_belief(pomdp);
             auto initial_states = this->get_initial_states(pomdp);
 
+            auto HALT_ALGORITHM = new Algorithm(&HALT_ACTION, get_belief_cs(initial_belief), 0);
             for (int horizon = this->min_horizon; horizon <= this->max_horizon; horizon++) {
+                cout << horizon << endl;
                 for (auto method : this->method_types) {
                     long long method_time;
                     pair<Algorithm *, double> result = make_pair(nullptr, 0);
                     double error = 0.0;
                     if (method == MethodType::SingleDistBellman) {
                         SingleDistributionSolver solver(pomdp, actual_reward_f, this->precision * (max_horizon+1), embedding);
+                        solver.beliefs_to_rewards.insert({initial_belief, {}});
+                        assert(solver.beliefs_to_rewards.size() == 1);
+                        assert(solver.beliefs_to_rewards.find(initial_belief) != solver.beliefs_to_rewards.end());
+                        solver.beliefs_to_rewards.at(initial_belief).insert({0, {HALT_ALGORITHM, actual_reward_f(initial_belief, embedding)}});
 
                         auto start_method = chrono::high_resolution_clock::now();
                         auto result_temp = solver.get_bellman_value(initial_belief, horizon);
@@ -288,6 +294,11 @@ void Experiment::run() const {
                         method_time = chrono::duration<double>(end_method - start_method).count();
                     } else if (method == MethodType::SingleDistPBVI) {
                         SingleDistributionSolver solver(pomdp, actual_reward_f, this->precision * (max_horizon+1), embedding);
+                        solver.beliefs_to_rewards.insert({initial_belief, {}});
+                        assert(solver.beliefs_to_rewards.size() == 1);
+                        assert(solver.beliefs_to_rewards.find(initial_belief) != solver.beliefs_to_rewards.end());
+                        solver.beliefs_to_rewards.at(initial_belief).insert({0, {HALT_ALGORITHM, actual_reward_f(initial_belief, embedding)}});
+
                         auto start_method = chrono::high_resolution_clock::now();
                         auto result_temp = solver.PBVI_solve(initial_belief, horizon);
                         auto end_method = chrono::high_resolution_clock::now();
