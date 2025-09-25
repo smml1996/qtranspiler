@@ -58,12 +58,12 @@ Experiment(name, precision, with_thermalization, min_horizon, max_horizon, false
 
             
             auto X0 = POMDPAction("X0", hardware_spec.to_basis_gates_impl(Instruction(GateName::X, 
-                embedding.at(0))), this->precision, {Instruction(GateName::X, embedding.at(0))});
+                embedding.at(0))), this->precision, {Instruction(GateName::X, 0)});
 
             auto P0 = POMDPAction("P0", 
                 {Instruction(GateName::Meas, embedding.at(0), 0)},
                 this->precision, 
-                {Instruction(GateName::Meas, embedding.at(0), 0)});
+                {Instruction(GateName::Meas, 0, 0)});
 
             return {X0, P0};
         }

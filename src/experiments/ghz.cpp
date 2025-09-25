@@ -137,7 +137,7 @@ Experiment(name, precision, with_thermalization, min_horizon, max_horizon, false
                     POMDPAction("H" + to_string(it.first),
                         hardware_spec.to_basis_gates_impl(Instruction(GateName::H, it.second)),
                         this->precision,
-                        {Instruction(GateName::H, it.second)}
+                        {Instruction(GateName::H, it.first)}
                         )
                     );
             }
@@ -156,7 +156,7 @@ Experiment(name, precision, with_thermalization, min_horizon, max_horizon, false
                                     "CX" + to_string(v_control)+"-"+to_string(v_target),
                                     {*instruction},
                                     this->precision,
-                                    {*instruction}
+                                    {Instruction(GateName::Cnot, vector<int>({v_control}), v_target)}
                                     )
                                 );
                         }

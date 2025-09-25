@@ -168,21 +168,21 @@ class IPMABitflip : public Experiment {
 
             
             auto X0 = POMDPAction("X0", hardware_spec.to_basis_gates_impl(Instruction(GateName::X, 
-                embedding.at(0))), this->precision, {Instruction(GateName::X, embedding.at(0))});
+                embedding.at(0))), this->precision, {Instruction(GateName::X, 0)});
 
             auto P2 = POMDPAction("P2", 
                 {Instruction(GateName::Meas, embedding.at(2), 2)},
                 this->precision, 
-                {Instruction(GateName::Meas, embedding.at(2), 2)});
+                {Instruction(GateName::Meas, 2, 2)});
 
             auto CX02 = POMDPAction("CX02", 
                 hardware_spec.to_basis_gates_impl(Instruction(GateName::Cnot, vector<int>({embedding.at(0)}), embedding.at(2)))
-                , this->precision, {Instruction(GateName::Cnot, vector<int>({embedding.at(0)}), embedding.at(2))});
+                , this->precision, {Instruction(GateName::Cnot, vector<int>({0}), 2)});
 
             auto CX12 = POMDPAction("CX12", 
                 hardware_spec.to_basis_gates_impl(Instruction(GateName::Cnot, vector<int>({embedding.at(1)}), embedding.at(2))), 
                 this->precision, 
-                {Instruction(GateName::Cnot, vector<int>({embedding.at(1)}), embedding.at(2))});
+                {Instruction(GateName::Cnot, vector<int>({1}), 2)});
 
             return {X0, P2, CX02, CX12};
         }
