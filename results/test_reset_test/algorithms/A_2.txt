@@ -1,6 +1,0 @@
-HALT
-x0 := measure(q9); 
-if c = 0:
-	HALT
-if c = 1:
-	HALT
