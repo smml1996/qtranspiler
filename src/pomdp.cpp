@@ -280,40 +280,38 @@ bool POMDPActionPtrEqual::operator()(const POMDPAction* a, const POMDPAction* b)
     return *a == *b;
 }
 
-POMDPVertex* POMDP::get_vertex(const POMDPVertex *vertex) {
+POMDPVertex* POMDP::get_vertex(const HybridState* new_hs, const int &hidden_index) {
     for (int i = 0; i < this->states.size(); i++) {
-        if (*this->states.at(i) == *vertex) return this->states.at(i);
+        if (this->states.at(i)->hidden_index == hidden_index) {
+            if (*new_hs == *this->states.at(i)->hybrid_state) {
+                return this->states.at(i);
+            }
+        }
     }
     return nullptr;
 }
 
 POMDPVertex* POMDP::create_new_vertex(const HybridState *hybrid_state, int hidden_index) {
-    auto new_hybrid_state =  new HybridState(new QuantumState(*hybrid_state->quantum_state), new ClassicalState(*hybrid_state->classical_state));
-    assert(new_hybrid_state->quantum_state != nullptr);
-    assert(new_hybrid_state->classical_state != nullptr);
-    assert (new_hybrid_state->quantum_state->sparse_vector.size() > 0);
-    auto new_vertex = new POMDPVertex(new_hybrid_state, hidden_index);
-    auto v = this->get_vertex(new_vertex);
+    auto v = this->get_vertex(hybrid_state, hidden_index);
     if (v == nullptr) {
-        assert(new_vertex->hybrid_state != nullptr);
-        assert(new_vertex->hybrid_state->classical_state != nullptr);
-        assert(new_vertex->hybrid_state->quantum_state != nullptr);
+        auto new_hybrid_state =  new HybridState(hybrid_state->quantum_state, hybrid_state->classical_state);
+        auto new_vertex = new POMDPVertex(new_hybrid_state, hidden_index);
         this->states.push_back(new_vertex);
         return new_vertex;
     }
-    // delete new_hybrid_state;
-    // delete new_vertex;
-    assert(v->hybrid_state != nullptr);
-    assert(v->hybrid_state->classical_state != nullptr);
-    assert(v->hybrid_state->quantum_state != nullptr);
     return v;
 }
 
+POMDP::~POMDP() {
+
+}
+
 POMDP::POMDP(int precision) {
+    this->initial_state = nullptr;
     this->precision = precision;
 }
 
-POMDP::POMDP(POMDPVertex *initial_state, const vector<POMDPVertex*> &states, const vector<POMDPAction> &actions, unordered_map<POMDPVertex*, unordered_map<POMDPAction*, unordered_map<POMDPVertex*, Rational,POMDPVertexHash, POMDPVertexPtrEqual>,POMDPActionHash, POMDPActionPtrEqual>, POMDPVertexHash, POMDPVertexPtrEqualID>  &transition_matrix) {
+POMDP::POMDP(POMDPVertex *initial_state, const vector<POMDPVertex*> &states, const vector<POMDPAction*> &actions, unordered_map<POMDPVertex*, unordered_map<POMDPAction*, unordered_map<POMDPVertex*, Rational,POMDPVertexHash, POMDPVertexPtrEqualID>,POMDPActionHash, POMDPActionPtrEqual>, POMDPVertexHash, POMDPVertexPtrEqualID>  &transition_matrix) {
     this->initial_state = initial_state;
     this->states = states;
     this->actions = actions;
@@ -321,7 +319,7 @@ POMDP::POMDP(POMDPVertex *initial_state, const vector<POMDPVertex*> &states, con
     this->precision = -1;
 }
 
-void POMDP::build_pomdp(const vector<POMDPAction> &actions_, HardwareSpecification &hardware_specification, int horizon, unordered_map<int, int> embedding, HybridState *initial_state_hs, const vector<pair<HybridState*, double>> &initial_distribution, vector<int> &qubits_used, guard_type guard, bool set_hidden_index) {
+void POMDP::build_pomdp(const vector<POMDPAction*> &actions_, HardwareSpecification &hardware_specification, int horizon, unordered_map<int, int> embedding, HybridState *initial_state_hs, const vector<pair<HybridState*, double>> &initial_distribution, vector<int> &qubits_used, guard_type guard, bool set_hidden_index) {
     this->actions = actions_;
     assert(this->states.empty());
 
@@ -334,7 +332,6 @@ void POMDP::build_pomdp(const vector<POMDPAction> &actions_, HardwareSpecificati
     this->initial_state = initial_v;
 
     if (initial_distribution.empty()) {
-        assert(false);
         q.emplace(initial_v, 0);
     } else {
         double total = 0.0;
@@ -346,10 +343,10 @@ void POMDP::build_pomdp(const vector<POMDPAction> &actions_, HardwareSpecificati
             throw invalid_argument("Initial distribution must sum to 1");
         }
 
-        this->transition_matrix[initial_v] = unordered_map<POMDPAction*, unordered_map<POMDPVertex*, Rational, POMDPVertexHash, POMDPVertexPtrEqual>, POMDPActionHash, POMDPActionPtrEqual>();
+        this->transition_matrix[initial_v] = unordered_map<POMDPAction*, unordered_map<POMDPVertex*, Rational, POMDPVertexHash, POMDPVertexPtrEqualID>, POMDPActionHash, POMDPActionPtrEqual>();
         assert(this->transition_matrix.find(initial_v) != this->transition_matrix.end());
         auto *INIT_CHANNEL = new POMDPAction("INIT__", {}, this->precision, {});
-        this->transition_matrix[initial_v][INIT_CHANNEL] = unordered_map<POMDPVertex*, Rational, POMDPVertexHash, POMDPVertexPtrEqual>();
+        this->transition_matrix[initial_v][INIT_CHANNEL] = unordered_map<POMDPVertex*, Rational, POMDPVertexHash, POMDPVertexPtrEqualID>();
         assert(this->transition_matrix.at(initial_v).find(INIT_CHANNEL) != this->transition_matrix.at(initial_v).end());
         int hidden_index;
         for (int index = 0; index < initial_distribution.size(); index ++) {
@@ -392,15 +389,15 @@ void POMDP::build_pomdp(const vector<POMDPAction> &actions_, HardwareSpecificati
         visited.insert(current_v);
 
         if (this->transition_matrix.find(current_v) == this->transition_matrix.end()) {
-            this->transition_matrix[current_v] = unordered_map<POMDPAction*, unordered_map<POMDPVertex*, Rational, POMDPVertexHash, POMDPVertexPtrEqual>, POMDPActionHash, POMDPActionPtrEqual>();
+            this->transition_matrix[current_v] = unordered_map<POMDPAction*, unordered_map<POMDPVertex*, Rational, POMDPVertexHash, POMDPVertexPtrEqualID>, POMDPActionHash, POMDPActionPtrEqual>();
         }
         for (auto action : actions) {
-            if (guard(*current_v, embedding, action)) {
-                assert(this->transition_matrix[current_v].find(&action) == this->transition_matrix[current_v].end());
+            if (guard(*current_v, embedding, *action)) {
+                assert(this->transition_matrix[current_v].find(action) == this->transition_matrix[current_v].end());
 
-                auto copy_action = new POMDPAction(action);
-                this->transition_matrix[current_v][copy_action] = unordered_map<POMDPVertex*, Rational, POMDPVertexHash, POMDPVertexPtrEqual>();
-                auto successors = action.get_successor_states(hardware_specification, current_v);
+
+                this->transition_matrix[current_v][action] = unordered_map<POMDPVertex*, Rational, POMDPVertexHash, POMDPVertexPtrEqualID>();
+                auto successors = action->get_successor_states(hardware_specification, current_v);
                 assert(!successors.empty());
                 for (auto it : successors ) {
                     auto succ = it.first;
@@ -412,11 +409,11 @@ void POMDP::build_pomdp(const vector<POMDPAction> &actions_, HardwareSpecificati
                     assert(new_vertex != nullptr);
                     assert(new_vertex->hybrid_state != nullptr);
                     assert(new_vertex->hybrid_state != nullptr);
-                    if (this->transition_matrix[current_v][copy_action].find(new_vertex) == this->transition_matrix[current_v][copy_action].end()) {
-                        this->transition_matrix[current_v][copy_action].insert_or_assign(new_vertex, Rational("0", "1", this->precision * (horizon+1)));
+                    if (this->transition_matrix[current_v][action].find(new_vertex) == this->transition_matrix[current_v][action].end()) {
+                        this->transition_matrix[current_v][action].insert_or_assign(new_vertex, Rational("0", "1", this->precision * (horizon+1)));
                     }
 
-                    this->transition_matrix[current_v][copy_action][new_vertex] = this->transition_matrix[current_v][copy_action][new_vertex] + Rational(to_string(prob), "1", this->precision * (horizon+1));
+                    this->transition_matrix[current_v][action][new_vertex] = this->transition_matrix[current_v][action][new_vertex] + Rational(to_string(prob), "1", this->precision * (horizon+1));
                     if (visited.find(new_vertex) == visited.end()) {
                         if (horizon == -1 || (current_horizon + 1 < horizon)) {
                             q.push(make_pair(new POMDPVertex(*new_vertex), current_horizon));

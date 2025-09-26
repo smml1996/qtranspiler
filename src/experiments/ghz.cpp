@@ -130,11 +130,11 @@ Experiment(name, precision, with_thermalization, min_horizon, max_horizon, false
             return result;
         }
 
-        vector<POMDPAction> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) const override {
-            vector<POMDPAction> result;
+        vector<POMDPAction*> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) const override {
+            vector<POMDPAction*> result;
             for (auto it : embedding) {
                 result.push_back(
-                    POMDPAction("H" + to_string(it.first),
+                    new POMDPAction("H" + to_string(it.first),
                         hardware_spec.to_basis_gates_impl(Instruction(GateName::H, it.second)),
                         this->precision,
                         {Instruction(GateName::H, it.first)}
@@ -152,7 +152,7 @@ Experiment(name, precision, with_thermalization, min_horizon, max_horizon, false
                         unique_ptr<Instruction> instruction = make_unique<Instruction>(GateName::Cnot, vector<int>({control}), target);
                         if (hardware_spec.instructions_to_channels.find(instruction.get()) != hardware_spec.instructions_to_channels.end() ) {
                             result.push_back(
-                                POMDPAction(
+                                new POMDPAction(
                                     "CX" + to_string(v_control)+"-"+to_string(v_target),
                                     {*instruction},
                                     this->precision,

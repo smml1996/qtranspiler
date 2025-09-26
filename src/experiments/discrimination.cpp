@@ -48,26 +48,26 @@ public:
         return result;
     }
 
-    vector<POMDPAction> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) const override {
+    vector<POMDPAction*> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) const override {
 
         assert(embedding.size() == 1);
         assert(embedding.find(0) != embedding.end());
 
 
-        auto X0 = POMDPAction("X0", hardware_spec.to_basis_gates_impl(Instruction(GateName::X,
+        auto X0 = new POMDPAction("X0", hardware_spec.to_basis_gates_impl(Instruction(GateName::X,
             embedding.at(0))), this->precision, {Instruction(GateName::X, 0)});
 
-        auto P0 = POMDPAction("P0",
+        auto P0 = new POMDPAction("P0",
             {Instruction(GateName::Meas, embedding.at(0), 0)},
             this->precision,
             {Instruction(GateName::Meas, 0, 0)});
 
-        auto determine0 = POMDPAction("Is0",
+        auto determine0 = new POMDPAction("Is0",
             {Instruction(GateName::Write0, 0)},
             this->precision,
             {Instruction(GateName::Write0, 0)});
 
-        auto determine1 = POMDPAction("Is1",
+        auto determine1 = new POMDPAction("Is1",
             {Instruction(GateName::Write1, 0)},
             this->precision,
             {Instruction(GateName::Write1, 0)});

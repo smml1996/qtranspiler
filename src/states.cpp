@@ -669,6 +669,11 @@ ClassicalState* ClassicalState::apply_instruction(const Instruction &instruction
     }    
 }
 
+HybridState::~HybridState() {
+    delete this->quantum_state;
+    delete this->classical_state;
+}
+
 HybridState::HybridState(QuantumState *quantum_state, ClassicalState *classical_state) {
     assert (quantum_state != nullptr);
     assert (classical_state != nullptr);

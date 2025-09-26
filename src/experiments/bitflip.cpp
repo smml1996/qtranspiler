@@ -159,7 +159,7 @@ class IPMABitflip : public Experiment {
             return result;
         }
 
-    virtual vector<POMDPAction> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) const override {
+    virtual vector<POMDPAction*> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) const override {
 
             assert(embedding.size() == 3);
             assert(embedding.find(0) != embedding.end());
@@ -167,19 +167,19 @@ class IPMABitflip : public Experiment {
             assert(embedding.find(2) != embedding.end());
 
             
-            auto X0 = POMDPAction("X0", hardware_spec.to_basis_gates_impl(Instruction(GateName::X, 
+            auto X0 = new POMDPAction("X0", hardware_spec.to_basis_gates_impl(Instruction(GateName::X,
                 embedding.at(0))), this->precision, {Instruction(GateName::X, 0)});
 
-            auto P2 = POMDPAction("P2", 
+            auto P2 = new POMDPAction("P2",
                 {Instruction(GateName::Meas, embedding.at(2), 2)},
                 this->precision, 
                 {Instruction(GateName::Meas, 2, 2)});
 
-            auto CX02 = POMDPAction("CX02", 
+            auto CX02 = new POMDPAction("CX02",
                 hardware_spec.to_basis_gates_impl(Instruction(GateName::Cnot, vector<int>({embedding.at(0)}), embedding.at(2)))
                 , this->precision, {Instruction(GateName::Cnot, vector<int>({0}), 2)});
 
-            auto CX12 = POMDPAction("CX12", 
+            auto CX12 = new POMDPAction("CX12",
                 hardware_spec.to_basis_gates_impl(Instruction(GateName::Cnot, vector<int>({embedding.at(1)}), embedding.at(2))), 
                 this->precision, 
                 {Instruction(GateName::Cnot, vector<int>({1}), 2)});
@@ -225,7 +225,7 @@ public:
         this->name = "bitflip_ipma2";
     }
 
-    vector<POMDPAction> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) const override {
+    vector<POMDPAction*> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) const override {
 
             assert(embedding.size() == 3);
             assert(embedding.find(0) != embedding.end());
@@ -233,10 +233,10 @@ public:
             assert(embedding.find(2) != embedding.end());
 
             
-            auto X0 = POMDPAction("X0", hardware_spec.to_basis_gates_impl(Instruction(GateName::X, 
+            auto X0 = new POMDPAction("X0", hardware_spec.to_basis_gates_impl(Instruction(GateName::X,
                 embedding.at(0))), this->precision, {Instruction(GateName::X, embedding.at(0))});
 
-            auto P2 = POMDPAction("P2", 
+            auto P2 = new POMDPAction("P2",
                 {Instruction(GateName::Meas, embedding.at(2), 2)},
                 this->precision, 
                 {Instruction(GateName::Meas, embedding.at(2), 2)});
@@ -251,7 +251,7 @@ public:
 
             vector<Instruction> pseudo_instruction_CX = {Instruction(GateName::Cnot, vector<int>({embedding.at(0)}), embedding.at(2)), Instruction(GateName::Cnot, vector<int>({embedding.at(0)}), embedding.at(1))};
 
-            auto CX = POMDPAction("CX", 
+            auto CX = new POMDPAction("CX",
                 vCX02_instructions, this->precision, pseudo_instruction_CX);
 
             return {X0, P2, CX};
@@ -267,7 +267,7 @@ class IPMA3Bitflip : public IPMABitflip {
         this->name = "bitflip_ipma2";
     }
 
-    vector<POMDPAction> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) const override {
+    vector<POMDPAction*> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) const override {
 
             assert(embedding.size() == 3);
             assert(embedding.find(0) != embedding.end());
@@ -275,10 +275,10 @@ class IPMA3Bitflip : public IPMABitflip {
             assert(embedding.find(2) != embedding.end());
 
             
-            auto X0 = POMDPAction("X0", hardware_spec.to_basis_gates_impl(Instruction(GateName::X, 
+            auto X0 = new POMDPAction("X0", hardware_spec.to_basis_gates_impl(Instruction(GateName::X,
                 embedding.at(0))), this->precision, {Instruction(GateName::X, embedding.at(0))});
 
-            auto P2 = POMDPAction("P2", 
+            auto P2 = new POMDPAction("P2",
                 {Instruction(GateName::Meas, embedding.at(2), 2)},
                 this->precision, 
                 {Instruction(GateName::Meas, embedding.at(2), 2)});
@@ -293,11 +293,11 @@ class IPMA3Bitflip : public IPMABitflip {
 
             vector<Instruction> pseudo_instruction_CX = {Instruction(GateName::Cnot, vector<int>({embedding.at(0)}), embedding.at(2)), Instruction(GateName::Cnot, vector<int>({embedding.at(0)}), embedding.at(1))};
 
-            auto CX = POMDPAction("CX", 
+            auto CX = new POMDPAction("CX",
                 vCX02_instructions, this->precision, pseudo_instruction_CX);
 
             
-            auto X2 = POMDPAction("X2", hardware_spec.to_basis_gates_impl(Instruction(GateName::X, 
+            auto X2 = new POMDPAction("X2", hardware_spec.to_basis_gates_impl(Instruction(GateName::X,
                 embedding.at(2))), this->precision, {Instruction(GateName::X, embedding.at(2))});
             return {X0, P2, CX, X2};
         }
@@ -314,7 +314,7 @@ class CXHBitflip : public IPMABitflip {
             this->max_horizon = 7;
     };
 
-    vector<POMDPAction> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) const override {
+    vector<POMDPAction*> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) const override {
 
             assert(embedding.size() == 3);
             assert(embedding.find(0) != embedding.end());
@@ -322,22 +322,22 @@ class CXHBitflip : public IPMABitflip {
             assert(embedding.find(2) != embedding.end());
 
             
-            auto H1 = POMDPAction("H1", hardware_spec.to_basis_gates_impl(Instruction(GateName::H, 
+            auto H1 = new POMDPAction("H1", hardware_spec.to_basis_gates_impl(Instruction(GateName::H,
                 embedding.at(1))), this->precision, {Instruction(GateName::H, embedding.at(0))});
 
-            auto H2 = POMDPAction("H2", hardware_spec.to_basis_gates_impl(Instruction(GateName::H, 
+            auto H2 = new POMDPAction("H2", hardware_spec.to_basis_gates_impl(Instruction(GateName::H,
                 embedding.at(2))), this->precision, {Instruction(GateName::H, embedding.at(0))});
 
-            auto P2 = POMDPAction("P2", 
+            auto P2 = new POMDPAction("P2",
                 {Instruction(GateName::Meas, embedding.at(2), 2)},
                 this->precision, 
                 {Instruction(GateName::Meas, embedding.at(2), 2)});
 
-            auto CX21 = POMDPAction("CX21", 
+            auto CX21 = new POMDPAction("CX21",
                 hardware_spec.to_basis_gates_impl(Instruction(GateName::Cnot, vector<int>({embedding.at(2)}), embedding.at(1)))
                 , this->precision, {Instruction(GateName::Cnot, vector<int>({embedding.at(2)}), embedding.at(1))});
 
-            auto CX01 = POMDPAction("CX01", 
+            auto CX01 = new POMDPAction("CX01",
                 hardware_spec.to_basis_gates_impl(Instruction(GateName::Cnot, vector<int>({embedding.at(0)}), embedding.at(1))), 
                 this->precision, 
                 {Instruction(GateName::Cnot, vector<int>({embedding.at(0)}), embedding.at(1))});
@@ -386,7 +386,7 @@ public:
         return BellStateDiscrimination2::postcondition(belief, embedding);
     }
 
-    vector<POMDPAction> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) const override {
+    vector<POMDPAction*> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) const override {
         return IPMA3Bitflip::get_actions(hardware_spec, embedding);
     }
 

@@ -43,7 +43,7 @@ set<QuantumHardware> get_hardware_list() {
 TEST(ExperimentsTests, ResetTestAlmaden) {
     const int min_horizon = 2;
     const int max_horizon = 7;
-    string custom_name = "test_reset_test_almaden2";
+    string custom_name = "test_reset_test_almaden";
 
     set<MethodType> methods = {
         SingleDistBellman,

@@ -64,6 +64,8 @@ class HybridState {
         QuantumState *quantum_state;
         ClassicalState *classical_state;
 
+        // ~HybridState();
+
         HybridState(QuantumState *quantum_state, ClassicalState *classical_state);
         HybridState *apply_instruction(const Instruction &instruction) const;
         bool operator==(const HybridState &other) const;

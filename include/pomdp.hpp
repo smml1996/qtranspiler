@@ -79,15 +79,16 @@ class POMDP {
 public:
         POMDPVertex *initial_state;
         unordered_map<POMDPVertex *, unordered_map<POMDPAction *, unordered_map<POMDPVertex *, Rational, POMDPVertexHash,
-            POMDPVertexPtrEqual>, POMDPActionHash, POMDPActionPtrEqual>, POMDPVertexHash, POMDPVertexPtrEqualID>
+            POMDPVertexPtrEqualID>, POMDPActionHash, POMDPActionPtrEqual>, POMDPVertexHash, POMDPVertexPtrEqualID>
         transition_matrix;
-        vector<POMDPAction> actions;
+        vector<POMDPAction*> actions;
         POMDP() = default;
+        ~POMDP();
         POMDP(int precision);
-        POMDP(POMDPVertex *initialState, const vector<POMDPVertex*> &states, const vector<POMDPAction> &actions, unordered_map<POMDPVertex*, unordered_map<POMDPAction*, unordered_map<POMDPVertex*, Rational,POMDPVertexHash, POMDPVertexPtrEqual>,POMDPActionHash, POMDPActionPtrEqual>, POMDPVertexHash, POMDPVertexPtrEqualID> &transition_matrix);
-        POMDPVertex* get_vertex(const POMDPVertex *vertex);
+        POMDP(POMDPVertex *initialState, const vector<POMDPVertex*> &states, const vector<POMDPAction*> &actions, unordered_map<POMDPVertex*, unordered_map<POMDPAction*, unordered_map<POMDPVertex*, Rational,POMDPVertexHash, POMDPVertexPtrEqualID>,POMDPActionHash, POMDPActionPtrEqual>, POMDPVertexHash, POMDPVertexPtrEqualID> &transition_matrix);
+        POMDPVertex* get_vertex(const HybridState* new_hs, const int &hidden_index);
         POMDPVertex* create_new_vertex(const HybridState *hybrid_state, int hidden_index);
-        void build_pomdp(const vector<POMDPAction> &actions, HardwareSpecification &hardware_specification, int horizon, unordered_map<int, int> embedding, HybridState *initial_state, const vector<pair<HybridState*, double>> &initial_distribution, vector<int> &qubits_used, guard_type guard, bool set_hidden_index=false);
+        void build_pomdp(const vector<POMDPAction*> &actions, HardwareSpecification &hardware_specification, int horizon, unordered_map<int, int> embedding, HybridState *initial_state, const vector<pair<HybridState*, double>> &initial_distribution, vector<int> &qubits_used, guard_type guard, bool set_hidden_index=false);
         void print_pomdp() const;
         void check_pomdp() const;
 };
