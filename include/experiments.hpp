@@ -17,7 +17,7 @@ enum MethodType {
 };
 
 string get_method_string(MethodType method);
-string gate_to_string(set<MethodType> methods);
+string gate_to_string(const set<MethodType> &methods);
 set<string> get_solver_methods_strings();
 
 string gate_to_string(const MethodType &method);

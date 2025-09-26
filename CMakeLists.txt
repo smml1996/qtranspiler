@@ -4,11 +4,14 @@ set(CMAKE_CXX_STANDARD 17)
 
 include(FetchContent)
 
+
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/src/experiments
 )
+# Add Boost headers (header-only for multiprecision)
+find_package(Boost REQUIRED)
 
 # Tell CMake where to find OR-Tools
 find_package(ortools REQUIRED)
@@ -70,7 +73,9 @@ gtest_discover_tests(test_rationals)
 
 # test utils
 add_executable(test_utils tests/test_utils.cpp src/utils.cpp)
-target_link_libraries(test_utils GTest::gtest_main)
+target_link_libraries(test_utils GTest::gtest_main ortools::ortools
+        nlohmann_json::nlohmann_json
+        c++ )
 gtest_discover_tests(test_utils)
 
 # test quantum gates
@@ -78,7 +83,7 @@ add_executable(test_quantum_gates tests/test_quantum_gates.cpp src/quantum_gates
 target_link_libraries(test_quantum_gates GTest::gtest_main)
 gtest_discover_tests(test_quantum_gates)
 
-# test quantum gates
+# test instructions
 add_executable(test_instructions tests/test_instructions.cpp src/instruction.cpp src/quantum_gates.cpp)
 target_link_libraries(test_instructions GTest::gtest_main nlohmann_json::nlohmann_json)
 gtest_discover_tests(test_instructions)
@@ -104,7 +109,7 @@ add_executable(test_specs tests/test_hardware_specification.cpp
 target_link_libraries(test_specs GTest::gtest_main nlohmann_json::nlohmann_json)
 gtest_discover_tests(test_specs)
 
-# test hardware specifications
+# test POMDPs
 add_executable(test_pomdp tests/test_pomdp.cpp
         src/pomdp.cpp
         src/beliefs.cpp
@@ -152,7 +157,7 @@ target_link_libraries(test_algorithms GTest::gtest_main nlohmann_json::nlohmann_
 gtest_discover_tests(test_algorithms)
 
 
-# test algorithms
+# test experiments
 add_executable(test_experiments tests/test_experiments.cpp
         src/solvers.cpp
         src/experiments.cpp
@@ -173,3 +178,6 @@ add_executable(test_experiments tests/test_experiments.cpp
         src/utils.cpp)
 target_link_libraries(test_experiments GTest::gtest_main ortools::ortools nlohmann_json::nlohmann_json)
 gtest_discover_tests(test_experiments)
+
+# all tests in one file
+

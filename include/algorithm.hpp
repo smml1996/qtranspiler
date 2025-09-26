@@ -18,18 +18,18 @@ class Algorithm {
 public:
     POMDPAction* action;
     vector<Algorithm*> children;
-    int classical_state;
+    cpp_int classical_state;
     int depth;
     int precision;
     unordered_map<int, double> children_probs;
 
-    Algorithm(POMDPAction* action, int classical_state, int precision, int depth=-1); 
-    bool exist_child_with_cstate(const int &cstate) const;
+    Algorithm(POMDPAction* action, const cpp_int &classical_state, int precision, int depth=-1);
+    bool exist_child_with_cstate(const cpp_int &cstate) const;
     bool operator==(const Algorithm &algorithm) const;
     bool has_meas() const;
     bool has_classical_instruction() const;
     bool is_unitary() const; // returns true if all instructions used by the action of the current node use only unitary instructions (children are not checked)
-    void get_successor_classical_states(const int &current_classical_state, unordered_set<int> &result) const; // returns a set containing all reachable classical states by executing the current acction (children are not checked)
+    void get_successor_classical_states(const cpp_int &current_classical_state, unordered_set<cpp_int> &result) const; // returns a set containing all reachable classical states by executing the current acction (children are not checked)
 };
 
 string to_string(Algorithm * algorithm, const string& tabs="");
@@ -43,6 +43,6 @@ Algorithm* deep_copy_algorithm(Algorithm *algorithm);
 
 void get_algorithm_end_nodes(Algorithm *algorithm, vector<Algorithm *> &end_nodes);
 
-Algorithm* get_mixed_algorithm(const vector<double> &x, const unordered_map<int, Algorithm *> &mapping_index_algorithm, int initial_classical_state);
+Algorithm* get_mixed_algorithm(const vector<double> &x, const unordered_map<int, Algorithm *> &mapping_index_algorithm, cpp_int initial_classical_state);
 
 #endif

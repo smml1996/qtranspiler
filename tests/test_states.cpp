@@ -44,8 +44,8 @@ TEST(QuantumStateTest, EvalSingleQubitGate) {
     QuantumState qs({0}, 10);
     Instruction instr(H, 0); // Hadamard
     auto new_qs = qs.eval_single_qubit_gate(instr);
-    EXPECT_NEAR(abs(new_qs->get_amplitude(0)), 1/sqrt(2), 1e-10);
-    EXPECT_NEAR(abs(new_qs->get_amplitude(1)), 1/sqrt(2), 1e-10);
+    EXPECT_NEAR(abs(new_qs->get_amplitude(0)), 1/std::sqrt(2), 1e-10);
+    EXPECT_NEAR(abs(new_qs->get_amplitude(1)), 1/std::sqrt(2), 1e-10);
 }
 
 TEST(QuantumStateTest, EqHGate) {

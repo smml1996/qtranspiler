@@ -37,7 +37,7 @@ class ConvexDistributionSolver {
     f_reward_type get_reward;
     int precision;
     unordered_map<int, int> embedding;
-    int initial_classical_state;
+    cpp_int initial_classical_state;
     void get_matrix_maximin(const vector<POMDPVertex*> &initial_states,
             Algorithm *current_algorithm,
             unordered_map<int, unordered_map<int, double>> &minimax_matrix,

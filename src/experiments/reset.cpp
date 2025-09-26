@@ -32,6 +32,7 @@ Experiment(name, precision, with_thermalization, min_horizon, max_horizon, false
 
             // prepare second bell state
             auto state1 = state0->apply_instruction(X0);
+            assert (embedding.size() == 1);
             assert (!(*state1 == *state0));
             result.emplace_back(new HybridState(state1, classical_state), 0.5);
 

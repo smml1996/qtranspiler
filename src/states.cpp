@@ -6,7 +6,6 @@
 #include <cmath>
 #include <iostream>
 
-#include "rationals.hpp"
 
 using namespace std;
 
@@ -32,7 +31,7 @@ QuantumState* QuantumState::eval_qubit_unitary(const Instruction &instruction) c
     auto a1 = qubit_amplitudes.second;
     
 
-    complex<double> half_prob(1/sqrt(2), 0.0);
+    complex<double> half_prob(1/std::sqrt(2), 0.0);
     complex<double> I(0, 1);
     auto E_CONST = exp(1.0);
 
@@ -140,7 +139,7 @@ QuantumState* QuantumState::eval_qubit_unitary(const Instruction &instruction) c
 }
 
 
-complex<double> QuantumState::get_amplitude(const int &basis) const {
+complex<double> QuantumState::get_amplitude(const cpp_int &basis) const {
     auto it = this->sparse_vector.find(basis);
     if ( it != this->sparse_vector.end()) {
         return it->second;
@@ -174,7 +173,7 @@ pair<complex<double>, complex<double>> QuantumState::get_qubit_amplitudes() cons
     return make_pair(this->get_amplitude(0), this->get_amplitude(1));
 }
 
-bool QuantumState::insert_amplitude(const int &basis, const complex<double> &amplitude) {
+bool QuantumState::insert_amplitude(const cpp_int &basis, const complex<double> &amplitude) {
     if (is_close(amplitude.real(), 0.0, this->precision) && is_close(amplitude.imag(), 0.0, this->precision)) {
         return false;
     }
@@ -183,7 +182,7 @@ bool QuantumState::insert_amplitude(const int &basis, const complex<double> &amp
     return true;
 }
 
-bool QuantumState::add_amplitude(const int &basis, const complex<double> &amplitude) {
+bool QuantumState::add_amplitude(const cpp_int &basis, const complex<double> &amplitude) {
 
     if (is_close(amplitude.real(), 0.0, this->precision) && is_close(amplitude.imag(), 0.0, this->precision)){
         // if both the real and the imaginary part of the amplitude are 0 then we return False because we do not add any amplitude
@@ -332,7 +331,7 @@ QuantumState* QuantumState::apply_instruction(const Instruction &instruction, bo
     return result;
 }
 
-QuantumState *QuantumState::get_qubit_from_basis(int basis, int target) const {
+QuantumState *QuantumState::get_qubit_from_basis(cpp_int basis, int target) const {
     auto result = new QuantumState({target}, this->precision);
     result->sparse_vector.clear();
     std::string bin_number = to_binary(basis);  // reversed already
@@ -345,13 +344,14 @@ QuantumState *QuantumState::get_qubit_from_basis(int basis, int target) const {
     return result;
 }
 
-int QuantumState::glue_qubit_in_basis(int basis, int address, int value) {
+cpp_int QuantumState::glue_qubit_in_basis(cpp_int basis, int address, int value) {
     // convert basis to binary string (reversed = least significant bit first)
     std::string bin_number;
-    int temp = basis;
+    cpp_int temp = basis;
     if (temp == 0) bin_number.push_back('0');
     while (temp > 0) {
-        bin_number.push_back((temp % 2) + '0');
+        int mod = (temp % 2).convert_to<int>();
+        bin_number.push_back(mod + '0');
         temp /= 2;
     }
 
@@ -364,7 +364,7 @@ int QuantumState::glue_qubit_in_basis(int basis, int address, int value) {
     bin_number[address] = static_cast<char>('0' + value);
 
     // compute integer result (reverse order back)
-    int result = 0;
+    cpp_int result = 0;
     for (auto it = bin_number.rbegin(); it != bin_number.rend(); ++it) {
         result = (result << 1) + (*it - '0');
     }
@@ -420,7 +420,7 @@ QuantumState* QuantumState::eval_single_qubit_gate(const Instruction &instructio
     return result;
 }
 
-bool QuantumState::are_controls_true(int basis, const vector<int> &controls) {
+bool QuantumState::are_controls_true(cpp_int basis, const vector<int> &controls) {
     for (int a : controls) {
         // if the bit is at position an is 0
         if (((basis >> a) & 1) == 0) {
@@ -492,14 +492,14 @@ int  _get_real_index(const vector<int> &qubits_used,const int&index) {
     throw invalid_argument("Could not get real index");
 }
 
-string int_to_bin(int n, int zero_padding=-1) {
+string int_to_bin(cpp_int n, int zero_padding=-1) {
     assert(n >= 0);
     string result;
     while (n > 0) {
         if ((n % 2) == 1) result += "1";
         else 
             result += "0";
-        n = floor(n / 2);
+        n = n >> 1;
     }
 
     if (zero_padding > -1) {
@@ -546,7 +546,9 @@ int bin_to_int(const string &bin) {
     for (int power = 0; power < bin.size(); power++) {
         char b = bin.at(power);
         assert (b=='0' || b == '1');
-        result += static_cast<int>(b - '0')*(pow(2,power));
+        if (b == '1') {
+            result += pow(2, power);
+        }
     }
         
     return result;
@@ -585,14 +587,14 @@ vector<vector<complex<double>>> QuantumState::multi_partial_trace(const vector<i
         result.push_back(temp);
     }
     for (auto it : this->sparse_vector) {
-        int ket = it.first;
+        cpp_int ket = it.first;
 
         auto bin_ket = int_to_bin(ket, local_qubits_used.size());
         auto bin_ket_ = remove_unused(bin_ket, local_qubits_used, local_qubits_used.size());
         auto bin_new_ket = remove_char_at_indices(bin_ket_, real_indices);
         auto index_new_ket = bin_to_int(bin_new_ket); // index of the row in the result(-ing density matrix)
         for (auto it2 : this->sparse_vector) {
-            int bra = it2.first;
+            cpp_int bra = it2.first;
             auto current_val = real(this->get_amplitude(ket) * conj(this->get_amplitude(bra)));
             auto bin_bra = int_to_bin(bra, local_qubits_used.size()); // original bra
             auto bin_bra_ = remove_unused(bin_bra, local_qubits_used, local_qubits_used.size());
@@ -631,11 +633,12 @@ bool ClassicalState::operator==(const ClassicalState&other) const {
     return this->get_memory_val() == other.get_memory_val();
 }
 
-int ClassicalState::get_memory_val() const {
-    int answer = 0;
-    
+cpp_int ClassicalState::get_memory_val() const {
+    cpp_int answer = 0;
+
+    cpp_int TWO = 2;
     for(auto it : this->sparse_vector) {
-        answer += (pow(2, it.first) * it.second);
+        answer += (pow(TWO, it.first) * it.second);
     }
 
     return answer;

@@ -56,7 +56,7 @@ pair<Algorithm*, Rational> SingleDistributionSolver::get_bellman_value(const Bel
 
     Rational curr_belief_val = this->get_reward(current_belief, this->embedding);
     
-    int current_classical_state = get_belief_cs(current_belief);
+    cpp_int current_classical_state = get_belief_cs(current_belief);
     assert(current_classical_state >= 0);
     auto halt_algorithm = new Algorithm(&HALT_ACTION, current_classical_state, 0);
     if (horizon == 0) {
@@ -71,7 +71,7 @@ pair<Algorithm*, Rational> SingleDistributionSolver::get_bellman_value(const Bel
         POMDPAction * action = &it;
 
         // build next_beliefs, separate them by different observables
-        map<int, Belief> obs_to_next_beliefs;
+        map<cpp_int, Belief> obs_to_next_beliefs;
 
         for(auto & prob : current_belief.probs) {
             Rational zero("0", "1", this->precision);
@@ -151,7 +151,7 @@ pair<Algorithm*, Rational> SingleDistributionSolver::PBVI_solve(const Belief &cu
 
     Rational curr_belief_val = this->get_reward(current_belief, this->embedding);
 
-    int current_classical_state = -1;
+    cpp_int current_classical_state = -1;
     for(auto & prob : current_belief.probs) {
         if (current_classical_state == -1) {
             current_classical_state = prob.first->hybrid_state->classical_state->get_memory_val();
@@ -168,9 +168,9 @@ pair<Algorithm*, Rational> SingleDistributionSolver::PBVI_solve(const Belief &cu
     vector<pair<Belief, map<int, Belief>>> candidate_beliefs;
 
     // for picking candidate belief that has the highest distance
-    unordered_map<int, Belief> temp;
+    unordered_map<cpp_int, Belief> temp;
     temp[current_classical_state] = current_belief;
-    pair<Belief, unordered_map<int, Belief>> best_candidate = make_pair(curr_belief_normalized, temp);
+    pair<Belief, unordered_map<cpp_int, Belief>> best_candidate = make_pair(curr_belief_normalized, temp);
     Rational furthest_value("0", "1", this->precision);
     POMDPAction* best_action = &HALT_ACTION;
 
@@ -178,7 +178,7 @@ pair<Algorithm*, Rational> SingleDistributionSolver::PBVI_solve(const Belief &cu
     for (auto & it : pomdp.actions) {
         POMDPAction * action = &it;
 
-        unordered_map<int, Belief> obs_to_next_beliefs; // for each belief we compute the sub-distributions to which it leads
+        unordered_map<cpp_int, Belief> obs_to_next_beliefs; // for each belief we compute the sub-distributions to which it leads
         Belief next_belief; // we also compute the real belief which should be normalized
 
         for(auto & prob : current_belief.probs) {
@@ -263,7 +263,7 @@ Rational get_algorithm_acc(POMDP &pomdp, Algorithm*& algorithm, const Belief &cu
     }
 
     // build next_beliefs, separate them by different observables
-    unordered_map<int, Belief> obs_to_next_beliefs;
+    unordered_map<cpp_int, Belief> obs_to_next_beliefs;
 
     Rational zero("0", "1", precision);
     for(auto & prob : current_belief.probs) {
@@ -327,7 +327,7 @@ void ConvexDistributionSolver::set_minimax_values(
 
 
 
-int get_succ_classical_state(const Algorithm *current) {
+cpp_int get_succ_classical_state(const Algorithm *current) {
     assert(!current->has_meas());
     if (current->is_unitary()) {
         return current->classical_state;
@@ -335,7 +335,7 @@ int get_succ_classical_state(const Algorithm *current) {
 
     assert(current->has_classical_instruction());
 
-    int answer = current->classical_state;
+    cpp_int answer = current->classical_state;
     for(Instruction instruction : current->action->instruction_sequence) {
         
         if(instruction.instruction_type == InstructionType::Classical) {
@@ -415,7 +415,7 @@ void ConvexDistributionSolver::get_matrix_maximin(const vector<POMDPVertex*> &in
 
                         } else {
                             assert(end_node->children.size() == 0);
-                            int next_classical_state = get_succ_classical_state(end_node);
+                            cpp_int next_classical_state = get_succ_classical_state(end_node);
                             Algorithm * new_node = new Algorithm(&action, next_classical_state, end_node->depth + 1);
                             assert(!end_node->exist_child_with_cstate(next_classical_state));
                             end_node->children.push_back(new_node);
@@ -429,8 +429,8 @@ void ConvexDistributionSolver::get_matrix_maximin(const vector<POMDPVertex*> &in
         }
 }
 
-int get_classical_state(const vector<POMDPVertex*> &states) {
-    int answer = -1;
+cpp_int get_classical_state(const vector<POMDPVertex*> &states) {
+    cpp_int answer = -1;
     for (auto state: states) {
         if (answer == -1) {
             answer = state->hybrid_state->classical_state->get_memory_val();

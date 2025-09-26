@@ -32,6 +32,10 @@ struct POMDPVertexPtrEqual {
     bool operator()(const POMDPVertex* a, const POMDPVertex* b) const;
 };
 
+struct POMDPVertexPtrEqualID {
+    bool operator()(const POMDPVertex* a, const POMDPVertex* b) const;
+};
+
 typedef unordered_map<POMDPVertex*, double, POMDPVertexHash, POMDPVertexPtrEqual> vertex_dict;
 
 class POMDPAction {
@@ -75,12 +79,12 @@ class POMDP {
 public:
         POMDPVertex *initial_state;
         unordered_map<POMDPVertex *, unordered_map<POMDPAction *, unordered_map<POMDPVertex *, Rational, POMDPVertexHash,
-            POMDPVertexPtrEqual>, POMDPActionHash, POMDPActionPtrEqual>, POMDPVertexHash, POMDPVertexPtrEqual>
+            POMDPVertexPtrEqual>, POMDPActionHash, POMDPActionPtrEqual>, POMDPVertexHash, POMDPVertexPtrEqualID>
         transition_matrix;
         vector<POMDPAction> actions;
         POMDP() = default;
         POMDP(int precision);
-        POMDP(POMDPVertex *initialState, const vector<POMDPVertex*> &states, const vector<POMDPAction> &actions, unordered_map<POMDPVertex*, unordered_map<POMDPAction*, unordered_map<POMDPVertex*, Rational,POMDPVertexHash, POMDPVertexPtrEqual>,POMDPActionHash, POMDPActionPtrEqual>, POMDPVertexHash, POMDPVertexPtrEqual> &transition_matrix);
+        POMDP(POMDPVertex *initialState, const vector<POMDPVertex*> &states, const vector<POMDPAction> &actions, unordered_map<POMDPVertex*, unordered_map<POMDPAction*, unordered_map<POMDPVertex*, Rational,POMDPVertexHash, POMDPVertexPtrEqual>,POMDPActionHash, POMDPActionPtrEqual>, POMDPVertexHash, POMDPVertexPtrEqualID> &transition_matrix);
         POMDPVertex* get_vertex(const POMDPVertex *vertex);
         POMDPVertex* create_new_vertex(const HybridState *hybrid_state, int hidden_index);
         void build_pomdp(const vector<POMDPAction> &actions, HardwareSpecification &hardware_specification, int horizon, unordered_map<int, int> embedding, HybridState *initial_state, const vector<pair<HybridState*, double>> &initial_distribution, vector<int> &qubits_used, guard_type guard, bool set_hidden_index=false);

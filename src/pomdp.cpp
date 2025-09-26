@@ -39,6 +39,11 @@ bool POMDPVertexPtrEqual::operator()(const POMDPVertex* a, const POMDPVertex* b)
     return *a == *b;
 }
 
+bool POMDPVertexPtrEqualID::operator()(const POMDPVertex *a, const POMDPVertex *b) const {
+    return a->id == b->id;
+}
+
+
 
 void POMDPAction::__handle_measure_instruction(const Instruction &instruction, const MeasurementChannel &channel, const POMDPVertex &vertex, vertex_dict &result, bool is_meas1) const {
     /*
@@ -308,7 +313,7 @@ POMDP::POMDP(int precision) {
     this->precision = precision;
 }
 
-POMDP::POMDP(POMDPVertex *initial_state, const vector<POMDPVertex*> &states, const vector<POMDPAction> &actions, unordered_map<POMDPVertex*, unordered_map<POMDPAction*, unordered_map<POMDPVertex*, Rational,POMDPVertexHash, POMDPVertexPtrEqual>,POMDPActionHash, POMDPActionPtrEqual>, POMDPVertexHash, POMDPVertexPtrEqual>  &transition_matrix) {
+POMDP::POMDP(POMDPVertex *initial_state, const vector<POMDPVertex*> &states, const vector<POMDPAction> &actions, unordered_map<POMDPVertex*, unordered_map<POMDPAction*, unordered_map<POMDPVertex*, Rational,POMDPVertexHash, POMDPVertexPtrEqual>,POMDPActionHash, POMDPActionPtrEqual>, POMDPVertexHash, POMDPVertexPtrEqualID>  &transition_matrix) {
     this->initial_state = initial_state;
     this->states = states;
     this->actions = actions;

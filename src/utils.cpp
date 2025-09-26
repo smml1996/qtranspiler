@@ -1,5 +1,7 @@
 #include "utils.hpp"
 
+#include <boost/multiprecision/cpp_int.hpp>
+
 double get_rel_tol(const int &precision) {
     return 1/(pow(10,(precision-1)));
 }
@@ -25,14 +27,15 @@ bool is_close(const complex<double> &a, const complex<double> &b, const int &pre
 }
 
 // helper: convert integer to binary string (no leading zeros)
-string to_binary(int basis) {
+string to_binary(boost::multiprecision::cpp_int basis) {
     if (basis < 0) {
         throw invalid_argument("basis must be non-negative");
     }
     if (basis == 0) return "0";
     std::string result;
     while (basis > 0) {
-        result.push_back((basis % 2) + '0');
+        int temp = (basis % 2).convert_to<int>();
+        result.push_back(temp + '0');
         basis /= 2;
     }
     return result;  // already reversed because of push_back order

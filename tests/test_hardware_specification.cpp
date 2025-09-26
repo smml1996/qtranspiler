@@ -103,7 +103,6 @@ protected:
 TEST_P(HardwareDecompositionTest, HGateDecomposition) {
     QuantumHardware hw_ = GetParam();
     HardwareSpecification hw{hw_, false};
-    cout << hw.get_hardware_name() << " basis gates: " << hw.basis_gates_type << endl;
     Instruction instr(GateName::H, 0);
     QuantumState* direct = init_state.apply_instruction(instr);
     QuantumState* decomposed = apply_decomposition(hw, instr);

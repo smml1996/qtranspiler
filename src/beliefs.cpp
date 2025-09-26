@@ -125,8 +125,8 @@ Belief normalize_belief(const Belief &belief, int precision) {
     return result;
 }
 
-int get_belief_cs(const Belief &belief) {
-    int current_classical_state = -1;
+cpp_int get_belief_cs(const Belief &belief) {
+    cpp_int current_classical_state = -1;
     for(auto & prob : belief.probs) {
         if (current_classical_state == -1) {
             current_classical_state = prob.first->hybrid_state->classical_state->get_memory_val();

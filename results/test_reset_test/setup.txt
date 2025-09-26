@@ -1,5 +1,5 @@
 name: test_reset_test
-precision: 8
+precision: 5
 thermalization: 0
 min. horizon: 2
 max. horizon: 7

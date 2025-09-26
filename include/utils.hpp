@@ -3,6 +3,7 @@
 
 #include <complex>
 #include <random>
+#include <boost/multiprecision/cpp_int.hpp>
 
 using namespace std;
 
@@ -22,7 +23,7 @@ T weighted_choice(const std::vector<T> &elements, const std::vector<double> &wei
     return elements[dist(gen)];
 }
 double round_to(double value, int decimals);
-string to_binary(int basis);
+string to_binary(boost::multiprecision::cpp_int basis);
 bool are_matrices_equal(const vector<vector<complex<double>>> &arr1, const vector<vector<complex<double>>> &arr2, int precision);
 bool is_matrix_in_list(const vector<vector<complex<double>>> & matrix, const vector<vector<vector<complex<double>>>> &matrix_list, int precision);
 

@@ -7,7 +7,7 @@
 class Belief {
 public:
     [[nodiscard]] Rational get_sum(int precision) const;
-    unordered_map<POMDPVertex *, Rational, POMDPVertexHash, POMDPVertexPtrEqual> probs;
+    unordered_map<POMDPVertex *, Rational, POMDPVertexHash, POMDPVertexPtrEqualID> probs;
 
     Rational get(POMDPVertex *v, int precision);
 
@@ -30,7 +30,7 @@ Rational l1_norm(const Belief &b1, const Belief &b2, int precision);
 
 Belief normalize_belief(const Belief &belief, int precision);
 
-int get_belief_cs(const Belief &belief);
+cpp_int get_belief_cs(const Belief &belief);
 
 
 

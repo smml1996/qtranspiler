@@ -3,7 +3,6 @@
 #include <chrono>
 #include <iostream>
 #include "experiments.hpp"
-#include <cmath>
 
 #include <cassert>
 
@@ -29,14 +28,14 @@ string get_method_string(MethodType method) {
         return "exact_bellman";
     }
 
-    if (method == MethodType::SingleDistBellman) {
+    if (method == MethodType::SingleDistPBVI) {
         return "pbvi";
     }
 
     throw invalid_argument("Method type not recognized");
 }
 
-string gate_to_string(set<MethodType> methods) {
+string gate_to_string(const set<MethodType> &methods) {
     string result;
     for (auto m : methods) {
         if (!result.empty()) {
@@ -278,7 +277,7 @@ void Experiment::run() const {
                 cout << horizon << endl;
                 for (auto method : this->method_types) {
                     long long method_time;
-                    pair<Algorithm *, double> result = make_pair(nullptr, 0);
+                    pair<Algorithm *, double> result;
                     double error = 0.0;
                     if (method == MethodType::SingleDistBellman) {
                         SingleDistributionSolver solver(pomdp, actual_reward_f, this->precision * (max_horizon+1), embedding);

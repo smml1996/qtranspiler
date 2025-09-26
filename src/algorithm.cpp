@@ -5,7 +5,7 @@
 #include <iostream>
 #include "utils.hpp"
 
-Algorithm::Algorithm(POMDPAction* action, int classical_state, int precision, int depth) {
+Algorithm::Algorithm(POMDPAction* action, const cpp_int &classical_state, int precision, int depth) {
     assert(action != nullptr);
     assert(action->name.size() > 0);
     this->action = new POMDPAction(*action);
@@ -17,7 +17,7 @@ Algorithm::Algorithm(POMDPAction* action, int classical_state, int precision, in
 
 
 
-bool Algorithm::exist_child_with_cstate(const int &cstate) const {
+bool Algorithm::exist_child_with_cstate(const cpp_int &cstate) const {
     for (auto child : this->children) {
         if(child->classical_state == cstate) {
             return true;
@@ -27,15 +27,17 @@ bool Algorithm::exist_child_with_cstate(const int &cstate) const {
 }
 
 bool Algorithm::operator==(const Algorithm &other) const {
-    if (other.action != this->action) {
+    if (!(*other.action == *this->action)) {
+        // cout << "action is different: " << this->action->name << " " << other.action->name << endl;
         return false;
     }
-
     if (this->classical_state != other.classical_state) {
+        // cout << "classical state is different: " << this->classical_state << " " << other.classical_state << endl;
         return false;
     }
 
     if (this->children.size() != other.children.size()) {
+        // cout << "children size is different: " << this->children.size() << " " << other.children.size() << endl;
         return false;
     }
 
@@ -150,7 +152,7 @@ Algorithm* algorithm_exists(const unordered_map<int, Algorithm*> &mapping_index_
 Algorithm * deep_copy_algorithm(Algorithm *algorithm)  {
     if (algorithm == nullptr) return algorithm;
     string action = algorithm->action->name;
-    int classical_state = algorithm-> classical_state;
+    auto classical_state = algorithm-> classical_state;
     int depth = algorithm->depth;
 
     Algorithm * algorithm_copy = new Algorithm(algorithm->action, classical_state, depth);
@@ -191,8 +193,8 @@ bool Algorithm::is_unitary() const {
 
     return true;
 }
-void Algorithm::get_successor_classical_states(const int &current_classical_state,
-    unordered_set<int> &result) const {
+void Algorithm::get_successor_classical_states(const cpp_int &current_classical_state,
+    unordered_set<cpp_int> &result) const {
     // get all bits that might change
     unordered_set<int> bits;
     for (auto instruction : this->action->instruction_sequence) {
@@ -216,7 +218,7 @@ void get_algorithm_end_nodes(Algorithm *algorithm, vector<Algorithm *> &end_node
     }
 
    if (algorithm->has_meas()) {
-        unordered_set<int> all_c_succs;
+        unordered_set<cpp_int> all_c_succs;
         algorithm->get_successor_classical_states(algorithm->classical_state, all_c_succs);
         if (algorithm->children.size() < all_c_succs.size()) {
             // TODO: this can be better (some classical states cannot happen)
@@ -233,7 +235,7 @@ void get_algorithm_end_nodes(Algorithm *algorithm, vector<Algorithm *> &end_node
     }
 }
 
-Algorithm *get_mixed_algorithm(const vector<double> &x, const unordered_map<int, Algorithm *> &mapping_index_algorithm, int initial_classical_state) {
+Algorithm *get_mixed_algorithm(const vector<double> &x, const unordered_map<int, Algorithm *> &mapping_index_algorithm, cpp_int initial_classical_state) {
     Algorithm * new_head = new Algorithm(&random_branch, initial_classical_state, -1);
     int count = 0;
     for(int i = 0; i < x.size(); i++) {
