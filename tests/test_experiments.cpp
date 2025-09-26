@@ -40,21 +40,21 @@ set<QuantumHardware> get_hardware_list() {
 //     reset_problem.run();
 // }
 
-// TEST(ExperimentsTests, ResetTestAlmaden) {
-//     const int min_horizon = 2;
-//     const int max_horizon = 7;
-//     string custom_name = "test_reset_test_almaden";
-//
-//     set<MethodType> methods = {
-//         SingleDistBellman,
-//         // SingleDistPBVI
-//     };
-//
-//     auto hw_list = {Almaden};
-//
-//     ResetProblem reset_problem = ResetProblem(custom_name, precision, with_thermalization,min_horizon, max_horizon, methods, hw_list);
-//     reset_problem.run();
-// }
+TEST(ExperimentsTests, ResetTestAlmaden) {
+    const int min_horizon = 2;
+    const int max_horizon = 7;
+    string custom_name = "test_reset_test_almaden2";
+
+    set<MethodType> methods = {
+        SingleDistBellman,
+        // SingleDistPBVI
+    };
+
+    auto hw_list = {Almaden};
+
+    ResetProblem reset_problem = ResetProblem(custom_name, precision, with_thermalization,min_horizon, max_horizon, methods, hw_list);
+    reset_problem.run();
+}
 
 TEST(ExperimentsTests, ResetTestBrisbane) {
     const int min_horizon = 7;

@@ -44,15 +44,15 @@ SingleDistributionSolver::SingleDistributionSolver(const POMDP &pomdp, const f_r
 
 pair<Algorithm*, Rational> SingleDistributionSolver::get_bellman_value(const Belief &current_belief, const int &horizon){
     Belief curr_belief_normalized = normalize_belief(current_belief, this->precision);
-    // auto temp_it = this->beliefs_to_rewards.find(curr_belief_normalized);
-    // if (temp_it != this->beliefs_to_rewards.end()) {
-    //     auto horizon_it = temp_it->second.find(horizon);
-    //     if (horizon_it != temp_it->second.end()) {
-    //         return horizon_it->second;
-    //     }
-    // } else {
-    //     this->beliefs_to_rewards[curr_belief_normalized] = {};
-    // }
+    auto temp_it = this->beliefs_to_rewards.find(curr_belief_normalized);
+    if (temp_it != this->beliefs_to_rewards.end()) {
+        auto horizon_it = temp_it->second.find(horizon);
+        if (horizon_it != temp_it->second.end()) {
+            return horizon_it->second;
+        }
+    } else {
+        this->beliefs_to_rewards[curr_belief_normalized] = {};
+    }
 
     Rational curr_belief_val = this->get_reward(current_belief, this->embedding);
     

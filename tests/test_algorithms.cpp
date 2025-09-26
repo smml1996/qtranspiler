@@ -42,16 +42,16 @@ TEST(AlgorithmTest, FindChildWithCState) {
 TEST(AlgorithmTest, EqualAlgorithm) {
     Algorithm algorithm(&XAction, 1, 10, 1);
 
-    // EXPECT_EQ(algorithm, algorithm);
+    EXPECT_EQ(algorithm, algorithm);
 
     Algorithm algorithm2(&XAction, 1, 10, 1);
     EXPECT_EQ(algorithm2, algorithm);
 
 
-    // Algorithm algorithm3(&XAction, 0, 10, 1);
-    // algorithm.children.push_back(&algorithm3);
-    // algorithm2.children.push_back(&algorithm3);
-    // EXPECT_EQ(algorithm, algorithm2);
+    Algorithm algorithm3(&XAction, 0, 10, 1);
+    algorithm.children.push_back(&algorithm3);
+    algorithm2.children.push_back(&algorithm3);
+    EXPECT_EQ(algorithm, algorithm2);
 
 }
 
