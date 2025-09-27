@@ -24,6 +24,7 @@ public:
     unordered_map<int, double> children_probs;
 
     Algorithm(POMDPAction* action, const cpp_int &classical_state, int precision, int depth=-1);
+    ~Algorithm();
     bool exist_child_with_cstate(const cpp_int &cstate) const;
     bool operator==(const Algorithm &algorithm) const;
     bool has_meas() const;

@@ -15,6 +15,12 @@ Algorithm::Algorithm(POMDPAction* action, const cpp_int &classical_state, int pr
     this->precision = precision;
 }
 
+Algorithm::~Algorithm() {
+    delete action;
+    for (auto child : this->children) {
+        delete child;
+    }
+}
 
 
 bool Algorithm::exist_child_with_cstate(const cpp_int &cstate) const {

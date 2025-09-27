@@ -17,6 +17,7 @@ class POMDPVertex {
         int hidden_index;
         int id;
         POMDPVertex() = default;
+        ~POMDPVertex();
         explicit POMDPVertex(HybridState *hybrid_state, int hidden_index=-1);
         bool operator==(const POMDPVertex &other) const;
         [[nodiscard]] ClassicalState *get_obs() const;

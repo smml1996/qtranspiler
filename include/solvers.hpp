@@ -23,6 +23,7 @@ class SingleDistributionSolver {
         unordered_map<Belief, unordered_map<int, pair<Algorithm*, Rational>>, BeliefHash> beliefs_to_rewards;
         SingleDistributionSolver(const POMDP &pomdp, const f_reward_type &get_reward, int precision, const unordered_map<int, int> & embedding);
         pair<Algorithm*, Rational> get_bellman_value(const Belief &current_belief, const int &horizon);
+        ~SingleDistributionSolver();
 
         // PBVI
         pair<Algorithm*, Rational> PBVI_solve(const Belief &current_beliefs, const int &horizon);

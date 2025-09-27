@@ -11,6 +11,10 @@
 
 int POMDPVertex::local_counter = 1;
 
+POMDPVertex::~POMDPVertex() {
+    // delete this->hybrid_state;
+}
+
 POMDPVertex::POMDPVertex(HybridState *hybrid_state, int hidden_index) {
     this->id = POMDPVertex::local_counter;
     POMDPVertex::local_counter += 1;
@@ -303,7 +307,9 @@ POMDPVertex* POMDP::create_new_vertex(const HybridState *hybrid_state, int hidde
 }
 
 POMDP::~POMDP() {
-
+    // for (auto state : this->states) {
+    //     delete state;
+    // }
 }
 
 POMDP::POMDP(int precision) {
@@ -357,7 +363,7 @@ void POMDP::build_pomdp(const vector<POMDPAction*> &actions_, HardwareSpecificat
             } else{
                 hidden_index = -1;
             }
-            auto v =  new POMDPVertex(new HybridState(*hybrid_state), hidden_index);
+            auto v = this->create_new_vertex(hybrid_state, hidden_index); //new POMDPVertex(new HybridState(*hybrid_state), hidden_index);
             this->transition_matrix[initial_v][INIT_CHANNEL].insert_or_assign(v, Rational(to_string(prob), "1", this->precision * (horizon+1)));
             assert (this->transition_matrix[initial_v][INIT_CHANNEL].find(v) != this->transition_matrix[initial_v][INIT_CHANNEL].end());
             assert (v->id > 0);
@@ -365,16 +371,13 @@ void POMDP::build_pomdp(const vector<POMDPAction*> &actions_, HardwareSpecificat
         }
     }
 
-    unordered_set<POMDPVertex*, POMDPVertexHash, POMDPVertexPtrEqual> visited;
+    unordered_set<POMDPVertex*, POMDPVertexHash, POMDPVertexPtrEqualID> visited;
 
     while (!q.empty()) {
         assert(initial_v->hybrid_state != nullptr);
         pair<POMDPVertex*, int> temp = q.front();
         q.pop();
         auto current_v = temp.first;
-        if (current_v->id == 0) {
-            continue;
-        }
         auto current_horizon = temp.second;
         if (horizon != -1) {
             if (current_horizon == horizon) {

@@ -138,6 +138,13 @@ pair<Algorithm*, Rational> SingleDistributionSolver::get_bellman_value(const Bel
     assert(false);
 }
 
+SingleDistributionSolver::~SingleDistributionSolver() {
+    // for (auto it : this->beliefs_to_rewards) {
+    //     for (auto it2 : it.second) {
+    //         delete it2.second.first;
+    //     }
+    // }
+}
 
 
 pair<Algorithm*, Rational> SingleDistributionSolver::PBVI_solve(const Belief &current_belief, const int &horizon) {
