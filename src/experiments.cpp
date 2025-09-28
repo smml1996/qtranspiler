@@ -363,7 +363,7 @@ unordered_set<int> get_meas_pivot_qubits(const HardwareSpecification &hardware_s
     for (int qubit = 0; qubit < hardware_spec.num_qubits; qubit++) {
         if (hardware_spec.get_qubit_indegree(qubit) > 1) {
             Instruction *instruction = new Instruction(GateName::Meas, qubit, qubit);
-            MeasurementChannel* noise_data = static_cast<MeasurementChannel*>(hardware_spec.instructions_to_channels.at(instruction));
+            MeasurementChannel* noise_data = static_cast<MeasurementChannel*>(hardware_spec.get_channel(instruction));
             auto success0 = noise_data->correct_0;
             auto success1 = noise_data->correct_1;
             noises.push_back(ReadoutNoise(qubit, success0, success1));

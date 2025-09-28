@@ -193,17 +193,7 @@ vertex_dict POMDPAction::__dfs(HardwareSpecification &hardware_specification, PO
         auto new_vertex = new POMDPVertex(new HybridState(current_vertex->hybrid_state->quantum_state, new_classical_state), current_vertex->hidden_index);
         temp_result[new_vertex] = 1.0;
     } else {
-
-        // assert(hardware_specification.instructions_to_channels.find(&current_instruction) != hardware_specification.instructions_to_channels.end());
-        if(hardware_specification.instructions_to_channels.find(&current_instruction) == hardware_specification.instructions_to_channels.end()) {
-            // cout << "current_instruction: " << current_instruction << endl;
-            //
-            // for (auto it : hardware_specification.instructions_to_channels) {
-            //     cout << *it.first << endl;
-            // }
-            assert(false);
-        }
-        Channel *instruction_channel = hardware_specification.instructions_to_channels.find(&current_instruction)->second;
+        Channel *instruction_channel = hardware_specification.get_channel(&current_instruction);
         if (current_instruction.instruction_type == InstructionType::Measurement) {
             // get successors for 0-measurements
             this->__handle_measure_instruction(current_instruction, *static_cast<MeasurementChannel*>(instruction_channel), *current_vertex, temp_result, false );

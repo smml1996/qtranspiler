@@ -33,11 +33,24 @@ QuantumChannel::QuantumChannel(json &data) {
         
 }
 
+QuantumChannel::QuantumChannel() {
+    // initialize to a quantum channel with no error
+    vector<Instruction> errors = {};
+    this->errors_to_probs.push_back(make_pair(errors, 1.0));
+}
+
 MeasurementChannel::MeasurementChannel(json &json_val) {
     this->correct_0 = json_val["0"]["0"];
     this->incorrect_0 = json_val["0"]["1"];
     this->correct_1 = json_val["1"]["1"];
     this->incorrect_1 = json_val["1"]["0"];
+}
+
+MeasurementChannel::MeasurementChannel(double correct0, double correct1) {
+    this->correct_0 = correct0;
+    this->correct_1 = correct1;
+    this->incorrect_0 = 1 - correct_0;
+    this->incorrect_1 = 1 - correct_1;
 }
 
 double MeasurementChannel::get_ind_probability(int ideal_outcome, int noisy_outcome) const{

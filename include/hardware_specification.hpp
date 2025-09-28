@@ -13,7 +13,7 @@ using namespace std;
 enum QuantumHardware { 
     Algiers,
     Almaden,
-    // Armonk,
+    // Armonk, // this one has only 1 qubit. Not useful for most of our experiments
     Athens,
     Auckland,
     Belem,
@@ -66,7 +66,7 @@ enum QuantumHardware {
     Vigo,
     Washington,
     Yorktown,
-
+    PerfectHardware,
     HardwareCount
 };
 
@@ -88,6 +88,7 @@ class HardwareSpecification {
         int get_qubit_indegree(int qubit) const;
         vector<Instruction> to_basis_gates_impl(const Instruction &current_ins) const;
         vector<pair<int, double>> get_sorted_qubit_couplers(int target) const;
+        Channel* get_channel(Instruction *) const;
 };
 
 set<string> get_hardware_strings();

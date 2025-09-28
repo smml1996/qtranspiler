@@ -10,6 +10,8 @@ auto pi = M_PI;
 
 using namespace std;
 
+MeasurementChannel PERFECT_MEAS_CHANNEL = MeasurementChannel(1.0, 1.0);
+QuantumChannel PERFECT_UNITARY_CHANNEL = QuantumChannel(); // perfect quantum channel
 
 int HardwareSpecification::get_qubit_indegree(int qubit) const {
     if (this->qubit_to_indegree.find(qubit) != this->qubit_to_indegree.end()) {
@@ -40,6 +42,20 @@ vector<pair<int, double>> HardwareSpecification::get_sorted_qubit_couplers(int t
     return result;
 }
 
+Channel * HardwareSpecification::get_channel(Instruction * instruction) const {
+    assert (instruction->instruction_type != InstructionType::Classical);
+    assert (instruction->instruction_type != InstructionType::Projector);
+    if (this->quantum_hardware == PerfectHardware) {
+        if (instruction->instruction_type == InstructionType::Measurement) {
+            return &PERFECT_MEAS_CHANNEL;
+        } else {
+            return &PERFECT_UNITARY_CHANNEL;
+        }
+    } else {
+        return this->instructions_to_channels.at(instruction);
+    }
+}
+
 set<string> get_hardware_strings() {
     set<string> result;
     for (int i = 0; i < QuantumHardware::HardwareCount;  i++) {
@@ -50,83 +66,99 @@ set<string> get_hardware_strings() {
 
 
 HardwareSpecification::HardwareSpecification(const QuantumHardware &quantum_hardware, const bool &thermal_relaxation) {
-    std::filesystem::path source_path(__FILE__);
-    std::filesystem::path source_dir = source_path.parent_path();
     this->quantum_hardware = quantum_hardware;
-    
-    // determining hardware specification path
-    std::filesystem::path spec_path;
-    if (thermal_relaxation) {
-        spec_path = source_dir / ("../hardware_specifications/with_thermalization/fake_" + to_string(quantum_hardware) + ".json");
+    if (quantum_hardware == QuantumHardware::PerfectHardware) {
+        this->num_qubits = 10;
+        this->basis_gates = get_value(BasisGates::TYPE1); // we put anything
+
+        // compute in-degree of qubits (all qubits are connected with all qubits)
+        // also compute digraph
+        for (int i = 0; i < this->num_qubits; i++) {
+            this->qubit_to_indegree[i] = this->num_qubits-1;
+            for (int j = 0; j < this->num_qubits; j++) {
+                if (i != j) {
+                    this->digraph[i].insert(j);
+                }
+            }
+        }
     } else {
-        spec_path = source_dir / ("../hardware_specifications/no_thermalization/fake_" + to_string(quantum_hardware) + ".json");
-    }
+        std::filesystem::path source_path(__FILE__);
+        std::filesystem::path source_dir = source_path.parent_path();
 
-    std::ifstream f(spec_path);
-    if (!f.is_open()) {
-        std::cerr << "(Failed to open file: "  << spec_path << endl;
-    }
-    json json_hardware_spec = json::parse(f);
-    f.close();
-
-    this->num_qubits = json_hardware_spec["num_qubits"];
-
-    // basis gates
-    for (string raw_gate : json_hardware_spec["basis_gates"]) {
-        this->basis_gates.insert(get_enum_obj(raw_gate));
-    }
-    this->basis_gates_type = get_basis_gates_type(this->basis_gates);
-
-    vector<json> instructions = json_hardware_spec["instructions"];
-
-    vector<json> channels = json_hardware_spec["channels"];
-
-    assert (instructions.size() == channels.size());
-
-    for(int i=0; i < instructions.size(); i++) {
-        Instruction *instruction = new Instruction(instructions[i]);
-        Channel *channel;
-        if(instruction->get_instruction_type() == InstructionType::Measurement) {
-            channel = new MeasurementChannel(channels[i]);
+        // determining hardware specification path
+        std::filesystem::path spec_path;
+        if (thermal_relaxation) {
+            spec_path = source_dir / ("../hardware_specifications/with_thermalization/fake_" + to_string(quantum_hardware) + ".json");
         } else {
-            channel = new QuantumChannel(channels[i]);
+            spec_path = source_dir / ("../hardware_specifications/no_thermalization/fake_" + to_string(quantum_hardware) + ".json");
         }
 
-        this->instructions_to_channels[instruction] = channel;   
-    }
-
-    // compute in degree of qubits
-    for (auto it : this->instructions_to_channels) {
-        Instruction *ins = it.first;
-        if (ins->instruction_type == InstructionType::UnitaryMultiQubit) {
-            int target = ins->target;
-            if (this->qubit_to_indegree.find(target) == this->qubit_to_indegree.end()) {
-                this->qubit_to_indegree[target] = 0;
-            }
-            this->qubit_to_indegree[target]++;
+        std::ifstream f(spec_path);
+        if (!f.is_open()) {
+            std::cerr << "(Failed to open file: "  << spec_path << endl;
         }
-    }
+        json json_hardware_spec = json::parse(f);
+        f.close();
 
-    assert(this->qubit_to_indegree.size() == this->num_qubits);
+        this->num_qubits = json_hardware_spec["num_qubits"];
 
-    for (auto it   : this->qubit_to_indegree) {
-        assert(it.second > 0);
-    }
+        // basis gates
+        for (string raw_gate : json_hardware_spec["basis_gates"]) {
+            this->basis_gates.insert(get_enum_obj(raw_gate));
+        }
+        this->basis_gates_type = get_basis_gates_type(this->basis_gates);
 
-    // compute digraph
-    for (auto it : this->instructions_to_channels) {
-        auto instruction = it.first;
+        vector<json> instructions = json_hardware_spec["instructions"];
 
-        if (instruction->instruction_type == InstructionType::UnitaryMultiQubit) {
-            assert (instruction->controls.size() == 1);
-            int source = instruction->controls[0];
-            int target = instruction->target;
-            
-            if (this->digraph.find(source) == this->digraph.end()) {
-                this->digraph[source] = unordered_set<int>();
+        vector<json> channels = json_hardware_spec["channels"];
+
+        assert (instructions.size() == channels.size());
+
+        for(int i=0; i < instructions.size(); i++) {
+            Instruction *instruction = new Instruction(instructions[i]);
+            Channel *channel;
+            if(instruction->get_instruction_type() == InstructionType::Measurement) {
+                channel = new MeasurementChannel(channels[i]);
+            } else {
+                channel = new QuantumChannel(channels[i]);
             }
-            this->digraph[source].insert(target);
-        }       
+
+            this->instructions_to_channels[instruction] = channel;
+        }
+
+        // compute in degree of qubits
+        for (auto it : this->instructions_to_channels) {
+            Instruction *ins = it.first;
+            if (ins->instruction_type == InstructionType::UnitaryMultiQubit) {
+                int target = ins->target;
+                if (this->qubit_to_indegree.find(target) == this->qubit_to_indegree.end()) {
+                    this->qubit_to_indegree[target] = 0;
+                }
+                this->qubit_to_indegree[target]++;
+            }
+        }
+
+        assert(this->qubit_to_indegree.size() == this->num_qubits);
+
+        for (auto it   : this->qubit_to_indegree) {
+            assert(it.second > 0);
+        }
+
+        // compute digraph
+        for (auto it : this->instructions_to_channels) {
+            auto instruction = it.first;
+
+            if (instruction->instruction_type == InstructionType::UnitaryMultiQubit) {
+                assert (instruction->controls.size() == 1);
+                int source = instruction->controls[0];
+                int target = instruction->target;
+
+                if (this->digraph.find(source) == this->digraph.end()) {
+                    this->digraph[source] = unordered_set<int>();
+                }
+                this->digraph[source].insert(target);
+            }
+        }
     }
     
 }
@@ -220,6 +252,9 @@ string HardwareSpecification::get_hardware_name() const {
 }
 
 vector<Instruction> HardwareSpecification::to_basis_gates_impl(const Instruction &current_ins) const {
+    if (this->quantum_hardware == QuantumHardware::PerfectHardware) {
+        return {current_ins};
+    }
     if ((basis_gates.find(current_ins.gate_name) != basis_gates.end() )  ||(current_ins.instruction_type == InstructionType::Measurement) || (current_ins.instruction_type == InstructionType::Classical)) return {current_ins};
     auto temp = unordered_set<BasisGates>({BasisGates::TYPE1, BasisGates::TYPE2, BasisGates::TYPE3, BasisGates::TYPE5, BasisGates::TYPE4, BasisGates::TYPE6});
     if (temp.find(basis_gates_type) != temp.end()) {
