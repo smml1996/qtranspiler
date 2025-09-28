@@ -48,6 +48,8 @@ QuantumState* QuantumState::eval_qubit_unitary(const Instruction &instruction) c
         result->insert_amplitude(0, a0);
         result->insert_amplitude(1, -a1);
     } else if ( instruction.gate_name == GateName::H){
+        assert((half_prob * (a0 + a1)).imag() == 0);
+        assert((half_prob * (a0 - a1)).imag() == 0);
         result->insert_amplitude(0, half_prob * (a0 + a1));
         result->insert_amplitude(1, half_prob * (a0 - a1));
     } else if ( instruction.gate_name == GateName::S){
@@ -177,8 +179,17 @@ bool QuantumState::insert_amplitude(const cpp_int &basis, const complex<double> 
     if (is_close(amplitude.real(), 0.0, this->precision) && is_close(amplitude.imag(), 0.0, this->precision)) {
         return false;
     }
+    double temp_real = 0.0;
+    double temp_imag = 0.0;
+    if (!is_close(amplitude.real(), 0.0, this->precision)) {
+        temp_real = amplitude.real();
+    }
 
-    this->sparse_vector[basis] = amplitude;
+    if (!is_close(amplitude.imag(), 0.0, this->precision)) {
+        temp_imag = amplitude.imag();
+    }
+
+    this->sparse_vector[basis] = complex<double>(temp_real, temp_imag);
     return true;
 }
 
@@ -196,7 +207,16 @@ bool QuantumState::add_amplitude(const cpp_int &basis, const complex<double> &am
         this->sparse_vector.erase(basis);
         return false;
     }
-    this->sparse_vector[basis] = current_amplitude;
+    double temp_real = 0.0;
+    double temp_imag = 0.0;
+    if (!is_close(current_amplitude.real(), 0.0, this->precision)) {
+        temp_real = current_amplitude.real();
+    }
+
+    if (!is_close(current_amplitude.imag(), 0.0, this->precision)) {
+        temp_imag = current_amplitude.imag();
+    }
+    this->sparse_vector[basis] = complex<double>(temp_real, temp_imag);
     return true;
 }
 
@@ -324,9 +344,9 @@ QuantumState* QuantumState::apply_instruction(const Instruction &instruction, bo
     if (result){
         if (normalize) {
             result->normalize();
+            assert(is_close(get_fidelity(*result, *result), 1, this->precision));
         }
         assert(result->sparse_vector.size() > 0);
-        assert(is_close(get_fidelity(*result, *result), 1, this->precision));
     }
     return result;
 }

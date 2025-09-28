@@ -16,10 +16,10 @@ Algorithm::Algorithm(POMDPAction* action, const cpp_int &classical_state, int pr
 }
 
 Algorithm::~Algorithm() {
-    delete action;
-    for (auto child : this->children) {
-        delete child;
-    }
+    // delete action;
+    // for (auto child : this->children) {
+    //     delete child;
+    // }
 }
 
 
@@ -86,37 +86,57 @@ bool Algorithm::operator==(const Algorithm &other) const {
 string to_string(Algorithm* algorithm, const string& tabs) {
     if (algorithm == nullptr) return "";
 
-    string result = tabs + to_string(algorithm->action) + "\n";
-
-    for(auto child : algorithm->children) {
-        string child_alg;
-        if (*algorithm->action == random_branch) {
+    string result = "";
+    if (*algorithm->action == random_branch) {
+        if (algorithm->children.size() == 1) {
+            return to_string(algorithm->children.at(0));
+        }
+        if (algorithm->children.size() == 2) {
             result += tabs + "{\n";
             string current_tabs = tabs + "\t";
 
-            auto temp_algorithm = new Algorithm(algorithm->action, algorithm->classical_state, algorithm->precision, algorithm->depth);
-            double condition_prob = 0.0;
-            vector<Algorithm*> new_children;
-            for (size_t i = 1; i < algorithm->children.size(); ++i) {
-                condition_prob += algorithm->children_probs.at(i);
-                temp_algorithm->children.push_back(algorithm->children.at(i));
-                temp_algorithm->children_probs[i-1] = algorithm->children_probs.at(i);
-            }
+            double condition_prob = algorithm->children_probs.at(1);
 
             result += to_string(algorithm->children.at(0), tabs + "\t");
-            result += "\n } ⊕_" + to_string(condition_prob) + "{\n";
-            result += to_string(temp_algorithm, tabs+ "\t");
+            result += "\n} ⊕_" + to_string(condition_prob) + " {\n";
+            result += to_string(algorithm->children.at(1), tabs+ "\t");
             result += tabs + "}\n";
-            delete temp_algorithm;
-        } else {
-            if (algorithm->children.size() > 1) {
-                result += tabs + "if c = " + to_string(child->classical_state) + ":\n" ;
-                child_alg = to_string(child, tabs+"\t");
-            } else {
-                child_alg = to_string(child, tabs);
-            }
+            return result;
+
         }
-        result += child_alg;
+        assert(algorithm->children.size() > 2);
+        result += tabs + "{\n";
+        string current_tabs = tabs + "\t";
+
+        auto temp_algorithm = new Algorithm(algorithm->action, algorithm->classical_state, algorithm->precision, algorithm->depth);
+        double condition_prob = 0.0;
+        vector<Algorithm*> new_children;
+        for (size_t i = 1; i < algorithm->children.size(); ++i) {
+            condition_prob += algorithm->children_probs.at(i);
+            temp_algorithm->children.push_back(algorithm->children.at(i));
+            temp_algorithm->children_probs[i-1] = algorithm->children_probs.at(i);
+        }
+
+        result += to_string(algorithm->children.at(0), tabs + "\t");
+        result += "\n } ⊕_" + to_string(condition_prob) + " {\n";
+        result += to_string(temp_algorithm, tabs+ "\t");
+        result += tabs + "}\n";
+        delete temp_algorithm;
+
+    } else {
+        result = tabs + to_string(algorithm->action) + "\n";
+        for(auto child : algorithm->children) {
+            string child_alg;
+            {
+                if (algorithm->children.size() > 1) {
+                    result += tabs + "if c = " + to_string(child->classical_state) + ":\n" ;
+                    child_alg = to_string(child, tabs+"\t");
+                } else {
+                    child_alg = to_string(child, tabs);
+                }
+            }
+            result += child_alg;
+        }
     }
     return result;
 }
@@ -145,14 +165,18 @@ int get_algorithm_from_list(const vector<Algorithm *> &algorithms, const Algorit
     return -1;
 }
 
-Algorithm* algorithm_exists(const unordered_map<int, Algorithm*> &mapping_index_algorithm, const Algorithm *algorithm) {
+int algorithm_exists(const unordered_map<int, Algorithm*> &mapping_index_algorithm, const Algorithm *algorithm) {
     for (auto it : mapping_index_algorithm) {
-        if (*it.second == *algorithm) {
-            return it.second;
+        if (it.second == nullptr) {
+            if (algorithm == nullptr) {
+                return it.first;
+            }
+        } else if (algorithm != nullptr && *it.second == *algorithm) {
+            return it.first;
         }
     }
 
-    return nullptr;
+    return -1;
 }
 
 Algorithm * deep_copy_algorithm(Algorithm *algorithm)  {
@@ -161,7 +185,7 @@ Algorithm * deep_copy_algorithm(Algorithm *algorithm)  {
     auto classical_state = algorithm-> classical_state;
     int depth = algorithm->depth;
 
-    Algorithm * algorithm_copy = new Algorithm(algorithm->action, classical_state, depth);
+    Algorithm * algorithm_copy = new Algorithm(algorithm->action, classical_state, algorithm->precision, depth);
 
     for (auto child : algorithm->children) {
         algorithm_copy->children.push_back(deep_copy_algorithm(child));
@@ -242,10 +266,12 @@ void get_algorithm_end_nodes(Algorithm *algorithm, vector<Algorithm *> &end_node
 }
 
 Algorithm *get_mixed_algorithm(const vector<double> &x, const unordered_map<int, Algorithm *> &mapping_index_algorithm, cpp_int initial_classical_state) {
-    Algorithm * new_head = new Algorithm(&random_branch, initial_classical_state, -1);
+    Algorithm * new_head = new Algorithm(&random_branch, initial_classical_state, 5, -1); // we are not going to use precision
+    assert(new_head->children.size() == 0);
     int count = 0;
     for(int i = 0; i < x.size(); i++) {
         if(x[i] > 0) {
+            assert(!(*mapping_index_algorithm.find(i)->second->action == random_branch));
             new_head->children.push_back(mapping_index_algorithm.find(i)->second);
             assert(new_head->children_probs.find(i) == new_head->children_probs.end());
             new_head->children_probs.insert({count, x[i]});

@@ -107,6 +107,12 @@ HardwareSpecification::HardwareSpecification(const QuantumHardware &quantum_hard
         }
     }
 
+    assert(this->qubit_to_indegree.size() == this->num_qubits);
+
+    for (auto it   : this->qubit_to_indegree) {
+        assert(it.second > 0);
+    }
+
     // compute digraph
     for (auto it : this->instructions_to_channels) {
         auto instruction = it.first;

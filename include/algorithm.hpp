@@ -38,7 +38,7 @@ bool dump_to_file(const fs::path &, Algorithm *);
 
 int get_algorithm_from_list(const vector<Algorithm *> &algorithms, const Algorithm* new_algorithm);
 
-Algorithm* algorithm_exists(const unordered_map<int, Algorithm*> &mapping_index_algorithm, const Algorithm *algorithm);
+int algorithm_exists(const unordered_map<int, Algorithm*> &mapping_index_algorithm, const Algorithm *algorithm);
 
 Algorithm* deep_copy_algorithm(Algorithm *algorithm);
 

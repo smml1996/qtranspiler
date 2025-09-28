@@ -18,12 +18,38 @@ public:
             auto hybrid_state = it.first->hybrid_state;
             auto cs = hybrid_state->classical_state;
             assert (it.first->hidden_index == 0 || it.first->hidden_index == 1);
-            if (it.first->hidden_index == 0 == cs->read(0)) {
+            if (it.first->hidden_index == cs->read(0)) {
                 result = result + it.second;
             }
         }
         return result;
     }
+
+    vector<POMDPAction*> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) const override {
+        assert(embedding.size() == 1);
+        assert(embedding.find(0) != embedding.end());
+
+
+        auto H0 = new POMDPAction("H0", hardware_spec.to_basis_gates_impl(Instruction(GateName::H,
+            embedding.at(0))), this->precision, {Instruction(GateName::H, 0)});
+
+        auto P0 = new POMDPAction("P0",
+            {Instruction(GateName::Meas, embedding.at(0), 0)},
+            this->precision,
+            {Instruction(GateName::Meas, 0, 0)});
+
+        auto determine0 = new POMDPAction("Is0",
+            {Instruction(GateName::Write0, 0)},
+            this->precision,
+            {Instruction(GateName::Write0, 0)});
+
+        auto determinePlus = new POMDPAction("IsPlus",
+            {Instruction(GateName::Write1, 0)},
+            this->precision,
+            {Instruction(GateName::Write1, 0)});
+        return {H0, P0, determine0, determinePlus};
+    };
+
 
 };
 

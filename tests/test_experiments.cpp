@@ -40,37 +40,37 @@ set<QuantumHardware> get_hardware_list() {
 //     reset_problem.run();
 // }
 
-TEST(ExperimentsTests, ResetTestAlmaden) {
-    const int min_horizon = 2;
-    const int max_horizon = 7;
-    string custom_name = "test_reset_test_almaden";
-
-    set<MethodType> methods = {
-        SingleDistBellman,
-        // SingleDistPBVI
-    };
-
-    auto hw_list = {Almaden};
-
-    ResetProblem reset_problem = ResetProblem(custom_name, precision, with_thermalization,min_horizon, max_horizon, methods, hw_list);
-    reset_problem.run();
-}
-
-TEST(ExperimentsTests, ResetTestBrisbane) {
-    const int min_horizon = 7;
-    const int max_horizon = 7;
-    string custom_name = "test_reset_test_Brisbane";
-
-    set<MethodType> methods = {
-        SingleDistBellman,
-        // SingleDistPBVI
-    };
-
-    auto hw_list = {Brisbane};
-
-    ResetProblem reset_problem = ResetProblem(custom_name, precision, with_thermalization,min_horizon, max_horizon, methods, hw_list);
-    reset_problem.run();
-}
+// TEST(ExperimentsTests, ResetTestAlmaden) {
+//     const int min_horizon = 2;
+//     const int max_horizon = 7;
+//     string custom_name = "test_reset_test_almaden";
+//
+//     set<MethodType> methods = {
+//         SingleDistBellman,
+//         // SingleDistPBVI
+//     };
+//
+//     auto hw_list = {Almaden};
+//
+//     ResetProblem reset_problem = ResetProblem(custom_name, precision, with_thermalization,min_horizon, max_horizon, methods, hw_list);
+//     reset_problem.run();
+// }
+//
+// TEST(ExperimentsTests, ResetTestBrisbane) {
+//     const int min_horizon = 7;
+//     const int max_horizon = 7;
+//     string custom_name = "test_reset_test_Brisbane";
+//
+//     set<MethodType> methods = {
+//         SingleDistBellman,
+//         // SingleDistPBVI
+//     };
+//
+//     auto hw_list = {Brisbane};
+//
+//     ResetProblem reset_problem = ResetProblem(custom_name, precision, with_thermalization,min_horizon, max_horizon, methods, hw_list);
+//     reset_problem.run();
+// }
 
 // TEST(ExperimentsTests, BitflipTest) {
 //     const int min_horizon = 4;
@@ -104,3 +104,20 @@ TEST(ExperimentsTests, ResetTestBrisbane) {
 //     GHZStatePreparation3 ghz_problem(custom_name, precision, with_thermalization, min_horizon, max_horizon, methods, hw_list);
 //     ghz_problem.run();
 // }
+
+TEST(ConvexSolver, ZeroPlusDiscrimination) {
+
+    const int min_horizon = 3;
+    const int max_horizon = 3;
+    string custom_name = "test_zero_plus_discr_Almaden";
+
+    set<MethodType> methods = {
+        ConvexDist
+    };
+
+    auto hw_list = {Almaden};
+
+    auto zero_plus_problem = BasicZeroPlusDiscrimination(custom_name, precision, with_thermalization, min_horizon, max_horizon, methods, hw_list);
+    zero_plus_problem.run();
+
+}

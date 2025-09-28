@@ -267,7 +267,7 @@ void Experiment::run() const {
             auto end_pomdp_build = chrono::high_resolution_clock::now();    // end time
             auto pomdp_build_time = chrono::duration<double>(end_pomdp_build - start_pomdp_build).count();
             cout << pomdp_build_time << endl;
-            pomdp.print_pomdp();
+            // pomdp.print_pomdp();
             // initial belief
             auto initial_belief = this->get_initial_belief(pomdp);
             auto initial_states = this->get_initial_states(pomdp);
@@ -410,6 +410,7 @@ unordered_set<int> get_meas_pivot_qubits(const HardwareSpecification &hardware_s
         result.insert(noises.back().target);
         assert(noises.front().abs_diff < noises.back().abs_diff);
     }
+
     return result;
 }
 
