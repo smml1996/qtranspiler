@@ -184,12 +184,12 @@ string to_string(const Instruction &instruction) {
 }
 
 
-bool InstructionPtrEqual::operator()(const Instruction* a, const Instruction* b) const {
+bool InstructionPtrEqual::operator()(const std::shared_ptr<Instruction>& a, const std::shared_ptr<Instruction>& b) const {
     return *a == *b;
 }
 
 
-std::size_t InstructionHash::operator()(const Instruction *instruction) const {
+std::size_t InstructionHash::operator()(const std::shared_ptr<Instruction>&instruction) const {
     std::size_t seed = 0;
 
     // Helper to combine hashes (boost style)
