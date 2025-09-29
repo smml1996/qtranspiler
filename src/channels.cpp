@@ -35,8 +35,8 @@ QuantumChannel::QuantumChannel(json &data) {
 
 QuantumChannel::QuantumChannel() {
     // initialize to a quantum channel with no error
-    vector<Instruction> errors = {};
-    this->errors_to_probs.push_back(make_pair(errors, 1.0));
+    vector<Instruction> errors = {Instruction(GateName::I, 0)};
+    this->errors_to_probs.emplace_back(errors, 1.0);
 }
 
 MeasurementChannel::MeasurementChannel(json &json_val) {

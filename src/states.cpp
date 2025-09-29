@@ -253,7 +253,7 @@ pair<shared_ptr<QuantumState>, double> get_sequence_probability(shared_ptr<Quant
     int count_meas = 0;
     auto quantum_state = quantum_state0;
     int index = 0;
-    for (auto instruction : seq) {
+    for (const auto& instruction : seq) {
         assert(instruction.gate_name != GateName::Meas);
         if (instruction.gate_name== GateName::P0 or instruction.gate_name== GateName::P1){
             count_meas += 1;
@@ -517,7 +517,7 @@ string remove_unused(const string &bin_string, const vector<int> &used_qubits, i
 
     for (int index = 0; index < bin_string.size(); index++) {
         char c = bin_string.at(index);
-        if (std::find(used_qubits.begin(), used_qubits.end(), index) != used_qubits.end()) {
+        if (std::find(used_qubits.begin(), used_qubits.end(), index) == used_qubits.end()) {
             assert (c == '0');
         } else {
             answer += c;

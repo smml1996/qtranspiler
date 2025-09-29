@@ -113,7 +113,7 @@ void POMDPAction::__handle_unitary_instruction(const Instruction &instruction, c
         auto err_seq = channel.errors_to_probs[index].first;
         auto prob = channel.errors_to_probs[index].second;
 
-        assert (err_seq.size() > 0);
+        assert (!err_seq.empty());
 
         auto new_qs = vertex.hybrid_state->quantum_state->apply_instruction(instruction);
         auto temp = get_sequence_probability(new_qs, err_seq, this->precision);
@@ -177,7 +177,6 @@ vertex_dict POMDPAction::__dfs(HardwareSpecification &hardware_specification, sh
         Returns:
             Dict[POMDPVertex, float]: returns a dictionary where the key is a successors POMDPVertex and the corresponding probability of reaching it from current_vertex
     */
-
     if (index_ins == this->instruction_sequence.size()) {
         vertex_dict result;
         result[current_vertex] = 1.0;
@@ -338,7 +337,7 @@ void POMDP::build_pomdp(const vector<shared_ptr<POMDPAction>> &actions_, Hardwar
             total += p.second;
         }
         if (!is_close(total, 1.0, this->precision)){
-            throw invalid_argument("Initial distribution must sum to 1");
+            throw invalid_argument("Initial distribution must sum to 1. Instead it is " + to_string(total) + "\n");
         }
 
         this->transition_matrix[initial_v] = unordered_map<shared_ptr<POMDPAction>, unordered_map<shared_ptr<POMDPVertex>, Rational, POMDPVertexHash, POMDPVertexPtrEqualID>, POMDPActionHash, POMDPActionPtrEqual>();

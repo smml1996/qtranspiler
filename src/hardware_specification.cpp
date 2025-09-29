@@ -11,7 +11,6 @@ auto pi = M_PI;
 using namespace std;
 
 MeasurementChannel PERFECT_MEAS_CHANNEL = MeasurementChannel(1.0, 1.0);
-QuantumChannel PERFECT_UNITARY_CHANNEL = QuantumChannel(); // perfect quantum channel
 
 int HardwareSpecification::get_qubit_indegree(int qubit) const {
     if (this->qubit_to_indegree.find(qubit) != this->qubit_to_indegree.end()) {
@@ -47,9 +46,9 @@ shared_ptr<Channel> HardwareSpecification::get_channel(const shared_ptr<Instruct
     assert (instruction->instruction_type != InstructionType::Projector);
     if (this->quantum_hardware == PerfectHardware) {
         if (instruction->instruction_type == InstructionType::Measurement) {
-            return make_shared<Channel>(PERFECT_MEAS_CHANNEL);
+            return make_shared<MeasurementChannel>(PERFECT_MEAS_CHANNEL);
         } else {
-            return make_shared<Channel>(PERFECT_UNITARY_CHANNEL);
+            return make_shared<QuantumChannel>(QuantumChannel());
         }
     } else {
         return this->instructions_to_channels.at(instruction);

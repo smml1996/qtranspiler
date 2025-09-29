@@ -259,7 +259,7 @@ public:
             
             auto vCX02_instructions = hardware_spec.to_basis_gates_impl(Instruction(GateName::Cnot, vector<int>({embedding.at(0)}), embedding.at(2)));
 
-            auto vCX12_instructions = hardware_spec.to_basis_gates_impl(Instruction(GateName::Cnot, vector<int>({embedding.at(0)}), embedding.at(1)));
+            auto vCX12_instructions = hardware_spec.to_basis_gates_impl(Instruction(GateName::Cnot, vector<int>({embedding.at(1)}), embedding.at(2)));
 
             for (auto ins : vCX12_instructions) {
                 vCX02_instructions.push_back(ins);
@@ -280,7 +280,7 @@ class IPMA3Bitflip : public IPMABitflip {
         const set<MethodType> &method_types, const set<QuantumHardware>& hw_list) :
     IPMABitflip(name, precision, with_thermalization, min_horizon, max_horizon, method_types, hw_list){};
     IPMA3Bitflip() : IPMABitflip() {
-        this->name = "bitflip_ipma2";
+        this->name = "bitflip_ipma3";
     }
 
     vector<shared_ptr<POMDPAction>> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) const override {
@@ -301,7 +301,7 @@ class IPMA3Bitflip : public IPMABitflip {
             
             auto vCX02_instructions = hardware_spec.to_basis_gates_impl(Instruction(GateName::Cnot, vector<int>({embedding.at(0)}), embedding.at(2)));
 
-            auto vCX12_instructions = hardware_spec.to_basis_gates_impl(Instruction(GateName::Cnot, vector<int>({embedding.at(0)}), embedding.at(1)));
+            auto vCX12_instructions = hardware_spec.to_basis_gates_impl(Instruction(GateName::Cnot, vector<int>({embedding.at(1)}), embedding.at(2)));
 
             for (auto ins : vCX12_instructions) {
                 vCX02_instructions.push_back(ins);
@@ -351,12 +351,12 @@ class CXHBitflip : public IPMABitflip {
 
             auto CX21 = make_shared<POMDPAction>("CX21",
                 hardware_spec.to_basis_gates_impl(Instruction(GateName::Cnot, vector<int>({embedding.at(2)}), embedding.at(1)))
-                , this->precision, vector<Instruction>{Instruction(GateName::Cnot, vector<int>({embedding.at(2)}), embedding.at(1))});
+                , this->precision, vector<Instruction>{Instruction(GateName::Cnot, vector<int>({2}), 1)});
 
             auto CX01 = make_shared<POMDPAction>("CX01",
                 hardware_spec.to_basis_gates_impl(Instruction(GateName::Cnot, vector<int>({embedding.at(0)}), embedding.at(1))), 
                 this->precision, 
-                vector<Instruction>{Instruction(GateName::Cnot, vector<int>({embedding.at(0)}), embedding.at(1))});
+                vector<Instruction>{Instruction(GateName::Cnot, vector<int>({0}), 1)});
 
             return {H2, H1, CX21, CX01, P2};
         }

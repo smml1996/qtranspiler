@@ -250,6 +250,7 @@ void Experiment::run() {
     vector<shared_ptr<Algorithm>> unique_algorithms;
 
     for (HardwareSpecification hardware_spec : hardware_specs) {
+        cout << hardware_spec.get_hardware_name() << "\n";
         string hardware_name = hardware_spec.get_hardware_name();
         auto embeddings = this->get_hardware_scenarios(hardware_spec);
         int embedding_index = 0;
@@ -290,6 +291,7 @@ void Experiment::run() {
                         auto start_method = chrono::high_resolution_clock::now();
                         auto result_temp = solver.get_bellman_value(initial_belief, horizon);
                         auto end_method = chrono::high_resolution_clock::now();
+                        assert(result_temp.second.precision == precision *(max_horizon+1));
                         result = make_pair(make_shared<Algorithm>(*result_temp.first), to_double(result_temp.second));
                         method_time = chrono::duration<double>(end_method - start_method).count();
                     } else if (method == MethodType::SingleDistPBVI) {

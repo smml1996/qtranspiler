@@ -292,15 +292,16 @@ Rational get_algorithm_acc(POMDP &pomdp, shared_ptr<Algorithm> algorithm, const 
         }
     }
 
-    assert(algorithm->children.size() <= obs_to_next_beliefs.size());
+    // assert(algorithm->children.size() <= obs_to_next_beliefs.size());
 
-    if (!obs_to_next_beliefs.empty()) {
+    if (!obs_to_next_beliefs.empty() && !obs_to_next_beliefs.empty()) {
         Rational bellman_val("0", "1", precision);
         set<cpp_int> visited_cstates;
         for (int i = 0; i < algorithm->children.size(); i++) {
-            assert(obs_to_next_beliefs.find(algorithm->children[i]->classical_state) != obs_to_next_beliefs.end());
-            visited_cstates.insert(algorithm->children[i]->classical_state);
-            bellman_val = bellman_val + get_algorithm_acc(pomdp, algorithm->children[i], obs_to_next_beliefs[algorithm->children[i]->classical_state], get_reward, embedding, precision);
+            if(obs_to_next_beliefs.find(algorithm->children[i]->classical_state) != obs_to_next_beliefs.end()) {
+                visited_cstates.insert(algorithm->children[i]->classical_state);
+                bellman_val = bellman_val + get_algorithm_acc(pomdp, algorithm->children[i], obs_to_next_beliefs[algorithm->children[i]->classical_state], get_reward, embedding, precision);
+            }
         }
 
         for (auto it: obs_to_next_beliefs) {

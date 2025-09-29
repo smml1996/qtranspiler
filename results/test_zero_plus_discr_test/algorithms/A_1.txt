@@ -6,14 +6,11 @@
 	if c = 1:
 		x0 := 0; 
 
-} ⊕_0.424214 {
+} ⊕_0.492498 {
 	x0 := measure(q0); 
 	if c = 0:
 		x0 := measure(q0); 
-		if c = 0:
-			H([q0]); 
-		if c = 1:
-			x0 := measure(q0); 
+		x0 := measure(q0); 
 	if c = 1:
 		x0 := measure(q0); 
 		x0 := measure(q0); 

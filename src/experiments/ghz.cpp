@@ -87,7 +87,7 @@ Experiment(name, precision, with_thermalization, min_horizon, max_horizon, false
 
             // the zero state
             auto initial_state = make_shared<QuantumState>(get_qubits_used(embedding), this->precision);
-            result.push_back(make_pair(make_shared<HybridState>(initial_state, classical_state), 0.25));
+            result.push_back(make_pair(make_shared<HybridState>(initial_state, classical_state), 1.0));
 
             return result;
         }
@@ -164,7 +164,7 @@ Experiment(name, precision, with_thermalization, min_horizon, max_horizon, false
                     int target = it2.second;
                     if (control != target) {
                         auto instruction = make_shared<Instruction>(GateName::Cnot, vector<int>({control}), target);
-                        if (hardware_spec.instructions_to_channels.find(instruction) != hardware_spec.instructions_to_channels.end() ) {
+                        if (hardware_spec.get_hardware() == PerfectHardware || hardware_spec.instructions_to_channels.find(instruction) != hardware_spec.instructions_to_channels.end() ) {
                             result.push_back(
                                 make_shared<POMDPAction>(
                                     "CX" + to_string(v_control)+"-"+to_string(v_target),
@@ -233,6 +233,7 @@ class GHZStatePreparation4 : public GHZStatePreparation3 {
                                         if (!is_repeated_embedding(result, d_temp))
                                             result.push_back(d_temp);
                                 }
+                                cout << result.size() << endl;
                             }
                         }
                     }
