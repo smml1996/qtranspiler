@@ -81,15 +81,16 @@ class HardwareSpecification {
         int num_qubits;
         BasisGates basis_gates_type;
         unordered_map<int, unordered_set<int>> digraph;
-        unordered_map<Instruction*, Channel*, InstructionHash, InstructionPtrEqual>instructions_to_channels;
+        unordered_map<shared_ptr<Instruction>, shared_ptr<Channel>, InstructionHash, InstructionPtrEqual>
+        instructions_to_channels;
         unordered_set<GateName> basis_gates;
         HardwareSpecification(const QuantumHardware &quantum_hardware, const bool &thermal_relaxation);
-        string get_hardware_name() const;
-        int get_qubit_indegree(int qubit) const;
-        vector<Instruction> to_basis_gates_impl(const Instruction &current_ins) const;
-        vector<pair<int, double>> get_sorted_qubit_couplers(int target) const;
-        Channel* get_channel(Instruction *) const;
-        QuantumHardware get_hardware() const;
+        [[nodiscard]] string get_hardware_name() const;
+        [[nodiscard]] int get_qubit_indegree(int qubit) const;
+        [[nodiscard]] vector<Instruction> to_basis_gates_impl(const Instruction &current_ins) const;
+        [[nodiscard]] vector<pair<int, double>> get_sorted_qubit_couplers(int target) const;
+        [[nodiscard]] shared_ptr<Channel> get_channel(const shared_ptr<Instruction> &) const;
+        [[nodiscard]] QuantumHardware get_hardware() const;
 };
 
 set<string> get_hardware_strings();

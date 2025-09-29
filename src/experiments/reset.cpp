@@ -20,28 +20,28 @@ Experiment(name, precision, with_thermalization, min_horizon, max_horizon, false
             this->set_hidden_index = false;
         }
 
-        vector<pair<HybridState*, double>> get_initial_distribution(unordered_map<int, int> &embedding) const override {
-            vector<pair<HybridState*, double>> result;
+        vector<pair<shared_ptr<HybridState>, double>> get_initial_distribution(unordered_map<int, int> &embedding) const override {
+            vector<pair<shared_ptr<HybridState>, double>> result;
 
-            ClassicalState * classical_state = new ClassicalState();
+            auto classical_state = make_shared<ClassicalState>();
 
             auto X0 = Instruction(GateName::X, embedding.at(0));
 
             // prepare first bell state
-            auto state0 = new QuantumState(get_qubits_used(embedding), this->precision);
+            auto state0 = make_shared<QuantumState>(get_qubits_used(embedding), this->precision);
             result.emplace_back(new HybridState(state0, classical_state), 0.5);
 
             // prepare second bell state
             auto state1 = state0->apply_instruction(X0);
             assert (embedding.size() == 1);
             assert (!(*state1 == *state0));
-            result.emplace_back(new HybridState(state1, classical_state), 0.5);
+            result.emplace_back(make_shared<HybridState>(state1, classical_state), 0.5);
 
             return result;
         }
 
         Rational postcondition(const Belief &belief, const unordered_map<int, int> &embedding) override {
-            const unique_ptr<QuantumState> state0(new QuantumState({embedding.at(0)}, this->precision));
+            auto state0 = make_shared<QuantumState>(vector<int>({embedding.at(0)}), this->precision);
             Rational answer("0", "1", this->precision*(this->max_horizon+1));
 
             for(auto it : belief.probs) {
@@ -61,19 +61,19 @@ Experiment(name, precision, with_thermalization, min_horizon, max_horizon, false
             return answer;
         }
 
-        vector<POMDPAction*> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) const override {
+        vector<shared_ptr<POMDPAction>> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) const override {
 
             assert(embedding.size() == 1);
             assert(embedding.find(0) != embedding.end());
 
             
-            auto X0 = new POMDPAction("X0", hardware_spec.to_basis_gates_impl(Instruction(GateName::X,
-                embedding.at(0))), this->precision, {Instruction(GateName::X, 0)});
+            auto X0 = make_shared<POMDPAction>("X0", hardware_spec.to_basis_gates_impl(Instruction(GateName::X,
+                embedding.at(0))), this->precision, vector<Instruction>({Instruction(GateName::X, 0)}));
 
-            auto P0 = new POMDPAction("P0",
-                {Instruction(GateName::Meas, embedding.at(0), 0)},
+            auto P0 = make_shared<POMDPAction>("P0",
+                vector<Instruction>({Instruction(GateName::Meas, embedding.at(0), 0)}),
                 this->precision, 
-                {Instruction(GateName::Meas, 0, 0)});
+                vector<Instruction>({Instruction(GateName::Meas, 0, 0)}));
 
             return {X0, P0};
         }

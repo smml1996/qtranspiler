@@ -68,28 +68,26 @@ Experiment(name, precision, with_thermalization, min_horizon, max_horizon, false
             this->method_types.erase(MethodType::ConvexDist); // there is only one initial state, is not worth it
         };
 
-        virtual QuantumState* get_target_state(const unordered_map<int, int> &embedding) const {
+        virtual shared_ptr<QuantumState> get_target_state(const unordered_map<int, int> &embedding) const {
             auto H0 = Instruction(GateName::H, embedding.at(0));
             auto CX01 = Instruction(GateName::Cnot, vector<int>({embedding.at(0)}), embedding.at(1));
             auto CX12 = Instruction(GateName::Cnot, vector<int>({embedding.at(1)}),embedding.at(2));
             auto qs_ = QuantumState({embedding.at(0), embedding.at(1), embedding.at(2)}, this->precision);
             auto qs0 = qs_.apply_instruction(H0);
             auto qs1 = qs0->apply_instruction(CX01);
-            delete qs0;
             auto qs = qs1->apply_instruction(CX12);
-            delete qs1;
             return qs;
         }
 
 
-        vector<pair<HybridState*, double>> get_initial_distribution(unordered_map<int, int> &embedding) const override {
-            vector<pair<HybridState*, double>> result;
+        vector<pair<shared_ptr<HybridState>, double>> get_initial_distribution(unordered_map<int, int> &embedding) const override {
+            vector<pair<shared_ptr<HybridState>, double>> result;
 
-            ClassicalState * classical_state = new ClassicalState();
+            auto classical_state = make_shared<ClassicalState>();
 
             // the zero state
-            QuantumState * initial_state = new QuantumState(get_qubits_used(embedding), this->precision);
-            result.push_back(make_pair(new HybridState(initial_state, classical_state), 0.25));
+            auto initial_state = make_shared<QuantumState>(get_qubits_used(embedding), this->precision);
+            result.push_back(make_pair(make_shared<HybridState>(initial_state, classical_state), 1.0));
 
             return result;
         }
@@ -114,8 +112,6 @@ Experiment(name, precision, with_thermalization, min_horizon, max_horizon, false
                 }
 
             }
-
-            delete local_target_state;
             return answer;
         }
 
@@ -148,14 +144,14 @@ Experiment(name, precision, with_thermalization, min_horizon, max_horizon, false
             return result;
         }
 
-        vector<POMDPAction*> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) const override {
-            vector<POMDPAction*> result;
+        vector<shared_ptr<POMDPAction>> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) const override {
+            vector<shared_ptr<POMDPAction>> result;
             for (auto it : embedding) {
                 result.push_back(
-                    new POMDPAction("H" + to_string(it.first),
+                    make_shared<POMDPAction>("H" + to_string(it.first),
                         hardware_spec.to_basis_gates_impl(Instruction(GateName::H, it.second)),
                         this->precision,
-                        {Instruction(GateName::H, it.first)}
+                        vector<Instruction>({Instruction(GateName::H, it.first)})
                         )
                     );
             }
@@ -167,14 +163,14 @@ Experiment(name, precision, with_thermalization, min_horizon, max_horizon, false
                     int v_target = it2.first;
                     int target = it2.second;
                     if (control != target) {
-                        unique_ptr<Instruction> instruction = make_unique<Instruction>(GateName::Cnot, vector<int>({control}), target);
-                        if (hardware_spec.instructions_to_channels.find(instruction.get()) != hardware_spec.instructions_to_channels.end() ) {
+                        auto instruction = make_shared<Instruction>(GateName::Cnot, vector<int>({control}), target);
+                        if (hardware_spec.get_hardware() == PerfectHardware || hardware_spec.instructions_to_channels.find(instruction) != hardware_spec.instructions_to_channels.end() ) {
                             result.push_back(
-                                new POMDPAction(
+                                make_shared<POMDPAction>(
                                     "CX" + to_string(v_control)+"-"+to_string(v_target),
-                                    {*instruction},
+                                    vector<Instruction>({*instruction}),
                                     this->precision,
-                                    {Instruction(GateName::Cnot, vector<int>({v_control}), v_target)}
+                                    vector<Instruction>({Instruction(GateName::Cnot, vector<int>({v_control}), v_target)})
                                     )
                                 );
                         }
@@ -199,7 +195,7 @@ class GHZStatePreparation4 : public GHZStatePreparation3 {
             this->method_types.erase(MethodType::ConvexDist); // there is only one initial state, is not worth it
         };
 
-        QuantumState* get_target_state(const unordered_map<int, int> &embedding) const override{
+        shared_ptr<QuantumState> get_target_state(const unordered_map<int, int> &embedding) const override{
             auto H0 = Instruction(GateName::H, embedding.at(0));
             auto CX01 = Instruction(GateName::Cnot, vector<int>({embedding.at(0)}), embedding.at(1));
             auto CX12 = Instruction(GateName::Cnot, vector<int>({embedding.at(1)}),embedding.at(2));
@@ -207,11 +203,8 @@ class GHZStatePreparation4 : public GHZStatePreparation3 {
             auto qs_ = QuantumState({embedding.at(0), embedding.at(1), embedding.at(2)}, this->precision);
             auto qs0 = qs_.apply_instruction(H0);
             auto qs1 = qs0->apply_instruction(CX01);
-            delete qs0;
             auto qs2 = qs1->apply_instruction(CX12);
-            delete qs1;
             auto qs = qs2->apply_instruction(CX23);
-            delete qs2;
             return qs;
         }
 
@@ -240,6 +233,7 @@ class GHZStatePreparation4 : public GHZStatePreparation3 {
                                         if (!is_repeated_embedding(result, d_temp))
                                             result.push_back(d_temp);
                                 }
+                                cout << result.size() << endl;
                             }
                         }
                     }

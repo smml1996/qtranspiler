@@ -90,9 +90,9 @@ protected:
     QuantumState init_state{qubits, 5};
 
     // Helper: apply decomposition returned by to_basis_gates_impl
-    QuantumState* apply_decomposition(HardwareSpecification &spec, const Instruction& instr) {
+    shared_ptr<QuantumState> apply_decomposition(HardwareSpecification &spec, const Instruction& instr) {
         auto decomposition = spec.to_basis_gates_impl(instr);
-        QuantumState* state = &init_state;
+        auto state = make_shared<QuantumState>(init_state);
         for (const auto& d : decomposition) {
             state = state->apply_instruction(d);
         }
@@ -104,39 +104,33 @@ TEST_P(HardwareDecompositionTest, HGateDecomposition) {
     QuantumHardware hw_ = GetParam();
     HardwareSpecification hw{hw_, false};
     Instruction instr(GateName::H, 0);
-    QuantumState* direct = init_state.apply_instruction(instr);
-    QuantumState* decomposed = apply_decomposition(hw, instr);
+    auto direct = init_state.apply_instruction(instr);
+    auto decomposed = apply_decomposition(hw, instr);
     EXPECT_EQ(*direct, *decomposed);
-    delete direct;
-    delete decomposed;
 }
 
 TEST_P(HardwareDecompositionTest, ZGateDecomposition) {
     QuantumHardware hw_ = GetParam();
     HardwareSpecification hw{hw_, false};
     Instruction instr(GateName::Z, 0);
-    QuantumState* direct = init_state.apply_instruction(instr);
-    QuantumState* decomposed = apply_decomposition(hw, instr);
+    auto direct = init_state.apply_instruction(instr);
+    auto decomposed = apply_decomposition(hw, instr);
     EXPECT_EQ(*direct, *decomposed);
-    delete direct;
-    delete decomposed;
 }
 
 TEST_P(HardwareDecompositionTest, SGateDecomposition) {
     QuantumHardware hw_ = GetParam();
     HardwareSpecification hw{hw_, false};
     Instruction instr(GateName::S, 0);
-    QuantumState* direct = init_state.apply_instruction(instr);
-    QuantumState* decomposed = apply_decomposition(hw, instr);
+    shared_ptr<QuantumState> direct = init_state.apply_instruction(instr);
+    shared_ptr<QuantumState> decomposed = apply_decomposition(hw, instr);
     EXPECT_EQ(*direct, *decomposed);
-    delete direct;
-    delete decomposed;
 }
 
 // TEST_P(HardwareDecompositionTest, TGateDecomposition) {
 //     Instruction instr(GateName::T, 0);
-//     QuantumState* direct = init_state.apply_instruction(instr);
-//     QuantumState* decomposed = apply_decomposition(instr);
+//     shared_ptr<QuantumState> direct = init_state.apply_instruction(instr);
+//     shared_ptr<QuantumState> decomposed = apply_decomposition(instr);
 //     EXPECT_EQ(*direct, *decomposed);
 //     delete direct;
 //     delete decomposed;
@@ -148,11 +142,9 @@ TEST_P(HardwareDecompositionTest, RyGateDecomposition) {
     vector<double> test_angles = {0.0, M_PI/2, M_PI, 2*M_PI, 0.321};
     for (double theta : test_angles) {
         Instruction instr(GateName::Ry, 0, vector<double>({theta}));
-        QuantumState* direct = init_state.apply_instruction(instr);
-        QuantumState* decomposed = apply_decomposition(hw, instr);
+        shared_ptr<QuantumState> direct = init_state.apply_instruction(instr);
+        shared_ptr<QuantumState> decomposed = apply_decomposition(hw, instr);
         EXPECT_EQ(*direct, *decomposed) << "Failed for theta = " << theta;
-        delete direct;
-        delete decomposed;
     }
 }
 
@@ -162,11 +154,9 @@ TEST_P(HardwareDecompositionTest, RxGateDecomposition) {
     vector<double> test_angles = {0.0, M_PI/2, M_PI, 2*M_PI, -0.123};
     for (double theta : test_angles) {
         Instruction instr(GateName::Rx, 0, vector<double>({theta}));
-        QuantumState* direct = init_state.apply_instruction(instr);
-        QuantumState* decomposed = apply_decomposition(hw, instr);
+        shared_ptr<QuantumState> direct = init_state.apply_instruction(instr);
+        shared_ptr<QuantumState> decomposed = apply_decomposition(hw, instr);
         EXPECT_EQ(*direct, *decomposed) << "Failed for theta = " << theta;
-        delete direct;
-        delete decomposed;
     }
 }
 
@@ -180,12 +170,10 @@ TEST_P(HardwareDecompositionTest, U3GateDecomposition) {
     };
     for (auto params : test_params) {
         Instruction instr(GateName::U3, 0, {params[0], params[1], params[2]});
-        QuantumState* direct = init_state.apply_instruction(instr);
-        QuantumState* decomposed = apply_decomposition(hw, instr);
+        shared_ptr<QuantumState> direct = init_state.apply_instruction(instr);
+        shared_ptr<QuantumState> decomposed = apply_decomposition(hw, instr);
         EXPECT_EQ(*direct, *decomposed)
             << "Failed for params (" << params[0] << "," << params[1] << "," << params[2] << ")";
-        delete direct;
-        delete decomposed;
     }
 }
 

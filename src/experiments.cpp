@@ -163,10 +163,10 @@ vector<int> Experiment::get_qubits_used(const unordered_map<int, int> &embedding
 
 Belief Experiment::get_initial_belief(const POMDP &pomdp) const {
     Belief initial_belief;
-    POMDPAction INIT_CHANNEL =  POMDPAction("INIT__", {}, this->precision, {});
+    auto INIT_CHANNEL =  make_shared<POMDPAction>("INIT__", vector<Instruction>({}), this->precision, vector<Instruction>({}));
 
-    if (pomdp.transition_matrix.at(pomdp.initial_state).find(&INIT_CHANNEL) !=  pomdp.transition_matrix.at(pomdp.initial_state).end()) {
-        for(auto it : pomdp.transition_matrix.at(pomdp.initial_state).at(&INIT_CHANNEL)) {
+    if (pomdp.transition_matrix.at(pomdp.initial_state).find(INIT_CHANNEL) !=  pomdp.transition_matrix.at(pomdp.initial_state).end()) {
+        for(auto it : pomdp.transition_matrix.at(pomdp.initial_state).at(INIT_CHANNEL)) {
             initial_belief.add_val(it.first, it.second);
         }
     } else {
@@ -177,10 +177,10 @@ Belief Experiment::get_initial_belief(const POMDP &pomdp) const {
 
 }
 
-vector<POMDPVertex*> Experiment::get_initial_states(const POMDP &pomdp) const {
-    vector<POMDPVertex*> initial_states;
+vector<shared_ptr<POMDPVertex>> Experiment::get_initial_states(const POMDP &pomdp) const {
+    vector<shared_ptr<POMDPVertex>> initial_states;
 
-    POMDPAction* INIT_CHANNEL = new POMDPAction("INIT__", {}, this->precision, {});
+    auto INIT_CHANNEL = make_shared<POMDPAction>("INIT__", vector<Instruction>({}), this->precision, vector<Instruction>({}));
 
     if (pomdp.transition_matrix.at(pomdp.initial_state).find(INIT_CHANNEL) !=  pomdp.transition_matrix.at(pomdp.initial_state).end()) {
         for(auto it : pomdp.transition_matrix.at(pomdp.initial_state).at(INIT_CHANNEL)) {
@@ -205,7 +205,7 @@ Experiment::Experiment(const string &name, int precision, bool with_thermalizati
     this->hw_list = hw_list;
 }
 
-void Experiment::run() const {
+void Experiment::run() {
     if (!setup_working_dir()) {
         return;
     }
@@ -247,9 +247,10 @@ void Experiment::run() const {
     };
 
     // we store all unique algorithms
-    vector<Algorithm *> unique_algorithms;
+    vector<shared_ptr<Algorithm>> unique_algorithms;
 
     for (HardwareSpecification hardware_spec : hardware_specs) {
+        cout << hardware_spec.get_hardware_name() << "\n";
         string hardware_name = hardware_spec.get_hardware_name();
         auto embeddings = this->get_hardware_scenarios(hardware_spec);
         int embedding_index = 0;
@@ -260,6 +261,7 @@ void Experiment::run() const {
             auto actions = this->get_actions(hardware_spec, embedding);
 
             // POMDP build
+            this->target_vertices.clear();
             POMDP pomdp = POMDP(this->precision);
             auto qubits_used = get_qubits_used(embedding);
             auto start_pomdp_build = chrono::high_resolution_clock::now();
@@ -272,12 +274,12 @@ void Experiment::run() const {
             auto initial_belief = this->get_initial_belief(pomdp);
             auto initial_states = this->get_initial_states(pomdp);
 
-            auto HALT_ALGORITHM = new Algorithm(&HALT_ACTION, get_belief_cs(initial_belief), 0);
+            auto HALT_ALGORITHM = make_shared<Algorithm>(make_shared<POMDPAction>(HALT_ACTION), get_belief_cs(initial_belief), 0);
             for (int horizon = this->min_horizon; horizon <= this->max_horizon; horizon++) {
                 cout << horizon << endl;
                 for (auto method : this->method_types) {
                     long long method_time;
-                    pair<Algorithm *, double> result;
+                    pair<shared_ptr<Algorithm>, double> result;
                     double error = 0.0;
                     if (method == MethodType::SingleDistBellman) {
                         SingleDistributionSolver solver(pomdp, actual_reward_f, this->precision * (max_horizon+1), embedding);
@@ -289,7 +291,8 @@ void Experiment::run() const {
                         auto start_method = chrono::high_resolution_clock::now();
                         auto result_temp = solver.get_bellman_value(initial_belief, horizon);
                         auto end_method = chrono::high_resolution_clock::now();
-                        result = make_pair(new Algorithm(*result_temp.first), to_double(result_temp.second));
+                        assert(result_temp.second.precision == precision *(max_horizon+1));
+                        result = make_pair(make_shared<Algorithm>(*result_temp.first), to_double(result_temp.second));
                         method_time = chrono::duration<double>(end_method - start_method).count();
                     } else if (method == MethodType::SingleDistPBVI) {
                         SingleDistributionSolver solver(pomdp, actual_reward_f, this->precision * (max_horizon+1), embedding);
@@ -301,14 +304,14 @@ void Experiment::run() const {
                         auto start_method = chrono::high_resolution_clock::now();
                         auto result_temp = solver.PBVI_solve(initial_belief, horizon);
                         auto end_method = chrono::high_resolution_clock::now();
-                        result = make_pair(new Algorithm(*result_temp.first), to_double(result_temp.second));
+                        result = make_pair(make_shared<Algorithm>(*result_temp.first), to_double(result_temp.second));
                         method_time = chrono::duration<double>(end_method - start_method).count();
                         error = solver.get_error(horizon);
                     } else {
                         ConvexDistributionSolver solver (pomdp, actual_reward_f, this->precision * (max_horizon+1), embedding);
                         auto start_method = chrono::high_resolution_clock::now();
                         auto result_temp = solver.solve(initial_states, horizon);
-                        result = make_pair(new Algorithm(*result_temp.first), result_temp.second);
+                        result = make_pair(make_shared<Algorithm>(*result_temp.first), result_temp.second);
                         auto end_method = chrono::high_resolution_clock::now();
                         method_time = chrono::duration<double>(end_method - start_method).count();
                     }
@@ -365,8 +368,8 @@ unordered_set<int> get_meas_pivot_qubits(const HardwareSpecification &hardware_s
 
     for (int qubit = 0; qubit < hardware_spec.num_qubits; qubit++) {
         if (hardware_spec.get_qubit_indegree(qubit) >= min_indegree) {
-            Instruction *instruction = new Instruction(GateName::Meas, qubit, qubit);
-            MeasurementChannel* noise_data = static_cast<MeasurementChannel*>(hardware_spec.get_channel(instruction));
+            auto instruction = make_shared<Instruction>(GateName::Meas, qubit, qubit);
+            shared_ptr<MeasurementChannel> noise_data = static_pointer_cast<MeasurementChannel>(hardware_spec.get_channel(instruction));
             auto success0 = noise_data->correct_0;
             auto success1 = noise_data->correct_1;
             noises.push_back(ReadoutNoise(qubit, success0, success1));

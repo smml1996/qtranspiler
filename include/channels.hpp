@@ -20,7 +20,8 @@ public:
 class QuantumChannel : public Channel {
 public:
     vector<pair<vector<Instruction>, double>>errors_to_probs;
-    QuantumChannel(json &data);
+
+    explicit QuantumChannel(json &data);
     QuantumChannel();
 
 };

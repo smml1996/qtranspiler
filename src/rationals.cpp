@@ -12,9 +12,6 @@
 using namespace std;
 
 Rational::Rational(const string &numerator, const string &denominator, int custom_precision) {
-    if (custom_precision == -1) {
-
-    }
     this->precision = custom_precision;
     this->numerator = MyFloat(numerator, custom_precision);
     if (this->numerator == MyFloat("0", this->precision)) {

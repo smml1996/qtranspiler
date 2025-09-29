@@ -11,7 +11,6 @@ auto pi = M_PI;
 using namespace std;
 
 MeasurementChannel PERFECT_MEAS_CHANNEL = MeasurementChannel(1.0, 1.0);
-QuantumChannel PERFECT_UNITARY_CHANNEL = QuantumChannel(); // perfect quantum channel
 
 int HardwareSpecification::get_qubit_indegree(int qubit) const {
     if (this->qubit_to_indegree.find(qubit) != this->qubit_to_indegree.end()) {
@@ -42,14 +41,14 @@ vector<pair<int, double>> HardwareSpecification::get_sorted_qubit_couplers(int t
     return result;
 }
 
-Channel * HardwareSpecification::get_channel(Instruction * instruction) const {
+shared_ptr<Channel> HardwareSpecification::get_channel(const shared_ptr<Instruction> &instruction) const {
     assert (instruction->instruction_type != InstructionType::Classical);
     assert (instruction->instruction_type != InstructionType::Projector);
     if (this->quantum_hardware == PerfectHardware) {
         if (instruction->instruction_type == InstructionType::Measurement) {
-            return &PERFECT_MEAS_CHANNEL;
+            return make_shared<MeasurementChannel>(PERFECT_MEAS_CHANNEL);
         } else {
-            return &PERFECT_UNITARY_CHANNEL;
+            return make_shared<QuantumChannel>(QuantumChannel());
         }
     } else {
         return this->instructions_to_channels.at(instruction);
@@ -119,12 +118,12 @@ HardwareSpecification::HardwareSpecification(const QuantumHardware &quantum_hard
         assert (instructions.size() == channels.size());
 
         for(int i=0; i < instructions.size(); i++) {
-            Instruction *instruction = new Instruction(instructions[i]);
-            Channel *channel;
+            shared_ptr<Instruction> instruction = make_shared<Instruction>(instructions[i]);
+            shared_ptr<Channel> channel;
             if(instruction->get_instruction_type() == InstructionType::Measurement) {
-                channel = new MeasurementChannel(channels[i]);
+                channel = make_shared<MeasurementChannel>(channels[i]);
             } else {
-                channel = new QuantumChannel(channels[i]);
+                channel = make_shared<QuantumChannel>(channels[i]);
             }
 
             this->instructions_to_channels[instruction] = channel;
@@ -132,7 +131,7 @@ HardwareSpecification::HardwareSpecification(const QuantumHardware &quantum_hard
 
         // compute in degree of qubits
         for (auto it : this->instructions_to_channels) {
-            Instruction *ins = it.first;
+            auto ins = it.first;
             if (ins->instruction_type == InstructionType::UnitaryMultiQubit) {
                 int target = ins->target;
                 if (this->qubit_to_indegree.find(target) == this->qubit_to_indegree.end()) {
@@ -142,10 +141,15 @@ HardwareSpecification::HardwareSpecification(const QuantumHardware &quantum_hard
             }
         }
 
+        for (auto qubit = 0; qubit < this->num_qubits; qubit++) {
+            if (this->qubit_to_indegree.find(qubit) == this->qubit_to_indegree.end()) {
+                this->qubit_to_indegree[qubit] = 0;
+            }
+        }
         assert(this->qubit_to_indegree.size() == this->num_qubits);
 
         for (auto it   : this->qubit_to_indegree) {
-            assert(it.second > 0);
+            assert(it.second >= 0);
         }
 
         // compute digraph
@@ -223,6 +227,7 @@ std::string to_string(const QuantumHardware &quantum_hardware) {
         case Vigo: return "vigo";
         case Washington: return "washington";
         case Yorktown: return "yorktown";
+        case PerfectHardware: return "perfect_hardware";
         default: throw invalid_argument( "Cannot retrieve string representation of quantum hardware" );
     }
 }

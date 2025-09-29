@@ -14,19 +14,19 @@ Rational Belief::get_sum(int precision) const {
     return result;
 }
 
-Rational Belief::get(POMDPVertex *v, int precision) {
+Rational Belief::get(const shared_ptr<POMDPVertex> &v, int precision) {
     if(this->probs.find(v) == this->probs.end()){
         return Rational("0", "1", precision);
     }
     return this->probs[v];
 }
 
-void Belief::set_val(POMDPVertex *v, const Rational &prob) {
+void Belief::set_val(const shared_ptr<POMDPVertex> &v, const Rational &prob) {
     if (prob.numerator == MyFloat("0", prob.precision)) return;
     this->probs.insert_or_assign(v, Rational(prob));
 }
 
-void Belief::add_val(POMDPVertex *v, const Rational &val) {
+void Belief::add_val(const shared_ptr<POMDPVertex> &v, const Rational &val) {
     assert(v != nullptr);
     assert(v->hybrid_state != nullptr);
     auto final_val =  this->get(v, val.precision) + val;
@@ -71,7 +71,7 @@ void Belief::print() const {
 std::size_t BeliefHash::operator()(const Belief &belief) const {
     std::size_t seed = 0;
 
-    std::vector<std::pair<POMDPVertex*, Rational>> items(belief.probs.begin(), belief.probs.end());
+    std::vector<std::pair<shared_ptr<POMDPVertex>, Rational>> items(belief.probs.begin(), belief.probs.end());
 
     std::sort(items.begin(), items.end(),
       [](auto &a, auto &b) {
@@ -98,7 +98,7 @@ std::size_t BeliefHash::operator()(const Belief &belief) const {
 
 Rational l1_norm(const Belief &b1, const Belief &b2, int precision) {
     Rational result("0", "1", precision);
-    for (auto it = b1.probs.begin(); it != b1.probs.end(); it++) {
+    for (auto it = b1.probs.begin(); it != b1.probs.end(); ++it) {
         auto it2 = b2.probs.find(it->first);
         if (it2 != b2.probs.end()) {
             auto temp = Rational("-1", "1", precision) * it2->second ;

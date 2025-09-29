@@ -41,11 +41,11 @@ string to_string(const Instruction &instruction);
 
 // Custom hash
 struct InstructionHash {
-    std::size_t operator()(const Instruction *instruction) const;
+    std::size_t operator()(const std::shared_ptr<Instruction>& instruction) const;
 };
 
 struct InstructionPtrEqual {
-    bool operator()(const Instruction* a, const Instruction* b) const;
+    bool operator()(const std::shared_ptr<Instruction>& a, const std::shared_ptr<Instruction>& b) const;
 };
 
 bool is_identity(const vector<Instruction> &seq);

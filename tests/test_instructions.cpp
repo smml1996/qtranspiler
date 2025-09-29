@@ -113,8 +113,8 @@ TEST(InstructionTest, JsonConstructor) {
 TEST(InstructionTest, HashAndPointerEqual) {
     Instruction a(X, 0);
     Instruction b(X, 0);
-    Instruction* pa = &a;
-    Instruction* pb = &b;
+    auto pa = make_shared<Instruction>(a);
+    auto pb = make_shared<Instruction>(b);
     InstructionHash hasher;
     InstructionPtrEqual equal_fn;
     EXPECT_TRUE(equal_fn(pa, pb));
@@ -124,8 +124,8 @@ TEST(InstructionTest, HashAndPointerEqual) {
 TEST(InstructionTest, HashAndPointerNotEqual) {
     Instruction a(X, 0);
     Instruction b(X, 10);
-    Instruction* pa = &a;
-    Instruction* pb = &b;
+    auto pa = make_shared<Instruction>(a);
+    auto pb = make_shared<Instruction>(b);
     InstructionHash hasher;
     InstructionPtrEqual equal_fn;
     EXPECT_FALSE(equal_fn(pa, pb));
@@ -135,8 +135,8 @@ TEST(InstructionTest, HashAndPointerNotEqual) {
 TEST(InstructionTest, HashAndPointerNotEqual2) {
     Instruction a(H, 0);
     Instruction b(X, 0);
-    Instruction* pa = &a;
-    Instruction* pb = &b;
+    auto pa = make_shared<Instruction>(a);
+    auto pb = make_shared<Instruction>(b);
     InstructionHash hasher;
     InstructionPtrEqual equal_fn;
     EXPECT_FALSE(equal_fn(pa, pb));
