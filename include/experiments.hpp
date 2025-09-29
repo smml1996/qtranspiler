@@ -42,7 +42,7 @@ class Experiment {
     vector<HardwareSpecification> get_hardware_specs() const;
     Belief get_initial_belief(const POMDP &pomdp) const;
 
-        vector<POMDPVertex *> get_initial_states(const POMDP &pomdp) const;
+        vector<shared_ptr<POMDPVertex>> get_initial_states(const POMDP &pomdp) const;
 
     public:
     static int round_in_file;
@@ -52,14 +52,14 @@ class Experiment {
         Experiment() = default;
 
         virtual set<QuantumHardware> get_allowed_hardware() const;
-        virtual void run() const;
+        virtual void run();
         virtual bool guard(const POMDPVertex&, const unordered_map<int, int>&, const POMDPAction&) const;
         virtual void make_setup_file() const;
 
         // for an experiment we need to define at least these functions
-        virtual vector<pair<HybridState*, double>> get_initial_distribution(unordered_map<int, int> &embedding) const = 0;
+        virtual vector<pair<shared_ptr<HybridState>, double>> get_initial_distribution(unordered_map<int, int> &embedding) const = 0;
         virtual Rational postcondition(const Belief &belief, const unordered_map<int, int> &embedding) = 0;
-        virtual vector<POMDPAction*> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) const = 0;
+        virtual vector<shared_ptr<POMDPAction>> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) const = 0;
         virtual vector<unordered_map<int, int>> get_hardware_scenarios(HardwareSpecification const & hardware_spec) const = 0;
 };
 

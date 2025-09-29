@@ -7,13 +7,13 @@
 class Belief {
 public:
     [[nodiscard]] Rational get_sum(int precision) const;
-    unordered_map<POMDPVertex *, Rational, POMDPVertexHash, POMDPVertexPtrEqualID> probs;
+    unordered_map<shared_ptr<POMDPVertex>, Rational, POMDPVertexHash, POMDPVertexPtrEqualID> probs;
 
-    Rational get(POMDPVertex *v, int precision);
+    Rational get(const shared_ptr<POMDPVertex> &v, int precision);
 
-    void set_val(POMDPVertex* v, const Rational &prob);
+    void set_val(const shared_ptr<POMDPVertex> &v, const Rational &prob);
 
-    void add_val(POMDPVertex* v, const Rational &val);
+    void add_val(const shared_ptr<POMDPVertex> &v, const Rational &val);
 
     bool is_normalized(int precision) const;
 

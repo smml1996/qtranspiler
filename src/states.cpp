@@ -19,11 +19,22 @@ QuantumState::QuantumState(const vector<int> &qubits_used, int precision) {
     this->sparse_vector[0] = complex<double>(1.0, 0.0);
 }
 
-QuantumState* QuantumState::eval_qubit_unitary(const Instruction &instruction) const {
+QuantumState::QuantumState(const QuantumState &qs) {
+    for (auto it : qs.qubits_used) {
+        this->qubits_used.push_back(it);
+    }
+    this->precision = qs.precision;
+
+    for (auto it : qs.sparse_vector) {
+        this->sparse_vector[it.first] = it.second;
+    }
+}
+
+shared_ptr<QuantumState> QuantumState::eval_qubit_unitary(const Instruction &instruction) const {
     assert (this->is_qubit());
     assert (instruction.instruction_type == InstructionType::UnitarySingleQubit || instruction.instruction_type == InstructionType::Projector);
 
-    auto result = new QuantumState(this->qubits_used, this->precision);
+    auto result = make_shared<QuantumState>(this->qubits_used, this->precision);
     result->sparse_vector.clear();
 
     auto qubit_amplitudes = this->get_qubit_amplitudes();
@@ -97,7 +108,6 @@ QuantumState* QuantumState::eval_qubit_unitary(const Instruction &instruction) c
         Instruction u3_instruction(GateName::U3, 
             instruction.target, 
             temp_v);
-        delete result;
         return this->eval_qubit_unitary(u3_instruction);
     } else if ( instruction.gate_name == GateName::Ry){
         assert (instruction.params.size() == 1);
@@ -105,22 +115,18 @@ QuantumState* QuantumState::eval_qubit_unitary(const Instruction &instruction) c
         Instruction u3_instruction(GateName::U3,
             instruction.target,
             temp_v);
-        delete result;
         return this->eval_qubit_unitary(u3_instruction);
     } else if ( instruction.gate_name == GateName::Rz){
         assert (instruction.params.size() == 1);
         Instruction u1_instruction (GateName::U1, instruction.target, instruction.params);
-        delete result;
         return this->eval_qubit_unitary(u1_instruction);
     } else if ( instruction.gate_name == GateName::U2){
         assert (instruction.params.size() == 2);
-        delete result;
         return this->eval_qubit_unitary(Instruction(GateName::U3, instruction.target, vector<double>({pi/2.0, instruction.params[0], instruction.params[1]})));
     } else if ( instruction.gate_name == GateName::U1){
         // if is_inverse:
         //     raise Exception("Missing implementation of reverse of op U1")
         // assert len(params) == 1
-        delete result;
         return this->eval_qubit_unitary(Instruction(GateName::U3, instruction.target, vector<double>({0,0,instruction.params[0]})));
     } else if ( instruction.gate_name == GateName::Reset){
         assert(a0 == 1.0 or a1 == 1.0);
@@ -242,23 +248,18 @@ bool QuantumState::operator==(const QuantumState& other) const {
     return is_close(inner_product, 1, this->precision);
 }
 
-pair<QuantumState*, double> get_sequence_probability(QuantumState * const &quantum_state0, const vector<Instruction> &seq, int precision) {
+pair<shared_ptr<QuantumState>, double> get_sequence_probability(shared_ptr<QuantumState> const &quantum_state0, const vector<Instruction> &seq, int precision) {
     assert(quantum_state0 != nullptr);
     int count_meas = 0;
-    QuantumState* quantum_state = quantum_state0;
-    QuantumState* prev_quantum_state = nullptr;
+    auto quantum_state = quantum_state0;
     int index = 0;
     for (auto instruction : seq) {
         assert(instruction.gate_name != GateName::Meas);
         if (instruction.gate_name== GateName::P0 or instruction.gate_name== GateName::P1){
             count_meas += 1;
-            if (count_meas > 1)throw invalid_argument("Invalid Measurement instruction");
+            if (count_meas > 1) throw invalid_argument("Invalid Measurement instruction");
         }
-        prev_quantum_state = quantum_state;
         quantum_state = quantum_state->apply_instruction(instruction, false);
-        if (prev_quantum_state != nullptr && index > 1) {
-            delete prev_quantum_state;
-        }
         index++;
         if (quantum_state == nullptr) {
             return make_pair(nullptr, 0.0);
@@ -274,9 +275,9 @@ pair<QuantumState*, double> get_sequence_probability(QuantumState * const &quant
     return make_pair(quantum_state, prob_answer);
 }
 
-QuantumState* QuantumState::apply_instruction(const Instruction &instruction, bool normalize) const {
+shared_ptr<QuantumState> QuantumState::apply_instruction(const Instruction &instruction, bool normalize) const {
     assert(this->sparse_vector.size() > 0);
-    QuantumState * result;
+    shared_ptr<QuantumState> result;
     if (instruction.instruction_type == InstructionType::UnitaryMultiQubit){
         if( instruction.gate_name == GateName::Swap) {
             assert(instruction.controls.size() == 1);
@@ -286,8 +287,6 @@ QuantumState* QuantumState::apply_instruction(const Instruction &instruction, bo
             auto result0 = this->apply_instruction(Instruction(GateName::Cnot, vector<int>({index1}), index2), normalize=false);
             auto result1 = result0->apply_instruction(Instruction(GateName::Cnot, vector<int>({index2}), index1), normalize=false);
             result = result1->apply_instruction(Instruction(GateName::Cnot, vector<int>({index1}), index2), normalize=false);
-            delete result0;
-            delete result1;
         } else if (instruction.gate_name == GateName::Rzx){
             assert (instruction.params.size() == 1);
             auto angle = instruction.params[0];
@@ -299,10 +298,6 @@ QuantumState* QuantumState::apply_instruction(const Instruction &instruction, bo
             auto result2 = result1->apply_instruction(RZ1, normalize=false);
             auto result3 = result2->apply_instruction(CX01, normalize=false);
             result = result3->apply_instruction(H1, normalize=false);
-            delete result0;
-            delete result1;
-            delete result2;
-            delete result3;
         } else if (instruction.gate_name == GateName::Ecr) {
             assert (instruction.controls.size() == 1);
             auto angle = pi / 4;
@@ -312,8 +307,6 @@ QuantumState* QuantumState::apply_instruction(const Instruction &instruction, bo
             auto result0 = this->apply_instruction(RZX, normalize=false);
             auto result1 = result0->apply_instruction(X0, normalize=false);
             result = result1->apply_instruction(RZXneg, normalize=false);
-            delete result0;
-            delete result1;
         } else {
             assert (instruction.gate_name == GateName::Cnot);
             result = this->eval_multiqubit_gate(instruction);
@@ -321,22 +314,21 @@ QuantumState* QuantumState::apply_instruction(const Instruction &instruction, bo
     } else {
         if (instruction.gate_name == GateName::Reset){
             auto meas_instruction = Instruction(GateName::Meas, instruction.target, instruction.target);
-            QuantumState quantum_state = *this;
-            auto pair0 = get_sequence_probability(&quantum_state, vector<Instruction>({Instruction(GateName::P0, instruction.target)}), this->precision);
+            shared_ptr<QuantumState> quantum_state = make_shared<QuantumState>(this->qubits_used, this->precision);
+            auto pair0 = get_sequence_probability(quantum_state, vector<Instruction>({Instruction(GateName::P0, instruction.target)}), this->precision);
             auto q0 = pair0.first;
             auto prob0 = pair0.second;
 
-            auto pair1 = get_sequence_probability(&quantum_state, vector<Instruction>({Instruction(GateName::P1, instruction.target)}), this->precision);
+            auto pair1 = get_sequence_probability(quantum_state, vector<Instruction>({Instruction(GateName::P1, instruction.target)}), this->precision);
             auto q1 = pair1.first;
             auto prob1 = pair1.second;
-            auto result0 = weighted_choice(vector<QuantumState*>({q0, q1}), vector<double>({prob0, prob1}));
-            if (result0 == q1) {
+            auto result0 = weighted_choice(vector<shared_ptr<QuantumState>>({q0, q1}), vector<double>({prob0, prob1}));
+            if (*result0 == *q1) {
                 auto x_instruction = Instruction(GateName::X, instruction.target);
                 result = result0->eval_single_qubit_gate(x_instruction);
             } else {
                 result = result0;
             }
-            delete result0;
         } else {
             result = this->eval_single_qubit_gate(instruction);
         }
@@ -351,8 +343,8 @@ QuantumState* QuantumState::apply_instruction(const Instruction &instruction, bo
     return result;
 }
 
-QuantumState *QuantumState::get_qubit_from_basis(cpp_int basis, int target) const {
-    auto result = new QuantumState({target}, this->precision);
+shared_ptr<QuantumState> QuantumState::get_qubit_from_basis(const cpp_int &basis, int target) const {
+    auto result = make_shared<QuantumState>(vector<int>({target}), this->precision);
     result->sparse_vector.clear();
     std::string bin_number = to_binary(basis);  // reversed already
     if (target >= static_cast<int>(bin_number.size())) {
@@ -364,7 +356,7 @@ QuantumState *QuantumState::get_qubit_from_basis(cpp_int basis, int target) cons
     return result;
 }
 
-cpp_int QuantumState::glue_qubit_in_basis(cpp_int basis, int address, int value) {
+cpp_int QuantumState::glue_qubit_in_basis(const cpp_int &basis, int address, int value) {
     // convert basis to binary string (reversed = least significant bit first)
     std::string bin_number;
     cpp_int temp = basis;
@@ -391,8 +383,8 @@ cpp_int QuantumState::glue_qubit_in_basis(cpp_int basis, int address, int value)
     return result;
 }
 
-QuantumState* QuantumState::eval_single_qubit_gate(const Instruction &instruction) const {
-    auto result = new QuantumState(this->qubits_used, this->precision);
+shared_ptr<QuantumState> QuantumState::eval_single_qubit_gate(const Instruction &instruction) const {
+    auto result = make_shared<QuantumState>(this->qubits_used, this->precision);
     result->sparse_vector.clear();
     bool at_least_one_perform_op = false;
     auto op = instruction.gate_name;
@@ -413,7 +405,6 @@ QuantumState* QuantumState::eval_single_qubit_gate(const Instruction &instructio
 
         if (should_perform_op) {
             auto new_qubit = old_qubit->eval_qubit_unitary(instruction);
-            delete old_qubit;
             if (new_qubit != nullptr){
                 auto a = new_qubit->get_qubit_amplitudes();
                 auto a0 = a.first;
@@ -425,22 +416,15 @@ QuantumState* QuantumState::eval_single_qubit_gate(const Instruction &instructio
                 result->add_amplitude(basis0, a0);
                 result->add_amplitude(basis1, a1);
                 at_least_one_perform_op = true;
-                if (new_qubit != nullptr) {
-                    delete new_qubit;
-                }
-            }
-        } else {
-            if (old_qubit != nullptr) {
-                delete old_qubit;
             }
         }
     }
-    if (not at_least_one_perform_op) {delete result; return nullptr;}
-    if (result->sparse_vector.size() == 0){delete result; return nullptr;}
+    if (not at_least_one_perform_op) {return nullptr;}
+    if (result->sparse_vector.size() == 0){return nullptr;}
     return result;
 }
 
-bool QuantumState::are_controls_true(cpp_int basis, const vector<int> &controls) {
+bool QuantumState::are_controls_true(const cpp_int &basis, const vector<int> &controls) {
     for (int a : controls) {
         // if the bit is at position an is 0
         if (((basis >> a) & 1) == 0) {
@@ -450,12 +434,12 @@ bool QuantumState::are_controls_true(cpp_int basis, const vector<int> &controls)
     return true;
 }
 
-QuantumState* QuantumState::eval_multiqubit_gate(const Instruction &instruction) const {
+shared_ptr<QuantumState> QuantumState::eval_multiqubit_gate(const Instruction &instruction) const {
     auto op = instruction.gate_name;
     assert (instruction.controls.size() == 1);
     auto controls = instruction.controls;
     auto address = instruction.target;
-    auto result = new QuantumState(this->qubits_used, this->precision);
+    auto result = make_shared<QuantumState>(this->qubits_used, this->precision);
     result->sparse_vector.clear();
 
     for (auto it : this->sparse_vector) {
@@ -484,9 +468,6 @@ QuantumState* QuantumState::eval_multiqubit_gate(const Instruction &instruction)
                     auto b = it2.first;
                     auto v = it2.second;
                     result->add_amplitude(b, v);
-                }
-                if (written_basis != nullptr) {
-                    delete written_basis;
                 }
             } else {
                 throw invalid_argument("written basis is none");
@@ -672,13 +653,13 @@ bool ClassicalState::read(const int &address) const {
     return false;
 }
 
-ClassicalState* ClassicalState::write(const int &address, bool value) const {
-    ClassicalState *classical_state = new ClassicalState(*this);
+shared_ptr<ClassicalState> ClassicalState::write(const int &address, bool value) const {
+    shared_ptr<ClassicalState> classical_state = make_shared<ClassicalState>(*this);
     classical_state->sparse_vector[address] = value;
     return classical_state;
 }
 
-ClassicalState* ClassicalState::apply_instruction(const Instruction &instruction) const {
+shared_ptr<ClassicalState> ClassicalState::apply_instruction(const Instruction &instruction) const {
     assert(instruction.instruction_type == InstructionType::Classical);
 
     if (instruction.gate_name == GateName::Write0) {
@@ -690,18 +671,16 @@ ClassicalState* ClassicalState::apply_instruction(const Instruction &instruction
 }
 
 HybridState::~HybridState() {
-    delete this->quantum_state;
-    delete this->classical_state;
 }
 
-HybridState::HybridState(QuantumState *quantum_state, ClassicalState *classical_state) {
+HybridState::HybridState(const shared_ptr<QuantumState> &quantum_state, const shared_ptr<ClassicalState> &classical_state) {
     assert (quantum_state != nullptr);
     assert (classical_state != nullptr);
-    this->quantum_state = new QuantumState(*quantum_state);
-    this->classical_state = new ClassicalState(*classical_state);
+    this->quantum_state = make_shared<QuantumState>(*quantum_state);
+    this->classical_state = make_shared<ClassicalState>(*classical_state);
 }
 
-HybridState *HybridState::apply_instruction(const Instruction &instruction) const
+shared_ptr<HybridState> HybridState::apply_instruction(const Instruction &instruction) const
 {
     auto new_qs = this->quantum_state;
     auto new_cs = this->classical_state;
@@ -712,7 +691,7 @@ HybridState *HybridState::apply_instruction(const Instruction &instruction) cons
         new_qs = new_qs->apply_instruction(instruction);
     }
 
-    return new HybridState(new_qs, new_cs);
+    return make_shared<HybridState>(new_qs, new_cs);
 }
 
 bool HybridState::operator==(const HybridState &other) const {

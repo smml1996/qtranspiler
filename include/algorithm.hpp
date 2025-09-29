@@ -16,14 +16,14 @@ inline POMDPAction HALT_ACTION("HALT__", {}, -1, {});
 
 class Algorithm {
 public:
-    POMDPAction* action;
-    vector<Algorithm*> children;
+    shared_ptr<POMDPAction> action;
+    vector<shared_ptr<Algorithm>> children;
     cpp_int classical_state;
     int depth;
     int precision;
     unordered_map<int, double> children_probs;
 
-    Algorithm(POMDPAction* action, const cpp_int &classical_state, int precision, int depth=-1);
+    Algorithm(const shared_ptr<POMDPAction> &action, const cpp_int &classical_state, int precision, int depth=-1);
     ~Algorithm();
     bool exist_child_with_cstate(const cpp_int &cstate) const;
     bool operator==(const Algorithm &algorithm) const;
@@ -33,17 +33,17 @@ public:
     void get_successor_classical_states(const cpp_int &current_classical_state, unordered_set<cpp_int> &result) const; // returns a set containing all reachable classical states by executing the current acction (children are not checked)
 };
 
-string to_string(Algorithm * algorithm, const string& tabs="");
-bool dump_to_file(const fs::path &, Algorithm *);
+string to_string(shared_ptr<Algorithm> algorithm, const string& tabs="");
+bool dump_to_file(const fs::path &, const shared_ptr<Algorithm> &);
 
-int get_algorithm_from_list(const vector<Algorithm *> &algorithms, const Algorithm* new_algorithm);
+int get_algorithm_from_list(const vector<shared_ptr<Algorithm>> &algorithms, const shared_ptr<Algorithm> &new_algorithm);
 
-int algorithm_exists(const unordered_map<int, Algorithm*> &mapping_index_algorithm, const Algorithm *algorithm);
+int algorithm_exists(const unordered_map<int, shared_ptr<Algorithm>> &mapping_index_algorithm, const shared_ptr<Algorithm> &algorithm);
 
-Algorithm* deep_copy_algorithm(Algorithm *algorithm);
+shared_ptr<Algorithm> deep_copy_algorithm(shared_ptr<Algorithm> algorithm);
 
-void get_algorithm_end_nodes(Algorithm *algorithm, vector<Algorithm *> &end_nodes);
+void get_algorithm_end_nodes(const shared_ptr<Algorithm> &algorithm, vector<shared_ptr<Algorithm>> &end_nodes);
 
-Algorithm* get_mixed_algorithm(const vector<double> &x, const unordered_map<int, Algorithm *> &mapping_index_algorithm, cpp_int initial_classical_state);
+shared_ptr<Algorithm> get_mixed_algorithm(const vector<double> &x, const unordered_map<int, shared_ptr<Algorithm>> &mapping_index_algorithm, cpp_int initial_classical_state);
 
 #endif

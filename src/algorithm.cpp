@@ -5,10 +5,10 @@
 #include <iostream>
 #include "utils.hpp"
 
-Algorithm::Algorithm(POMDPAction* action, const cpp_int &classical_state, int precision, int depth) {
+Algorithm::Algorithm(const shared_ptr<POMDPAction> &action, const cpp_int &classical_state, int precision, int depth) {
     assert(action != nullptr);
     assert(action->name.size() > 0);
-    this->action = new POMDPAction(*action);
+    this->action = action;
     this->classical_state = classical_state;
     this->depth = depth;
     this->children_probs = unordered_map<int, double>();
@@ -16,10 +16,6 @@ Algorithm::Algorithm(POMDPAction* action, const cpp_int &classical_state, int pr
 }
 
 Algorithm::~Algorithm() {
-    // delete action;
-    // for (auto child : this->children) {
-    //     delete child;
-    // }
 }
 
 
@@ -49,7 +45,7 @@ bool Algorithm::operator==(const Algorithm &other) const {
 
     int c = 0;
 
-    for (Algorithm * child : this->children) {
+    for (auto child : this->children) {
         double prob_child;
         if (this->children_probs.find(c) != this->children_probs.end()) {
             prob_child = this->children_probs.at(c);
@@ -58,7 +54,7 @@ bool Algorithm::operator==(const Algorithm &other) const {
         }
         bool found = false;
         int c2 = 0;
-        for (Algorithm* other_child : other.children) {
+        for (auto other_child : other.children) {
             double prob_other;
             if (other.children_probs.find(c2) != other.children_probs.end()) {
                 prob_other = other.children_probs.at(c2);
@@ -83,7 +79,7 @@ bool Algorithm::operator==(const Algorithm &other) const {
     return true;
 }
 
-string to_string(Algorithm* algorithm, const string& tabs) {
+string to_string(shared_ptr<Algorithm> algorithm, const string& tabs) {
     if (algorithm == nullptr) return "";
 
     string result = "";
@@ -108,9 +104,9 @@ string to_string(Algorithm* algorithm, const string& tabs) {
         result += tabs + "{\n";
         string current_tabs = tabs + "\t";
 
-        auto temp_algorithm = new Algorithm(algorithm->action, algorithm->classical_state, algorithm->precision, algorithm->depth);
+        auto temp_algorithm = make_shared<Algorithm>(algorithm->action, algorithm->classical_state, algorithm->precision, algorithm->depth);
         double condition_prob = 0.0;
-        vector<Algorithm*> new_children;
+        vector<shared_ptr<Algorithm>> new_children;
         for (size_t i = 1; i < algorithm->children.size(); ++i) {
             condition_prob += algorithm->children_probs.at(i);
             temp_algorithm->children.push_back(algorithm->children.at(i));
@@ -121,8 +117,6 @@ string to_string(Algorithm* algorithm, const string& tabs) {
         result += "\n } ⊕_" + to_string(condition_prob) + " {\n";
         result += to_string(temp_algorithm, tabs+ "\t");
         result += tabs + "}\n";
-        delete temp_algorithm;
-
     } else {
         result = tabs + to_string(algorithm->action) + "\n";
         for(auto child : algorithm->children) {
@@ -141,7 +135,7 @@ string to_string(Algorithm* algorithm, const string& tabs) {
     return result;
 }
 
-bool dump_to_file(const fs::path &path, Algorithm * algorithm) {
+bool dump_to_file(const fs::path &path, const shared_ptr<Algorithm> &algorithm) {
     // Open file for writing
     std::ofstream out(path);  // creates the file or overwrites if it exists
     if (!out) {
@@ -154,7 +148,7 @@ bool dump_to_file(const fs::path &path, Algorithm * algorithm) {
     return true;
 }
 
-int get_algorithm_from_list(const vector<Algorithm *> &algorithms, const Algorithm* new_algorithm) {
+int get_algorithm_from_list(const vector<shared_ptr<Algorithm>> &algorithms, const shared_ptr<Algorithm> &new_algorithm) {
     int index = 0;
     for (auto algorithm : algorithms) {
         if (*algorithm == *new_algorithm) {
@@ -165,7 +159,7 @@ int get_algorithm_from_list(const vector<Algorithm *> &algorithms, const Algorit
     return -1;
 }
 
-int algorithm_exists(const unordered_map<int, Algorithm*> &mapping_index_algorithm, const Algorithm *algorithm) {
+int algorithm_exists(const unordered_map<int, shared_ptr<Algorithm>> &mapping_index_algorithm, const shared_ptr<Algorithm> &algorithm) {
     for (auto it : mapping_index_algorithm) {
         if (it.second == nullptr) {
             if (algorithm == nullptr) {
@@ -179,13 +173,13 @@ int algorithm_exists(const unordered_map<int, Algorithm*> &mapping_index_algorit
     return -1;
 }
 
-Algorithm * deep_copy_algorithm(Algorithm *algorithm)  {
+shared_ptr<Algorithm> deep_copy_algorithm(shared_ptr<Algorithm> algorithm)  {
     if (algorithm == nullptr) return algorithm;
     string action = algorithm->action->name;
     auto classical_state = algorithm-> classical_state;
     int depth = algorithm->depth;
 
-    Algorithm * algorithm_copy = new Algorithm(algorithm->action, classical_state, algorithm->precision, depth);
+    auto algorithm_copy = make_shared<Algorithm>(algorithm->action, classical_state, algorithm->precision, depth);
 
     for (auto child : algorithm->children) {
         algorithm_copy->children.push_back(deep_copy_algorithm(child));
@@ -223,6 +217,7 @@ bool Algorithm::is_unitary() const {
 
     return true;
 }
+
 void Algorithm::get_successor_classical_states(const cpp_int &current_classical_state,
     unordered_set<cpp_int> &result) const {
     // get all bits that might change
@@ -241,7 +236,7 @@ void Algorithm::get_successor_classical_states(const cpp_int &current_classical_
     }
 }
 
-void get_algorithm_end_nodes(Algorithm *algorithm, vector<Algorithm *> &end_nodes) {
+void get_algorithm_end_nodes(const shared_ptr<Algorithm> &algorithm, vector<shared_ptr<Algorithm>> &end_nodes) {
     if (algorithm->children.size() == 0) {
         end_nodes.push_back(algorithm);
         return;
@@ -265,8 +260,8 @@ void get_algorithm_end_nodes(Algorithm *algorithm, vector<Algorithm *> &end_node
     }
 }
 
-Algorithm *get_mixed_algorithm(const vector<double> &x, const unordered_map<int, Algorithm *> &mapping_index_algorithm, cpp_int initial_classical_state) {
-    Algorithm * new_head = new Algorithm(&random_branch, initial_classical_state, 5, -1); // we are not going to use precision
+shared_ptr<Algorithm> get_mixed_algorithm(const vector<double> &x, const unordered_map<int, shared_ptr<Algorithm>> &mapping_index_algorithm, cpp_int initial_classical_state) {
+    auto new_head = make_shared<Algorithm>(make_shared<POMDPAction>(random_branch), initial_classical_state, 5, -1); // we are not going to use precision
     assert(new_head->children.size() == 0);
     int count = 0;
     for(int i = 0; i < x.size(); i++) {

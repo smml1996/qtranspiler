@@ -33,7 +33,8 @@ Rational SingleDistributionSolver::get_closest_L1(const Belief &belief) const {
     return result;
 }
 
-SingleDistributionSolver::SingleDistributionSolver(const POMDP &pomdp, const f_reward_type &get_reward, int precision, const unordered_map<int, int> & embedding) {
+SingleDistributionSolver::SingleDistributionSolver(const POMDP &pomdp, const f_reward_type &get_reward, int precision, const unordered_map<int, int> & embedding) : max_horizon(
+    0) {
     this->pomdp = pomdp;
     this->get_reward = get_reward;
     this->precision = precision;
@@ -42,7 +43,7 @@ SingleDistributionSolver::SingleDistributionSolver(const POMDP &pomdp, const f_r
     this->error = Rational("0", "1", this->precision);
 }
 
-pair<Algorithm*, Rational> SingleDistributionSolver::get_bellman_value(const Belief &current_belief, const int &horizon){
+pair<shared_ptr<Algorithm>, Rational> SingleDistributionSolver::get_bellman_value(const Belief &current_belief, const int &horizon){
     Belief curr_belief_normalized = normalize_belief(current_belief, this->precision);
     auto temp_it = this->beliefs_to_rewards.find(curr_belief_normalized);
     if (temp_it != this->beliefs_to_rewards.end()) {
@@ -58,17 +59,17 @@ pair<Algorithm*, Rational> SingleDistributionSolver::get_bellman_value(const Bel
     
     cpp_int current_classical_state = get_belief_cs(current_belief);
     assert(current_classical_state >= 0);
-    auto halt_algorithm = new Algorithm(&HALT_ACTION, current_classical_state, 0);
+    auto halt_algorithm = make_shared<Algorithm>(make_shared<POMDPAction>(HALT_ACTION), current_classical_state, 0);
     if (horizon == 0) {
         return make_pair(halt_algorithm, curr_belief_val);
     }
 
-    vector< pair< Algorithm*, Rational > > bellman_values;
+    vector< pair< shared_ptr<Algorithm>, Rational > > bellman_values;
 
     bellman_values.emplace_back(halt_algorithm, curr_belief_val);
     
     for (auto & it : pomdp.actions) {
-        POMDPAction * action = it;
+        auto action = it;
 
         // build next_beliefs, separate them by different observables
         map<cpp_int, Belief> obs_to_next_beliefs;
@@ -147,7 +148,7 @@ SingleDistributionSolver::~SingleDistributionSolver() {
 }
 
 
-pair<Algorithm*, Rational> SingleDistributionSolver::PBVI_solve(const Belief &current_belief, const int &horizon) {
+pair<shared_ptr<Algorithm>, Rational> SingleDistributionSolver::PBVI_solve(const Belief &current_belief, const int &horizon) {
     Belief curr_belief_normalized = normalize_belief(current_belief, this->precision);
     auto temp_it = this->beliefs_to_rewards.find(curr_belief_normalized);
     if (temp_it != this->beliefs_to_rewards.end()) {
@@ -171,7 +172,7 @@ pair<Algorithm*, Rational> SingleDistributionSolver::PBVI_solve(const Belief &cu
         }
     }
     assert(current_classical_state >= 0);
-    auto halt_algorithm = new Algorithm(&HALT_ACTION, current_classical_state, 0);
+    auto halt_algorithm = make_shared<Algorithm>(make_shared<POMDPAction>(HALT_ACTION), current_classical_state, 0);
     if (horizon == 0) {
         return make_pair(halt_algorithm, curr_belief_val);
     }
@@ -183,11 +184,11 @@ pair<Algorithm*, Rational> SingleDistributionSolver::PBVI_solve(const Belief &cu
     temp[current_classical_state] = current_belief;
     pair<Belief, unordered_map<cpp_int, Belief>> best_candidate = make_pair(curr_belief_normalized, temp);
     Rational furthest_value("0", "1", this->precision);
-    POMDPAction* best_action = &HALT_ACTION;
+    auto best_action = make_shared<POMDPAction>(HALT_ACTION);
 
 
     for (auto & it : pomdp.actions) {
-        POMDPAction * action = it;
+        auto action = it;
 
         unordered_map<cpp_int, Belief> obs_to_next_beliefs; // for each belief we compute the sub-distributions to which it leads
         Belief next_belief; // we also compute the real belief which should be normalized
@@ -222,7 +223,7 @@ pair<Algorithm*, Rational> SingleDistributionSolver::PBVI_solve(const Belief &cu
 
     }
 
-    auto new_alg_node = new Algorithm(best_action, current_classical_state, this->precision);
+    auto new_alg_node = make_shared<Algorithm>(best_action, current_classical_state, this->precision);
     Rational bellman_val("0", "1", this->precision);
     if (best_action->name == HALT_ACTION.name) {
         bellman_val = curr_belief_val;
@@ -262,13 +263,13 @@ ConvexDistributionSolver::ConvexDistributionSolver(const POMDP &pomdp, const f_r
     this->initial_classical_state = -1;
 }
 
-Rational get_algorithm_acc(POMDP &pomdp, Algorithm*& algorithm, const Belief &current_belief, const f_reward_type &get_reward, const unordered_map<int, int> &embedding, int precision) {
+Rational get_algorithm_acc(POMDP &pomdp, shared_ptr<Algorithm> algorithm, const Belief &current_belief, const f_reward_type &get_reward, const unordered_map<int, int> &embedding, int precision) {
     Rational curr_belief_val = get_reward(current_belief, embedding);
 
     if (algorithm == nullptr) {
         return curr_belief_val;
     }
-    POMDPAction* action = algorithm->action;
+    auto action = algorithm->action;
     if (*action == HALT_ACTION) {
         return curr_belief_val;
     }
@@ -278,7 +279,7 @@ Rational get_algorithm_acc(POMDP &pomdp, Algorithm*& algorithm, const Belief &cu
 
     Rational zero("0", "1", precision);
     for(auto & prob : current_belief.probs) {
-        POMDPVertex* current_v = prob.first;
+        auto current_v = prob.first;
         if(prob.second > zero) {
             for (auto &it_next_v: pomdp.transition_matrix[current_v][action]) {
                 if (it_next_v.second > zero) {
@@ -313,11 +314,11 @@ Rational get_algorithm_acc(POMDP &pomdp, Algorithm*& algorithm, const Belief &cu
     }
 }
 
-void ConvexDistributionSolver::set_minimax_values( 
-    Algorithm* algorithm, 
-    const vector<POMDPVertex*> &initial_states,
+void ConvexDistributionSolver::set_minimax_values(
+    const shared_ptr<Algorithm> &algorithm,
+    const vector<shared_ptr<POMDPVertex>> &initial_states,
     unordered_map<int, unordered_map<int, double>> &minimax_matrix,
-    unordered_map<int, Algorithm*> &mapping_index_algorithm) {
+    unordered_map<int, shared_ptr<Algorithm>> &mapping_index_algorithm) {
     
     // Algorithm *old_algorithm = algorithm_exists(mapping_index_algorithm, algorithm);
     // if(old_algorithm != nullptr) {
@@ -348,7 +349,7 @@ void ConvexDistributionSolver::set_minimax_values(
 
 
 
-cpp_int get_succ_classical_state(const Algorithm *current) {
+cpp_int get_succ_classical_state(const shared_ptr<Algorithm> &current) {
     assert(!current->has_meas());
     if (current->is_unitary()) {
         return current->classical_state;
@@ -376,25 +377,24 @@ cpp_int get_succ_classical_state(const Algorithm *current) {
 
 
 
-void ConvexDistributionSolver::get_matrix_maximin(const vector<POMDPVertex*> &initial_states, 
-    Algorithm *current_algorithm, 
+void ConvexDistributionSolver::get_matrix_maximin(const vector<shared_ptr<POMDPVertex>> &initial_states,
+    const shared_ptr<Algorithm> &current_algorithm,
     unordered_map<int, unordered_map<int, double>> &minimax_matrix,
     const int &max_horizon,
-    unordered_map<int, Algorithm*> &mapping_index_algorithm) {
+    unordered_map<int, shared_ptr<Algorithm>> &mapping_index_algorithm) {
         if(algorithm_exists(mapping_index_algorithm, current_algorithm) != -1) {
             return;
         }
         this->set_minimax_values(current_algorithm, initial_states, minimax_matrix, mapping_index_algorithm);
 
-        vector<Algorithm *> end_nodes;
+        vector<shared_ptr<Algorithm>> end_nodes;
         if (current_algorithm != nullptr)
             get_algorithm_end_nodes(current_algorithm, end_nodes);
 
         if (current_algorithm == nullptr) {
             for (auto action : pomdp.actions) {
-                Algorithm * new_node = new Algorithm(action, this->initial_classical_state, this->precision, 1); // assumes initial classical state is 0
+                auto new_node = make_shared<Algorithm>(action, this->initial_classical_state, this->precision, 1); // assumes initial classical state is 0
                 get_matrix_maximin(initial_states, new_node, minimax_matrix, max_horizon, mapping_index_algorithm);
-                delete new_node;
             }
         } else {
             for (auto end_node : end_nodes) {
@@ -403,39 +403,34 @@ void ConvexDistributionSolver::get_matrix_maximin(const vector<POMDPVertex*> &in
                         if (end_node->has_meas()){
                             int next_cstate = 0;
                             if (end_node->children.size() == 0) {
-                                Algorithm * new_node = new Algorithm(action, next_cstate, this->precision, end_node->depth + 1);
+                                auto new_node = make_shared<Algorithm>(action, next_cstate, this->precision, end_node->depth + 1);
                                 end_node->children.push_back(new_node);
                                 get_matrix_maximin(initial_states, current_algorithm, minimax_matrix, max_horizon, mapping_index_algorithm);
                                 end_node->children.pop_back();
-                                delete new_node;
 
                                 next_cstate = 1;
-                                new_node = new Algorithm(action, next_cstate, this->precision, end_node->depth + 1);
+                                new_node = make_shared<Algorithm>(action, next_cstate, this->precision, end_node->depth + 1);
                                 end_node->children.push_back(new_node);
                                 get_matrix_maximin(initial_states, current_algorithm, minimax_matrix, max_horizon, mapping_index_algorithm);
                                 end_node->children.pop_back();
-                                delete new_node;
-
                             } else {
                                 assert(end_node->children.size() == 1);
                                 if (end_node->children[0]->classical_state == 0) {
                                     next_cstate = 1;
-                                    Algorithm * new_node = new Algorithm(action, next_cstate, this->precision,end_node->depth + 1);
+                                    auto new_node = make_shared<Algorithm>(action, next_cstate, this->precision,end_node->depth + 1);
                                     end_node->children.push_back(new_node);
                                     get_matrix_maximin(initial_states, current_algorithm, minimax_matrix, max_horizon, mapping_index_algorithm);
                                     end_node->children.pop_back();
-                                    delete new_node;
                                 }
                             }
                         } else {
                             assert(end_node->children.size() == 0);
                             cpp_int next_classical_state = get_succ_classical_state(end_node);
-                            Algorithm * new_node = new Algorithm(action, next_classical_state, this->precision, end_node->depth + 1);
+                            auto new_node = make_shared<Algorithm>(action, next_classical_state, this->precision, end_node->depth + 1);
                             assert(!end_node->exist_child_with_cstate(next_classical_state));
                             end_node->children.push_back(new_node);
                             get_matrix_maximin(initial_states, current_algorithm, minimax_matrix, max_horizon, mapping_index_algorithm);
                             end_node->children.pop_back();
-                            delete new_node;
                         }
                     }
                 }
@@ -443,7 +438,7 @@ void ConvexDistributionSolver::get_matrix_maximin(const vector<POMDPVertex*> &in
         }
 }
 
-cpp_int get_classical_state(const vector<POMDPVertex*> &states) {
+cpp_int get_classical_state(const vector<shared_ptr<POMDPVertex>> &states) {
     cpp_int answer = -1;
     for (auto state: states) {
         if (answer == -1) {
@@ -512,15 +507,15 @@ pair<vector<double>, double> ConvexDistributionSolver::solve_lp_maximin(const un
     return make_pair(mixed_algorithm, final_value);
 }
 
-pair<Algorithm*, double> ConvexDistributionSolver::solve(const vector<POMDPVertex*> &initial_states, const int &horizon) {
+pair<shared_ptr<Algorithm>, double> ConvexDistributionSolver::solve(const vector<shared_ptr<POMDPVertex>> &initial_states, const int &horizon) {
     unordered_map<int, unordered_map<int, double>> maximin_matrix;
-    unordered_map<int, Algorithm *> mapping_index_algorithm;
+    unordered_map<int, shared_ptr<Algorithm>> mapping_index_algorithm;
     
     this->initial_classical_state = get_classical_state(initial_states);
     this->get_matrix_maximin(initial_states, nullptr, maximin_matrix, horizon, mapping_index_algorithm);
 
     auto result = this->solve_lp_maximin(maximin_matrix, maximin_matrix.size(), initial_states.size());
 
-    Algorithm * mixed_algorithm = get_mixed_algorithm(result.first, mapping_index_algorithm, this->initial_classical_state);
+    auto mixed_algorithm = get_mixed_algorithm(result.first, mapping_index_algorithm, this->initial_classical_state);
     return make_pair(mixed_algorithm, result.second);
 }

@@ -42,14 +42,14 @@ vector<pair<int, double>> HardwareSpecification::get_sorted_qubit_couplers(int t
     return result;
 }
 
-Channel * HardwareSpecification::get_channel(Instruction * instruction) const {
+shared_ptr<Channel> HardwareSpecification::get_channel(const shared_ptr<Instruction> &instruction) const {
     assert (instruction->instruction_type != InstructionType::Classical);
     assert (instruction->instruction_type != InstructionType::Projector);
     if (this->quantum_hardware == PerfectHardware) {
         if (instruction->instruction_type == InstructionType::Measurement) {
-            return &PERFECT_MEAS_CHANNEL;
+            return make_shared<Channel>(PERFECT_MEAS_CHANNEL);
         } else {
-            return &PERFECT_UNITARY_CHANNEL;
+            return make_shared<Channel>(PERFECT_UNITARY_CHANNEL);
         }
     } else {
         return this->instructions_to_channels.at(instruction);
@@ -119,12 +119,12 @@ HardwareSpecification::HardwareSpecification(const QuantumHardware &quantum_hard
         assert (instructions.size() == channels.size());
 
         for(int i=0; i < instructions.size(); i++) {
-            Instruction *instruction = new Instruction(instructions[i]);
-            Channel *channel;
+            shared_ptr<Instruction> instruction = make_shared<Instruction>(instructions[i]);
+            shared_ptr<Channel> channel;
             if(instruction->get_instruction_type() == InstructionType::Measurement) {
-                channel = new MeasurementChannel(channels[i]);
+                channel = make_shared<MeasurementChannel>(channels[i]);
             } else {
-                channel = new QuantumChannel(channels[i]);
+                channel = make_shared<QuantumChannel>(channels[i]);
             }
 
             this->instructions_to_channels[instruction] = channel;
@@ -132,7 +132,7 @@ HardwareSpecification::HardwareSpecification(const QuantumHardware &quantum_hard
 
         // compute in degree of qubits
         for (auto it : this->instructions_to_channels) {
-            Instruction *ins = it.first;
+            auto ins = it.first;
             if (ins->instruction_type == InstructionType::UnitaryMultiQubit) {
                 int target = ins->target;
                 if (this->qubit_to_indegree.find(target) == this->qubit_to_indegree.end()) {

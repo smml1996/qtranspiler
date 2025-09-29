@@ -1,6 +1,6 @@
 #include "experiments.hpp"
 #include "reset.cpp"
-#include "utils.hpp"
+
 //
 // Created by Stefanie Muroya Lei on 06.09.25.
 //
@@ -25,28 +25,28 @@ public:
         return result;
     }
 
-    vector<POMDPAction*> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) const override {
+    vector<shared_ptr<POMDPAction>> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) const override {
         assert(embedding.size() == 1);
         assert(embedding.find(0) != embedding.end());
 
 
-        auto H0 = new POMDPAction("H0", hardware_spec.to_basis_gates_impl(Instruction(GateName::H,
-            embedding.at(0))), this->precision, {Instruction(GateName::H, 0)});
+        auto H0 = make_shared<POMDPAction>("H0", hardware_spec.to_basis_gates_impl(Instruction(GateName::H,
+            embedding.at(0))), this->precision, vector<Instruction>({Instruction(GateName::H, 0)}));
 
-        auto P0 = new POMDPAction("P0",
-            {Instruction(GateName::Meas, embedding.at(0), 0)},
+        auto P0 = make_shared<POMDPAction>("P0",
+            vector<Instruction>({Instruction(GateName::Meas, embedding.at(0), 0)}),
             this->precision,
-            {Instruction(GateName::Meas, 0, 0)});
+            vector<Instruction>({Instruction(GateName::Meas, 0, 0)}));
 
-        auto determine0 = new POMDPAction("Is0",
-            {Instruction(GateName::Write0, 0)},
+        auto determine0 = make_shared<POMDPAction>("Is0",
+            vector<Instruction>({Instruction(GateName::Write0, 0)}),
             this->precision,
-            {Instruction(GateName::Write0, 0)});
+            vector<Instruction>({Instruction(GateName::Write0, 0)}));
 
-        auto determinePlus = new POMDPAction("IsPlus",
-            {Instruction(GateName::Write1, 0)},
+        auto determinePlus = make_shared<POMDPAction>("IsPlus",
+            vector<Instruction>({Instruction(GateName::Write1, 0)}),
             this->precision,
-            {Instruction(GateName::Write1, 0)});
+            vector<Instruction>({Instruction(GateName::Write1, 0)}));
         return {H0, P0, determine0, determinePlus};
     };
 
@@ -60,7 +60,7 @@ public:
         this->set_hidden_index = true;
     };
 
-    Rational postcondition(const Belief &belief, const unordered_map<int, int> &embedding) const override {
+    Rational postcondition(const Belief &belief, const unordered_map<int, int> &embedding) override {
         assert (embedding.size() == 1);
         Rational result("0", "1", this->precision*(this->max_horizon+1));
         for (auto it : belief.probs) {
@@ -74,29 +74,29 @@ public:
         return result;
     }
 
-    vector<POMDPAction*> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) const override {
+    vector<shared_ptr<POMDPAction>> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) const override {
 
         assert(embedding.size() == 1);
         assert(embedding.find(0) != embedding.end());
 
 
-        auto X0 = new POMDPAction("X0", hardware_spec.to_basis_gates_impl(Instruction(GateName::X,
-            embedding.at(0))), this->precision, {Instruction(GateName::X, 0)});
+        auto X0 = make_shared<POMDPAction>("X0", hardware_spec.to_basis_gates_impl(Instruction(GateName::X,
+            embedding.at(0))), this->precision, vector<Instruction>({Instruction(GateName::X, 0)}));
 
-        auto P0 = new POMDPAction("P0",
-            {Instruction(GateName::Meas, embedding.at(0), 0)},
+        auto P0 = make_shared<POMDPAction>("P0",
+            vector<Instruction>({Instruction(GateName::Meas, embedding.at(0), 0)}),
             this->precision,
-            {Instruction(GateName::Meas, 0, 0)});
+            vector<Instruction>({Instruction(GateName::Meas, 0, 0)}));
 
-        auto determine0 = new POMDPAction("Is0",
-            {Instruction(GateName::Write0, 0)},
+        auto determine0 = make_shared<POMDPAction>("Is0",
+            vector<Instruction>({Instruction(GateName::Write0, 0)}),
             this->precision,
-            {Instruction(GateName::Write0, 0)});
+            vector<Instruction>({Instruction(GateName::Write0, 0)}));
 
-        auto determine1 = new POMDPAction("Is1",
-            {Instruction(GateName::Write1, 0)},
+        auto determine1 = make_shared<POMDPAction>("Is1",
+            vector<Instruction>({Instruction(GateName::Write1, 0)}),
             this->precision,
-            {Instruction(GateName::Write1, 0)});
+            vector<Instruction>({Instruction(GateName::Write1, 0)}));
         return {X0, P0, determine0, determine1};
     }
 
@@ -110,27 +110,27 @@ public:
     method_types, hw_list) {
     };
 
-    vector<pair<HybridState*, double>> get_initial_distribution(unordered_map<int, int> &embedding) const override {
+    vector<pair<shared_ptr<HybridState>, double>> get_initial_distribution(unordered_map<int, int> &embedding) const override {
         assert (embedding.size() == 1);
-        vector<pair<HybridState*, double>> result;
+        vector<pair<shared_ptr<HybridState>, double>> result;
 
-        ClassicalState * classical_state = new ClassicalState();
+        auto classical_state = make_shared<ClassicalState>();
 
 
         auto H0 = Instruction(GateName::H, embedding.at(0));
 
-        auto state0 = new QuantumState({embedding.at(0)}, this->precision);
-        result.push_back(make_pair(new HybridState(state0, classical_state), 0.5));
+        auto state0 = make_shared<QuantumState>(vector<int>({embedding.at(0)}), this->precision);
+        result.push_back(make_pair(make_shared<HybridState>(state0, classical_state), 0.5));
 
         // prepare first bell state
-        QuantumState *state1 = state0->apply_instruction(H0);
+        auto state1 = state0->apply_instruction(H0);
 
-        result.push_back(make_pair(new HybridState(state1, classical_state), 0.5));
+        result.push_back(make_pair(make_shared<HybridState>(state1, classical_state), 0.5));
 
         return result;
     }
 
-    Rational postcondition(const Belief &belief, const unordered_map<int, int> &embedding) const override {
+    Rational postcondition(const Belief &belief, const unordered_map<int, int> &embedding) override {
         assert (embedding.size() == 1);
         auto state0 = QuantumState({embedding.at(0)}, this->precision);
         auto H = Instruction(GateName::H, embedding.at(0));
