@@ -292,7 +292,9 @@ shared_ptr<POMDPVertex> POMDP::create_new_vertex(const shared_ptr<HybridState> &
         this->states.push_back(new_vertex);
         return new_vertex;
     }
-    return v;
+    auto copy_v = make_shared<POMDPVertex>(v->hybrid_state, hidden_index);
+    copy_v->id = v->id;
+    return copy_v;
 }
 
 POMDP::~POMDP() {

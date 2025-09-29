@@ -142,10 +142,15 @@ HardwareSpecification::HardwareSpecification(const QuantumHardware &quantum_hard
             }
         }
 
+        for (auto qubit = 0; qubit < this->num_qubits; qubit++) {
+            if (this->qubit_to_indegree.find(qubit) == this->qubit_to_indegree.end()) {
+                this->qubit_to_indegree[qubit] = 0;
+            }
+        }
         assert(this->qubit_to_indegree.size() == this->num_qubits);
 
         for (auto it   : this->qubit_to_indegree) {
-            assert(it.second > 0);
+            assert(it.second >= 0);
         }
 
         // compute digraph
@@ -223,6 +228,7 @@ std::string to_string(const QuantumHardware &quantum_hardware) {
         case Vigo: return "vigo";
         case Washington: return "washington";
         case Yorktown: return "yorktown";
+        case PerfectHardware: return "perfect_hardware";
         default: throw invalid_argument( "Cannot retrieve string representation of quantum hardware" );
     }
 }

@@ -66,13 +66,9 @@ TEST(QuantumStateTest, EqHDecomposition) {
     auto direct = qs.apply_instruction(HGate);
     auto temp = qs.apply_instruction(RzGate);
     auto current = temp->apply_instruction(SXGate);
-    delete temp;
     temp = current;
     current = temp->apply_instruction(RzGate);
-    delete temp;
     EXPECT_TRUE(*direct == *current);
-    delete current;
-
 }
 // ---------- Multi-qubit gate ----------
 TEST(QuantumStateTest, EvalMultiQubitGate) {
@@ -130,7 +126,7 @@ TEST(ClassicalStateTest, Equality) {
 TEST(HybridStateTest, ApplyInstruction) {
     QuantumState qs({0}, 10);
     ClassicalState cs;
-    HybridState hs(&qs, &cs);
+    HybridState hs(make_shared<QuantumState>(qs), make_shared<ClassicalState>(cs));
     Instruction instr(X, 0);
     auto new_hs = hs.apply_instruction(instr);
     EXPECT_EQ(new_hs->quantum_state->get_amplitude(1), complex<double>(1.0,0.0));

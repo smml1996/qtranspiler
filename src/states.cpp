@@ -674,10 +674,8 @@ HybridState::~HybridState() {
 }
 
 HybridState::HybridState(const shared_ptr<QuantumState> &quantum_state, const shared_ptr<ClassicalState> &classical_state) {
-    assert (quantum_state != nullptr);
-    assert (classical_state != nullptr);
-    this->quantum_state = make_shared<QuantumState>(*quantum_state);
-    this->classical_state = make_shared<ClassicalState>(*classical_state);
+    this->quantum_state = quantum_state;
+    this->classical_state = classical_state;
 }
 
 shared_ptr<HybridState> HybridState::apply_instruction(const Instruction &instruction) const
