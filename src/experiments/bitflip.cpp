@@ -11,6 +11,12 @@
 using namespace std;
 
 inline vector<pair<int, int>> get_selected_couplers(const HardwareSpecification &hardware_spec, int target) {
+    if (hardware_spec.get_hardware() == QuantumHardware::PerfectHardware) {
+        assert(target == 0);
+        pair<int, int> first_pair = {1,2};
+        return {first_pair, first_pair};
+
+    }
     vector<pair<int, double>> couplers = hardware_spec.get_sorted_qubit_couplers(target);
     pair<int, int> first_pair = {couplers[0].first, couplers[1].first}; // most noisy pair of couplers for this target
 
@@ -145,16 +151,27 @@ class IPMABitflip : public Experiment {
             return result;
         }
 
-        Rational postcondition(const Belief &belief, const unordered_map<int, int> &embedding) const override {
+        Rational postcondition(const Belief &belief, const unordered_map<int, int> &embedding) override {
             Rational result("0", "1", this->precision*(this->max_horizon+1));
             for (auto it : belief.probs) {
-                auto hybrid_state = it.first->hybrid_state;
-                auto qs = hybrid_state->quantum_state;
-                auto current_rho = qs->multi_partial_trace(vector<int>({embedding.at(2)}));
-                assert (current_rho.size() == 4);
-                if (are_matrices_equal(current_rho, this->BELL0, this->precision) || are_matrices_equal(current_rho, this->BELL1, this->precision)) { // equality up to a threshold because there might be floating point overflow
-                    result = result + it.second;
-                } 
+                auto is_target = this->target_vertices.find(it.first->id);
+                if (is_target != this->target_vertices.end()) {
+                    if (is_target->second) {
+                        result = result + it.second;
+                    }
+                } else {
+                    auto hybrid_state = it.first->hybrid_state;
+                    auto qs = hybrid_state->quantum_state;
+                    auto current_rho = qs->multi_partial_trace(vector<int>({embedding.at(2)}));
+                    assert (current_rho.size() == 4);
+                    if (are_matrices_equal(current_rho, this->BELL0, this->precision) || are_matrices_equal(current_rho, this->BELL1, this->precision)) { // equality up to a threshold because there might be floating point overflow
+                        result = result + it.second;
+                        this->target_vertices[it.first->id] =  true;
+                    }  else {
+                        this->target_vertices[it.first->id] =  false;
+                    }
+                }
+
             }
             return result;
         }
@@ -190,7 +207,7 @@ class IPMABitflip : public Experiment {
         vector<unordered_map<int, int>> get_hardware_scenarios(HardwareSpecification const & hardware_spec) const override {
             vector<unordered_map<int, int>> result;
             unordered_set<int> pivot_qubits;
-            if (hardware_spec.num_qubits < 14) {
+            if (hardware_spec.get_hardware() != QuantumHardware::PerfectHardware && hardware_spec.num_qubits < 14) {
                 
                 for(int qubit = 0; qubit < hardware_spec.num_qubits; qubit++) {
                     if (hardware_spec.get_qubit_indegree(qubit) > 1) {
@@ -199,7 +216,7 @@ class IPMABitflip : public Experiment {
                         
                 }
             } else {
-                pivot_qubits = get_meas_pivot_qubits(hardware_spec);
+                pivot_qubits = get_meas_pivot_qubits(hardware_spec, 2);
             }
 
             for (auto target : pivot_qubits) {
@@ -360,14 +377,24 @@ public:
         this->indices_to_matrix[3] = this->BELL3;
     };
 
-    Rational postcondition(const Belief &belief, const unordered_map<int, int> &embedding) const override {
+    Rational postcondition(const Belief &belief, const unordered_map<int, int> &embedding) override {
         Rational result("0", "1", this->precision*(this->max_horizon+1));
         for (auto it : belief.probs) {
-            auto hybrid_state = it.first->hybrid_state;
-            auto cs = hybrid_state->classical_state;
+            auto is_target = this->target_vertices.find(it.first->id);
+            if (is_target != this->target_vertices.end()) {
+                if (is_target->second) {
+                    result = result + it.second;
+                }
+            } else {
+                auto hybrid_state = it.first->hybrid_state;
+                auto cs = hybrid_state->classical_state;
 
-            if (cs->get_memory_val() == it.first->hidden_index) {
-                result = result + it.second;
+                if (cs->get_memory_val() == it.first->hidden_index) {
+                    result = result + it.second;
+                    this->target_vertices[it.first->id] = true;
+                } else {
+                    this->target_vertices[it.first->id] = false;
+                }
             }
         }
         return result;
@@ -382,7 +409,7 @@ public:
         const set<MethodType> &method_types, const set<QuantumHardware>& hw_list) : BellStateDiscrimination2(name, precision, with_thermalization, min_horizon, max_horizon, method_types, hw_list) {
     };
 
-    Rational postcondition(const Belief &belief, const unordered_map<int, int> &embedding) const override {
+    Rational postcondition(const Belief &belief, const unordered_map<int, int> &embedding) override {
         return BellStateDiscrimination2::postcondition(belief, embedding);
     }
 

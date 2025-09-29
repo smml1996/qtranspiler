@@ -94,14 +94,25 @@ Experiment(name, precision, with_thermalization, min_horizon, max_horizon, false
             return result;
         }
 
-        Rational postcondition(const Belief &belief, const unordered_map<int, int> &embedding) const override {
+        Rational postcondition(const Belief &belief, const unordered_map<int, int> &embedding) override {
             Rational answer("0", "1", this->precision*(this->max_horizon+1));
 
             auto local_target_state = this->get_target_state(embedding);
             for (auto it : belief.probs) {
-                if(*it.first->hybrid_state->quantum_state == *local_target_state) {
-                    answer = answer + it.second;
+                auto is_target = this->target_vertices.find(it.first->id);
+                if (is_target != this->target_vertices.end()) {
+                    if (is_target->second) {
+                        answer = answer + it.second;
+                    }
+                } else {
+                    if(*it.first->hybrid_state->quantum_state == *local_target_state) {
+                        answer = answer + it.second;
+                        this->target_vertices[it.first->id] =  true;
+                    } else {
+                        this->target_vertices[it.first->id] = false;
+                    }
                 }
+
             }
 
             delete local_target_state;
@@ -109,6 +120,13 @@ Experiment(name, precision, with_thermalization, min_horizon, max_horizon, false
         }
 
         virtual vector<unordered_map<int, int>> get_hardware_scenarios(HardwareSpecification const & hardware_spec) const override {
+            if (hardware_spec.get_hardware() == QuantumHardware::PerfectHardware) {
+                unordered_map<int, int> embedding;
+                embedding[0] = 0;
+                embedding[1] = 1;
+                embedding[2] = 2;
+                return {embedding};
+            }
             vector<unordered_map<int, int>> result;
             for (int qubit1 = 0; qubit1 < hardware_spec.num_qubits; qubit1++) {
                 for (int qubit2 = 0; qubit2 < hardware_spec.num_qubits; qubit2++) {
@@ -198,6 +216,14 @@ class GHZStatePreparation4 : public GHZStatePreparation3 {
         }
 
         vector<unordered_map<int, int>> get_hardware_scenarios(HardwareSpecification const & hardware_spec) const override {
+            if (hardware_spec.get_hardware() == QuantumHardware::PerfectHardware) {
+                unordered_map<int, int> embedding;
+                embedding[0] = 0;
+                embedding[1] = 1;
+                embedding[2] = 2;
+                embedding[3] = 3;
+                return {embedding};
+            }
             vector<unordered_map<int, int>> result;
             for (int qubit1 = 0; qubit1 < hardware_spec.num_qubits; qubit1++) {
                 for (int qubit2 = 0; qubit2 < hardware_spec.num_qubits; qubit2++) {

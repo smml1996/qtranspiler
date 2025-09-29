@@ -11,7 +11,7 @@ public:
         this->set_hidden_index = true;
     };
 
-    Rational postcondition(const Belief &belief, const unordered_map<int, int> &embedding) const override {
+    Rational postcondition(const Belief &belief, const unordered_map<int, int> &embedding) override {
         assert (embedding.size() == 1);
         Rational result("0", "1", this->precision*(this->max_horizon+1));
         for (auto it : belief.probs) {

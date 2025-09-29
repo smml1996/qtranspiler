@@ -89,6 +89,7 @@ class HardwareSpecification {
         vector<Instruction> to_basis_gates_impl(const Instruction &current_ins) const;
         vector<pair<int, double>> get_sorted_qubit_couplers(int target) const;
         Channel* get_channel(Instruction *) const;
+        QuantumHardware get_hardware() const;
 };
 
 set<string> get_hardware_strings();

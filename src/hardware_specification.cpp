@@ -56,6 +56,10 @@ Channel * HardwareSpecification::get_channel(Instruction * instruction) const {
     }
 }
 
+QuantumHardware HardwareSpecification::get_hardware() const {
+    return this->quantum_hardware;
+}
+
 set<string> get_hardware_strings() {
     set<string> result;
     for (int i = 0; i < QuantumHardware::HardwareCount;  i++) {
@@ -152,7 +156,6 @@ HardwareSpecification::HardwareSpecification(const QuantumHardware &quantum_hard
                 assert (instruction->controls.size() == 1);
                 int source = instruction->controls[0];
                 int target = instruction->target;
-
                 if (this->digraph.find(source) == this->digraph.end()) {
                     this->digraph[source] = unordered_set<int>();
                 }

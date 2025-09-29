@@ -356,12 +356,15 @@ ReadoutNoise::ReadoutNoise(int target, double success0, double success1) {
     this->abs_diff = abs(success0-success1);
 }
 
-unordered_set<int> get_meas_pivot_qubits(const HardwareSpecification &hardware_spec) {
+unordered_set<int> get_meas_pivot_qubits(const HardwareSpecification &hardware_spec, const int &min_indegree) {
+    if (hardware_spec.get_hardware() == QuantumHardware::PerfectHardware) {
+        return {0};
+    }
     unordered_set<int> result;
     vector<ReadoutNoise> noises;
 
     for (int qubit = 0; qubit < hardware_spec.num_qubits; qubit++) {
-        if (hardware_spec.get_qubit_indegree(qubit) > 1) {
+        if (hardware_spec.get_qubit_indegree(qubit) >= min_indegree) {
             Instruction *instruction = new Instruction(GateName::Meas, qubit, qubit);
             MeasurementChannel* noise_data = static_cast<MeasurementChannel*>(hardware_spec.get_channel(instruction));
             auto success0 = noise_data->correct_0;
