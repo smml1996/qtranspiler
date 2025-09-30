@@ -69,4 +69,43 @@ bool is_matrix_in_list(const vector<vector<complex<double>>> & matrix, const vec
     return false;
 }
 
+vector<vector<complex<double>>> multiply_matrices(const vector<vector<complex<double>>> &left,
+    const vector<vector<complex<double>>> &right) {
+
+    // assume both are 2x2
+    vector<vector<complex<double>>> result(2, vector<complex<double>>(2, {0.0, 0.0}));
+
+    for (int i = 0; i < 2; ++i) {
+        for (int j = 0; j < 2; ++j) {
+            for (int k = 0; k < 2; ++k) {
+                result[i][j] += left[i][k] * right[k][j];
+            }
+        }
+    }
+
+    return result;
+}
+
+pair<double, pair<complex<double>, complex<double>>> get_kraus_matrix_probability(
+    const vector<vector<complex<double>>> &matrix, const complex<double> &a0, const complex<double> &a1) {
+    assert (is_close(a0*conj(a0)+ a1*conj(a1), 1.0, 10));
+
+    auto a = matrix[0][0];
+    auto b = matrix[0][1];
+    auto c = matrix[1][0];
+    auto d = matrix[1][1];
+    auto new_a0 = a*a0 + b*a1;
+    auto new_a1 = c*a0 + d*a1;
+    auto prob_ = new_a0*conj(new_a0) + new_a1*conj(new_a1);
+    assert(is_close(prob_.imag(), 0, 10));
+    auto prob = prob_.real();
+
+    if (prob > 1.0) {
+        assert (is_close(prob, 1.0, 10));
+        prob = 1.0;
+    }
+    return {prob, make_pair(new_a0, new_a1)};
+
+}
+
  

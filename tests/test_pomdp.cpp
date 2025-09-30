@@ -34,7 +34,7 @@ protected:
     shared_ptr<HybridState> hybrid_state = make_shared<HybridState>( qs, cs );
     shared_ptr<POMDPVertex> vertex = make_shared<POMDPVertex>(hybrid_state, 0);
 
-    HardwareSpecification hardware{ QuantumHardware::Algiers, false };
+    HardwareSpecification hardware{ QuantumHardware::Algiers, false, false};
 
     Instruction meas_ins{ GateName::Meas, 0 , 0};
     Instruction x_ins{ GateName::X, 0 };

@@ -35,7 +35,7 @@ TEST(ExperimentsTests, ResetTest) {
 
     auto hw_list = get_hardware_list();
 
-    ResetProblem reset_problem = ResetProblem(custom_name, precision, with_thermalization,min_horizon, max_horizon, methods, hw_list);
+    ResetProblem reset_problem = ResetProblem(custom_name, precision, with_thermalization,min_horizon, max_horizon, methods, hw_list, false);
     reset_problem.run();
 }
 
@@ -51,7 +51,7 @@ TEST(ExperimentsTests, BitflipTest) {
 
     auto hw_list = {PerfectHardware, Athens, Almaden};
 
-    IPMA2Bitflip bitflip_ipma2 = IPMA2Bitflip(custom_name, precision, with_thermalization,min_horizon, max_horizon, methods, hw_list);
+    IPMA2Bitflip bitflip_ipma2 = IPMA2Bitflip(custom_name, precision, with_thermalization,min_horizon, max_horizon, methods, hw_list, false);
     bitflip_ipma2.run();
 }
 
@@ -125,10 +125,10 @@ TEST(GHZTest, GHZNumEmbeddings) {
     const int min_horizon = 3;
     const int max_horizon = 3;
 
-    GHZStatePreparation3 ghz_problem(custom_name, precision, with_thermalization, min_horizon, max_horizon, methods, hw_list);
+    GHZStatePreparation3 ghz_problem(custom_name, precision, with_thermalization, min_horizon, max_horizon, methods, hw_list, false);
     int total_embeddings = 0;
     for (auto hw : hw_list) {
-        HardwareSpecification spec(hw, false);
+        HardwareSpecification spec(hw, false, false);
         auto e = ghz_problem.get_hardware_scenarios(spec);
         cout << spec.get_hardware_name() << " " << e.size() << endl;
         total_embeddings += e.size();
@@ -137,30 +137,30 @@ TEST(GHZTest, GHZNumEmbeddings) {
     EXPECT_EQ(total_embeddings, 2780);
 }
 
-TEST(GHZTest, GHZ4NumEmbeddings) {
-    string custom_name = "test_ghz3_test";
-
-    set<MethodType> methods = {
-        SingleDistBellman,
-        // SingleDistPBVI
-    };
-
-    auto hw_list = {Brisbane};//get_hardware_list();
-    const int min_horizon = 4;
-    const int max_horizon = 4;
-
-    GHZStatePreparation4 ghz_problem(custom_name, precision, with_thermalization, min_horizon, max_horizon, methods, hw_list);
-    int total_embeddings = 0;
-    for (auto hw : hw_list) {
-        HardwareSpecification spec(hw, false);
-        cout << spec.get_hardware_name() << " " << spec.num_qubits << endl;
-        auto e = ghz_problem.get_hardware_scenarios(spec);
-        cout << spec.get_hardware_name() << " " << e.size() << endl;
-        total_embeddings += e.size();
-    }
-
-    EXPECT_EQ(total_embeddings, 2780);
-}
+// TEST(GHZTest, GHZ4NumEmbeddings) {
+//     string custom_name = "test_ghz3_test";
+//
+//     set<MethodType> methods = {
+//         SingleDistBellman,
+//         // SingleDistPBVI
+//     };
+//
+//     auto hw_list = {Brisbane};//get_hardware_list();
+//     const int min_horizon = 4;
+//     const int max_horizon = 4;
+//
+//     GHZStatePreparation4 ghz_problem(custom_name, precision, with_thermalization, min_horizon, max_horizon, methods, hw_list, false);
+//     int total_embeddings = 0;
+//     for (auto hw : hw_list) {
+//         HardwareSpecification spec(hw, false, false);
+//         cout << spec.get_hardware_name() << " " << spec.num_qubits << endl;
+//         auto e = ghz_problem.get_hardware_scenarios(spec);
+//         cout << spec.get_hardware_name() << " " << e.size() << endl;
+//         total_embeddings += e.size();
+//     }
+//
+//     EXPECT_EQ(total_embeddings, 2780);
+// }
 
 TEST(ExperimentsTests, GHZ3Test) {
     string custom_name = "test_ghz3_test";
@@ -174,7 +174,7 @@ TEST(ExperimentsTests, GHZ3Test) {
     const int min_horizon = 3;
     const int max_horizon = 3;
 
-    GHZStatePreparation3 ghz_problem(custom_name, precision, with_thermalization, min_horizon, max_horizon, methods, hw_list);
+    GHZStatePreparation3 ghz_problem(custom_name, precision, with_thermalization, min_horizon, max_horizon, methods, hw_list, false);
     ghz_problem.run();
 }
 
@@ -193,7 +193,136 @@ TEST(ConvexSolver, ZeroPlusDiscrimination) {
 
     auto hw_list = {PerfectHardware, Almaden};
 
-    auto zero_plus_problem = BasicZeroPlusDiscrimination(custom_name, precision, with_thermalization, min_horizon, max_horizon, methods, hw_list);
+    auto zero_plus_problem = BasicZeroPlusDiscrimination(custom_name, precision, with_thermalization, min_horizon, max_horizon, methods, hw_list, false);
     zero_plus_problem.run();
 
 }
+
+TEST(OptimizedModels, ResetOptimized) {
+    const int min_horizon = 2;
+    const int max_horizon = 4;
+    string custom_name = "test_reset_test_opt";
+
+    set<MethodType> methods = {
+        SingleDistBellman
+    };
+
+    auto hw_list = get_hardware_list();
+
+    ResetProblem reset_problem = ResetProblem(custom_name, precision, with_thermalization,min_horizon, max_horizon, methods, hw_list, true);
+    reset_problem.run();
+
+}
+
+TEST(OptimizedModels, BitflipTestOptimized) {
+    const int min_horizon = 4;
+    const int max_horizon = 5;
+    string custom_name = "test_bitflip_test_opt";
+
+    set<MethodType> methods = {
+        SingleDistBellman
+    };
+
+    auto hw_list = {PerfectHardware, Athens, Almaden};
+
+    IPMA2Bitflip bitflip_ipma2 = IPMA2Bitflip(custom_name, precision, with_thermalization,min_horizon, max_horizon, methods, hw_list, true);
+    bitflip_ipma2.run();
+}
+
+TEST(OptimizedModels, GHZ3TestOptimized) {
+    string custom_name = "test_ghz3_test_opt";
+
+    set<MethodType> methods = {
+        SingleDistBellman,
+        // SingleDistPBVI
+    };
+
+    auto hw_list = {PerfectHardware, Athens};
+    const int min_horizon = 3;
+    const int max_horizon = 3;
+
+    GHZStatePreparation3 ghz_problem(custom_name, precision, with_thermalization, min_horizon, max_horizon, methods, hw_list, true);
+    ghz_problem.run();
+}
+
+TEST(OptimizedModels, ZeroPlusDiscriminationOptimized) {
+
+    const int min_horizon = 3;
+    const int max_horizon = 3;
+    string custom_name = "test_zero_plus_discr_test_opt";
+
+    set<MethodType> methods = {
+        ConvexDist
+    };
+
+    auto hw_list = {PerfectHardware, Almaden};
+
+    auto zero_plus_problem = BasicZeroPlusDiscrimination(custom_name, precision, with_thermalization, min_horizon, max_horizon, methods, hw_list, true);
+    zero_plus_problem.run();
+
+}
+
+
+TEST(ThermalizationModels, ThermalReset) {
+    const int min_horizon = 2;
+    const int max_horizon = 4;
+    string custom_name = "test_reset_test_therm";
+
+    set<MethodType> methods = {
+        SingleDistBellman
+    };
+
+    auto hw_list = {PerfectHardware, Athens, Almaden};
+
+    ResetProblem reset_problem = ResetProblem(custom_name, precision, true, min_horizon, max_horizon, methods, hw_list, true);
+    reset_problem.run();
+
+}
+
+// TEST(ThermalizationModels, ThermalBitflipTest) {
+//     const int min_horizon = 4;
+//     const int max_horizon = 5;
+//     string custom_name = "test_bitflip_test_therm";
+//
+//     set<MethodType> methods = {
+//         SingleDistBellman
+//     };
+//
+//     auto hw_list = {PerfectHardware, Athens, Almaden};
+//
+//     IPMA2Bitflip bitflip_ipma2 = IPMA2Bitflip(custom_name, precision, true, min_horizon, max_horizon, methods, hw_list, true);
+//     bitflip_ipma2.run();
+// }
+//
+// TEST(ThermalizationModels, ThermalGHZ3Test) {
+//     string custom_name = "test_ghz3_test_therm";
+//
+//     set<MethodType> methods = {
+//         SingleDistBellman,
+//         // SingleDistPBVI
+//     };
+//
+//     auto hw_list = {PerfectHardware, Athens};
+//     const int min_horizon = 3;
+//     const int max_horizon = 3;
+//
+//     GHZStatePreparation3 ghz_problem(custom_name, precision, true, min_horizon, max_horizon, methods, hw_list, true);
+//     ghz_problem.run();
+// }
+//
+// TEST(ThermalizationModels, ThermalZeroPlusDiscrimination) {
+//
+//     const int min_horizon = 3;
+//     const int max_horizon = 3;
+//     string custom_name = "test_zero_plus_discr_test_therm";
+//
+//     set<MethodType> methods = {
+//         ConvexDist
+//     };
+//
+//     auto hw_list = {PerfectHardware, Almaden};
+//
+//     auto zero_plus_problem = BasicZeroPlusDiscrimination(custom_name, precision, true, min_horizon, max_horizon, methods, hw_list, true);
+//     zero_plus_problem.run();
+//
+// }

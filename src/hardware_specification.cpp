@@ -68,7 +68,7 @@ set<string> get_hardware_strings() {
 }
 
 
-HardwareSpecification::HardwareSpecification(const QuantumHardware &quantum_hardware, const bool &thermal_relaxation) {
+HardwareSpecification::HardwareSpecification(const QuantumHardware &quantum_hardware, const bool &thermal_relaxation, const bool &optimize) {
     this->quantum_hardware = quantum_hardware;
     if (quantum_hardware == QuantumHardware::PerfectHardware) {
         this->num_qubits = 10;
@@ -124,6 +124,9 @@ HardwareSpecification::HardwareSpecification(const QuantumHardware &quantum_hard
                 channel = make_shared<MeasurementChannel>(channels[i]);
             } else {
                 channel = make_shared<QuantumChannel>(channels[i]);
+                if (optimize) {
+                    static_pointer_cast<QuantumChannel>(channel)->optimize();
+                }
             }
 
             this->instructions_to_channels[instruction] = channel;

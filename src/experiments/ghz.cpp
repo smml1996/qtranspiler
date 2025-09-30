@@ -56,8 +56,8 @@ inline bool is_repeated_embedding(const vector<unordered_map<int, int>> &all_emb
 class GHZStatePreparation3 : public Experiment {
     public:
     GHZStatePreparation3(const string &name, int precision, bool with_thermalization, int min_horizon, int max_horizon,
-    const set<MethodType> &method_types, const set<QuantumHardware>& hw_list) :
-Experiment(name, precision, with_thermalization, min_horizon, max_horizon, false, method_types, hw_list){};
+    const set<MethodType> &method_types, const set<QuantumHardware>& hw_list, bool optimize) :
+Experiment(name, precision, with_thermalization, min_horizon, max_horizon, false, method_types, hw_list, optimize){};
         GHZStatePreparation3() : Experiment() {
             this->name = "ghz_state_preparation3";
             this->precision = 8;
@@ -184,7 +184,7 @@ Experiment(name, precision, with_thermalization, min_horizon, max_horizon, false
 // GHZ state preparation of 4 qubits
 class GHZStatePreparation4 : public GHZStatePreparation3 {
     public:
-        GHZStatePreparation4(const string &name, int precision, bool with_thermalization, int min_horizon, int max_horizon, const set<MethodType> &method_types, const set<QuantumHardware>& hw_list) : GHZStatePreparation3(name, precision, with_thermalization, min_horizon, max_horizon, method_types, hw_list){};
+        GHZStatePreparation4(const string &name, int precision, bool with_thermalization, int min_horizon, int max_horizon, const set<MethodType> &method_types, const set<QuantumHardware>& hw_list, bool optimize) : GHZStatePreparation3(name, precision, with_thermalization, min_horizon, max_horizon, method_types, hw_list, optimize){};
         GHZStatePreparation4() : GHZStatePreparation3() {
             this->name = "ghz_state_preparation4";
             this->precision = 8;

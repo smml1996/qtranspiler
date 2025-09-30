@@ -10,6 +10,7 @@ using namespace std;
 double get_abs_tol(const int &precision);
 double get_rel_tol(const int &precision);
 bool is_close(const double &a, const double &b, const int &precision);
+bool is_close(const complex<double> &a, const complex<double> &b, const int &precision);
 template <typename T>
 T weighted_choice(const std::vector<T> &elements, const std::vector<double> &weights) {
     if (elements.size() != weights.size() || elements.empty()) {
@@ -32,5 +33,7 @@ inline double round_to(double value, int decimals) {
     return std::round(value * power) / power;
 }
 
+vector<vector<complex<double>>> multiply_matrices(const vector<vector<complex<double>>> &left, const vector<vector<complex<double>>> &right);
 
+pair<double, pair<complex<double>, complex<double>>> get_kraus_matrix_probability(const vector<vector<complex<double>>> &matrix, const complex<double> &a, const complex<double> &b);
 #endif

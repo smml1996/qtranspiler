@@ -1,7 +1,22 @@
 #include "instruction.hpp"
 #include <iostream>
+#include <complex>
 
 using namespace std;
+
+inline vector<vector<complex<double>>> json_to_matrix(const json &json_val) {
+    vector<vector<complex<double>>> result;
+    result.emplace_back(vector<complex<double>>({complex<double>(0), complex<double>(0)}));
+    result.emplace_back(vector<complex<double>>({complex<double>(0), complex<double>(0)}));
+
+    for (int i = 0; i < 2; i++) {
+        for (int j = 0; j < 2; j++) {
+            result[i][j] = complex<double>(json_val[i][j]["real"], json_val[i][j]["imag"]);
+        }
+    }
+
+    return result;
+}
 
 Instruction::Instruction(GateName gate_name, int target) {
     assert (gate_name != GateName::Meas);
@@ -17,6 +32,32 @@ Instruction::Instruction(GateName gate_name, int target) {
     } else {
         this->instruction_type = InstructionType::UnitarySingleQubit;
         this->target = target;
+    }
+}
+
+Instruction::Instruction(int target, vector<vector<complex<double>>> matrix_) {
+    assert(matrix_.size() == matrix_[0].size()); // only square matrices
+    assert(matrix_.size() == 2);
+    this->target = target;
+    this->c_target = -1;
+    this->gate_name = GateName::Custom;
+    this->instruction_type = InstructionType::UnitarySingleQubit;
+    this->matrix = std::move(matrix_);
+
+    const complex<double> ZERO = complex<double>(0, 0);
+    const complex<double> ONE = complex<double>(1, 0);
+    const complex<double> ONEJ = complex<double>(0, 1);
+    for (int i = 0; i < matrix.size(); i++) {
+        for (int j = 0; j < matrix[0].size(); j++) {
+            const complex<double> curr = this->matrix[i][j];
+            if (is_close(curr, ZERO, 10)) {
+                this->matrix[i][j] = complex<double>(0,0);
+            } else if (is_close(curr, ONE, 10)) {
+                this->matrix[i][j] = complex<double>(1,0);
+            } else if (is_close(curr, ONEJ, 10)) {
+                this->matrix[i][j] = complex<double>(0,1);
+            }
+        }
     }
 }
 
@@ -99,7 +140,7 @@ Instruction::Instruction(const json &json_val) {
             this->c_target = target;
             break;
         case GateName::Custom:
-            assert(false);
+            this->matrix = json_to_matrix(json_val["params"]);
             break;
         case GateName::Cnot:
             this->controls.push_back(json_val["control"]);
@@ -147,7 +188,8 @@ bool Instruction::operator==(const Instruction& other) const {
     return target == other.target
         // && c_target == other.c_target
         && controls == other.controls
-        && gate_name == other.gate_name;
+        && gate_name == other.gate_name
+        && are_matrices_equal(matrix, other.matrix, 10);
         // && params == other.params;
 }
 
@@ -218,6 +260,49 @@ bool is_identity(const vector<Instruction> &seq) {
     }
         
     return true;
+}
+
+bool are_instruction_seqs_equal(const vector<Instruction> &seq1, const vector<Instruction> &seq2) {
+    if (seq1.size() != seq2.size()) return false;
+
+    for (int i = 0; i < seq1.size(); i++) {
+        if (!(seq1[i] == seq2[i])) return false;
+    }
+    return true;
+}
+
+Instruction to_custom(const Instruction &instruction) {
+    std::vector<std::vector<std::complex<double>>> matrix{
+        {std::complex<double>(0.0, 0.0), std::complex<double>(0.0, 0.0)},
+        {std::complex<double>(0.0, 0.0), std::complex<double>(0.0, 0.0)}
+    };
+
+    switch (instruction.gate_name) {
+        case GateName::I:
+            matrix[0][0] = 1;
+            matrix[1][1] = 1;
+            break;
+        case GateName::X:
+            matrix[0][1] = 1;
+            matrix[1][0] = 1;
+            break;
+        case GateName::Z:
+            matrix[0][0] = 1;
+            matrix[1][1] = -1;
+            break;
+        case GateName::Y:
+            matrix[0][1] = complex<double>(0, -1);
+            matrix[1][0] = complex<double>(0, 1);
+            break;
+        case GateName::Custom:
+            return instruction;
+        default:
+            throw std::invalid_argument("Unknown gate name at to_custom: " + gate_to_string(instruction.gate_name));
+
+    }
+    assert(matrix.size() == 2);
+    assert(matrix[0].size() == matrix.size());
+    return {instruction.target, matrix};
 }
 
 ostream & operator<<(ostream &os, const Instruction &instruction) {

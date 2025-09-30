@@ -147,7 +147,7 @@ vector<HardwareSpecification> Experiment::get_hardware_specs() const {
     vector<HardwareSpecification> result;
     
     for (QuantumHardware qw : quantum_hardwares) {
-        result.emplace_back(qw, this->with_thermalization);
+        result.emplace_back(qw, this->with_thermalization, this->optimize);
     }
 
     return result;
@@ -194,7 +194,7 @@ vector<shared_ptr<POMDPVertex>> Experiment::get_initial_states(const POMDP &pomd
 }
 
 Experiment::Experiment(const string &name, int precision, bool with_thermalization, int min_horizon, int max_horizon,
-    bool set_hidden_index, const set<MethodType> &method_types, const set<QuantumHardware> &hw_list) {
+    bool set_hidden_index, const set<MethodType> &method_types, const set<QuantumHardware> &hw_list, bool optimize) {
     this->name = name;
     this->precision = precision;
     this->with_thermalization = with_thermalization;
@@ -203,6 +203,7 @@ Experiment::Experiment(const string &name, int precision, bool with_thermalizati
     this->set_hidden_index = set_hidden_index;
     this->method_types = method_types;
     this->hw_list = hw_list;
+    this->optimize = optimize;
 }
 
 void Experiment::run() {
@@ -332,6 +333,7 @@ void Experiment::run() {
                                                     to_string(algorithm_index),
                                                     to_string(round_to(error, Experiment::round_in_file))})
                                                     , ",") << "\n";
+                    results_file.flush();
                 }
             }
             embedding_index++;

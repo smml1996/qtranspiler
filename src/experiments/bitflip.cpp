@@ -45,9 +45,9 @@ class IPMABitflip : public Experiment {
     vector<vector<complex<double>>> BELL2;
     vector<vector<complex<double>>> BELL3;
     IPMABitflip(const string &name, int precision, bool with_thermalization, int min_horizon, int max_horizon,
-        const set<MethodType>& method_types, const set<QuantumHardware>& hw_list) :
+        const set<MethodType>& method_types, const set<QuantumHardware>& hw_list, bool optimize) :
             Experiment(name, precision, with_thermalization, min_horizon, max_horizon,
-                false, method_types, hw_list) {this->setup();};
+                false, method_types, hw_list, optimize) {this->setup();};
         IPMABitflip() : Experiment() {
             this->name = "bitflip_ipma";
             this->precision = 8;
@@ -133,7 +133,7 @@ class IPMABitflip : public Experiment {
             auto  temp0 =  make_shared<QuantumState>(get_qubits_used(embedding), this->precision);
             auto  temp1 = temp0->apply_instruction(H0);
             auto bell0 = temp1->apply_instruction(CX01);
-            result.push_back(make_pair(make_shared<HybridState>(bell0, classical_state), 0.25));
+            result.emplace_back(make_shared<HybridState>(bell0, classical_state), 0.25);
 
             // prepare second bell state
             auto bell1 = bell0->apply_instruction(X0);
@@ -235,8 +235,8 @@ class IPMABitflip : public Experiment {
 class IPMA2Bitflip : public IPMABitflip {
 public:
     IPMA2Bitflip(const string &name, int precision, bool with_thermalization, int min_horizon, int max_horizon,
-        const set<MethodType> &method_types, const set<QuantumHardware>& hw_list) :
-    IPMABitflip(name, precision, with_thermalization, min_horizon, max_horizon, method_types, hw_list){};
+        const set<MethodType> &method_types, const set<QuantumHardware>& hw_list, bool optimize) :
+    IPMABitflip(name, precision, with_thermalization, min_horizon, max_horizon, method_types, hw_list, optimize){};
     IPMA2Bitflip() : IPMABitflip() {
         this->name = "bitflip_ipma2";
     }
@@ -277,8 +277,8 @@ public:
 class IPMA3Bitflip : public IPMABitflip {
     public:
     IPMA3Bitflip(const string &name, int precision, bool with_thermalization, int min_horizon, int max_horizon,
-        const set<MethodType> &method_types, const set<QuantumHardware>& hw_list) :
-    IPMABitflip(name, precision, with_thermalization, min_horizon, max_horizon, method_types, hw_list){};
+        const set<MethodType> &method_types, const set<QuantumHardware>& hw_list, bool optimize) :
+    IPMABitflip(name, precision, with_thermalization, min_horizon, max_horizon, method_types, hw_list, optimize){};
     IPMA3Bitflip() : IPMABitflip() {
         this->name = "bitflip_ipma3";
     }
@@ -322,8 +322,8 @@ class IPMA3Bitflip : public IPMABitflip {
 class CXHBitflip : public IPMABitflip {
     public:
     CXHBitflip(const string &name, int precision, bool with_thermalization, int min_horizon, int max_horizon,
-        const set<MethodType> &method_types, const set<QuantumHardware>& hw_list) :
-    IPMABitflip(name, precision, with_thermalization, min_horizon, max_horizon, method_types, hw_list){};
+        const set<MethodType> &method_types, const set<QuantumHardware>& hw_list, bool optimize) :
+    IPMABitflip(name, precision, with_thermalization, min_horizon, max_horizon, method_types, hw_list, optimize){};
     CXHBitflip() : IPMABitflip() {
             this->name = "bitflip_cxh";
             this->min_horizon = 4;
@@ -367,7 +367,7 @@ class BellStateDiscrimination2: public IPMA2Bitflip {
     map<int, vector<vector<complex<double>>>> indices_to_matrix;
 public:
     BellStateDiscrimination2(const string &name, int precision, bool with_thermalization, int min_horizon, int max_horizon,
-        const set<MethodType> &method_types, const set<QuantumHardware>& hw_list) : IPMA2Bitflip(name, precision, with_thermalization, min_horizon, max_horizon, method_types, hw_list) {
+        const set<MethodType> &method_types, const set<QuantumHardware>& hw_list, bool optimize) : IPMA2Bitflip(name, precision, with_thermalization, min_horizon, max_horizon, method_types, hw_list, optimize) {
 
         this->set_hidden_index = true;
         this->indices_to_matrix[0] = this->BELL0;
@@ -405,7 +405,7 @@ class BellStateDiscrimination3: public BellStateDiscrimination2, IPMA3Bitflip {
     map<int, vector<vector<complex<double>>>> indices_to_matrix;
 public:
     BellStateDiscrimination3(const string &name, int precision, bool with_thermalization, int min_horizon, int max_horizon,
-        const set<MethodType> &method_types, const set<QuantumHardware>& hw_list) : BellStateDiscrimination2(name, precision, with_thermalization, min_horizon, max_horizon, method_types, hw_list) {
+        const set<MethodType> &method_types, const set<QuantumHardware>& hw_list, bool optimize) : BellStateDiscrimination2(name, precision, with_thermalization, min_horizon, max_horizon, method_types, hw_list, optimize) {
     };
 
     Rational postcondition(const Belief &belief, const unordered_map<int, int> &embedding) override {

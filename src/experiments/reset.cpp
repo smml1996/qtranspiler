@@ -3,14 +3,13 @@
 #include <cassert>
 
 #include "experiments.hpp"
-#include <iostream>
 using namespace std;
 class ResetProblem : public Experiment {
 
     public:
     ResetProblem(const string &name, int precision, bool with_thermalization, int min_horizon, int max_horizon,
-const set<MethodType> &method_types, const set<QuantumHardware> &hw_list) :
-Experiment(name, precision, with_thermalization, min_horizon, max_horizon, false, method_types, hw_list){};
+const set<MethodType> &method_types, const set<QuantumHardware> &hw_list, bool optimize) :
+Experiment(name, precision, with_thermalization, min_horizon, max_horizon, false, method_types, hw_list, optimize){};
         ResetProblem () : Experiment() {
             this-> name = "reset";
             this->precision = 8;
@@ -44,7 +43,7 @@ Experiment(name, precision, with_thermalization, min_horizon, max_horizon, false
             auto state0 = make_shared<QuantumState>(vector<int>({embedding.at(0)}), this->precision);
             Rational answer("0", "1", this->precision*(this->max_horizon+1));
 
-            for(auto it : belief.probs) {
+            for(const auto& it : belief.probs) {
                 auto is_target = this->target_vertices.find(it.first->id);
                 if (is_target != this->target_vertices.end()) {
                     if (is_target->second) {

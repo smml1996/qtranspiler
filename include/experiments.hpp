@@ -34,6 +34,7 @@ class Experiment {
         set<MethodType> method_types;
         set<QuantumHardware> hw_list;
         unordered_map<int, bool> target_vertices;
+        bool optimize;
 
     fs::path get_wd() const;
     bool setup_working_dir() const;
@@ -47,7 +48,7 @@ class Experiment {
     public:
     static int round_in_file;
         Experiment(const string &name, int precision, bool with_thermalization, int min_horizon, int max_horizon,
-            bool set_hidden_index, const set<MethodType> &method_types, const set<QuantumHardware> &hw_list);
+            bool set_hidden_index, const set<MethodType> &method_types, const set<QuantumHardware> &hw_list, bool optimize);
         virtual ~Experiment() = default;
         Experiment() = default;
 

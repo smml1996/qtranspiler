@@ -78,7 +78,7 @@ class POMDP {
     vector<shared_ptr<POMDPVertex>> states;
     int precision;
     unordered_map<shared_ptr<POMDPVertex>, unordered_map<shared_ptr<POMDPAction>, unordered_map<shared_ptr<POMDPVertex>,
-    Rational, POMDPVertexHash, POMDPVertexPtrEqualID>, POMDPActionHash, POMDPActionPtrEqual>, POMDPVertexHash,
+    double, POMDPVertexHash, POMDPVertexPtrEqualID>, POMDPActionHash, POMDPActionPtrEqual>, POMDPVertexHash,
     POMDPVertexPtrEqualID> transition_matrix_;
 
 public:
@@ -90,7 +90,7 @@ public:
         POMDP() = default;
         ~POMDP();
         POMDP(int precision);
-        POMDP(const shared_ptr<POMDPVertex> &initialState, const vector<shared_ptr<POMDPVertex>> &states, const vector<shared_ptr<POMDPAction>> &actions, const unordered_map<shared_ptr<POMDPVertex>, unordered_map<shared_ptr<POMDPAction>, unordered_map<shared_ptr<POMDPVertex>, Rational,POMDPVertexHash, POMDPVertexPtrEqualID>,POMDPActionHash, POMDPActionPtrEqual>, POMDPVertexHash, POMDPVertexPtrEqualID> &transition_matrix);
+        POMDP(const shared_ptr<POMDPVertex> &initialState, const vector<shared_ptr<POMDPVertex>> &states, const vector<shared_ptr<POMDPAction>> &actions, const unordered_map<shared_ptr<POMDPVertex>, unordered_map<shared_ptr<POMDPAction>, unordered_map<shared_ptr<POMDPVertex>, double,POMDPVertexHash, POMDPVertexPtrEqualID>,POMDPActionHash, POMDPActionPtrEqual>, POMDPVertexHash, POMDPVertexPtrEqualID> &transition_matrix);
         shared_ptr<POMDPVertex> get_vertex(const shared_ptr<HybridState> &new_hs, const int &hidden_index);
         shared_ptr<POMDPVertex> create_new_vertex(const shared_ptr<HybridState> &hybrid_state, int hidden_index);
         void build_pomdp(const vector<shared_ptr<POMDPAction>> &actions, HardwareSpecification &hardware_specification, int horizon, unordered_map<int, int> embedding, shared_ptr<HybridState> initial_state, const vector<pair<shared_ptr<HybridState>, double>> &initial_distribution, vector<int> &qubits_used, guard_type guard, bool set_hidden_index=false);

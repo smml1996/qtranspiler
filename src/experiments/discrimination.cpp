@@ -7,7 +7,7 @@
 class BasisStatesDiscrimination : public ResetProblem {
 public:
     BasisStatesDiscrimination(const string &name, int precision, bool with_thermalization, int min_horizon, int max_horizon,
-        const set<MethodType> &method_types, const set<QuantumHardware>& hw_list) : ResetProblem(name, precision, with_thermalization, min_horizon, max_horizon, method_types, hw_list) {
+        const set<MethodType> &method_types, const set<QuantumHardware>& hw_list, bool optimize) : ResetProblem(name, precision, with_thermalization, min_horizon, max_horizon, method_types, hw_list, optimize) {
         this->set_hidden_index = true;
     };
 
@@ -56,7 +56,7 @@ public:
 class CBasisStatesDiscrimination : public BasisStatesDiscrimination {
 public:
     CBasisStatesDiscrimination(const string &name, int precision, bool with_thermalization, int min_horizon, int max_horizon,
-        const set<MethodType> &method_types, const set<QuantumHardware>& hw_list) : BasisStatesDiscrimination(name, precision, with_thermalization, min_horizon, max_horizon, method_types, hw_list) {
+        const set<MethodType> &method_types, const set<QuantumHardware>& hw_list, bool optimize) : BasisStatesDiscrimination(name, precision, with_thermalization, min_horizon, max_horizon, method_types, hw_list, optimize) {
         this->set_hidden_index = true;
     };
 
@@ -105,9 +105,9 @@ public:
 class BasicZeroPlusDiscrimination : public BasisStatesDiscrimination {
 public:
     BasicZeroPlusDiscrimination(const string &name, int precision, bool with_thermalization, int min_horizon, int max_horizon,
-        const set<MethodType> &method_types, const set<QuantumHardware>& hw_list) :
+        const set<MethodType> &method_types, const set<QuantumHardware>& hw_list, bool optimize) :
     BasisStatesDiscrimination(name, precision, with_thermalization, min_horizon, max_horizon,
-    method_types, hw_list) {
+    method_types, hw_list, optimize) {
     };
 
     vector<pair<shared_ptr<HybridState>, double>> get_initial_distribution(unordered_map<int, int> &embedding) const override {

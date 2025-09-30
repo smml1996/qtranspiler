@@ -51,3 +51,5 @@ CMakeFiles/
 /*.exe
 /*.out
 .vscode/
+.DS_Store
+

@@ -1,0 +1,8 @@
+name: test_bitflip_test_therm
+precision: 5
+thermalization: 1
+min. horizon: 4
+max. horizon: 5
+hidden index: 0
+methods: bellman
+quantum hardware: almaden, athens, perfect_hardware

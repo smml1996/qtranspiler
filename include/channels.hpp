@@ -18,8 +18,12 @@ public:
 
 
 class QuantumChannel : public Channel {
+    vector<Instruction> optimize_error_seq(const vector<Instruction> &old_seq);
+    void optimize_error_seqs();
+    void merge_same_errors();
 public:
     vector<pair<vector<Instruction>, double>>errors_to_probs;
+    void optimize();
 
     explicit QuantumChannel(json &data);
     QuantumChannel();

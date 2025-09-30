@@ -1,0 +1,8 @@
+name: test_reset_test_therm
+precision: 5
+thermalization: 1
+min. horizon: 2
+max. horizon: 4
+hidden index: 0
+methods: bellman
+quantum hardware: almaden, athens, perfect_hardware

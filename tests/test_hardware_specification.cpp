@@ -30,22 +30,22 @@ TEST(QuantumHardwareTest, GetHardwareStringsContainsAll) {
 
 // ---------- HardwareSpecification tests (with Lima hardware) ----------
 TEST(HardwareSpecificationTest, ConstructorSetsName) {
-    HardwareSpecification spec(QuantumHardware::Lima, false);
+    HardwareSpecification spec(QuantumHardware::Lima, false, false);
     EXPECT_EQ(spec.get_hardware_name(), "lima");
 }
 
 TEST(HardwareSpecificationTest, ConstructorSetsNumQubits) {
-    HardwareSpecification spec(QuantumHardware::Lima, false);
+    HardwareSpecification spec(QuantumHardware::Lima, false, false);
     EXPECT_EQ(spec.num_qubits, 5);
 }
 
 TEST(HardwareSpecificationTest, ConstructorSetsBasisGatesType) {
-    HardwareSpecification spec(Lima, false);
+    HardwareSpecification spec(Lima, false, false);
     EXPECT_EQ(spec.basis_gates_type, BasisGates::TYPE1);
 }
 
 TEST(HardwareSpecificationTest, Digraph) {
-    HardwareSpecification spec(Lima, false);
+    HardwareSpecification spec(Lima, false, false);
 
     for (int source = 0; source < spec.digraph.size(); source ++) {
         EXPECT_TRUE(spec.digraph.find(source) != spec.digraph.end());
@@ -62,7 +62,7 @@ TEST(HardwareSpecificationTest, Digraph) {
 }
 
 TEST(HardwareSpecificationTest, qubitInDegree) {
-    HardwareSpecification spec(Lima, false);
+    HardwareSpecification spec(Lima, false, false);
 
     EXPECT_EQ(spec.get_qubit_indegree(0), 1);
     EXPECT_EQ(spec.get_qubit_indegree(1), 3);
@@ -72,7 +72,7 @@ TEST(HardwareSpecificationTest, qubitInDegree) {
 }
 
 TEST(ToBasisGatesImpl, ReturnsGateUnchangedIfAlreadyBasis) {
-    HardwareSpecification spec(Algiers, false);
+    HardwareSpecification spec(Algiers, false, false);
     spec.basis_gates.insert(GateName::Rz);
 
     Instruction rz(GateName::Rz, 0, vector<double>({1.23}));
@@ -102,7 +102,7 @@ protected:
 
 TEST_P(HardwareDecompositionTest, HGateDecomposition) {
     QuantumHardware hw_ = GetParam();
-    HardwareSpecification hw{hw_, false};
+    HardwareSpecification hw{hw_, false, false};
     Instruction instr(GateName::H, 0);
     auto direct = init_state.apply_instruction(instr);
     auto decomposed = apply_decomposition(hw, instr);
@@ -111,7 +111,7 @@ TEST_P(HardwareDecompositionTest, HGateDecomposition) {
 
 TEST_P(HardwareDecompositionTest, ZGateDecomposition) {
     QuantumHardware hw_ = GetParam();
-    HardwareSpecification hw{hw_, false};
+    HardwareSpecification hw{hw_, false, false};
     Instruction instr(GateName::Z, 0);
     auto direct = init_state.apply_instruction(instr);
     auto decomposed = apply_decomposition(hw, instr);
@@ -120,7 +120,7 @@ TEST_P(HardwareDecompositionTest, ZGateDecomposition) {
 
 TEST_P(HardwareDecompositionTest, SGateDecomposition) {
     QuantumHardware hw_ = GetParam();
-    HardwareSpecification hw{hw_, false};
+    HardwareSpecification hw{hw_, false, false};
     Instruction instr(GateName::S, 0);
     shared_ptr<QuantumState> direct = init_state.apply_instruction(instr);
     shared_ptr<QuantumState> decomposed = apply_decomposition(hw, instr);
@@ -138,7 +138,7 @@ TEST_P(HardwareDecompositionTest, SGateDecomposition) {
 
 TEST_P(HardwareDecompositionTest, RyGateDecomposition) {
     QuantumHardware hw_ = GetParam();
-    HardwareSpecification hw{hw_, false};
+    HardwareSpecification hw{hw_, false, false};
     vector<double> test_angles = {0.0, M_PI/2, M_PI, 2*M_PI, 0.321};
     for (double theta : test_angles) {
         Instruction instr(GateName::Ry, 0, vector<double>({theta}));
@@ -150,7 +150,7 @@ TEST_P(HardwareDecompositionTest, RyGateDecomposition) {
 
 TEST_P(HardwareDecompositionTest, RxGateDecomposition) {
     QuantumHardware hw_ = GetParam();
-    HardwareSpecification hw{hw_, false};
+    HardwareSpecification hw{hw_, false, false};
     vector<double> test_angles = {0.0, M_PI/2, M_PI, 2*M_PI, -0.123};
     for (double theta : test_angles) {
         Instruction instr(GateName::Rx, 0, vector<double>({theta}));
@@ -162,7 +162,7 @@ TEST_P(HardwareDecompositionTest, RxGateDecomposition) {
 
 TEST_P(HardwareDecompositionTest, U3GateDecomposition) {
     QuantumHardware hw_ = GetParam();
-    HardwareSpecification hw{hw_, false};
+    HardwareSpecification hw{hw_, false, false};
     vector<array<double,3>> test_params = {
         {M_PI/3, M_PI/7, M_PI/5},
         {0, 0, 0},

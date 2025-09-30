@@ -94,14 +94,10 @@ shared_ptr<QuantumState> QuantumState::eval_qubit_unitary(const Instruction &ins
         result->insert_amplitude(0, (a0*cos_result)-(a1*pow2*sin_result));
         result->insert_amplitude(1, a0*pow1*sin_result+a1*pow12*cos_result);
     } else if ( instruction.gate_name == GateName::Custom){
-        throw invalid_argument("Custom gate not implemented in eval");
-        // assert params is not None
-        // assert not is_inverse
-        // prob, new_a0, new_a1 = get_kraus_matrix_probability(params, a0, a1, return_new_ampl=True)
-        // if isclose(prob, 0):
-        //     return None
-        // result->insert_amplitude(0, new_a0)
-        // result->insert_amplitude(1, new_a1)
+        auto temp_res = get_kraus_matrix_probability(instruction.matrix, a0, a1);
+        if (is_close(temp_res.first, 0, this->precision)) {return nullptr;}
+        result->insert_amplitude(0, temp_res.second.first);
+        result->insert_amplitude(1, temp_res.second.second);
     } else if ( instruction.gate_name == GateName::Rx){
         assert (instruction.params.size() == 1);
         auto temp_v = vector<double>({instruction.params[0], 3*pi/2, pi/2});
@@ -323,7 +319,7 @@ shared_ptr<QuantumState> QuantumState::apply_instruction(const Instruction &inst
             auto q1 = pair1.first;
             auto prob1 = pair1.second;
             auto result0 = weighted_choice(vector<shared_ptr<QuantumState>>({q0, q1}), vector<double>({prob0, prob1}));
-            if (*result0 == *q1) {
+            if (q1 != nullptr && *result0 == *q1) {
                 auto x_instruction = Instruction(GateName::X, instruction.target);
                 result = result0->eval_single_qubit_gate(x_instruction);
             } else {

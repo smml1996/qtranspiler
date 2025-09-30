@@ -84,7 +84,8 @@ class HardwareSpecification {
         unordered_map<shared_ptr<Instruction>, shared_ptr<Channel>, InstructionHash, InstructionPtrEqual>
         instructions_to_channels;
         unordered_set<GateName> basis_gates;
-        HardwareSpecification(const QuantumHardware &quantum_hardware, const bool &thermal_relaxation);
+        HardwareSpecification(const QuantumHardware &quantum_hardware, const bool &thermal_relaxation,
+                              const bool &optimize);
         [[nodiscard]] string get_hardware_name() const;
         [[nodiscard]] int get_qubit_indegree(int qubit) const;
         [[nodiscard]] vector<Instruction> to_basis_gates_impl(const Instruction &current_ins) const;
