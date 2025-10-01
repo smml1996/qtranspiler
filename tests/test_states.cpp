@@ -60,7 +60,7 @@ TEST(QuantumStateTest, EqHGate) {
 TEST(QuantumStateTest, EqHDecomposition) {
     QuantumState qs({0}, 10);
     Instruction HGate(H, 0); // Hadamard
-    Instruction RzGate(Rz,0 ,vector<double>({pi/2}));
+    Instruction RzGate(Rz,0 ,vector<double>({my_pi/2}));
     Instruction SXGate(Sx, 0);
 
     auto direct = qs.apply_instruction(HGate);

@@ -8,7 +8,7 @@
 #include "instruction.hpp"
 #include "states.hpp"
 #define _USE_MATH_DEFINES
-inline auto pi = M_PI;
+inline auto my_pi = M_PI;
 
 using namespace boost::multiprecision;
 using namespace std;

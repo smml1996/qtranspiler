@@ -1,0 +1,2 @@
+CNOT([q14,q16]); CNOT([q14,q19]); 
+HALT

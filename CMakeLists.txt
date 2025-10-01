@@ -39,6 +39,7 @@ set(SOURCES
         src/experiments/reset.cpp
         src/rationals.cpp
         src/experiments/discrimination.cpp
+        src/experiments/bellstate_reach.cpp
 )
 
 add_executable(main ${SOURCES})
@@ -165,6 +166,7 @@ add_executable(test_experiments tests/test_experiments.cpp
         src/experiments/discrimination.cpp
         src/experiments/ghz.cpp
         src/experiments/reset.cpp
+        src/experiments/bellstate_reach.cpp
         src/algorithm.cpp
         src/pomdp.cpp
         src/beliefs.cpp

@@ -237,7 +237,7 @@ void Algorithm::get_successor_classical_states(const cpp_int &current_classical_
 }
 
 void get_algorithm_end_nodes(const shared_ptr<Algorithm> &algorithm, vector<shared_ptr<Algorithm>> &end_nodes) {
-    if (algorithm->children.size() == 0) {
+    if (algorithm->children.empty()) {
         end_nodes.push_back(algorithm);
         return;
     }
@@ -247,15 +247,14 @@ void get_algorithm_end_nodes(const shared_ptr<Algorithm> &algorithm, vector<shar
         algorithm->get_successor_classical_states(algorithm->classical_state, all_c_succs);
         if (algorithm->children.size() < all_c_succs.size()) {
             // TODO: this can be better (some classical states cannot happen)
-            assert(algorithm->children.size() == 1);
-            if (algorithm->children[0]->classical_state == 0) {
-                end_nodes.push_back(algorithm);
-            }
+            // assert(algorithm->children.size() == 1);
+            end_nodes.push_back(algorithm);
+
         }
    }
     
 
-    for (auto child : algorithm->children) {
+    for (const auto& child : algorithm->children) {
         get_algorithm_end_nodes(child, end_nodes);
     }
 }

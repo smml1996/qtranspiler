@@ -100,7 +100,7 @@ shared_ptr<QuantumState> QuantumState::eval_qubit_unitary(const Instruction &ins
         result->insert_amplitude(1, temp_res.second.second);
     } else if ( instruction.gate_name == GateName::Rx){
         assert (instruction.params.size() == 1);
-        auto temp_v = vector<double>({instruction.params[0], 3*pi/2, pi/2});
+        auto temp_v = vector<double>({instruction.params[0], 3*my_pi/2, my_pi/2});
         Instruction u3_instruction(GateName::U3, 
             instruction.target, 
             temp_v);
@@ -118,7 +118,7 @@ shared_ptr<QuantumState> QuantumState::eval_qubit_unitary(const Instruction &ins
         return this->eval_qubit_unitary(u1_instruction);
     } else if ( instruction.gate_name == GateName::U2){
         assert (instruction.params.size() == 2);
-        return this->eval_qubit_unitary(Instruction(GateName::U3, instruction.target, vector<double>({pi/2.0, instruction.params[0], instruction.params[1]})));
+        return this->eval_qubit_unitary(Instruction(GateName::U3, instruction.target, vector<double>({my_pi/2.0, instruction.params[0], instruction.params[1]})));
     } else if ( instruction.gate_name == GateName::U1){
         // if is_inverse:
         //     raise Exception("Missing implementation of reverse of op U1")
@@ -296,7 +296,7 @@ shared_ptr<QuantumState> QuantumState::apply_instruction(const Instruction &inst
             result = result3->apply_instruction(H1, normalize=false);
         } else if (instruction.gate_name == GateName::Ecr) {
             assert (instruction.controls.size() == 1);
-            auto angle = pi / 4;
+            auto angle = my_pi / 4;
             auto RZX = Instruction(GateName::Rzx,  instruction.controls, instruction.target, vector<double>({angle}));
             auto RZXneg = Instruction(GateName::Rzx,  instruction.controls, instruction.target, vector<double>({-angle}));
             auto X0 = Instruction(GateName::X, instruction.controls[0]);
@@ -304,7 +304,7 @@ shared_ptr<QuantumState> QuantumState::apply_instruction(const Instruction &inst
             auto result1 = result0->apply_instruction(X0, normalize=false);
             result = result1->apply_instruction(RZXneg, normalize=false);
         } else {
-            assert (instruction.gate_name == GateName::Cnot);
+            assert (instruction.gate_name == GateName::Cnot || instruction.gate_name == GateName::Cz);
             result = this->eval_multiqubit_gate(instruction);
         }
     } else {
@@ -416,7 +416,7 @@ shared_ptr<QuantumState> QuantumState::eval_single_qubit_gate(const Instruction 
         }
     }
     if (not at_least_one_perform_op) {return nullptr;}
-    if (result->sparse_vector.size() == 0){return nullptr;}
+    if (result->sparse_vector.empty()){return nullptr;}
     return result;
 }
 

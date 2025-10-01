@@ -27,15 +27,36 @@ vector<pair<int, double>> HardwareSpecification::get_sorted_qubit_couplers(int t
         auto instruction = it.first;
         auto channel = it.second;
 
-        if(instruction->instruction_type == InstructionType::UnitaryMultiQubit) {
+        if(instruction->gate_name == GateName::Cnot || instruction->gate_name == GateName::Cz) {
             assert (instruction->controls.size() == 1);
             if (target == instruction->target) {
-                result.push_back({instruction->controls[0], channel->estimated_success_prob});
+                result.emplace_back(instruction->controls[0], channel->estimated_success_prob);
             }
         }
     }
 
     sort(result.begin(), result.end(), [](const pair<int, double> &a, const pair<int, double> &b) {
+        return a.second > b.second;
+    });
+    return result;
+}
+
+vector<pair<pair<int,int>, double>> HardwareSpecification::get_sorted_qubit_couplers2() const {
+    vector<pair<pair<int, int>, double>> result;
+
+    for (auto it : this->instructions_to_channels) {
+        auto instruction = it.first;
+        auto channel = it.second;
+
+        if(instruction->gate_name == GateName::Cnot || instruction->gate_name == GateName::Cz) {
+            assert (instruction->controls.size() == 1);
+
+            result.emplace_back(make_pair(instruction->controls[0], instruction->target), channel->estimated_success_prob);
+
+        }
+    }
+
+    sort(result.begin(), result.end(), [](const pair<pair<int, int>, double> &a, const pair<pair<int, int>, double> &b) {
         return a.second > b.second;
     });
     return result;
@@ -135,7 +156,7 @@ HardwareSpecification::HardwareSpecification(const QuantumHardware &quantum_hard
         // compute in degree of qubits
         for (auto it : this->instructions_to_channels) {
             auto ins = it.first;
-            if (ins->instruction_type == InstructionType::UnitaryMultiQubit) {
+            if (ins->gate_name == GateName::Cnot || ins->gate_name == GateName::Cz) {
                 int target = ins->target;
                 if (this->qubit_to_indegree.find(target) == this->qubit_to_indegree.end()) {
                     this->qubit_to_indegree[target] = 0;
@@ -159,7 +180,7 @@ HardwareSpecification::HardwareSpecification(const QuantumHardware &quantum_hard
         for (auto it : this->instructions_to_channels) {
             auto instruction = it.first;
 
-            if (instruction->instruction_type == InstructionType::UnitaryMultiQubit) {
+            if (instruction->gate_name == GateName::Cnot || instruction->gate_name == GateName::Cz) {
                 assert (instruction->controls.size() == 1);
                 int source = instruction->controls[0];
                 int target = instruction->target;
@@ -196,7 +217,7 @@ std::string to_string(const QuantumHardware &quantum_hardware) {
         case Guadalupe: return "guadalupe";
         case Hanoi: return "hanoi";
         case Jakarta: return "jakarta";
-        case Johannesburg: return "Johannesburg";
+        case Johannesburg: return "johannesburg";
         case Kawasaki: return "kawasaki";
         case Kolkata: return "kolkata";
         case Kyiv: return "kyiv";
@@ -269,6 +290,41 @@ vector<Instruction> HardwareSpecification::to_basis_gates_impl(const Instruction
     if ((basis_gates.find(current_ins.gate_name) != basis_gates.end() )  ||(current_ins.instruction_type == InstructionType::Measurement) || (current_ins.instruction_type == InstructionType::Classical)) return {current_ins};
     auto temp = unordered_set<BasisGates>({BasisGates::TYPE1, BasisGates::TYPE2, BasisGates::TYPE3, BasisGates::TYPE5, BasisGates::TYPE4, BasisGates::TYPE6});
     if (temp.find(basis_gates_type) != temp.end()) {
+        if (current_ins.gate_name == GateName::Cnot) {
+            if (basis_gates_type == BasisGates::TYPE5) {
+
+                auto rz_gate = this->to_basis_gates_impl(Instruction(GateName::Rz, current_ins.controls[0], vector<double>({-pi/2})));
+                auto rx_gate = this->to_basis_gates_impl(Instruction(GateName::Rx, current_ins.target, vector<double>({pi/2})));
+                auto ry_gate = this->to_basis_gates_impl(Instruction(GateName::Ry, current_ins.controls[0], vector<double>({pi})));
+
+                for (auto it: rx_gate) {
+                    rz_gate.push_back(it);
+                }
+
+                for (auto it: ry_gate) {
+                    rz_gate.push_back(it);
+                }
+
+                rz_gate.push_back(Instruction(GateName::Ecr, current_ins.controls, current_ins.target));
+                return rz_gate;
+            } else {
+                assert(basis_gates_type == BasisGates::TYPE2 || basis_gates_type == BasisGates::TYPE4);
+
+                auto h_gate = this->to_basis_gates_impl(Instruction(GateName::H, current_ins.target));
+                vector<Instruction> result;
+
+                for (auto it: h_gate) {
+                    result.push_back(it);
+                }
+                result.push_back(Instruction(GateName::Cz, current_ins.controls, current_ins.target));
+
+                for (auto it: h_gate) {
+                    result.push_back(it);
+                }
+                return result;
+            }
+
+        }
         if (basis_gates_type != BasisGates::TYPE3) {
             vector<Instruction> sx({Instruction(GateName::Sx, current_ins.target)});
             if (current_ins.gate_name == GateName::Ry){
@@ -359,6 +415,8 @@ vector<Instruction> HardwareSpecification::to_basis_gates_impl(const Instruction
             if (current_ins.gate_name == GateName::X)
                 return {Instruction(GateName::U3, current_ins.target, vector<double>({pi, 0, pi}))};
         }
+    } else {
+        throw invalid_argument("Unknown basis gates" + to_string(basis_gates_type));
     }
-        throw invalid_argument("cannot translate to basis gates");
+        throw invalid_argument("[" + this->get_hardware_name() +"]cannot translate to basis gates: " + gate_to_string(current_ins.gate_name));
 }

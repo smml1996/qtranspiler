@@ -1,0 +1,5 @@
+x2 := measure(q19); 
+if c = 0:
+	HALT
+if c = 4:
+	HALT

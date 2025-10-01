@@ -1,0 +1,29 @@
+x2 := measure(q14); 
+if c = 0:
+	x2 := measure(q14); 
+	if c = 0:
+		x2 := measure(q14); 
+		if c = 0:
+			HALT
+		if c = 4:
+			HALT
+	if c = 4:
+		x2 := measure(q14); 
+		if c = 0:
+			HALT
+		if c = 4:
+			HALT
+if c = 4:
+	x2 := measure(q14); 
+	if c = 0:
+		x2 := measure(q14); 
+		if c = 0:
+			HALT
+		if c = 4:
+			HALT
+	if c = 4:
+		x2 := measure(q14); 
+		if c = 0:
+			HALT
+		if c = 4:
+			HALT

@@ -1,0 +1,8 @@
+name: test_bitflipIPMA_6_test
+precision: 5
+thermalization: 0
+min. horizon: 3
+max. horizon: 3
+hidden index: 0
+methods: bellman
+quantum hardware: brisbane, santiago, singapore

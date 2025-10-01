@@ -146,7 +146,8 @@ vector<HardwareSpecification> Experiment::get_hardware_specs() const {
     auto  quantum_hardwares = this->get_allowed_hardware();
     vector<HardwareSpecification> result;
     
-    for (QuantumHardware qw : quantum_hardwares) {
+    result.reserve(quantum_hardwares.size());
+for (QuantumHardware qw : quantum_hardwares) {
         result.emplace_back(qw, this->with_thermalization, this->optimize);
     }
 
@@ -155,7 +156,8 @@ vector<HardwareSpecification> Experiment::get_hardware_specs() const {
 
 vector<int> Experiment::get_qubits_used(const unordered_map<int, int> &embedding) {
     vector<int> result;
-    for (auto it : embedding) {
+    result.reserve(embedding.size());
+for (auto it : embedding) {
         result.push_back(it.second);
     }
     return result;
@@ -166,7 +168,7 @@ Belief Experiment::get_initial_belief(const POMDP &pomdp) const {
     auto INIT_CHANNEL =  make_shared<POMDPAction>("INIT__", vector<Instruction>({}), this->precision, vector<Instruction>({}));
 
     if (pomdp.transition_matrix.at(pomdp.initial_state).find(INIT_CHANNEL) !=  pomdp.transition_matrix.at(pomdp.initial_state).end()) {
-        for(auto it : pomdp.transition_matrix.at(pomdp.initial_state).at(INIT_CHANNEL)) {
+        for(const auto& it : pomdp.transition_matrix.at(pomdp.initial_state).at(INIT_CHANNEL)) {
             initial_belief.add_val(it.first, it.second);
         }
     } else {
@@ -183,7 +185,7 @@ vector<shared_ptr<POMDPVertex>> Experiment::get_initial_states(const POMDP &pomd
     auto INIT_CHANNEL = make_shared<POMDPAction>("INIT__", vector<Instruction>({}), this->precision, vector<Instruction>({}));
 
     if (pomdp.transition_matrix.at(pomdp.initial_state).find(INIT_CHANNEL) !=  pomdp.transition_matrix.at(pomdp.initial_state).end()) {
-        for(auto it : pomdp.transition_matrix.at(pomdp.initial_state).at(INIT_CHANNEL)) {
+        for(const auto& it : pomdp.transition_matrix.at(pomdp.initial_state).at(INIT_CHANNEL)) {
             initial_states.push_back(it.first);
         }
     } else {
@@ -345,11 +347,13 @@ void Experiment::run() {
     // dump algorithms
     fs::path algorithms_folder = this->get_wd() / "algorithms";
     int algo_index = 0;
-    for (auto algorithm : unique_algorithms) {
+    for (const auto& algorithm : unique_algorithms) {
         algo_index += 1;
         fs::path algorithm_path = algorithms_folder / ("A_" + to_string(algo_index) + ".txt");
         dump_to_file(algorithm_path, algorithm);
     }
+
+    cout << "Done" << endl;
 }
 
 ReadoutNoise::ReadoutNoise(int target, double success0, double success1) {
@@ -374,10 +378,10 @@ unordered_set<int> get_meas_pivot_qubits(const HardwareSpecification &hardware_s
             shared_ptr<MeasurementChannel> noise_data = static_pointer_cast<MeasurementChannel>(hardware_spec.get_channel(instruction));
             auto success0 = noise_data->correct_0;
             auto success1 = noise_data->correct_1;
-            noises.push_back(ReadoutNoise(qubit, success0, success1));
+            noises.emplace_back(qubit, success0, success1);
         }
     }
-    assert(noises.size() > 0);
+    assert(!noises.empty());
 
     // success0
     sort(noises.begin(), noises.end(), [](const ReadoutNoise &a, const ReadoutNoise &b) {
@@ -420,6 +424,68 @@ unordered_set<int> get_meas_pivot_qubits(const HardwareSpecification &hardware_s
     }
 
     return result;
+}
+
+inline vector<string> get_hardware_batches(int num_batches = 20, bool with_cnot= false) {
+    vector<HardwareSpecification> hardware_specs;
+    for (int i = 0; i < QuantumHardware::HardwareCount; i++) {
+        auto hs = HardwareSpecification(static_cast<QuantumHardware>(i), false, false);
+        hardware_specs.push_back(hs);
+    }
+    sort(hardware_specs.begin(), hardware_specs.end(), [](const HardwareSpecification& a, const HardwareSpecification& b) {
+         return a.num_qubits < b.num_qubits;
+     });
+
+    vector<string> result;
+    result.reserve(num_batches);
+    for (int i = 0; i < num_batches; i++) {
+        result.emplace_back();
+    }
+
+    int current_batch = 0;
+    for (auto &hs : hardware_specs) {
+        if ((with_cnot && hs.basis_gates_type != BasisGates::TYPE5 && hs.basis_gates_type != BasisGates::TYPE2) or !with_cnot) {
+            if (!result[current_batch].empty()) {
+                result[current_batch] += ",";
+            }
+            result[current_batch] += hs.get_hardware_name();
+        }
+        current_batch+=1;
+        current_batch %=num_batches;
+    }
+
+    return result;
+}
+
+
+void generate_experiment_file(const string& experiment_name, const string& method, int min_horizon, int max_horizon, int num_batches, bool with_cnot) {
+    auto p = fs::path("..") / "scripts"/ (experiment_name + ".sh");
+    std::ofstream results_file(p);
+
+    if (!results_file.is_open()) {
+        std::cerr << "Failed to open file: " << p << "\n";
+        return;
+    }
+
+    vector<string> batches = get_hardware_batches(num_batches, with_cnot);
+
+    for (int i = 0; i < batches.size(); i++) {
+        string custom_name = experiment_name + "_" + to_string(i);
+        results_file << "sbatch server_script.sh " << experiment_name << " " << custom_name << " " << method << " " <<
+                batches[i] << " " << to_string(min_horizon) << " " << to_string(max_horizon) << endl;
+    }
+
+    results_file.close();
+
+}
+
+void generate_all_experiments_file() {
+    generate_experiment_file("bitflip_ipma", "\"bellman pbvi\"", 3, 7, 20, true);
+    generate_experiment_file("bitflip_ipma2", "\"bellman pbvi\"", 3, 7, 5, true);
+    generate_experiment_file("bitflip_cxh", "\"bellman pbvi\"", 6, 6, 20, true);
+    generate_experiment_file("reset", "\"bellman pbvi\"", 2, 8, 1, false);
+    generate_experiment_file("basic_zero_plus_discr", "convex", 3, 3, 5, false);
+    generate_experiment_file("bellstate_reach", "bellman convex", 1, 2, 1, true);
 }
 
 int Experiment::round_in_file = 5;

@@ -73,4 +73,9 @@ class ReadoutNoise {
 
 unordered_set<int> get_meas_pivot_qubits(const HardwareSpecification &hardware_spec, const int &min_indegree);
 
+
+// utils for running experiments in server
+void generate_experiment_file(const string& experiment_name, const string& method, int min_horizon, int max_horizon);
+void generate_all_experiments_file();
+
 #endif

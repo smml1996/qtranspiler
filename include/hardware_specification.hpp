@@ -90,6 +90,7 @@ class HardwareSpecification {
         [[nodiscard]] int get_qubit_indegree(int qubit) const;
         [[nodiscard]] vector<Instruction> to_basis_gates_impl(const Instruction &current_ins) const;
         [[nodiscard]] vector<pair<int, double>> get_sorted_qubit_couplers(int target) const;
+        [[nodiscard]] vector<pair<pair<int, int>, double>> get_sorted_qubit_couplers2() const;
         [[nodiscard]] shared_ptr<Channel> get_channel(const shared_ptr<Instruction> &) const;
         [[nodiscard]] QuantumHardware get_hardware() const;
 };
