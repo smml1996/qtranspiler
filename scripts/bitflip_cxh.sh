@@ -5,7 +5,7 @@ sbatch server_script.sh bitflip_cxh bitflip_cxh_3 "bellman pbvi" belem,guadalupe
 sbatch server_script.sh bitflip_cxh bitflip_cxh_4 "bellman pbvi" valencia,almaden,manhattan 6 6
 sbatch server_script.sh bitflip_cxh bitflip_cxh_5 "bellman pbvi" bogota,boeblingen,cusco 6 6
 sbatch server_script.sh bitflip_cxh bitflip_cxh_6 "bellman pbvi" santiago,singapore,brisbane 6 6
-sbatch server_script.sh bitflip_cxh bitflip_cxh_7 "bellman pbvi" rome,Johannesburg,kawasaki 6 6
+sbatch server_script.sh bitflip_cxh bitflip_cxh_7 "bellman pbvi" rome,johannesburg,kawasaki 6 6
 sbatch server_script.sh bitflip_cxh bitflip_cxh_8 "bellman pbvi" burlington,poughkeepsie,osaka 6 6
 sbatch server_script.sh bitflip_cxh bitflip_cxh_9 "bellman pbvi" quito,kolkata,kyoto 6 6
 sbatch server_script.sh bitflip_cxh bitflip_cxh_10 "bellman pbvi" ourense,hanoi,washington 6 6
