@@ -49,6 +49,8 @@ class BellStateReach : public IPMABitflip {
         return result;
     }
 
+
+
     Rational postcondition(const Belief &belief, const unordered_map<int, int> &embedding) override {
         Rational result("0", "1", this->precision*(this->max_horizon+1));
         for (auto it : belief.probs) {
@@ -144,13 +146,14 @@ class BellStateReach : public IPMABitflip {
             d_temp[0] = sorted_couplers.at(0).first.first;
             d_temp[1] = sorted_couplers.at(0).first.second;
             d_temp[2] = ancilla;
-            if (!does_result_contains_d(result, d_temp)) result.push_back(d_temp);
+
+            if (d_temp.at(0) != d_temp.at(1) && d_temp.at(0) != d_temp.at(2) && d_temp.at(1) != d_temp.at(2) && !does_result_contains_d(result, d_temp)) result.push_back(d_temp);
 
             unordered_map<int, int> d_temp2;
             d_temp2[0] = sorted_couplers.at(sorted_couplers.size()-1).first.first;
             d_temp2[1] = sorted_couplers.at(sorted_couplers.size()-1).first.second;
             d_temp2[2] = ancilla;
-            if (!does_result_contains_d(result, d_temp2)) result.push_back(d_temp2);
+            if (d_temp2.at(0) != d_temp2.at(1) && d_temp2.at(0) != d_temp2.at(2) && d_temp2.at(1) != d_temp2.at(2) && !does_result_contains_d(result, d_temp2)) result.push_back(d_temp2);
 
         }
         return result;
