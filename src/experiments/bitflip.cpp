@@ -330,6 +330,33 @@ class CXHBitflip : public IPMABitflip {
             this->max_horizon = 7;
     };
 
+    vector<unordered_map<int, int>> get_hardware_scenarios(HardwareSpecification const & hardware_spec) const override {
+        vector<unordered_map<int, int>> result;
+        unordered_set<int> pivot_qubits;
+        if (hardware_spec.get_hardware() != QuantumHardware::PerfectHardware && hardware_spec.num_qubits < 14) {
+
+            for(int qubit = 0; qubit < hardware_spec.num_qubits; qubit++) {
+                if (hardware_spec.get_qubit_indegree(qubit) > 1) {
+                    pivot_qubits.insert(qubit);
+                }
+
+            }
+        } else {
+            pivot_qubits = get_meas_pivot_qubits(hardware_spec, 2);
+        }
+
+        for (auto target : pivot_qubits) {
+            for (auto p : get_selected_couplers(hardware_spec, target)) {
+                unordered_map<int, int> d_temp;
+                d_temp[0] = p.first;
+                d_temp[1] = target;
+                d_temp[2] = p.second;
+                if (!does_result_contains_d(result, d_temp)) result.push_back(d_temp);
+            }
+        }
+        return result;
+    }
+
     vector<shared_ptr<POMDPAction>> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) const override {
 
             assert(embedding.size() == 3);
