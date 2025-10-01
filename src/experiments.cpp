@@ -485,7 +485,8 @@ void generate_all_experiments_file() {
     generate_experiment_file("bitflip_cxh", "\"bellman pbvi\"", 6, 6, 20, true);
     generate_experiment_file("reset", "\"bellman pbvi\"", 2, 8, 1, false);
     generate_experiment_file("basic_zero_plus_discr", "convex", 3, 3, 5, false);
-    generate_experiment_file("bellstate_reach", "bellman convex", 1, 2, 1, true);
+    generate_experiment_file("bellstate_reach", "\"bellman convex\"", 1, 2, 1, true);
+    generate_experiment_file("ghz3", "bellman", 3, 3, 5, true);
 }
 
 int Experiment::round_in_file = 5;
