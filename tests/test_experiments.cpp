@@ -163,21 +163,21 @@ set<QuantumHardware> get_hardware_list() {
 //     EXPECT_EQ(total_embeddings, 2780);
 // }
 
-// TEST(ExperimentsTests, GHZ3Test) {
-//     string custom_name = "test_ghz3_test";
-//
-//     set<MethodType> methods = {
-//         SingleDistBellman,
-//         // SingleDistPBVI
-//     };
-//
-//     auto hw_list = {PerfectHardware, Athens};
-//     const int min_horizon = 3;
-//     const int max_horizon = 3;
-//
-//     GHZStatePreparation3 ghz_problem(custom_name, precision, with_thermalization, min_horizon, max_horizon, methods, hw_list, false);
-//     ghz_problem.run();
-// }
+TEST(ExperimentsTests, GHZ3Test) {
+    string custom_name = "test_ghz3_test";
+
+    set<MethodType> methods = {
+        SingleDistBellman,
+        // SingleDistPBVI
+    };
+
+    auto hw_list = get_hardware_list();
+    const int min_horizon = 3;
+    const int max_horizon = 3;
+
+    GHZStatePreparation3 ghz_problem(custom_name, precision, with_thermalization, min_horizon, max_horizon, methods, hw_list, false);
+    ghz_problem.run();
+}
 //
 //
 //
@@ -411,18 +411,18 @@ set<QuantumHardware> get_hardware_list() {
 //     bitflip_cxh.run();
 // }
 
-TEST(BellStateReachTest, BellStateReach) {
-    const int min_horizon = 1;
-    const int max_horizon = 2;
-    string custom_name = "test_bell_state_reach";
-
-    set<MethodType> methods = {
-        SingleDistBellman,
-        ConvexDist
-    };
-
-    set<QuantumHardware> hw_list = {PerfectHardware, Algiers};
-
-    auto bell_state_reach = BellStateReach(custom_name, precision, with_thermalization,min_horizon, max_horizon, methods, hw_list, true);
-    bell_state_reach.run();
-}
+// TEST(BellStateReachTest, BellStateReach) {
+//     const int min_horizon = 1;
+//     const int max_horizon = 2;
+//     string custom_name = "test_bell_state_reach";
+//
+//     set<MethodType> methods = {
+//         SingleDistBellman,
+//         ConvexDist
+//     };
+//
+//     set<QuantumHardware> hw_list = {PerfectHardware, Algiers};
+//
+//     auto bell_state_reach = BellStateReach(custom_name, precision, with_thermalization,min_horizon, max_horizon, methods, hw_list, true);
+//     bell_state_reach.run();
+// }

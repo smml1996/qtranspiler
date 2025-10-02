@@ -355,7 +355,7 @@ void POMDP::build_pomdp(const vector<shared_ptr<POMDPAction>> &actions_, Hardwar
             }
             auto v = this->create_new_vertex(hybrid_state, hidden_index); //new POMDPVertex(new HybridState(*hybrid_state), hidden_index);
             this->transition_matrix_[initial_v][INIT_CHANNEL].insert_or_assign(v, prob);
-            this->transition_matrix[initial_v][INIT_CHANNEL].insert_or_assign(v, Rational(to_string(prob), "1", this->precision * (horizon+1)));
+            this->transition_matrix[initial_v][INIT_CHANNEL].insert_or_assign(v, MyFloat(to_string(prob), this->precision * (horizon+1)));
             assert (this->transition_matrix_[initial_v][INIT_CHANNEL].find(v) != this->transition_matrix_[initial_v][INIT_CHANNEL].end());
             assert (v->id > 0);
             q.push(make_pair(v, 0)); // second element denotes that this vertex is at horizon 0
@@ -384,7 +384,7 @@ void POMDP::build_pomdp(const vector<shared_ptr<POMDPAction>> &actions_, Hardwar
 
         if (this->transition_matrix_.find(current_v) == this->transition_matrix_.end()) {
             this->transition_matrix_[current_v] = unordered_map<shared_ptr<POMDPAction>, unordered_map<shared_ptr<POMDPVertex>, double, POMDPVertexHash, POMDPVertexPtrEqualID>, POMDPActionHash, POMDPActionPtrEqual>();
-            this->transition_matrix[current_v] = unordered_map<shared_ptr<POMDPAction>, unordered_map<shared_ptr<POMDPVertex>, Rational, POMDPVertexHash, POMDPVertexPtrEqualID>, POMDPActionHash, POMDPActionPtrEqual>();
+            this->transition_matrix[current_v] = unordered_map<shared_ptr<POMDPAction>, unordered_map<shared_ptr<POMDPVertex>, MyFloat, POMDPVertexHash, POMDPVertexPtrEqualID>, POMDPActionHash, POMDPActionPtrEqual>();
         }
         for (auto action : actions) {
             if (guard(*current_v, embedding, *action)) {
@@ -392,7 +392,7 @@ void POMDP::build_pomdp(const vector<shared_ptr<POMDPAction>> &actions_, Hardwar
 
 
                 this->transition_matrix_[current_v][action] = unordered_map<shared_ptr<POMDPVertex>, double, POMDPVertexHash, POMDPVertexPtrEqualID>();
-                this->transition_matrix[current_v][action] = unordered_map<shared_ptr<POMDPVertex>, Rational, POMDPVertexHash, POMDPVertexPtrEqualID>();
+                this->transition_matrix[current_v][action] = unordered_map<shared_ptr<POMDPVertex>, MyFloat, POMDPVertexHash, POMDPVertexPtrEqualID>();
                 auto successors = action->get_successor_states(hardware_specification, current_v);
                 assert(!successors.empty());
                 for (auto it : successors ) {
@@ -423,7 +423,7 @@ void POMDP::build_pomdp(const vector<shared_ptr<POMDPAction>> &actions_, Hardwar
     for (auto it : this->transition_matrix_) {
         for (const auto it_action : it.second) {
             for (const auto it_successor: it_action.second) {
-                this->transition_matrix[it.first][it_action.first][it_successor.first] = Rational(to_string(round_to(it_successor.second, 3)), "1", this->precision * (horizon+1));
+                this->transition_matrix[it.first][it_action.first][it_successor.first] = MyFloat(to_string(round_to(it_successor.second, 3)), this->precision * (horizon+1));
             }
         }
 

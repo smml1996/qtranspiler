@@ -39,9 +39,9 @@ Experiment(name, precision, with_thermalization, min_horizon, max_horizon, false
             return result;
         }
 
-        Rational postcondition(const Belief &belief, const unordered_map<int, int> &embedding) override {
+        MyFloat postcondition(const Belief &belief, const unordered_map<int, int> &embedding) override {
             auto state0 = make_shared<QuantumState>(vector<int>({embedding.at(0)}), this->precision);
-            Rational answer("0", "1", this->precision*(this->max_horizon+1));
+            MyFloat answer("0", this->precision*(this->max_horizon+1));
 
             for(const auto& it : belief.probs) {
                 auto is_target = this->target_vertices.find(it.first->id);

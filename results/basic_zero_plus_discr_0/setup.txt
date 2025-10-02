@@ -1,0 +1,8 @@
+name: basic_zero_plus_discr_0
+precision: 8
+thermalization: 0
+min. horizon: 3
+max. horizon: 3
+hidden index: 1
+methods: convex
+quantum hardware: boeblingen, bogota, cambridge, cusco, hanoi, jakarta, lagos, ourense, toronto, washington, yorktown

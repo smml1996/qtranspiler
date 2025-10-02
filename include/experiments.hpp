@@ -59,7 +59,7 @@ class Experiment {
 
         // for an experiment we need to define at least these functions
         virtual vector<pair<shared_ptr<HybridState>, double>> get_initial_distribution(unordered_map<int, int> &embedding) const = 0;
-        virtual Rational postcondition(const Belief &belief, const unordered_map<int, int> &embedding) = 0;
+        virtual MyFloat postcondition(const Belief &belief, const unordered_map<int, int> &embedding) = 0;
         virtual vector<shared_ptr<POMDPAction>> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) const = 0;
         virtual vector<unordered_map<int, int>> get_hardware_scenarios(HardwareSpecification const & hardware_spec) const = 0;
 };

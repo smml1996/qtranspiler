@@ -11,9 +11,9 @@ public:
         this->set_hidden_index = true;
     };
 
-    Rational postcondition(const Belief &belief, const unordered_map<int, int> &embedding) override {
+    MyFloat postcondition(const Belief &belief, const unordered_map<int, int> &embedding) override {
         assert (embedding.size() == 1);
-        Rational result("0", "1", this->precision*(this->max_horizon+1));
+        MyFloat result("0", this->precision*(this->max_horizon+1));
         for (auto it : belief.probs) {
             auto hybrid_state = it.first->hybrid_state;
             auto cs = hybrid_state->classical_state;
@@ -60,9 +60,9 @@ public:
         this->set_hidden_index = true;
     };
 
-    Rational postcondition(const Belief &belief, const unordered_map<int, int> &embedding) override {
+    MyFloat postcondition(const Belief &belief, const unordered_map<int, int> &embedding) override {
         assert (embedding.size() == 1);
-        Rational result("0", "1", this->precision*(this->max_horizon+1));
+        MyFloat result("0", this->precision*(this->max_horizon+1));
         for (auto it : belief.probs) {
             auto hybrid_state = it.first->hybrid_state;
             auto cs = hybrid_state->classical_state;
@@ -130,12 +130,12 @@ public:
         return result;
     }
 
-    Rational postcondition(const Belief &belief, const unordered_map<int, int> &embedding) override {
+    MyFloat postcondition(const Belief &belief, const unordered_map<int, int> &embedding) override {
         assert (embedding.size() == 1);
         auto state0 = QuantumState({embedding.at(0)}, this->precision);
         auto H = Instruction(GateName::H, embedding.at(0));
         auto state1 = state0.apply_instruction(H);
-        Rational result("0", "1", this->precision*(this->max_horizon+1));
+        MyFloat result("0", this->precision*(this->max_horizon+1));
         for (auto it : belief.probs) {
             assert(it.first->hidden_index == 0 || it.first->hidden_index == 1);
             auto hybrid_state = it.first->hybrid_state;

@@ -1,0 +1,36 @@
+H([q14]); 
+x2 := measure(q14); 
+if c = 0:
+	H([q14]); 
+	x2 := measure(q14); 
+	if c = 0:
+		H([q14]); 
+		x2 := measure(q14); 
+		if c = 0:
+			HALT
+		if c = 4:
+			HALT
+	if c = 4:
+		H([q14]); 
+		x2 := measure(q14); 
+		if c = 0:
+			HALT
+		if c = 4:
+			HALT
+if c = 4:
+	H([q14]); 
+	x2 := measure(q14); 
+	if c = 0:
+		H([q14]); 
+		x2 := measure(q14); 
+		if c = 0:
+			HALT
+		if c = 4:
+			HALT
+	if c = 4:
+		H([q14]); 
+		x2 := measure(q14); 
+		if c = 0:
+			HALT
+		if c = 4:
+			HALT

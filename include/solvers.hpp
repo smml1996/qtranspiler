@@ -6,27 +6,27 @@
 #include "algorithm.hpp"
 #include <functional>
 
-using f_reward_type = std::function<Rational(const Belief&, const unordered_map<int, int> &)>;
+using f_reward_type = std::function<MyFloat(const Belief&, const unordered_map<int, int> &)>;
 
 class SingleDistributionSolver {
     POMDP pomdp;
     f_reward_type get_reward;
     int precision;
     unordered_map<int, int> embedding;
-    Rational error;
+    MyFloat error;
     int max_horizon;
 
     // PBVI methods
     bool is_belief_visited(const Belief &belief) const;
-    Rational get_closest_L1(const Belief &belief) const;
+    MyFloat get_closest_L1(const Belief &belief) const;
     public:
-        unordered_map<Belief, unordered_map<int, pair<shared_ptr<Algorithm>, Rational>>, BeliefHash> beliefs_to_rewards;
+        unordered_map<Belief, unordered_map<int, pair<shared_ptr<Algorithm>, MyFloat>>, BeliefHash> beliefs_to_rewards;
         SingleDistributionSolver(const POMDP &pomdp, const f_reward_type &get_reward, int precision, const unordered_map<int, int> & embedding);
-        pair<shared_ptr<Algorithm>, Rational> get_bellman_value(const Belief &current_belief, const int &horizon);
+        pair<shared_ptr<Algorithm>, MyFloat> get_bellman_value(const Belief &current_belief, const int &horizon);
         ~SingleDistributionSolver();
 
         // PBVI
-        pair<shared_ptr<Algorithm>, Rational> PBVI_solve(const Belief &current_beliefs, const int &horizon);
+        pair<shared_ptr<Algorithm>, MyFloat> PBVI_solve(const Belief &current_beliefs, const int &horizon);
         double get_error(const int &horizon) const;
         void print_all_beliefs() const;
 

@@ -49,8 +49,8 @@ class BellStateReach : public IPMABitflip {
         return result;
     }
 
-    Rational postcondition(const Belief &belief, const unordered_map<int, int> &embedding) override {
-        Rational result("0", "1", this->precision*(this->max_horizon+1));
+    MyFloat postcondition(const Belief &belief, const unordered_map<int, int> &embedding) override {
+        MyFloat result("0", this->precision*(this->max_horizon+1));
         for (auto it : belief.probs) {
             auto is_target = this->target_vertices.find(it.first->id);
             if (is_target != this->target_vertices.end()) {

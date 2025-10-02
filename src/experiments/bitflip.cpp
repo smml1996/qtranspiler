@@ -150,8 +150,8 @@ class IPMABitflip : public Experiment {
             return result;
         }
 
-        Rational postcondition(const Belief &belief, const unordered_map<int, int> &embedding) override {
-            Rational result("0", "1", this->precision*(this->max_horizon+1));
+        MyFloat postcondition(const Belief &belief, const unordered_map<int, int> &embedding) override {
+            MyFloat result("0", this->precision*(this->max_horizon+1));
             for (auto it : belief.probs) {
                 auto is_target = this->target_vertices.find(it.first->id);
                 if (is_target != this->target_vertices.end()) {
@@ -403,8 +403,8 @@ public:
         this->indices_to_matrix[3] = this->BELL3;
     };
 
-    Rational postcondition(const Belief &belief, const unordered_map<int, int> &embedding) override {
-        Rational result("0", "1", this->precision*(this->max_horizon+1));
+    MyFloat postcondition(const Belief &belief, const unordered_map<int, int> &embedding) override {
+        MyFloat result("0", this->precision*(this->max_horizon+1));
         for (auto it : belief.probs) {
             auto is_target = this->target_vertices.find(it.first->id);
             if (is_target != this->target_vertices.end()) {
@@ -435,7 +435,7 @@ public:
         const set<MethodType> &method_types, const set<QuantumHardware>& hw_list, bool optimize) : BellStateDiscrimination2(name, precision, with_thermalization, min_horizon, max_horizon, method_types, hw_list, optimize) {
     };
 
-    Rational postcondition(const Belief &belief, const unordered_map<int, int> &embedding) override {
+    MyFloat postcondition(const Belief &belief, const unordered_map<int, int> &embedding) override {
         return BellStateDiscrimination2::postcondition(belief, embedding);
     }
 

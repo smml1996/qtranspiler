@@ -1,0 +1,11 @@
+H([q4]); 
+CNOT([q2,q1]); 
+CNOT([q0,q1]); 
+CNOT([q0,q1]); 
+x2 := measure(q4); 
+if c = 0:
+	H([q4]); 
+	HALT
+if c = 4:
+	H([q4]); 
+	HALT

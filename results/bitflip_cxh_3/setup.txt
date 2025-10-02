@@ -1,0 +1,8 @@
+name: bitflip_cxh_3
+precision: 8
+thermalization: 0
+min. horizon: 6
+max. horizon: 6
+hidden index: 0
+methods: bellman
+quantum hardware: belem, brooklyn, guadalupe

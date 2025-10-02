@@ -1,0 +1,7 @@
+CNOT([q2,q1]); 
+H([q17]); 
+CNOT([q2,q1]); 
+CNOT([q0,q1]); 
+CNOT([q0,q1]); 
+CNOT([q2,q1]); 
+HALT

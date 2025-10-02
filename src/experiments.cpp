@@ -172,7 +172,7 @@ Belief Experiment::get_initial_belief(const POMDP &pomdp) const {
             initial_belief.add_val(it.first, it.second);
         }
     } else {
-        initial_belief.set_val(pomdp.initial_state, Rational("1", "1", this->precision *(this->max_horizon+1)));
+        initial_belief.set_val(pomdp.initial_state, MyFloat("1", this->precision *(this->max_horizon+1)));
     }
 
     return initial_belief;
@@ -245,7 +245,7 @@ void Experiment::run() {
         return this->guard(v, m, a);
     };
 
-    auto actual_reward_f = [this](const Belief &b, const unordered_map<int, int> &embedding) -> Rational {
+    auto actual_reward_f = [this](const Belief &b, const unordered_map<int, int> &embedding) -> MyFloat {
         return this->postcondition(b, embedding);
     };
 

@@ -5,7 +5,7 @@
 #include "states.hpp"
 #include "channels.hpp"
 #include "hardware_specification.hpp"
-#include "rationals.hpp"
+#include "floats.hpp"
 
 
 using namespace std;
@@ -83,7 +83,7 @@ class POMDP {
 
 public:
         shared_ptr<POMDPVertex> initial_state;
-        unordered_map<shared_ptr<POMDPVertex>, unordered_map<shared_ptr<POMDPAction>, unordered_map<shared_ptr<POMDPVertex>, Rational, POMDPVertexHash,
+        unordered_map<shared_ptr<POMDPVertex>, unordered_map<shared_ptr<POMDPAction>, unordered_map<shared_ptr<POMDPVertex>, MyFloat, POMDPVertexHash,
             POMDPVertexPtrEqualID>, POMDPActionHash, POMDPActionPtrEqual>, POMDPVertexHash, POMDPVertexPtrEqualID>
         transition_matrix;
         vector<shared_ptr<POMDPAction>> actions;
