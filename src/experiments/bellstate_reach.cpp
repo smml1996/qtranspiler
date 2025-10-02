@@ -125,6 +125,13 @@ class BellStateReach : public IPMABitflip {
     }
 
     vector<unordered_map<int, int>> get_hardware_scenarios(HardwareSpecification const & hardware_spec) const override {
+        if (hardware_spec.get_hardware() == QuantumHardware::PerfectHardware ) {
+            unordered_map<int, int> m;
+            m[0] = 0;
+            m[1] = 1;
+            m[2] = 2;
+            return {m};
+        }
         vector<unordered_map<int, int>> result;
         unordered_set<int> pivot_qubits;
         if (hardware_spec.get_hardware() != QuantumHardware::PerfectHardware && hardware_spec.num_qubits < 14) {
@@ -144,13 +151,14 @@ class BellStateReach : public IPMABitflip {
             d_temp[0] = sorted_couplers.at(0).first.first;
             d_temp[1] = sorted_couplers.at(0).first.second;
             d_temp[2] = ancilla;
-            if (!does_result_contains_d(result, d_temp)) result.push_back(d_temp);
+
+            if (d_temp.at(0) != d_temp.at(1) && d_temp.at(0) != d_temp.at(2) && d_temp.at(1) != d_temp.at(2) && !does_result_contains_d(result, d_temp)) result.push_back(d_temp);
 
             unordered_map<int, int> d_temp2;
             d_temp2[0] = sorted_couplers.at(sorted_couplers.size()-1).first.first;
             d_temp2[1] = sorted_couplers.at(sorted_couplers.size()-1).first.second;
             d_temp2[2] = ancilla;
-            if (!does_result_contains_d(result, d_temp2)) result.push_back(d_temp2);
+            if (d_temp2.at(0) != d_temp2.at(1) && d_temp2.at(0) != d_temp2.at(2) && d_temp2.at(1) != d_temp2.at(2) && !does_result_contains_d(result, d_temp2)) result.push_back(d_temp2);
 
         }
         return result;
