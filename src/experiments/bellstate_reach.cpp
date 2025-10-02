@@ -127,6 +127,13 @@ class BellStateReach : public IPMABitflip {
     }
 
     vector<unordered_map<int, int>> get_hardware_scenarios(HardwareSpecification const & hardware_spec) const override {
+        if (hardware_spec.get_hardware() == QuantumHardware::PerfectHardware ) {
+            unordered_map<int, int> m;
+            m[0] = 0;
+            m[1] = 1;
+            m[2] = 2;
+            return {m};
+        }
         vector<unordered_map<int, int>> result;
         unordered_set<int> pivot_qubits;
         if (hardware_spec.get_hardware() != QuantumHardware::PerfectHardware && hardware_spec.num_qubits < 14) {
