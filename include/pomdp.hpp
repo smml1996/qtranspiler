@@ -63,6 +63,17 @@ string to_string(const POMDPAction &action);
 
 string to_string(const shared_ptr<POMDPAction> &action);
 
+inline json to_json(const POMDPAction &a) {
+    vector<json> v;
+    for (auto i : a.pseudo_instruction_sequence) {
+        v.push_back(to_json(i));
+    }
+    return json{
+                    {"name", a.name},
+                    {"seq", v}
+    };
+}
+
 // Custom hash
 struct POMDPActionHash {
     std::size_t operator()(const shared_ptr<POMDPAction> &action) const;

@@ -128,6 +128,16 @@ bool Experiment::setup_working_dir() const {
             return false;
         }
     }
+    dir_path = fs::path("..") / "results" / this->name / "raw_algorithms";
+
+    if (!fs::exists(dir_path)) {
+        if (fs::create_directories(dir_path)) {
+            std::cout << "Algorithms directory created successfully.\n";
+        } else {
+            std::cerr << "Failed to create directory for storing algorithms.\n";
+            return false;
+        }
+    }
     return true;
 }
 
@@ -279,7 +289,6 @@ void Experiment::run() {
 
             auto HALT_ALGORITHM = make_shared<Algorithm>(make_shared<POMDPAction>(HALT_ACTION), get_belief_cs(initial_belief), 0);
             for (int horizon = this->min_horizon; horizon <= this->max_horizon; horizon++) {
-                cout << horizon << endl;
                 for (auto method : this->method_types) {
                     long long method_time;
                     pair<shared_ptr<Algorithm>, double> result;
@@ -346,11 +355,15 @@ void Experiment::run() {
 
     // dump algorithms
     fs::path algorithms_folder = this->get_wd() / "algorithms";
+    fs::path raw_algorithms_folder = this->get_wd() / "raw_algorithms";
     int algo_index = 0;
     for (const auto& algorithm : unique_algorithms) {
         algo_index += 1;
         fs::path algorithm_path = algorithms_folder / ("A_" + to_string(algo_index) + ".txt");
         dump_to_file(algorithm_path, algorithm);
+
+        fs::path raw_algorithm_path = raw_algorithms_folder / ("R_" + to_string(algo_index) + ".txt");
+        dump_raw_algorithm(raw_algorithm_path, algorithm);
     }
 
     cout << "Done" << endl;
@@ -480,12 +493,12 @@ void generate_experiment_file(const string& experiment_name, const string& metho
 }
 
 void generate_all_experiments_file() {
-    generate_experiment_file("bitflip_ipma", "\"bellman pbvi\"", 3, 7, 20, true);
-    generate_experiment_file("bitflip_ipma2", "\"bellman pbvi\"", 3, 7, 5, true);
-    generate_experiment_file("bitflip_cxh", "\"bellman pbvi\"", 6, 6, 20, true);
-    generate_experiment_file("reset", "\"bellman pbvi\"", 2, 8, 1, false);
+    generate_experiment_file("bitflip_ipma", "bellman", 3, 7, 20, true);
+    generate_experiment_file("bitflip_ipma2", "bellman", 3, 7, 20, true);
+    generate_experiment_file("bitflip_cxh", "bellman", 6, 6, 20, true);
+    generate_experiment_file("reset", "bellman", 2, 8, 1, false);
     generate_experiment_file("basic_zero_plus_discr", "convex", 3, 3, 5, false);
-    generate_experiment_file("bell_state_reach", "\"bellman convex\"", 1, 2, 1, true);
+    generate_experiment_file("bell_state_reach", "\"bellman convex\"", 1, 3, 5, true);
     generate_experiment_file("ghz3", "bellman", 3, 3, 5, true);
 }
 

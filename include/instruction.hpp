@@ -40,6 +40,31 @@ class Instruction {
         friend std::ostream &operator<<(ostream& os, const Instruction&);
 };
 
+inline json to_json(const std::vector<std::vector<std::complex<double>>>& matrix) {
+    json j_matrix = json::array();
+    for (const auto& row : matrix) {
+        json j_row = json::array();
+        for (const auto& elem : row) {
+            j_row.push_back({elem.real(), elem.imag()});  // store as [real, imag]
+        }
+        j_matrix.push_back(j_row);
+    }
+    return j_matrix;
+}
+
+inline json to_json(const Instruction &i) {
+    return json{
+    {"target", i.target},
+    {"c_target", i.c_target},
+    {"controls", i.controls},
+        {"gate_name", i.gate_name},
+        {"params", i.params},
+        {"instruction_type", i.instruction_type},
+        {"params_", i.params_},
+        {"matrix", to_json(i.matrix)}
+    };
+}
+
 string to_string(const Instruction &instruction);
 
 // Custom hash

@@ -1,20 +1,20 @@
-sbatch server_script.sh bitflip_cxh bitflip_cxh_0 "bellman pbvi" yorktown,jakarta,cambridge 6 6
-sbatch server_script.sh bitflip_cxh bitflip_cxh_1 "bellman pbvi" athens,perfect_hardware 6 6
-sbatch server_script.sh bitflip_cxh bitflip_cxh_2 "bellman pbvi" vigo,melbourne,rochester 6 6
-sbatch server_script.sh bitflip_cxh bitflip_cxh_3 "bellman pbvi" belem,guadalupe,brooklyn 6 6
-sbatch server_script.sh bitflip_cxh bitflip_cxh_4 "bellman pbvi" valencia,almaden,manhattan 6 6
-sbatch server_script.sh bitflip_cxh bitflip_cxh_5 "bellman pbvi" bogota,boeblingen 6 6
-sbatch server_script.sh bitflip_cxh bitflip_cxh_6 "bellman pbvi" santiago,singapore 6 6
-sbatch server_script.sh bitflip_cxh bitflip_cxh_7 "bellman pbvi" rome,johannesburg 6 6
-sbatch server_script.sh bitflip_cxh bitflip_cxh_8 "bellman pbvi" burlington,poughkeepsie 6 6
-sbatch server_script.sh bitflip_cxh bitflip_cxh_9 "bellman pbvi" quito,kolkata 6 6
-sbatch server_script.sh bitflip_cxh bitflip_cxh_10 "bellman pbvi" ourense,hanoi,washington 6 6
-sbatch server_script.sh bitflip_cxh bitflip_cxh_11 "bellman pbvi" essex,auckland 6 6
-sbatch server_script.sh bitflip_cxh bitflip_cxh_12 "bellman pbvi" manila,montreal 6 6
-sbatch server_script.sh bitflip_cxh bitflip_cxh_13 "bellman pbvi" london,mumbai 6 6
-sbatch server_script.sh bitflip_cxh bitflip_cxh_14 "bellman pbvi" lima,geneva 6 6
-sbatch server_script.sh bitflip_cxh bitflip_cxh_15 "bellman pbvi" lagos,toronto 6 6
-sbatch server_script.sh bitflip_cxh bitflip_cxh_16 "bellman pbvi" perth,sydney 6 6
-sbatch server_script.sh bitflip_cxh bitflip_cxh_17 "bellman pbvi" casablanca,cairo 6 6
-sbatch server_script.sh bitflip_cxh bitflip_cxh_18 "bellman pbvi" oslo,paris 6 6
-sbatch server_script.sh bitflip_cxh bitflip_cxh_19 "bellman pbvi" nairobi,algiers 6 6
+sbatch server_script.sh bitflip_cxh bitflip_cxh_0 bellman yorktown,jakarta,cambridge 6 6
+sbatch server_script.sh bitflip_cxh bitflip_cxh_1 bellman athens,perfect_hardware 6 6
+sbatch server_script.sh bitflip_cxh bitflip_cxh_2 bellman vigo,melbourne,rochester 6 6
+sbatch server_script.sh bitflip_cxh bitflip_cxh_3 bellman belem,guadalupe,brooklyn 6 6
+sbatch server_script.sh bitflip_cxh bitflip_cxh_4 bellman valencia,almaden,manhattan 6 6
+sbatch server_script.sh bitflip_cxh bitflip_cxh_5 bellman bogota,boeblingen 6 6
+sbatch server_script.sh bitflip_cxh bitflip_cxh_6 bellman santiago,singapore 6 6
+sbatch server_script.sh bitflip_cxh bitflip_cxh_7 bellman rome,johannesburg 6 6
+sbatch server_script.sh bitflip_cxh bitflip_cxh_8 bellman burlington,poughkeepsie 6 6
+sbatch server_script.sh bitflip_cxh bitflip_cxh_9 bellman quito,kolkata 6 6
+sbatch server_script.sh bitflip_cxh bitflip_cxh_10 bellman ourense,hanoi,washington 6 6
+sbatch server_script.sh bitflip_cxh bitflip_cxh_11 bellman essex,auckland 6 6
+sbatch server_script.sh bitflip_cxh bitflip_cxh_12 bellman manila,montreal 6 6
+sbatch server_script.sh bitflip_cxh bitflip_cxh_13 bellman london,mumbai 6 6
+sbatch server_script.sh bitflip_cxh bitflip_cxh_14 bellman lima,geneva 6 6
+sbatch server_script.sh bitflip_cxh bitflip_cxh_15 bellman lagos,toronto 6 6
+sbatch server_script.sh bitflip_cxh bitflip_cxh_16 bellman perth,sydney 6 6
+sbatch server_script.sh bitflip_cxh bitflip_cxh_17 bellman casablanca,cairo 6 6
+sbatch server_script.sh bitflip_cxh bitflip_cxh_18 bellman oslo,paris 6 6
+sbatch server_script.sh bitflip_cxh bitflip_cxh_19 bellman nairobi,algiers 6 6

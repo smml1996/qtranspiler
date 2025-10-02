@@ -15,6 +15,10 @@ Algorithm::Algorithm(const shared_ptr<POMDPAction> &action, const cpp_int &class
     this->precision = precision;
 }
 
+Algorithm::Algorithm(json &data) {
+
+}
+
 Algorithm::~Algorithm() {
 }
 
@@ -148,6 +152,21 @@ bool dump_to_file(const fs::path &path, const shared_ptr<Algorithm> &algorithm) 
     return true;
 }
 
+bool dump_raw_algorithm(const fs::path &p, const shared_ptr<Algorithm> &a) {
+
+    // Dump into a file
+    std::ofstream file(p);
+    if (!file) {
+        std::cerr << "Error opening file for writing\n";
+        return false;
+    }
+    auto j = to_json(*a);
+    file << j.dump(4);  // "4" = pretty print with indentation
+    file.close();
+    return true;
+
+}
+
 int get_algorithm_from_list(const vector<shared_ptr<Algorithm>> &algorithms, const shared_ptr<Algorithm> &new_algorithm) {
     int index = 0;
     for (auto algorithm : algorithms) {
@@ -235,6 +254,8 @@ void Algorithm::get_successor_classical_states(const cpp_int &current_classical_
         result.insert(current_classical_state ^ (1 << bit)); // toggle bit
     }
 }
+
+
 
 void get_algorithm_end_nodes(const shared_ptr<Algorithm> &algorithm, vector<shared_ptr<Algorithm>> &end_nodes) {
     if (algorithm->children.empty()) {
