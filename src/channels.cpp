@@ -80,6 +80,47 @@ void QuantumChannel::optimize() {
     this->merge_same_errors();
 }
 
+bool QuantumChannel::is_normalized() {
+    double total = 0;
+    for (auto it : this->errors_to_probs) {
+        total += it.second;
+    }
+
+    return total == 1;
+}
+
+void QuantumChannel::normalize() {
+    double total_prob = 0.0;
+    int current_index = 1;
+    int total_entries = this->errors_to_probs.size();
+    for (auto &it : this->errors_to_probs) {
+        it.second = round_to(it.second, 10);
+        total_prob += it.second;
+    }
+
+    for (auto &it : this->errors_to_probs) {
+        it.second /= total_prob;
+    }
+
+    total_prob = 0.0;
+    for (auto &it : this->errors_to_probs) {
+        if (total_entries == current_index) {
+            it.second = 1-total_prob;
+        }
+        total_prob += it.second;
+        current_index++;
+    }
+}
+
+bool MeasurementChannel::is_normalized() {
+    return (this->correct_0 + this->incorrect_0 == 1.0) && (this->correct_1 + this->incorrect_1 == 1.0);
+}
+
+void MeasurementChannel::normalize() {
+    this->incorrect_0 = 1-this->correct_0;
+    this->incorrect_1 = 1-this->correct_1;
+}
+
 QuantumChannel::QuantumChannel(json &data) {
 
     vector<double> probabilities = data["probabilities"];
@@ -110,7 +151,6 @@ QuantumChannel::QuantumChannel(json &data) {
                 this->estimated_success_prob = max(this->estimated_success_prob, prob);
         }
     }
-        
 }
 
 QuantumChannel::QuantumChannel() {

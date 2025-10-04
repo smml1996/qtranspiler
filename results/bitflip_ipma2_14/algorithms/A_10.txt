@@ -1,0 +1,82 @@
+CNOT([q19,q16]); CNOT([q19,q14]); 
+x2 := measure(q16); 
+if c = 0:
+	x2 := measure(q16); 
+	if c = 0:
+		x2 := measure(q16); 
+		if c = 0:
+			X([q19]); 
+			X([q19]); 
+			HALT
+		if c = 4:
+			x2 := measure(q16); 
+			if c = 0:
+				x2 := measure(q16); 
+				if c = 0:
+					HALT
+				if c = 4:
+					HALT
+			if c = 4:
+				CNOT([q19,q16]); CNOT([q19,q14]); 
+				HALT
+	if c = 4:
+		x2 := measure(q16); 
+		if c = 0:
+			x2 := measure(q16); 
+			if c = 0:
+				x2 := measure(q16); 
+				if c = 0:
+					HALT
+				if c = 4:
+					HALT
+			if c = 4:
+				CNOT([q19,q16]); CNOT([q19,q14]); 
+				HALT
+		if c = 4:
+			x2 := measure(q16); 
+			if c = 0:
+				CNOT([q19,q16]); CNOT([q19,q14]); 
+				HALT
+			if c = 4:
+				X([q19]); 
+				HALT
+if c = 4:
+	x2 := measure(q16); 
+	if c = 0:
+		x2 := measure(q16); 
+		if c = 0:
+			x2 := measure(q16); 
+			if c = 0:
+				x2 := measure(q16); 
+				if c = 0:
+					HALT
+				if c = 4:
+					HALT
+			if c = 4:
+				CNOT([q19,q16]); CNOT([q19,q14]); 
+				HALT
+		if c = 4:
+			x2 := measure(q16); 
+			if c = 0:
+				CNOT([q19,q16]); CNOT([q19,q14]); 
+				HALT
+			if c = 4:
+				X([q19]); 
+				HALT
+	if c = 4:
+		x2 := measure(q16); 
+		if c = 0:
+			x2 := measure(q16); 
+			if c = 0:
+				CNOT([q19,q16]); CNOT([q19,q14]); 
+				HALT
+			if c = 4:
+				X([q19]); 
+				HALT
+		if c = 4:
+			X([q19]); 
+			x2 := measure(q16); 
+			if c = 0:
+				HALT
+			if c = 4:
+				HALT

@@ -1,7 +1,7 @@
 #ifndef GHZ_H
 #define GHZ_H
 #include <absl/strings/internal/str_format/extension.h>
-
+#include <queue>
 #include "experiments.hpp"
 
 inline bool are_adjacent_qubits(const unordered_map<int, unordered_set<int>> &graph, int qubit1,

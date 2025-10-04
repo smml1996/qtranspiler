@@ -1,0 +1,12 @@
+X([q4]); 
+CNOT([q4,q3]); CNOT([q4,q1]); 
+x2 := measure(q3); 
+if c = 0:
+	x2 := measure(q3); 
+	if c = 0:
+		HALT
+	if c = 4:
+		HALT
+if c = 4:
+	X([q4]); 
+	HALT

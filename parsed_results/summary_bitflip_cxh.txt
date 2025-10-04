@@ -1,0 +1,28 @@
+------ Experiment.bitflip_cxh ------
+count hardware:  45
+methods used:  {'bellman'}
+count embeddings:  203
+total diff. algorithms (bellman):  14
+total diff. algorithms (convex):  0
+accuracy perfect hardware: 0.5
+
+min. accuracy: 0.5
+avg. accuracy: 0.50614
+max. accuracy: 0.50907
+
+min. pomdp build time: 0.4373
+avg. pomdp build time: 7.36725
+max. pomdp build time: 40.12422
+
+min. method time: 0.502
+avg. method time: 335.36882
+max. method time: 435.0
+
+min. total time: 0.502
+avg. total time: 342.73358
+max. total time: 441.84689
+
+num. algorithms per horizon (method=bellman)
+6 :  14
+--
+

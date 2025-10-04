@@ -56,4 +56,5 @@ class ConvexDistributionSolver {
         ConvexDistributionSolver(const POMDP &pomdp, const f_reward_type &get_reward, int precision, const unordered_map<int, int> & embedding);
         pair<shared_ptr<Algorithm>, double> solve(const vector<shared_ptr<POMDPVertex>> &initial_states, const int &horizon);
 };
+
 #endif

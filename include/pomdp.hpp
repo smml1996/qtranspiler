@@ -55,9 +55,12 @@ class POMDPAction {
         vector<Instruction> instruction_sequence;
         vector<Instruction> pseudo_instruction_sequence;
         POMDPAction(const string &name, const vector<Instruction> &instruction_sequence, int precision, const vector<Instruction> &pseudo_instruction_sequence);
+        POMDPAction(json &data);
         vertex_dict get_successor_states(HardwareSpecification &hardware_specification, const shared_ptr<POMDPVertex> &current_vertex) const;
         bool operator==(const POMDPAction &other) const;
 };
+
+void normalize(vertex_dict &v);
 
 string to_string(const POMDPAction &action);
 
@@ -65,7 +68,8 @@ string to_string(const shared_ptr<POMDPAction> &action);
 
 inline json to_json(const POMDPAction &a) {
     vector<json> v;
-    for (auto i : a.pseudo_instruction_sequence) {
+    v.reserve(a.pseudo_instruction_sequence.size());
+for (const auto& i : a.pseudo_instruction_sequence) {
         v.push_back(to_json(i));
     }
     return json{

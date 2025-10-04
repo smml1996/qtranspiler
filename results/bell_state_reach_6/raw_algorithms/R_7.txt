@@ -1,0 +1,34 @@
+{
+    "action": {
+        "name": "PA",
+        "seq": [
+            {
+                "c_target": 2,
+                "controls": [],
+                "gate_name": 18,
+                "instruction_type": 0,
+                "matrix": [],
+                "params": [],
+                "params_": [],
+                "target": 2
+            }
+        ]
+    },
+    "children": [
+        {
+            "action": {
+                "name": "HALT__",
+                "seq": []
+            },
+            "children": [],
+            "children_probs": [],
+            "classical_state": "4",
+            "depth": -1,
+            "precision": 0
+        }
+    ],
+    "children_probs": [],
+    "classical_state": "0",
+    "depth": 1,
+    "precision": 32
+}

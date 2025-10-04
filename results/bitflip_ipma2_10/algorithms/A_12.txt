@@ -1,0 +1,69 @@
+CNOT([q125,q126]); CNOT([q125,q112]); 
+x2 := measure(q126); 
+if c = 0:
+	CNOT([q125,q126]); CNOT([q125,q112]); 
+	x2 := measure(q126); 
+	if c = 0:
+		x2 := measure(q126); 
+		if c = 0:
+			X([q125]); 
+			X([q125]); 
+			HALT
+		if c = 4:
+			x2 := measure(q126); 
+			if c = 0:
+				x2 := measure(q126); 
+				if c = 0:
+					HALT
+				if c = 4:
+					HALT
+			if c = 4:
+				X([q125]); 
+				HALT
+	if c = 4:
+		CNOT([q125,q126]); CNOT([q125,q112]); 
+		x2 := measure(q126); 
+		if c = 0:
+			X([q125]); 
+			HALT
+		if c = 4:
+			x2 := measure(q126); 
+			if c = 0:
+				HALT
+			if c = 4:
+				HALT
+if c = 4:
+	CNOT([q125,q126]); CNOT([q125,q112]); 
+	x2 := measure(q126); 
+	if c = 0:
+		x2 := measure(q126); 
+		if c = 0:
+			X([q125]); 
+			x2 := measure(q126); 
+			if c = 0:
+				HALT
+			if c = 4:
+				HALT
+		if c = 4:
+			x2 := measure(q126); 
+			if c = 0:
+				X([q125]); 
+				HALT
+			if c = 4:
+				x2 := measure(q126); 
+				if c = 0:
+					HALT
+				if c = 4:
+					HALT
+	if c = 4:
+		CNOT([q125,q126]); CNOT([q125,q112]); 
+		x2 := measure(q126); 
+		if c = 0:
+			X([q125]); 
+			HALT
+		if c = 4:
+			x2 := measure(q126); 
+			if c = 0:
+				HALT
+			if c = 4:
+				HALT

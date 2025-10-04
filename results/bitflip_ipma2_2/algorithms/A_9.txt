@@ -1,0 +1,92 @@
+CNOT([q31,q30]); CNOT([q31,q39]); 
+x2 := measure(q30); 
+if c = 0:
+	x2 := measure(q30); 
+	if c = 0:
+		x2 := measure(q30); 
+		if c = 0:
+			x2 := measure(q30); 
+			if c = 0:
+				x2 := measure(q30); 
+				if c = 0:
+					HALT
+				if c = 4:
+					HALT
+			if c = 4:
+				x2 := measure(q30); 
+				if c = 0:
+					HALT
+				if c = 4:
+					HALT
+		if c = 4:
+			x2 := measure(q30); 
+			if c = 0:
+				x2 := measure(q30); 
+				if c = 0:
+					HALT
+				if c = 4:
+					HALT
+			if c = 4:
+				CNOT([q31,q30]); CNOT([q31,q39]); 
+				HALT
+	if c = 4:
+		x2 := measure(q30); 
+		if c = 0:
+			x2 := measure(q30); 
+			if c = 0:
+				x2 := measure(q30); 
+				if c = 0:
+					HALT
+				if c = 4:
+					HALT
+			if c = 4:
+				CNOT([q31,q30]); CNOT([q31,q39]); 
+				HALT
+		if c = 4:
+			x2 := measure(q30); 
+			if c = 0:
+				CNOT([q31,q30]); CNOT([q31,q39]); 
+				HALT
+			if c = 4:
+				X([q31]); 
+				HALT
+if c = 4:
+	x2 := measure(q30); 
+	if c = 0:
+		x2 := measure(q30); 
+		if c = 0:
+			x2 := measure(q30); 
+			if c = 0:
+				x2 := measure(q30); 
+				if c = 0:
+					HALT
+				if c = 4:
+					HALT
+			if c = 4:
+				CNOT([q31,q30]); CNOT([q31,q39]); 
+				HALT
+		if c = 4:
+			x2 := measure(q30); 
+			if c = 0:
+				CNOT([q31,q30]); CNOT([q31,q39]); 
+				HALT
+			if c = 4:
+				X([q31]); 
+				HALT
+	if c = 4:
+		x2 := measure(q30); 
+		if c = 0:
+			x2 := measure(q30); 
+			if c = 0:
+				CNOT([q31,q30]); CNOT([q31,q39]); 
+				HALT
+			if c = 4:
+				X([q31]); 
+				HALT
+		if c = 4:
+			X([q31]); 
+			x2 := measure(q30); 
+			if c = 0:
+				HALT
+			if c = 4:
+				HALT

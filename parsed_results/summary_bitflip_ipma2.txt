@@ -1,0 +1,32 @@
+------ Experiment.bitflip_ipma2 ------
+count hardware:  45
+methods used:  {'bellman'}
+count embeddings:  141
+total diff. algorithms (bellman):  37
+total diff. algorithms (convex):  0
+accuracy perfect hardware: 1.0, 1.0, 1.0, 1.0, 1.0
+
+min. accuracy: 0.5
+avg. accuracy: 0.93693
+max. accuracy: 1.0
+
+min. pomdp build time: 0.00494
+avg. pomdp build time: 0.50356
+max. pomdp build time: 2.92892
+
+min. method time: 0.0
+avg. method time: 74.17748
+max. method time: 348.0
+
+min. total time: 0.00494
+avg. total time: 74.6797
+max. total time: 348.6575
+
+num. algorithms per horizon (method=bellman)
+3 :  4
+4 :  7
+5 :  6
+6 :  9
+7 :  11
+--
+

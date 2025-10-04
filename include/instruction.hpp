@@ -34,10 +34,12 @@ class Instruction {
         Instruction(GateName gate_name, const vector<int> &controls, int target, const vector<double> &params); // for multiqubit gates with parameters
         Instruction(GateName gate_name, int target, int c_target); // for measurements
         explicit Instruction(const json &json_val);
+        explicit Instruction(const json &data, int dummy);
         
         [[nodiscard]] InstructionType get_instruction_type() const;
         bool operator==(const Instruction& other) const;
         friend std::ostream &operator<<(ostream& os, const Instruction&);
+        Instruction rename(const unordered_map<int, int> &embedding);
 };
 
 inline json to_json(const std::vector<std::vector<std::complex<double>>>& matrix) {

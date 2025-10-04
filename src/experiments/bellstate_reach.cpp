@@ -18,6 +18,8 @@ class BellStateReach : public IPMABitflip {
     const set<MethodType>& method_types, const set<QuantumHardware>& hw_list, bool optimize) : IPMABitflip(name, precision, with_thermalization, min_horizon, max_horizon,
                 method_types, hw_list, optimize) {}
 
+    BellStateReach()  : IPMABitflip(){ this->name = "BellStateReach"; };
+
     vector<pair<shared_ptr<HybridState>, double>> get_initial_distribution(unordered_map<int, int> &embedding) const override {
         vector<pair<shared_ptr<HybridState>, double>> result;
         shared_ptr<ClassicalState> classical_state0 = make_shared<ClassicalState>();

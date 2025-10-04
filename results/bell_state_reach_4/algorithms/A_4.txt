@@ -1,0 +1,11 @@
+{
+	x2 := measure(q2); 
+	if c = 4:
+		HALT
+	if c = 0:
+		HALT
+
+} ⊕_0.500000 {
+	H([q0]); CNOT([q0,q1]); 
+	HALT
+}

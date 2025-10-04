@@ -1,8 +1,0 @@
-name: test_zero_plus_discr_test_opt
-precision: 5
-thermalization: 0
-min. horizon: 3
-max. horizon: 3
-hidden index: 1
-methods: convex
-quantum hardware: almaden, perfect_hardware

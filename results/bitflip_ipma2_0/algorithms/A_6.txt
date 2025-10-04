@@ -1,0 +1,200 @@
+CNOT([q22,q23]); CNOT([q22,q17]); 
+x2 := measure(q23); 
+if c = 0:
+	x2 := measure(q23); 
+	if c = 0:
+		x2 := measure(q23); 
+		if c = 0:
+			x2 := measure(q23); 
+			if c = 0:
+				x2 := measure(q23); 
+				if c = 0:
+					x2 := measure(q23); 
+					if c = 0:
+						HALT
+					if c = 4:
+						HALT
+				if c = 4:
+					x2 := measure(q23); 
+					if c = 0:
+						HALT
+					if c = 4:
+						HALT
+			if c = 4:
+				x2 := measure(q23); 
+				if c = 0:
+					x2 := measure(q23); 
+					if c = 0:
+						HALT
+					if c = 4:
+						HALT
+				if c = 4:
+					x2 := measure(q23); 
+					if c = 0:
+						HALT
+					if c = 4:
+						HALT
+		if c = 4:
+			x2 := measure(q23); 
+			if c = 0:
+				x2 := measure(q23); 
+				if c = 0:
+					x2 := measure(q23); 
+					if c = 0:
+						HALT
+					if c = 4:
+						HALT
+				if c = 4:
+					x2 := measure(q23); 
+					if c = 0:
+						HALT
+					if c = 4:
+						HALT
+			if c = 4:
+				x2 := measure(q23); 
+				if c = 0:
+					x2 := measure(q23); 
+					if c = 0:
+						HALT
+					if c = 4:
+						HALT
+				if c = 4:
+					X([q22]); 
+					HALT
+	if c = 4:
+		x2 := measure(q23); 
+		if c = 0:
+			x2 := measure(q23); 
+			if c = 0:
+				x2 := measure(q23); 
+				if c = 0:
+					x2 := measure(q23); 
+					if c = 0:
+						HALT
+					if c = 4:
+						HALT
+				if c = 4:
+					x2 := measure(q23); 
+					if c = 0:
+						HALT
+					if c = 4:
+						HALT
+			if c = 4:
+				x2 := measure(q23); 
+				if c = 0:
+					x2 := measure(q23); 
+					if c = 0:
+						HALT
+					if c = 4:
+						HALT
+				if c = 4:
+					X([q22]); 
+					HALT
+		if c = 4:
+			x2 := measure(q23); 
+			if c = 0:
+				x2 := measure(q23); 
+				if c = 0:
+					x2 := measure(q23); 
+					if c = 0:
+						HALT
+					if c = 4:
+						HALT
+				if c = 4:
+					X([q22]); 
+					HALT
+			if c = 4:
+				X([q22]); 
+				x2 := measure(q23); 
+				if c = 0:
+					HALT
+				if c = 4:
+					HALT
+if c = 4:
+	x2 := measure(q23); 
+	if c = 0:
+		x2 := measure(q23); 
+		if c = 0:
+			x2 := measure(q23); 
+			if c = 0:
+				x2 := measure(q23); 
+				if c = 0:
+					x2 := measure(q23); 
+					if c = 0:
+						HALT
+					if c = 4:
+						HALT
+				if c = 4:
+					x2 := measure(q23); 
+					if c = 0:
+						HALT
+					if c = 4:
+						HALT
+			if c = 4:
+				x2 := measure(q23); 
+				if c = 0:
+					x2 := measure(q23); 
+					if c = 0:
+						HALT
+					if c = 4:
+						HALT
+				if c = 4:
+					X([q22]); 
+					HALT
+		if c = 4:
+			x2 := measure(q23); 
+			if c = 0:
+				x2 := measure(q23); 
+				if c = 0:
+					x2 := measure(q23); 
+					if c = 0:
+						HALT
+					if c = 4:
+						HALT
+				if c = 4:
+					X([q22]); 
+					HALT
+			if c = 4:
+				X([q22]); 
+				x2 := measure(q23); 
+				if c = 0:
+					HALT
+				if c = 4:
+					HALT
+	if c = 4:
+		x2 := measure(q23); 
+		if c = 0:
+			x2 := measure(q23); 
+			if c = 0:
+				x2 := measure(q23); 
+				if c = 0:
+					x2 := measure(q23); 
+					if c = 0:
+						HALT
+					if c = 4:
+						HALT
+				if c = 4:
+					X([q22]); 
+					HALT
+			if c = 4:
+				X([q22]); 
+				x2 := measure(q23); 
+				if c = 0:
+					HALT
+				if c = 4:
+					HALT
+		if c = 4:
+			X([q22]); 
+			x2 := measure(q23); 
+			if c = 0:
+				x2 := measure(q23); 
+				if c = 0:
+					HALT
+				if c = 4:
+					HALT
+			if c = 4:
+				x2 := measure(q23); 
+				if c = 0:
+					HALT
+				if c = 4:
+					HALT

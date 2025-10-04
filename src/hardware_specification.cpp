@@ -150,6 +150,7 @@ HardwareSpecification::HardwareSpecification(const QuantumHardware &quantum_hard
                 }
             }
 
+            channel->normalize();
             this->instructions_to_channels[instruction] = channel;
         }
 

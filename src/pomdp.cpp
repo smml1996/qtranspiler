@@ -226,7 +226,38 @@ vertex_dict POMDPAction::__dfs(HardwareSpecification &hardware_specification, sh
         result[s] = round_to(prob, this->precision);
     }
     assert (!result.empty());
+    normalize(result);
     return result;
+}
+
+void normalize(vertex_dict &v) {
+    int total_entries = v.size();
+    double total_sum = 0.0;
+    for (auto it : v) {
+        total_sum += it.second;
+    }
+
+    for (auto &it : v) {
+        it.second /= total_sum;
+    }
+
+    int current_index = 1;
+    double total_prob = 0.0;
+    for (auto &it : v) {
+        if (current_index == total_entries) {
+            it.second = 1.0 - total_prob;
+        }
+        total_prob += it.second;
+        current_index++;
+    }
+
+    for (auto it : v) {
+        if (it.second == 0) {
+            v.erase(it.first);
+        }
+    }
+
+
 }
 
 
@@ -236,6 +267,15 @@ POMDPAction::POMDPAction(const string &name, const vector<Instruction> &instruct
     this->instruction_sequence = instruction_sequence;
     this->precision = precision;
     this->pseudo_instruction_sequence = pseudo_instruction_sequence;
+}
+
+POMDPAction::POMDPAction(json &data) {
+    this->name = data["name"].get<string>();
+    this->precision = -1;
+    for (auto j_ins : data["seq"]) {
+        this->pseudo_instruction_sequence.push_back(Instruction(j_ins, -1));
+    }
+
 }
 
 vertex_dict POMDPAction::get_successor_states(HardwareSpecification &hardware_specification, const shared_ptr<POMDPVertex> &current_vertex) const {

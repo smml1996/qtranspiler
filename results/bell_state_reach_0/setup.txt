@@ -1,0 +1,8 @@
+name: bell_state_reach_0
+precision: 8
+thermalization: 0
+min. horizon: 1
+max. horizon: 2
+hidden index: 0
+methods: convex
+quantum hardware: boeblingen, bogota, cambridge, hanoi, jakarta, lagos, ourense, toronto, washington, yorktown

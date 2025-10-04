@@ -11,6 +11,15 @@ public:
         this->set_hidden_index = true;
     };
 
+    BasisStatesDiscrimination() {
+        this->set_hidden_index = true;
+        this->name = "basic_zero_plus";
+        this->precision = 8;
+        this->with_thermalization = false;
+        this->min_horizon = 1;
+        this->max_horizon = 3;
+    };
+
     MyFloat postcondition(const Belief &belief, const unordered_map<int, int> &embedding) override {
         assert (embedding.size() == 1);
         MyFloat result("0", this->precision*(this->max_horizon+1));
@@ -110,12 +119,13 @@ public:
     method_types, hw_list, optimize) {
     };
 
+    BasicZeroPlusDiscrimination() : BasisStatesDiscrimination() {};
+
     vector<pair<shared_ptr<HybridState>, double>> get_initial_distribution(unordered_map<int, int> &embedding) const override {
         assert (embedding.size() == 1);
         vector<pair<shared_ptr<HybridState>, double>> result;
 
         auto classical_state = make_shared<ClassicalState>();
-
 
         auto H0 = Instruction(GateName::H, embedding.at(0));
 

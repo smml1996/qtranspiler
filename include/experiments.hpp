@@ -5,6 +5,8 @@
 #include "hardware_specification.hpp"
 #include <filesystem>
 
+#include "algorithm.hpp"
+
 using namespace std;
 namespace fs = std::filesystem;
 
@@ -24,13 +26,10 @@ string gate_to_string(const MethodType &method);
 MethodType str_to_method_type(const string &method);
 
 class Experiment {
-    protected:
-        string name;
-        int precision;
+protected:
         bool with_thermalization;
         int min_horizon;
-        int max_horizon;
-        bool set_hidden_index;
+
         set<MethodType> method_types;
         set<QuantumHardware> hw_list;
         unordered_map<int, bool> target_vertices;
@@ -46,6 +45,10 @@ class Experiment {
         vector<shared_ptr<POMDPVertex>> get_initial_states(const POMDP &pomdp) const;
 
     public:
+    int precision;
+    string name;
+    bool set_hidden_index;
+    int max_horizon;
     static int round_in_file;
         Experiment(const string &name, int precision, bool with_thermalization, int min_horizon, int max_horizon,
             bool set_hidden_index, const set<MethodType> &method_types, const set<QuantumHardware> &hw_list, bool optimize);
@@ -77,5 +80,8 @@ unordered_set<int> get_meas_pivot_qubits(const HardwareSpecification &hardware_s
 // utils for running experiments in server
 void generate_experiment_file(const string& experiment_name, const string& method, int min_horizon, int max_horizon);
 void generate_all_experiments_file();
+std::string join(const std::vector<std::string>& parts, const std::string& delimiter);
 
+MyFloat verify_algorithm(Experiment &experiment, const Algorithm &algorithm, HardwareSpecification &hardware_spec,
+    unordered_map<int, int> &embedding, bool is_convex, int max_horizon);
 #endif

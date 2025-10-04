@@ -366,15 +366,15 @@ class CXHBitflip : public IPMABitflip {
 
             
             auto H1 = make_shared<POMDPAction>("H1", hardware_spec.to_basis_gates_impl(Instruction(GateName::H,
-                embedding.at(1))), this->precision, vector<Instruction>({Instruction(GateName::H, embedding.at(1))}));
+                embedding.at(1))), this->precision, vector<Instruction>({Instruction(GateName::H, 1)}));
 
             auto H2 = make_shared<POMDPAction>("H2", hardware_spec.to_basis_gates_impl(Instruction(GateName::H,
-                embedding.at(2))), this->precision, vector<Instruction>({Instruction(GateName::H, embedding.at(2))}));
+                embedding.at(2))), this->precision, vector<Instruction>({Instruction(GateName::H, 2)}));
 
             auto P2 = make_shared<POMDPAction>("P2",
                 vector<Instruction>({Instruction(GateName::Meas, embedding.at(2), 2)}),
                 this->precision, 
-                vector<Instruction>{Instruction(GateName::Meas, embedding.at(2), 2)});
+                vector<Instruction>{Instruction(GateName::Meas, 2, 2)});
 
             auto CX21 = make_shared<POMDPAction>("CX21",
                 hardware_spec.to_basis_gates_impl(Instruction(GateName::Cnot, vector<int>({embedding.at(2)}), embedding.at(1)))

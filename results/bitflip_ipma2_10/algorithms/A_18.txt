@@ -1,0 +1,138 @@
+CNOT([q17,q12]); CNOT([q17,q11]); 
+x2 := measure(q12); 
+if c = 0:
+	x2 := measure(q12); 
+	if c = 0:
+		x2 := measure(q12); 
+		if c = 0:
+			X([q17]); 
+			X([q17]); 
+			X([q17]); 
+			HALT
+		if c = 4:
+			x2 := measure(q12); 
+			if c = 0:
+				X([q17]); 
+				x2 := measure(q12); 
+				if c = 0:
+					HALT
+				if c = 4:
+					HALT
+			if c = 4:
+				x2 := measure(q12); 
+				if c = 0:
+					X([q17]); 
+					HALT
+				if c = 4:
+					x2 := measure(q12); 
+					if c = 0:
+						HALT
+					if c = 4:
+						HALT
+	if c = 4:
+		x2 := measure(q12); 
+		if c = 0:
+			x2 := measure(q12); 
+			if c = 0:
+				X([q17]); 
+				x2 := measure(q12); 
+				if c = 0:
+					HALT
+				if c = 4:
+					HALT
+			if c = 4:
+				x2 := measure(q12); 
+				if c = 0:
+					X([q17]); 
+					HALT
+				if c = 4:
+					x2 := measure(q12); 
+					if c = 0:
+						HALT
+					if c = 4:
+						HALT
+		if c = 4:
+			x2 := measure(q12); 
+			if c = 0:
+				x2 := measure(q12); 
+				if c = 0:
+					X([q17]); 
+					HALT
+				if c = 4:
+					x2 := measure(q12); 
+					if c = 0:
+						HALT
+					if c = 4:
+						HALT
+			if c = 4:
+				X([q17]); 
+				X([q17]); 
+				HALT
+if c = 4:
+	x2 := measure(q12); 
+	if c = 0:
+		x2 := measure(q12); 
+		if c = 0:
+			x2 := measure(q12); 
+			if c = 0:
+				X([q17]); 
+				x2 := measure(q12); 
+				if c = 0:
+					HALT
+				if c = 4:
+					HALT
+			if c = 4:
+				x2 := measure(q12); 
+				if c = 0:
+					X([q17]); 
+					HALT
+				if c = 4:
+					x2 := measure(q12); 
+					if c = 0:
+						HALT
+					if c = 4:
+						HALT
+		if c = 4:
+			x2 := measure(q12); 
+			if c = 0:
+				x2 := measure(q12); 
+				if c = 0:
+					X([q17]); 
+					HALT
+				if c = 4:
+					x2 := measure(q12); 
+					if c = 0:
+						HALT
+					if c = 4:
+						HALT
+			if c = 4:
+				X([q17]); 
+				X([q17]); 
+				HALT
+	if c = 4:
+		x2 := measure(q12); 
+		if c = 0:
+			x2 := measure(q12); 
+			if c = 0:
+				x2 := measure(q12); 
+				if c = 0:
+					X([q17]); 
+					HALT
+				if c = 4:
+					x2 := measure(q12); 
+					if c = 0:
+						HALT
+					if c = 4:
+						HALT
+			if c = 4:
+				X([q17]); 
+				X([q17]); 
+				HALT
+		if c = 4:
+			X([q17]); 
+			X([q17]); 
+			x2 := measure(q12); 
+			if c = 0:
+				HALT
+			if c = 4:
+				HALT

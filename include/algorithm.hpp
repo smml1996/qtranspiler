@@ -27,17 +27,14 @@ public:
     unordered_map<int, double> children_probs;
 
     Algorithm(const shared_ptr<POMDPAction> &action, const cpp_int &classical_state, int precision, int depth=-1);
-    Algorithm(json &data);
-    ~Algorithm();
+
+    explicit Algorithm(json &data);
     bool exist_child_with_cstate(const cpp_int &cstate) const;
     bool operator==(const Algorithm &algorithm) const;
     bool has_meas() const;
     bool has_classical_instruction() const;
     bool is_unitary() const; // returns true if all instructions used by the action of the current node use only unitary instructions (children are not checked)
     void get_successor_classical_states(const cpp_int &current_classical_state, unordered_set<cpp_int> &result) const; // returns a set containing all reachable classical states by executing the current acction (children are not checked)
-
-    json to_json() const;
-    static Algorithm from_json(const json& j);
 };
 
 string to_string(shared_ptr<Algorithm> algorithm, const string& tabs="");
@@ -71,5 +68,6 @@ inline json to_json(const Algorithm &a) {
                 {"children_probs", a.children_probs}
     };
 }
+
 
 #endif

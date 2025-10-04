@@ -16,10 +16,19 @@ Algorithm::Algorithm(const shared_ptr<POMDPAction> &action, const cpp_int &class
 }
 
 Algorithm::Algorithm(json &data) {
+    this->action = make_shared<POMDPAction>(data["action"]);
+    this->classical_state.assign(data["classical_state"].get<string>());
+    this->depth = data["depth"].get<int>();
+    this->precision = data["precision"].get<int>();
 
-}
+    for (auto j_child : data["children"]) {
+        this->children.push_back(make_shared<Algorithm>(j_child));
+    }
 
-Algorithm::~Algorithm() {
+    for (auto p : data["children_probs"]) {
+        int index = p[0].get<int>();
+        this->children_probs[index] = p[1].get<double>();
+    }
 }
 
 
@@ -127,7 +136,7 @@ string to_string(shared_ptr<Algorithm> algorithm, const string& tabs) {
             string child_alg;
             {
                 if (algorithm->children.size() > 1) {
-                    result += tabs + "if c = " + to_string(child->classical_state) + ":\n" ;
+                    result += tabs + "if c = " + child->classical_state.str() + ":\n" ;
                     child_alg = to_string(child, tabs+"\t");
                 } else {
                     child_alg = to_string(child, tabs);

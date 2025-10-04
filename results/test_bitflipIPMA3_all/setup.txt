@@ -1,8 +1,0 @@
-name: test_bitflipIPMA3_all
-precision: 5
-thermalization: 0
-min. horizon: 3
-max. horizon: 3
-hidden index: 0
-methods: bellman
-quantum hardware: algiers, almaden, athens, auckland, belem, boeblingen, bogota, brooklyn, burlington, cairo, cambridge, casablanca, essex, fez, geneva, guadalupe, hanoi, jakarta, johannesburg, kolkata, lagos, lima, london, makarresh, melbourne, manhattan, manila, montreal, mumbai, nairobi, oslo, ourense, paris, perth, poughkeepsie, prague, quito, rochester, rome, santiago, singapore, sydney, torino, toronto, valencia, vigo, washington, yorktown, perfect_hardware
