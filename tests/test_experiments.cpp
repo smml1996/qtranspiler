@@ -417,7 +417,7 @@ TEST(BellStateReachTest, BellStateReach) {
     string custom_name = "test_bell_state_reach";
 
     set<MethodType> methods = {
-        // SingleDistBellman,
+        SingleDistBellman,
         ConvexDist
     };
 

@@ -1,0 +1,5 @@
+hardware,embedding_index,horizon,pomdp_build_time,probability,method,method_time,algorithm_index,error
+algiers,0,1,4.354660,0.500500,bellman,0.000000,0,0.000000
+algiers,0,1,4.354660,0.500250,convex,0.000000,1,0.000000
+algiers,0,2,4.354660,1.002000,bellman,0.000000,2,0.000000
+algiers,0,2,4.354660,0.995010,convex,0.000000,3,0.000000

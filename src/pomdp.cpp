@@ -251,13 +251,15 @@ void normalize(vertex_dict &v) {
         current_index++;
     }
 
+    unordered_set<shared_ptr<POMDPVertex>, POMDPVertexHash, POMDPVertexPtrEqual> to_remove;
     for (auto it : v) {
         if (it.second == 0) {
-            v.erase(it.first);
+            to_remove.insert(it.first);
         }
     }
-
-
+    for (auto it : to_remove) {
+        v.erase(it);
+    }
 }
 
 
