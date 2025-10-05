@@ -71,6 +71,9 @@ void POMDPAction::__handle_measure_instruction(const Instruction &instruction, c
     auto temp = get_sequence_probability(vertex.hybrid_state->quantum_state, {instruction1}, this->precision);
 
     auto q = temp.first;
+    if (q == nullptr) {
+        return;
+    }
     auto meas_prob = temp.second;
 
     if (meas_prob > 0.0) {
@@ -358,18 +361,20 @@ POMDP::POMDP(const shared_ptr<POMDPVertex> &initial_state, const vector<shared_p
 }
 
 void POMDP::build_pomdp(const vector<shared_ptr<POMDPAction>> &actions_, HardwareSpecification &hardware_specification, int horizon, unordered_map<int, int> embedding, shared_ptr<HybridState> initial_state_hs, const vector<pair<shared_ptr<HybridState>, double>> &initial_distribution, vector<int> &qubits_used, guard_type guard, bool set_hidden_index) {
+
     this->actions = actions_;
     assert(this->states.empty());
 
     queue<pair<shared_ptr<POMDPVertex>, int>> q;
     if (initial_state_hs == nullptr) {
-        initial_state_hs = make_shared<HybridState>(make_shared<QuantumState>(vector<int>({0}), this->precision), make_shared<ClassicalState>());
+        initial_state_hs = make_shared<HybridState>(make_shared<QuantumState>(qubits_used, this->precision), make_shared<ClassicalState>());
     }
 
     auto initial_v = this->create_new_vertex(initial_state_hs, -1);
     this->initial_state = initial_v;
 
     if (initial_distribution.empty()) {
+        assert(false);
         q.emplace(initial_v, 0);
     } else {
         double total = 0.0;
@@ -407,7 +412,6 @@ void POMDP::build_pomdp(const vector<shared_ptr<POMDPAction>> &actions_, Hardwar
     unordered_set<shared_ptr<POMDPVertex>, POMDPVertexHash, POMDPVertexPtrEqualID> visited;
 
     while (!q.empty()) {
-        assert(initial_v->hybrid_state != nullptr);
         pair<shared_ptr<POMDPVertex>, int> temp = q.front();
         q.pop();
         auto current_v = temp.first;
@@ -465,7 +469,7 @@ void POMDP::build_pomdp(const vector<shared_ptr<POMDPAction>> &actions_, Hardwar
     for (auto it : this->transition_matrix_) {
         for (const auto it_action : it.second) {
             for (const auto it_successor: it_action.second) {
-                this->transition_matrix[it.first][it_action.first][it_successor.first] = MyFloat(to_string(round_to(it_successor.second, 3)), this->precision * (horizon+1));
+                this->transition_matrix[it.first][it_action.first][it_successor.first] = MyFloat(to_string(round_to(it_successor.second, 8)), this->precision * (horizon+1));
             }
         }
 

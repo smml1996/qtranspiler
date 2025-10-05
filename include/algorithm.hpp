@@ -25,6 +25,7 @@ public:
     int depth;
     int precision;
     unordered_map<int, double> children_probs;
+    vector<shared_ptr<POMDPVertex>> reachable_states;
 
     Algorithm(const shared_ptr<POMDPAction> &action, const cpp_int &classical_state, int precision, int depth=-1);
 

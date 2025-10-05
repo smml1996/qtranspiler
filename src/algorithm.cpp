@@ -135,7 +135,7 @@ string to_string(shared_ptr<Algorithm> algorithm, const string& tabs) {
         for(auto child : algorithm->children) {
             string child_alg;
             {
-                if (algorithm->children.size() > 1) {
+                if (algorithm->has_meas()) {
                     result += tabs + "if c = " + child->classical_state.str() + ":\n" ;
                     child_alg = to_string(child, tabs+"\t");
                 } else {
@@ -209,6 +209,10 @@ shared_ptr<Algorithm> deep_copy_algorithm(shared_ptr<Algorithm> algorithm)  {
 
     auto algorithm_copy = make_shared<Algorithm>(algorithm->action, classical_state, algorithm->precision, depth);
 
+    for (auto it : algorithm->reachable_states) {
+        algorithm_copy->reachable_states.push_back(it);
+    }
+
     for (auto child : algorithm->children) {
         algorithm_copy->children.push_back(deep_copy_algorithm(child));
     }
@@ -250,7 +254,7 @@ void Algorithm::get_successor_classical_states(const cpp_int &current_classical_
     unordered_set<cpp_int> &result) const {
     // get all bits that might change
     unordered_set<int> bits;
-    for (auto instruction : this->action->instruction_sequence) {
+    for (const auto& instruction : this->action->instruction_sequence) {
         assert(instruction.instruction_type != InstructionType::Classical);
         if (instruction.instruction_type == InstructionType::Measurement) {
             bits.insert(instruction.c_target);
@@ -260,8 +264,15 @@ void Algorithm::get_successor_classical_states(const cpp_int &current_classical_
     result.insert(current_classical_state);
 
     for (auto bit : bits) {
-        result.insert(current_classical_state ^ (1 << bit)); // toggle bit
+        unordered_set<cpp_int> new_states;
+        for (auto c_state : result) {
+            new_states.insert(c_state ^ (1 << bit)); // toggle bit
+        }
+        for (const auto& n : new_states) {
+            result.insert(n);
+        }
     }
+
 }
 
 

@@ -106,7 +106,7 @@ class BellStateReach : public IPMABitflip {
             vector<Instruction>({
                 Instruction(GateName::Cnot, vector<int>({0}), 1),
                 Instruction(GateName::H, 0), Instruction(GateName::Meas, 0, 0),
-                Instruction(GateName::Meas, embedding.at(1), 1)}));
+                Instruction(GateName::Meas, 1, 1)}));
 
         auto PA = make_shared<POMDPAction>("PA",
             vector<Instruction>({Instruction(GateName::Meas, embedding.at(2), 2)}),

@@ -169,7 +169,7 @@ for (QuantumHardware qw : quantum_hardwares) {
 vector<int> Experiment::get_qubits_used(const unordered_map<int, int> &embedding) {
     vector<int> result;
     result.reserve(embedding.size());
-for (auto it : embedding) {
+    for (auto it : embedding) {
         result.push_back(it.second);
     }
     return result;
