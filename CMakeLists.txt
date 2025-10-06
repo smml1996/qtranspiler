@@ -50,6 +50,29 @@ target_link_libraries(main PRIVATE
         c++      # libc++
 )
 
+add_executable(parse_results parse_results.cpp src/algorithm.cpp
+        src/beliefs.cpp
+        src/channels.cpp
+        src/experiments.cpp
+        src/floats.cpp
+        src/hardware_specification.cpp
+        src/instruction.cpp
+        src/quantum_gates.cpp
+        src/solvers.cpp
+        src/states.cpp
+        src/utils.cpp
+        src/pomdp.cpp
+        src/experiments/bitflip.cpp
+        src/experiments/ghz.cpp
+        src/experiments/reset.cpp
+        src/rationals.cpp
+        src/experiments/discrimination.cpp
+        src/experiments/bellstate_reach.cpp)
+target_link_libraries(parse_results PRIVATE
+        ortools::ortools
+        nlohmann_json::nlohmann_json
+)
+
 # testing
 
 # Download and build GoogleTest automatically

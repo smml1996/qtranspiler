@@ -6,6 +6,9 @@
 #include <unordered_map>
 #include "pomdp.hpp"
 #include <filesystem>
+#include "instruction.hpp"
+#include <vector>
+#include <nlohmann/json.hpp>
 
 using namespace std;
 
@@ -22,9 +25,11 @@ public:
     int depth;
     int precision;
     unordered_map<int, double> children_probs;
+    vector<shared_ptr<POMDPVertex>> reachable_states;
 
     Algorithm(const shared_ptr<POMDPAction> &action, const cpp_int &classical_state, int precision, int depth=-1);
-    ~Algorithm();
+
+    explicit Algorithm(json &data);
     bool exist_child_with_cstate(const cpp_int &cstate) const;
     bool operator==(const Algorithm &algorithm) const;
     bool has_meas() const;
@@ -34,7 +39,10 @@ public:
 };
 
 string to_string(shared_ptr<Algorithm> algorithm, const string& tabs="");
+
 bool dump_to_file(const fs::path &, const shared_ptr<Algorithm> &);
+
+bool dump_raw_algorithm(const fs::path &, const shared_ptr<Algorithm> &);
 
 int get_algorithm_from_list(const vector<shared_ptr<Algorithm>> &algorithms, const shared_ptr<Algorithm> &new_algorithm);
 
@@ -45,5 +53,22 @@ shared_ptr<Algorithm> deep_copy_algorithm(shared_ptr<Algorithm> algorithm);
 void get_algorithm_end_nodes(const shared_ptr<Algorithm> &algorithm, vector<shared_ptr<Algorithm>> &end_nodes);
 
 shared_ptr<Algorithm> get_mixed_algorithm(const vector<double> &x, const unordered_map<int, shared_ptr<Algorithm>> &mapping_index_algorithm, cpp_int initial_classical_state);
+
+inline json to_json(const Algorithm &a) {
+    vector<json> j_children;
+    for (const auto& child : a.children) {
+        j_children.push_back(to_json(*child));
+    }
+
+    return json{
+                {"action", to_json(*a.action)},
+                {"children", j_children},
+                {"classical_state", a.classical_state.str()},
+                {"depth", a.depth},
+                {"precision", a.precision},
+                {"children_probs", a.children_probs}
+    };
+}
+
 
 #endif

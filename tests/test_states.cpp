@@ -122,6 +122,12 @@ TEST(ClassicalStateTest, Equality) {
     EXPECT_FALSE(*cs3 == (cs2));
 }
 
+TEST(ClassicalStateTest, CMemoryVal) {
+    ClassicalState cs1;
+    auto cs3 = cs1.write(2, true);
+    EXPECT_TRUE(cs3->get_memory_val() == 4);
+}
+
 // ---------- HybridState ----------
 TEST(HybridStateTest, ApplyInstruction) {
     QuantumState qs({0}, 10);

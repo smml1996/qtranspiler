@@ -180,6 +180,18 @@ Instruction::Instruction(const json &json_val) {
     
 }
 
+Instruction::Instruction(const json &data, int dummy) {
+    this->c_target = data["c_target"];
+    this->target = data["target"];
+    for (auto c : data["controls"]) {
+        this->controls.push_back(c);
+    }
+    this->gate_name = data["gate_name"];
+    this->instruction_type = data["instruction_type"];
+    // this->matrix = json_to_matrix(data["matrix"]);
+    this->target = data["target"];
+}
+
 InstructionType Instruction::get_instruction_type() const {
     return this->instruction_type;
 }
@@ -191,6 +203,25 @@ bool Instruction::operator==(const Instruction& other) const {
         && gate_name == other.gate_name
         && are_matrices_equal(matrix, other.matrix, 10);
         // && params == other.params;
+}
+
+Instruction Instruction::rename(const unordered_map<int, int> &embedding) {
+    Instruction instruction;
+    instruction.c_target = this->c_target;
+    if (embedding.find(this->target) != embedding.end()) {
+        instruction.target = embedding.at(this->target);
+    }
+    assert(instruction.controls.size() == 0);
+    for (auto c : this->controls) {
+        instruction.controls.push_back(embedding.at(c));
+    }
+
+    instruction.gate_name = this->gate_name;
+    instruction.params = this->params;
+    instruction.instruction_type = this->instruction_type;
+    instruction.params_ = this->params_;
+    instruction.matrix = this->matrix;
+    return instruction;
 }
 
 string to_string(const Instruction &instruction) {

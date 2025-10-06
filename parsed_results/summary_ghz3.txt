@@ -1,0 +1,28 @@
+------ Experiment.ghz3 ------
+count hardware:  45
+methods used:  {'bellman'}
+count embeddings:  1193
+total diff. algorithms (bellman):  12
+total diff. algorithms (convex):  0
+accuracy perfect hardware: 1.0
+
+min. accuracy: 0.11999
+avg. accuracy: 0.91396
+max. accuracy: 1.0
+
+min. pomdp build time: 0.41997
+avg. pomdp build time: 11.13022
+max. pomdp build time: 44.30177
+
+min. method time: 0.0
+avg. method time: 1.00166
+max. method time: 4.0
+
+min. total time: 0.41997
+avg. total time: 12.13106
+max. total time: 45.30177
+
+num. algorithms per horizon (method=bellman)
+3 :  12
+--
+

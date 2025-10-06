@@ -2,6 +2,8 @@
 #define QGATES_H
 
 #include <unordered_set>
+#include <string>
+#include <stdexcept>
 
 using namespace std;
 

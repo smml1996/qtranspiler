@@ -5,7 +5,7 @@
 #include "states.hpp"
 #include "channels.hpp"
 #include "hardware_specification.hpp"
-#include "rationals.hpp"
+#include "floats.hpp"
 
 
 using namespace std;
@@ -55,13 +55,28 @@ class POMDPAction {
         vector<Instruction> instruction_sequence;
         vector<Instruction> pseudo_instruction_sequence;
         POMDPAction(const string &name, const vector<Instruction> &instruction_sequence, int precision, const vector<Instruction> &pseudo_instruction_sequence);
+        POMDPAction(json &data);
         vertex_dict get_successor_states(HardwareSpecification &hardware_specification, const shared_ptr<POMDPVertex> &current_vertex) const;
         bool operator==(const POMDPAction &other) const;
 };
 
+void normalize(vertex_dict &v);
+
 string to_string(const POMDPAction &action);
 
 string to_string(const shared_ptr<POMDPAction> &action);
+
+inline json to_json(const POMDPAction &a) {
+    vector<json> v;
+    v.reserve(a.pseudo_instruction_sequence.size());
+for (const auto& i : a.pseudo_instruction_sequence) {
+        v.push_back(to_json(i));
+    }
+    return json{
+                    {"name", a.name},
+                    {"seq", v}
+    };
+}
 
 // Custom hash
 struct POMDPActionHash {
@@ -72,7 +87,7 @@ struct POMDPActionPtrEqual {
     bool operator()(const shared_ptr<POMDPAction> &a, const shared_ptr<POMDPAction> &b) const;
 };
 
-typedef function<bool(POMDPVertex, unordered_map<int, int>, POMDPAction)> guard_type;
+typedef function<bool(shared_ptr<POMDPVertex>&, unordered_map<int, int>&, shared_ptr<POMDPAction>&)> guard_type;
 
 class POMDP {
     vector<shared_ptr<POMDPVertex>> states;
@@ -83,7 +98,7 @@ class POMDP {
 
 public:
         shared_ptr<POMDPVertex> initial_state;
-        unordered_map<shared_ptr<POMDPVertex>, unordered_map<shared_ptr<POMDPAction>, unordered_map<shared_ptr<POMDPVertex>, Rational, POMDPVertexHash,
+        unordered_map<shared_ptr<POMDPVertex>, unordered_map<shared_ptr<POMDPAction>, unordered_map<shared_ptr<POMDPVertex>, MyFloat, POMDPVertexHash,
             POMDPVertexPtrEqualID>, POMDPActionHash, POMDPActionPtrEqual>, POMDPVertexHash, POMDPVertexPtrEqualID>
         transition_matrix;
         vector<shared_ptr<POMDPAction>> actions;

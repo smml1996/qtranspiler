@@ -15,7 +15,20 @@ Algorithm::Algorithm(const shared_ptr<POMDPAction> &action, const cpp_int &class
     this->precision = precision;
 }
 
-Algorithm::~Algorithm() {
+Algorithm::Algorithm(json &data) {
+    this->action = make_shared<POMDPAction>(data["action"]);
+    this->classical_state.assign(data["classical_state"].get<string>());
+    this->depth = data["depth"].get<int>();
+    this->precision = data["precision"].get<int>();
+
+    for (auto j_child : data["children"]) {
+        this->children.push_back(make_shared<Algorithm>(j_child));
+    }
+
+    for (auto p : data["children_probs"]) {
+        int index = p[0].get<int>();
+        this->children_probs[index] = p[1].get<double>();
+    }
 }
 
 
@@ -42,6 +55,8 @@ bool Algorithm::operator==(const Algorithm &other) const {
         // cout << "children size is different: " << this->children.size() << " " << other.children.size() << endl;
         return false;
     }
+
+    // check children are the same
 
     int c = 0;
 
@@ -122,8 +137,8 @@ string to_string(shared_ptr<Algorithm> algorithm, const string& tabs) {
         for(auto child : algorithm->children) {
             string child_alg;
             {
-                if (algorithm->children.size() > 1) {
-                    result += tabs + "if c = " + to_string(child->classical_state) + ":\n" ;
+                if (algorithm->has_meas()) {
+                    result += tabs + "if c = " + child->classical_state.str() + ":\n" ;
                     child_alg = to_string(child, tabs+"\t");
                 } else {
                     child_alg = to_string(child, tabs);
@@ -146,6 +161,21 @@ bool dump_to_file(const fs::path &path, const shared_ptr<Algorithm> &algorithm) 
 
     out.close();
     return true;
+}
+
+bool dump_raw_algorithm(const fs::path &p, const shared_ptr<Algorithm> &a) {
+
+    // Dump into a file
+    std::ofstream file(p);
+    if (!file) {
+        std::cerr << "Error opening file for writing\n";
+        return false;
+    }
+    auto j = to_json(*a);
+    file << j.dump(4);  // "4" = pretty print with indentation
+    file.close();
+    return true;
+
 }
 
 int get_algorithm_from_list(const vector<shared_ptr<Algorithm>> &algorithms, const shared_ptr<Algorithm> &new_algorithm) {
@@ -180,6 +210,10 @@ shared_ptr<Algorithm> deep_copy_algorithm(shared_ptr<Algorithm> algorithm)  {
     int depth = algorithm->depth;
 
     auto algorithm_copy = make_shared<Algorithm>(algorithm->action, classical_state, algorithm->precision, depth);
+
+    for (auto it : algorithm->reachable_states) {
+        algorithm_copy->reachable_states.push_back(it);
+    }
 
     for (auto child : algorithm->children) {
         algorithm_copy->children.push_back(deep_copy_algorithm(child));
@@ -222,23 +256,45 @@ void Algorithm::get_successor_classical_states(const cpp_int &current_classical_
     unordered_set<cpp_int> &result) const {
     // get all bits that might change
     unordered_set<int> bits;
-    for (auto instruction : this->action->instruction_sequence) {
-        assert(instruction.instruction_type != InstructionType::Classical);
+    auto copy_current_classical_state = current_classical_state;
+
+    for (const auto& instruction : this->action->instruction_sequence) {
         if (instruction.instruction_type == InstructionType::Measurement) {
             bits.insert(instruction.c_target);
+        } else {
+            auto t = instruction.c_target;
+            assert(bits.find(t) == bits.end());
+            if (instruction.gate_name == GateName::Write0) {
+                copy_current_classical_state = copy_current_classical_state & ~(1 << instruction.c_target);
+            } else {
+                assert(instruction.gate_name == GateName::Write1);
+                copy_current_classical_state = copy_current_classical_state | (1 << instruction.c_target);
+            }
         }
     }
 
-    result.insert(current_classical_state);
+    result.insert(copy_current_classical_state);
 
     for (auto bit : bits) {
-        result.insert(current_classical_state ^ (1 << bit)); // toggle bit
+        unordered_set<cpp_int> new_states;
+        for (auto c_state : result) {
+            new_states.insert(c_state ^ (1 << bit)); // toggle bit
+        }
+        for (const auto& n : new_states) {
+            result.insert(n);
+        }
     }
+
 }
+
+
 
 void get_algorithm_end_nodes(const shared_ptr<Algorithm> &algorithm, vector<shared_ptr<Algorithm>> &end_nodes) {
     if (algorithm->children.empty()) {
-        end_nodes.push_back(algorithm);
+        if (!(*algorithm->action == HALT_ACTION)) {
+            end_nodes.push_back(algorithm);
+        }
+
         return;
     }
 

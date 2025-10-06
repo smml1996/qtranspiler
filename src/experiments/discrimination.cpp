@@ -11,9 +11,18 @@ public:
         this->set_hidden_index = true;
     };
 
-    Rational postcondition(const Belief &belief, const unordered_map<int, int> &embedding) override {
+    BasisStatesDiscrimination() {
+        this->set_hidden_index = true;
+        this->name = "basic_zero_plus";
+        this->precision = 8;
+        this->with_thermalization = false;
+        this->min_horizon = 1;
+        this->max_horizon = 3;
+    };
+
+    MyFloat postcondition(const Belief &belief, const unordered_map<int, int> &embedding) override {
         assert (embedding.size() == 1);
-        Rational result("0", "1", this->precision*(this->max_horizon+1));
+        MyFloat result("0", this->precision*(this->max_horizon+1));
         for (auto it : belief.probs) {
             auto hybrid_state = it.first->hybrid_state;
             auto cs = hybrid_state->classical_state;
@@ -30,25 +39,29 @@ public:
         assert(embedding.find(0) != embedding.end());
 
 
-        auto H0 = make_shared<POMDPAction>("H0", hardware_spec.to_basis_gates_impl(Instruction(GateName::H,
-            embedding.at(0))), this->precision, vector<Instruction>({Instruction(GateName::H, 0)}));
+        vector<Instruction> H_seq = hardware_spec.to_basis_gates_impl(Instruction(GateName::H,
+            embedding.at(0)));
+        H_seq.emplace_back(GateName::Write1, 2);
+        auto H0 = make_shared<POMDPAction>("H0", H_seq, this->precision, vector<Instruction>({Instruction(GateName::H, 0)}));
 
         auto P0 = make_shared<POMDPAction>("P0",
-            vector<Instruction>({Instruction(GateName::Meas, embedding.at(0), 0)}),
+            vector<Instruction>({Instruction(GateName::Meas, embedding.at(0), 0), Instruction(GateName::Write1, 3)}),
             this->precision,
             vector<Instruction>({Instruction(GateName::Meas, 0, 0)}));
 
         auto determine0 = make_shared<POMDPAction>("Is0",
-            vector<Instruction>({Instruction(GateName::Write0, 0)}),
+            vector<Instruction>({Instruction(GateName::Write0, 0), Instruction(GateName::Write1, 1)}),
             this->precision,
             vector<Instruction>({Instruction(GateName::Write0, 0)}));
 
         auto determinePlus = make_shared<POMDPAction>("IsPlus",
-            vector<Instruction>({Instruction(GateName::Write1, 0)}),
+            vector<Instruction>({Instruction(GateName::Write1, 0), Instruction(GateName::Write1, 1)}),
             this->precision,
             vector<Instruction>({Instruction(GateName::Write1, 0)}));
         return {H0, P0, determine0, determinePlus};
     };
+
+
 
 
 };
@@ -60,9 +73,9 @@ public:
         this->set_hidden_index = true;
     };
 
-    Rational postcondition(const Belief &belief, const unordered_map<int, int> &embedding) override {
+    MyFloat postcondition(const Belief &belief, const unordered_map<int, int> &embedding) override {
         assert (embedding.size() == 1);
-        Rational result("0", "1", this->precision*(this->max_horizon+1));
+        MyFloat result("0", this->precision*(this->max_horizon+1));
         for (auto it : belief.probs) {
             auto hybrid_state = it.first->hybrid_state;
             auto cs = hybrid_state->classical_state;
@@ -110,12 +123,13 @@ public:
     method_types, hw_list, optimize) {
     };
 
+    BasicZeroPlusDiscrimination() : BasisStatesDiscrimination() {};
+
     vector<pair<shared_ptr<HybridState>, double>> get_initial_distribution(unordered_map<int, int> &embedding) const override {
         assert (embedding.size() == 1);
         vector<pair<shared_ptr<HybridState>, double>> result;
 
         auto classical_state = make_shared<ClassicalState>();
-
 
         auto H0 = Instruction(GateName::H, embedding.at(0));
 
@@ -130,12 +144,28 @@ public:
         return result;
     }
 
-    Rational postcondition(const Belief &belief, const unordered_map<int, int> &embedding) override {
+    [[nodiscard]] bool guard(const shared_ptr<POMDPVertex>& vertex, const unordered_map<int, int>& embedding, const shared_ptr<POMDPAction>& action) const override {
+        if (vertex->hybrid_state->classical_state->read(1)) {
+            return false;
+        }
+        if (vertex->hybrid_state->classical_state->read(2)) {
+            if (action->name == "H0") return false;
+        }
+
+        if (vertex->hybrid_state->classical_state->read(3)) {
+            return action->name != "H0";
+        } else {
+            return action->name != "Is0" && action->name != "IsPlus";
+        }
+        return true;
+    }
+
+    MyFloat postcondition(const Belief &belief, const unordered_map<int, int> &embedding) override {
         assert (embedding.size() == 1);
         auto state0 = QuantumState({embedding.at(0)}, this->precision);
         auto H = Instruction(GateName::H, embedding.at(0));
         auto state1 = state0.apply_instruction(H);
-        Rational result("0", "1", this->precision*(this->max_horizon+1));
+        MyFloat result("0", this->precision*(this->max_horizon+1));
         for (auto it : belief.probs) {
             assert(it.first->hidden_index == 0 || it.first->hidden_index == 1);
             auto hybrid_state = it.first->hybrid_state;

@@ -4,8 +4,8 @@
 
 #include "utils.hpp"
 
-Rational Belief::get_sum(int precision) const {
-    Rational result("0", "1", precision);
+MyFloat Belief::get_sum(int precision) const {
+    MyFloat result("0", precision);
 
     for (auto & prob : this->probs) {
         result = result + prob.second;
@@ -14,26 +14,26 @@ Rational Belief::get_sum(int precision) const {
     return result;
 }
 
-Rational Belief::get(const shared_ptr<POMDPVertex> &v, int precision) {
+MyFloat Belief::get(const shared_ptr<POMDPVertex> &v, int precision) {
     if(this->probs.find(v) == this->probs.end()){
-        return Rational("0", "1", precision);
+        return MyFloat("0", precision);
     }
     return this->probs[v];
 }
 
-void Belief::set_val(const shared_ptr<POMDPVertex> &v, const Rational &prob) {
-    if (prob.numerator == MyFloat("0", prob.precision)) return;
-    this->probs.insert_or_assign(v, Rational(prob));
+void Belief::set_val(const shared_ptr<POMDPVertex> &v, const MyFloat &prob) {
+    if (prob == MyFloat("0", prob.precision)) return;
+    this->probs.insert_or_assign(v, MyFloat(prob));
 }
 
-void Belief::add_val(const shared_ptr<POMDPVertex> &v, const Rational &val) {
+void Belief::add_val(const shared_ptr<POMDPVertex> &v, const MyFloat &val) {
     assert(v != nullptr);
     assert(v->hybrid_state != nullptr);
     auto final_val =  this->get(v, val.precision) + val;
-    this->probs.insert_or_assign(v, Rational(final_val));
-    // if (this->probs.at(v).numerator == MyFloat("0", val.precision)) {
-    //     this->probs.erase(v);
-    // }
+    this->probs.insert_or_assign(v, MyFloat(final_val));
+    if (this->probs.at(v) == MyFloat("0", val.precision)) {
+        this->probs.erase(v);
+    }
 }
 
 bool Belief::is_normalized(int precision) const {
@@ -71,14 +71,14 @@ void Belief::print() const {
 std::size_t BeliefHash::operator()(const Belief &belief) const {
     std::size_t seed = 0;
 
-    std::vector<std::pair<shared_ptr<POMDPVertex>, Rational>> items(belief.probs.begin(), belief.probs.end());
+    std::vector<std::pair<shared_ptr<POMDPVertex>, MyFloat>> items(belief.probs.begin(), belief.probs.end());
 
     std::sort(items.begin(), items.end(),
       [](auto &a, auto &b) {
           if (a.second == b.second) {
               return a.first->id < b.first->id;
           }
-          return a.second < b.second;  // ascending by Rational
+          return a.second < b.second;  // ascending by MyFloat
           // or b.second < a.second for descending
       });
 
@@ -87,7 +87,7 @@ std::size_t BeliefHash::operator()(const Belief &belief) const {
         std::hash<std::string> float_hasher;
         POMDPVertexHash vertex_hasher;
         std::size_t h1 = vertex_hasher(kv.first);
-        std::size_t h2 = float_hasher(gate_to_string(kv.second.numerator) + gate_to_string(kv.second.denominator));
+        std::size_t h2 = float_hasher(gate_to_string(kv.second) + gate_to_string(kv.second));
 
         // combine (boost::hash_combine style)
         seed ^= h1 + 0x9e3779b9 + (seed << 6) + (seed >> 2);
@@ -96,12 +96,12 @@ std::size_t BeliefHash::operator()(const Belief &belief) const {
     return seed;
 }
 
-Rational l1_norm(const Belief &b1, const Belief &b2, int precision) {
-    Rational result("0", "1", precision);
+MyFloat l1_norm(const Belief &b1, const Belief &b2, int precision) {
+    MyFloat result("0", precision);
     for (auto it = b1.probs.begin(); it != b1.probs.end(); ++it) {
         auto it2 = b2.probs.find(it->first);
         if (it2 != b2.probs.end()) {
-            auto temp = Rational("-1", "1", precision) * it2->second ;
+            auto temp = MyFloat("-1", precision) * it2->second ;
             result = result + abs(it->second + temp);
         } else {
             result = result + it->second;
@@ -112,14 +112,14 @@ Rational l1_norm(const Belief &b1, const Belief &b2, int precision) {
 
 Belief normalize_belief(const Belief &belief, int precision) {
     Belief result;
-    Rational total("0", "1", precision);
+    MyFloat total("0", precision);
     for (auto it : belief.probs) {
         total = total + it.second;
     }
 
     for (auto it : belief.probs) {
-        Rational value = it.second / total;
-        result.set_val(it.first, value);
+        // MyFloat value = it.second / total;
+        // result.set_val(it.first, value);
     }
 
     return result;

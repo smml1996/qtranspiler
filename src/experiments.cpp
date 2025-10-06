@@ -10,6 +10,8 @@
 #include "utils.hpp"
 using namespace  std;
 
+int Experiment::round_in_file = 5;
+
 std::string join(const std::vector<std::string>& parts, const std::string& delimiter) {
     std::ostringstream oss;
     for (size_t i = 0; i < parts.size(); ++i) {
@@ -78,7 +80,7 @@ MethodType str_to_method_type(const string &method) {
     throw invalid_argument("Method type not recognized: " + method);
 }
 
-bool Experiment::guard(const POMDPVertex&, const unordered_map<int, int>&, const POMDPAction&) const {
+bool Experiment::guard(const shared_ptr<POMDPVertex>&, const unordered_map<int, int>&, const shared_ptr<POMDPAction>&) const {
     return true;
 }
 
@@ -128,6 +130,16 @@ bool Experiment::setup_working_dir() const {
             return false;
         }
     }
+    dir_path = fs::path("..") / "results" / this->name / "raw_algorithms";
+
+    if (!fs::exists(dir_path)) {
+        if (fs::create_directories(dir_path)) {
+            std::cout << "Algorithms directory created successfully.\n";
+        } else {
+            std::cerr << "Failed to create directory for storing algorithms.\n";
+            return false;
+        }
+    }
     return true;
 }
 
@@ -157,7 +169,7 @@ for (QuantumHardware qw : quantum_hardwares) {
 vector<int> Experiment::get_qubits_used(const unordered_map<int, int> &embedding) {
     vector<int> result;
     result.reserve(embedding.size());
-for (auto it : embedding) {
+    for (auto it : embedding) {
         result.push_back(it.second);
     }
     return result;
@@ -172,7 +184,7 @@ Belief Experiment::get_initial_belief(const POMDP &pomdp) const {
             initial_belief.add_val(it.first, it.second);
         }
     } else {
-        initial_belief.set_val(pomdp.initial_state, Rational("1", "1", this->precision *(this->max_horizon+1)));
+        initial_belief.set_val(pomdp.initial_state, MyFloat("1", this->precision *(this->max_horizon+1)));
     }
 
     return initial_belief;
@@ -241,11 +253,11 @@ void Experiment::run() {
 
     vector<HardwareSpecification> hardware_specs = this->get_hardware_specs();
 
-    auto actual_guard = [this](const POMDPVertex& v, const std::unordered_map<int,int>& m, const POMDPAction& a) {
+    auto actual_guard = [this](const shared_ptr<POMDPVertex>& v, const std::unordered_map<int,int>& m, const shared_ptr<POMDPAction>& a) {
         return this->guard(v, m, a);
     };
 
-    auto actual_reward_f = [this](const Belief &b, const unordered_map<int, int> &embedding) -> Rational {
+    auto actual_reward_f = [this](const Belief &b, const unordered_map<int, int> &embedding) -> MyFloat {
         return this->postcondition(b, embedding);
     };
 
@@ -279,7 +291,6 @@ void Experiment::run() {
 
             auto HALT_ALGORITHM = make_shared<Algorithm>(make_shared<POMDPAction>(HALT_ACTION), get_belief_cs(initial_belief), 0);
             for (int horizon = this->min_horizon; horizon <= this->max_horizon; horizon++) {
-                cout << horizon << endl;
                 for (auto method : this->method_types) {
                     long long method_time;
                     pair<shared_ptr<Algorithm>, double> result;
@@ -311,7 +322,8 @@ void Experiment::run() {
                         method_time = chrono::duration<double>(end_method - start_method).count();
                         error = solver.get_error(horizon);
                     } else {
-                        ConvexDistributionSolver solver (pomdp, actual_reward_f, this->precision * (max_horizon+1), embedding);
+                        ConvexDistributionSolver solver(pomdp, actual_reward_f, this->precision * (max_horizon + 1),
+                                                        embedding, actual_guard);
                         auto start_method = chrono::high_resolution_clock::now();
                         auto result_temp = solver.solve(initial_states, horizon);
                         result = make_pair(make_shared<Algorithm>(*result_temp.first), result_temp.second);
@@ -346,11 +358,15 @@ void Experiment::run() {
 
     // dump algorithms
     fs::path algorithms_folder = this->get_wd() / "algorithms";
+    fs::path raw_algorithms_folder = this->get_wd() / "raw_algorithms";
     int algo_index = 0;
     for (const auto& algorithm : unique_algorithms) {
         algo_index += 1;
         fs::path algorithm_path = algorithms_folder / ("A_" + to_string(algo_index) + ".txt");
         dump_to_file(algorithm_path, algorithm);
+
+        fs::path raw_algorithm_path = raw_algorithms_folder / ("R_" + to_string(algo_index) + ".txt");
+        dump_raw_algorithm(raw_algorithm_path, algorithm);
     }
 
     cout << "Done" << endl;
@@ -458,7 +474,7 @@ inline vector<string> get_hardware_batches(int num_batches = 20, bool with_cnot=
 }
 
 
-void generate_experiment_file(const string& experiment_name, const string& method, int min_horizon, int max_horizon, int num_batches, bool with_cnot) {
+void generate_experiment_file(const string& experiment_name, const string& method, int min_horizon, int max_horizon, int num_batches, bool with_cnot, bool with_thermalization) {
     auto p = fs::path("..") / "scripts"/ (experiment_name + ".sh");
     std::ofstream results_file(p);
 
@@ -471,8 +487,15 @@ void generate_experiment_file(const string& experiment_name, const string& metho
 
     for (int i = 0; i < batches.size(); i++) {
         string custom_name = experiment_name + "_" + to_string(i);
-        results_file << "sbatch server_script.sh " << experiment_name << " " << custom_name << " " << method << " " <<
+        if (with_thermalization) {
+          custom_name = custom_name + "_therm";
+            results_file << "sbatch server_script_therm.sh " << experiment_name << " " << custom_name << " " << method << " " <<
                 batches[i] << " " << to_string(min_horizon) << " " << to_string(max_horizon) << endl;
+        }  else {
+            results_file << "sbatch server_script.sh " << experiment_name << " " << custom_name << " " << method << " " <<
+                batches[i] << " " << to_string(min_horizon) << " " << to_string(max_horizon) << endl;
+        }
+
     }
 
     results_file.close();
@@ -480,13 +503,131 @@ void generate_experiment_file(const string& experiment_name, const string& metho
 }
 
 void generate_all_experiments_file() {
-    generate_experiment_file("bitflip_ipma", "\"bellman pbvi\"", 3, 7, 20, true);
-    generate_experiment_file("bitflip_ipma2", "\"bellman pbvi\"", 3, 7, 5, true);
-    generate_experiment_file("bitflip_cxh", "\"bellman pbvi\"", 6, 6, 20, true);
-    generate_experiment_file("reset", "\"bellman pbvi\"", 2, 8, 1, false);
-    generate_experiment_file("basic_zero_plus_discr", "convex", 3, 3, 5, false);
-    generate_experiment_file("bell_state_reach", "\"bellman convex\"", 1, 2, 1, true);
-    generate_experiment_file("ghz3", "bellman", 3, 3, 5, true);
+    generate_experiment_file("bitflip_ipma", "bellman", 3, 7, 20, true, false);
+    generate_experiment_file("bitflip_ipma2", "bellman", 3, 7, 20, true, false);
+    generate_experiment_file("bitflip_cxh", "bellman", 7, 7, 20, true, false);
+    generate_experiment_file("reset", "bellman", 2, 7, 1, false, false);
+    generate_experiment_file("reset", "bellman", 2, 7, 1, false, true);
+    generate_experiment_file("basic_zero_plus_discr", "convex", 1, 4, 20, false, true);
+    generate_experiment_file("bell_state_reach", "\"bellman convex\"", 1, 4, 20, true, true);
+    generate_experiment_file("ghz3", "bellman", 3, 3, 5, true, false);
+    generate_experiment_file("ghz3", "bellman", 3, 3, 5, true, true);
 }
 
-int Experiment::round_in_file = 5;
+MyFloat verify_single_distribution(const Belief &current_belief, Experiment &experiment, HardwareSpecification &hardware_spec,
+    const shared_ptr<Algorithm> &algorithm, const unordered_map<int, int> &embedding, int precision) {
+
+    MyFloat curr_belief_val = experiment.postcondition(current_belief, embedding);
+
+    if (algorithm == nullptr) {
+        return curr_belief_val;
+    }
+
+    auto action_ = algorithm->action;
+    if (*action_ == HALT_ACTION) {
+        return curr_belief_val;
+    }
+
+    vector<Instruction> seq;
+
+    for (auto instruction_ : action_->pseudo_instruction_sequence) {
+        for (auto instruction : hardware_spec.to_basis_gates_impl(instruction_)) {
+            seq.push_back(instruction.rename(embedding));
+            if (hardware_spec.get_hardware() != QuantumHardware::PerfectHardware && hardware_spec.instructions_to_channels.find(make_shared<Instruction>(seq[seq.size()-1])) == hardware_spec.instructions_to_channels.end()) {
+                return MyFloat("0", precision);
+            }
+        }
+    }
+
+    POMDPAction action = POMDPAction(action_->name, seq, precision, action_->pseudo_instruction_sequence);
+
+    // build next_beliefs, separate them by different observables
+    unordered_map<cpp_int, Belief> obs_to_next_beliefs;
+    MyFloat zero("0", precision);
+    for(auto & prob : current_belief.probs) {
+        auto current_v = prob.first;
+        if(prob.second > zero) {
+            auto successors = action.get_successor_states(hardware_spec, current_v);
+            for (auto &it_next_v: successors) {
+                MyFloat prob2(to_string(round_to(it_next_v.second, experiment.precision)), precision);
+                if (prob2 > zero) {
+                    obs_to_next_beliefs[it_next_v.first->hybrid_state->classical_state->get_memory_val()].add_val(it_next_v.first,
+                                                                              prob.second * prob2);
+                }else {
+                    assert(prob2 == zero);
+                }
+            }
+        }
+    }
+
+
+    if (!obs_to_next_beliefs.empty()) {
+        MyFloat bellman_val("0", precision);
+        set<cpp_int> visited_cstates;
+        for (int i = 0; i < algorithm->children.size(); i++) {
+            if(obs_to_next_beliefs.find(algorithm->children[i]->classical_state) != obs_to_next_beliefs.end()) {
+                visited_cstates.insert(algorithm->children[i]->classical_state);
+                bellman_val = bellman_val + verify_single_distribution(obs_to_next_beliefs[algorithm->children[i]->classical_state], experiment, hardware_spec, algorithm->children[i], embedding, precision);
+            }
+        }
+
+        for (auto it: obs_to_next_beliefs) {
+            if (visited_cstates.find(it.first) == visited_cstates.end()) {
+                bellman_val = bellman_val + experiment.postcondition(it.second, embedding);
+            }
+        }
+        return bellman_val;
+    } else {
+        return curr_belief_val;
+    }
+
+
+}
+
+MyFloat verify_algorithm(Experiment &experiment, const Algorithm &algorithm, HardwareSpecification &hardware_spec,
+    unordered_map<int, int> &embedding, bool is_convex,int max_horizon) {
+    assert (experiment.precision == 8);
+    auto initial_distribution_ = experiment.get_initial_distribution(embedding);
+    Belief initial_distribution;
+
+    int precision = (max_horizon + 1) * experiment.precision;
+    experiment.max_horizon = max_horizon;
+
+    int hidden_index = -1;
+    if (experiment.set_hidden_index) {
+        hidden_index = 0;
+    }
+    for (auto it : initial_distribution_) {
+        initial_distribution.add_val(make_shared<POMDPVertex>(it.first, hidden_index), MyFloat(to_string(it.second), precision));
+        if (experiment.set_hidden_index) {
+            hidden_index+=1;
+        }
+    }
+
+    if (is_convex) {
+        MyFloat current_val("0", precision);
+        bool is_first = true;
+        for (auto it : initial_distribution.probs) {
+            Belief current_distribution;
+            assert(current_distribution.probs.size() == 0);
+            current_distribution.set_val(it.first, MyFloat("1", precision));
+            assert(*algorithm.action == random_branch);
+            assert(algorithm.children.size() == 2);
+            MyFloat prob1(to_string(round_to(algorithm.children_probs.at(0), precision)), precision);
+            MyFloat prob2(to_string(round_to(algorithm.children_probs.at(1), precision)), precision);
+            MyFloat value = prob1 * verify_single_distribution(current_distribution, experiment, hardware_spec, algorithm.children.at(0), embedding, precision) + prob2 *verify_single_distribution(current_distribution, experiment, hardware_spec, algorithm.children.at(1), embedding, precision);
+            if (is_first) {
+                current_val = value ;
+            } else {
+                current_val = min(value, current_val);
+            }
+            is_first = false;
+        }
+
+        return current_val;
+    } else {
+        auto current_val = verify_single_distribution(initial_distribution, experiment, hardware_spec, make_shared<Algorithm>(algorithm), embedding, precision);
+
+        return current_val;
+    }
+}

@@ -1,5 +1,10 @@
-sbatch server_script.sh basic_zero_plus_discr basic_zero_plus_discr_0 convex yorktown,bogota,ourense,lagos,jakarta,boeblingen,hanoi,toronto,cambridge,cusco,washington 3 3
-sbatch server_script.sh basic_zero_plus_discr basic_zero_plus_discr_1 convex athens,santiago,essex,perth,perfect_hardware,singapore,auckland,sydney,prague,brisbane,kyiv 3 3
-sbatch server_script.sh basic_zero_plus_discr basic_zero_plus_discr_2 convex vigo,rome,manila,casablanca,melbourne,johannesburg,montreal,cairo,rochester,kawasaki,torino 3 3
-sbatch server_script.sh basic_zero_plus_discr basic_zero_plus_discr_3 convex belem,burlington,london,oslo,guadalupe,poughkeepsie,mumbai,paris,brooklyn,osaka,fez 3 3
-sbatch server_script.sh basic_zero_plus_discr basic_zero_plus_discr_4 convex valencia,quito,lima,nairobi,almaden,kolkata,geneva,algiers,manhattan,kyoto,makarresh 3 3
+sbatch server_script.sh basic_zero_plus_discr basic_zero_plus_discr_0 convex yorktown,ourense,jakarta,hanoi,cambridge,washington 1 4
+sbatch server_script.sh basic_zero_plus_discr basic_zero_plus_discr_1 convex athens,essex,perfect_hardware,auckland,prague,kyiv 1 4
+sbatch server_script.sh basic_zero_plus_discr basic_zero_plus_discr_2 convex vigo,manila,melbourne,montreal,rochester,torino 1 4
+sbatch server_script.sh basic_zero_plus_discr basic_zero_plus_discr_3 convex belem,london,guadalupe,mumbai,brooklyn,fez 1 4
+sbatch server_script.sh basic_zero_plus_discr basic_zero_plus_discr_4 convex valencia,lima,almaden,geneva,manhattan,makarresh 1 4
+sbatch server_script.sh basic_zero_plus_discr basic_zero_plus_discr_5 convex bogota,lagos,boeblingen,toronto,cusco 1 4
+sbatch server_script.sh basic_zero_plus_discr basic_zero_plus_discr_6 convex santiago,perth,singapore,sydney,brisbane 1 4
+sbatch server_script.sh basic_zero_plus_discr basic_zero_plus_discr_7 convex rome,casablanca,johannesburg,cairo,kawasaki 1 4
+sbatch server_script.sh basic_zero_plus_discr basic_zero_plus_discr_8 convex burlington,oslo,poughkeepsie,paris,osaka 1 4
+sbatch server_script.sh basic_zero_plus_discr basic_zero_plus_discr_9 convex quito,nairobi,kolkata,algiers,kyoto 1 4

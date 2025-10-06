@@ -81,6 +81,8 @@ std::string gate_to_string(GateName gate) {
 
         case Write0:   return "WRITE0";
         case Write1:   return "WRITE1";
+        case P0:       return "P0";
+        case P1:       return "P1";
         default: return "UNKNOWN";
     }
 }

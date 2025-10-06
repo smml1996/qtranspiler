@@ -1,0 +1,49 @@
+CNOT([q10,q5]); CNOT([q10,q6]); 
+x2 := measure(q5); 
+if c = 0:
+	x2 := measure(q5); 
+	if c = 0:
+		x2 := measure(q5); 
+		if c = 0:
+			x2 := measure(q5); 
+			if c = 0:
+				HALT
+			if c = 4:
+				HALT
+		if c = 4:
+			x2 := measure(q5); 
+			if c = 0:
+				HALT
+			if c = 4:
+				HALT
+	if c = 4:
+		x2 := measure(q5); 
+		if c = 0:
+			x2 := measure(q5); 
+			if c = 0:
+				HALT
+			if c = 4:
+				HALT
+		if c = 4:
+			X([q10]); 
+			HALT
+if c = 4:
+	x2 := measure(q5); 
+	if c = 0:
+		x2 := measure(q5); 
+		if c = 0:
+			x2 := measure(q5); 
+			if c = 0:
+				HALT
+			if c = 4:
+				HALT
+		if c = 4:
+			X([q10]); 
+			HALT
+	if c = 4:
+		X([q10]); 
+		x2 := measure(q5); 
+		if c = 0:
+			HALT
+		if c = 4:
+			HALT

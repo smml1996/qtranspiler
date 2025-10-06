@@ -1,0 +1,27 @@
+CNOT([q21,q23]); CNOT([q21,q24]); 
+x2 := measure(q23); 
+if c = 0:
+	x2 := measure(q23); 
+	if c = 0:
+		x2 := measure(q23); 
+		if c = 0:
+			HALT
+		if c = 4:
+			HALT
+	if c = 4:
+		x2 := measure(q23); 
+		if c = 0:
+			HALT
+		if c = 4:
+			HALT
+if c = 4:
+	x2 := measure(q23); 
+	if c = 0:
+		x2 := measure(q23); 
+		if c = 0:
+			HALT
+		if c = 4:
+			HALT
+	if c = 4:
+		X([q21]); 
+		HALT

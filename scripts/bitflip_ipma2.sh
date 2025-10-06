@@ -1,5 +1,20 @@
-sbatch server_script.sh bitflip_ipma2 bitflip_ipma2_0 "bellman pbvi" yorktown,bogota,ourense,lagos,jakarta,boeblingen,hanoi,toronto,cambridge,washington 3 7
-sbatch server_script.sh bitflip_ipma2 bitflip_ipma2_1 "bellman pbvi" athens,santiago,essex,perth,perfect_hardware,singapore,auckland,sydney 3 7
-sbatch server_script.sh bitflip_ipma2 bitflip_ipma2_2 "bellman pbvi" vigo,rome,manila,casablanca,melbourne,johannesburg,montreal,cairo,rochester 3 7
-sbatch server_script.sh bitflip_ipma2 bitflip_ipma2_3 "bellman pbvi" belem,burlington,london,oslo,guadalupe,poughkeepsie,mumbai,paris,brooklyn 3 7
-sbatch server_script.sh bitflip_ipma2 bitflip_ipma2_4 "bellman pbvi" valencia,quito,lima,nairobi,almaden,kolkata,geneva,algiers,manhattan 3 7
+sbatch server_script.sh bitflip_ipma2 bitflip_ipma2_0 bellman yorktown,jakarta,cambridge 3 7
+sbatch server_script.sh bitflip_ipma2 bitflip_ipma2_1 bellman athens,perfect_hardware 3 7
+sbatch server_script.sh bitflip_ipma2 bitflip_ipma2_2 bellman vigo,melbourne,rochester 3 7
+sbatch server_script.sh bitflip_ipma2 bitflip_ipma2_3 bellman belem,guadalupe,brooklyn 3 7
+sbatch server_script.sh bitflip_ipma2 bitflip_ipma2_4 bellman valencia,almaden,manhattan 3 7
+sbatch server_script.sh bitflip_ipma2 bitflip_ipma2_5 bellman bogota,boeblingen 3 7
+sbatch server_script.sh bitflip_ipma2 bitflip_ipma2_6 bellman santiago,singapore 3 7
+sbatch server_script.sh bitflip_ipma2 bitflip_ipma2_7 bellman rome,johannesburg 3 7
+sbatch server_script.sh bitflip_ipma2 bitflip_ipma2_8 bellman burlington,poughkeepsie 3 7
+sbatch server_script.sh bitflip_ipma2 bitflip_ipma2_9 bellman quito,kolkata 3 7
+sbatch server_script.sh bitflip_ipma2 bitflip_ipma2_10 bellman ourense,hanoi,washington 3 7
+sbatch server_script.sh bitflip_ipma2 bitflip_ipma2_11 bellman essex,auckland 3 7
+sbatch server_script.sh bitflip_ipma2 bitflip_ipma2_12 bellman manila,montreal 3 7
+sbatch server_script.sh bitflip_ipma2 bitflip_ipma2_13 bellman london,mumbai 3 7
+sbatch server_script.sh bitflip_ipma2 bitflip_ipma2_14 bellman lima,geneva 3 7
+sbatch server_script.sh bitflip_ipma2 bitflip_ipma2_15 bellman lagos,toronto 3 7
+sbatch server_script.sh bitflip_ipma2 bitflip_ipma2_16 bellman perth,sydney 3 7
+sbatch server_script.sh bitflip_ipma2 bitflip_ipma2_17 bellman casablanca,cairo 3 7
+sbatch server_script.sh bitflip_ipma2 bitflip_ipma2_18 bellman oslo,paris 3 7
+sbatch server_script.sh bitflip_ipma2 bitflip_ipma2_19 bellman nairobi,algiers 3 7

@@ -95,9 +95,9 @@ class IPMABitflip : public Experiment {
             this->BELL3[2][2] = complex<double>(0.5, 0.0);
         }
 
-        [[nodiscard]] bool guard(const POMDPVertex& vertex, const unordered_map<int, int>& embedding, const POMDPAction& action) const override {
-            if (action.instruction_sequence[0].gate_name != GateName::Meas) return true;
-            auto qs = vertex.hybrid_state->quantum_state;
+        [[nodiscard]] bool guard(const shared_ptr<POMDPVertex>& vertex, const unordered_map<int, int>& embedding, const shared_ptr<POMDPAction>& action) const override {
+            if (action->instruction_sequence[0].gate_name != GateName::Meas) return true;
+            auto qs = vertex->hybrid_state->quantum_state;
             auto P0 = Instruction(GateName::P0, embedding.at(2));
             auto P1 = Instruction(GateName::P1, embedding.at(2));
 
@@ -150,8 +150,8 @@ class IPMABitflip : public Experiment {
             return result;
         }
 
-        Rational postcondition(const Belief &belief, const unordered_map<int, int> &embedding) override {
-            Rational result("0", "1", this->precision*(this->max_horizon+1));
+        MyFloat postcondition(const Belief &belief, const unordered_map<int, int> &embedding) override {
+            MyFloat result("0", this->precision*(this->max_horizon+1));
             for (auto it : belief.probs) {
                 auto is_target = this->target_vertices.find(it.first->id);
                 if (is_target != this->target_vertices.end()) {
@@ -366,15 +366,15 @@ class CXHBitflip : public IPMABitflip {
 
             
             auto H1 = make_shared<POMDPAction>("H1", hardware_spec.to_basis_gates_impl(Instruction(GateName::H,
-                embedding.at(1))), this->precision, vector<Instruction>({Instruction(GateName::H, embedding.at(1))}));
+                embedding.at(1))), this->precision, vector<Instruction>({Instruction(GateName::H, 1)}));
 
             auto H2 = make_shared<POMDPAction>("H2", hardware_spec.to_basis_gates_impl(Instruction(GateName::H,
-                embedding.at(2))), this->precision, vector<Instruction>({Instruction(GateName::H, embedding.at(2))}));
+                embedding.at(2))), this->precision, vector<Instruction>({Instruction(GateName::H, 2)}));
 
             auto P2 = make_shared<POMDPAction>("P2",
                 vector<Instruction>({Instruction(GateName::Meas, embedding.at(2), 2)}),
                 this->precision, 
-                vector<Instruction>{Instruction(GateName::Meas, embedding.at(2), 2)});
+                vector<Instruction>{Instruction(GateName::Meas, 2, 2)});
 
             auto CX21 = make_shared<POMDPAction>("CX21",
                 hardware_spec.to_basis_gates_impl(Instruction(GateName::Cnot, vector<int>({embedding.at(2)}), embedding.at(1)))
@@ -403,8 +403,8 @@ public:
         this->indices_to_matrix[3] = this->BELL3;
     };
 
-    Rational postcondition(const Belief &belief, const unordered_map<int, int> &embedding) override {
-        Rational result("0", "1", this->precision*(this->max_horizon+1));
+    MyFloat postcondition(const Belief &belief, const unordered_map<int, int> &embedding) override {
+        MyFloat result("0", this->precision*(this->max_horizon+1));
         for (auto it : belief.probs) {
             auto is_target = this->target_vertices.find(it.first->id);
             if (is_target != this->target_vertices.end()) {
@@ -435,7 +435,7 @@ public:
         const set<MethodType> &method_types, const set<QuantumHardware>& hw_list, bool optimize) : BellStateDiscrimination2(name, precision, with_thermalization, min_horizon, max_horizon, method_types, hw_list, optimize) {
     };
 
-    Rational postcondition(const Belief &belief, const unordered_map<int, int> &embedding) override {
+    MyFloat postcondition(const Belief &belief, const unordered_map<int, int> &embedding) override {
         return BellStateDiscrimination2::postcondition(belief, embedding);
     }
 

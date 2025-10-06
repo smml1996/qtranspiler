@@ -16,7 +16,9 @@ class BellStateReach : public IPMABitflip {
     public:
     BellStateReach(const string &name, int precision, bool with_thermalization, int min_horizon, int max_horizon,
     const set<MethodType>& method_types, const set<QuantumHardware>& hw_list, bool optimize) : IPMABitflip(name, precision, with_thermalization, min_horizon, max_horizon,
-                method_types, hw_list, optimize) {}
+                method_types, hw_list, optimize) {this->method_types.insert(MethodType::ConvexDist);}
+
+    BellStateReach()  : IPMABitflip(){ this->name = "BellStateReach"; };
 
     vector<pair<shared_ptr<HybridState>, double>> get_initial_distribution(unordered_map<int, int> &embedding) const override {
         vector<pair<shared_ptr<HybridState>, double>> result;
@@ -49,10 +51,8 @@ class BellStateReach : public IPMABitflip {
         return result;
     }
 
-
-
-    Rational postcondition(const Belief &belief, const unordered_map<int, int> &embedding) override {
-        Rational result("0", "1", this->precision*(this->max_horizon+1));
+    MyFloat postcondition(const Belief &belief, const unordered_map<int, int> &embedding) override {
+        MyFloat result("0", this->precision*(this->max_horizon+1));
         for (auto it : belief.probs) {
             auto is_target = this->target_vertices.find(it.first->id);
             if (is_target != this->target_vertices.end()) {
@@ -106,7 +106,7 @@ class BellStateReach : public IPMABitflip {
             vector<Instruction>({
                 Instruction(GateName::Cnot, vector<int>({0}), 1),
                 Instruction(GateName::H, 0), Instruction(GateName::Meas, 0, 0),
-                Instruction(GateName::Meas, embedding.at(1), 1)}));
+                Instruction(GateName::Meas, 1, 1)}));
 
         auto PA = make_shared<POMDPAction>("PA",
             vector<Instruction>({Instruction(GateName::Meas, embedding.at(2), 2)}),

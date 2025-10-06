@@ -1,7 +1,7 @@
 #ifndef GHZ_H
 #define GHZ_H
 #include <absl/strings/internal/str_format/extension.h>
-
+#include <queue>
 #include "experiments.hpp"
 
 inline bool are_adjacent_qubits(const unordered_map<int, unordered_set<int>> &graph, int qubit1,
@@ -92,8 +92,8 @@ Experiment(name, precision, with_thermalization, min_horizon, max_horizon, false
             return result;
         }
 
-        Rational postcondition(const Belief &belief, const unordered_map<int, int> &embedding) override {
-            Rational answer("0", "1", this->precision*(this->max_horizon+1));
+        MyFloat postcondition(const Belief &belief, const unordered_map<int, int> &embedding) override {
+            MyFloat answer("0", this->precision*(this->max_horizon+1));
 
             auto local_target_state = this->get_target_state(embedding);
             for (auto it : belief.probs) {

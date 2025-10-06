@@ -256,6 +256,7 @@ pair<shared_ptr<QuantumState>, double> get_sequence_probability(shared_ptr<Quant
             if (count_meas > 1) throw invalid_argument("Invalid Measurement instruction");
         }
         quantum_state = quantum_state->apply_instruction(instruction, false);
+
         index++;
         if (quantum_state == nullptr) {
             return make_pair(nullptr, 0.0);
@@ -321,12 +322,13 @@ shared_ptr<QuantumState> QuantumState::apply_instruction(const Instruction &inst
             auto result0 = weighted_choice(vector<shared_ptr<QuantumState>>({q0, q1}), vector<double>({prob0, prob1}));
             if (q1 != nullptr && *result0 == *q1) {
                 auto x_instruction = Instruction(GateName::X, instruction.target);
-                result = result0->eval_single_qubit_gate(x_instruction);
+                result = result0->apply_instruction(x_instruction);
             } else {
                 result = result0;
             }
         } else {
             result = this->eval_single_qubit_gate(instruction);
+
         }
     }
     if (result){
@@ -336,6 +338,7 @@ shared_ptr<QuantumState> QuantumState::apply_instruction(const Instruction &inst
         }
         assert(result->sparse_vector.size() > 0);
     }
+
     return result;
 }
 
@@ -561,7 +564,6 @@ bool are_all_indices_equal(const string &s1, const string &s2, const vector<int>
 
 vector<vector<complex<double>>> QuantumState::multi_partial_trace(const vector<int> &remove_indices) const {
     vector<vector<complex<double>>> result;
-
 
     vector<int> local_qubits_used;
     for (auto q : this->qubits_used) {

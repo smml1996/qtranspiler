@@ -14,6 +14,8 @@ class Channel {
 public:
     double estimated_success_prob = 0;
     virtual ~Channel() = default;
+    inline virtual bool is_normalized() {return false;};
+    inline virtual void normalize() {};
 };
 
 
@@ -23,11 +25,12 @@ class QuantumChannel : public Channel {
     void merge_same_errors();
 public:
     vector<pair<vector<Instruction>, double>>errors_to_probs;
-    void optimize();
-
     explicit QuantumChannel(json &data);
     QuantumChannel();
 
+    void optimize();
+    bool is_normalized() override;
+    void normalize() override;
 };
 
 class MeasurementChannel : public Channel {
@@ -39,5 +42,7 @@ class MeasurementChannel : public Channel {
         MeasurementChannel(json &data);
         MeasurementChannel(double correct0, double correct1);
         double get_ind_probability(int ideal_outcome, int noisy_outcome) const;
+        bool is_normalized() override;
+        void normalize() override;
 };
 #endif

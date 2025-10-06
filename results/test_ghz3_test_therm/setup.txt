@@ -1,8 +1,0 @@
-name: test_ghz3_test_therm
-precision: 5
-thermalization: 1
-min. horizon: 3
-max. horizon: 3
-hidden index: 0
-methods: bellman
-quantum hardware: athens, perfect_hardware
