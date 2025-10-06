@@ -250,12 +250,12 @@ public:
 
             
             auto X0 = make_shared<POMDPAction>("X0", hardware_spec.to_basis_gates_impl(Instruction(GateName::X,
-                embedding.at(0))), this->precision, vector<Instruction>({Instruction(GateName::X, embedding.at(0))}));
+                embedding.at(0))), this->precision, vector<Instruction>({Instruction(GateName::X, 0)}));
 
             auto P2 = make_shared<POMDPAction>("P2",
                 vector<Instruction>({Instruction(GateName::Meas, embedding.at(2), 2)}),
                 this->precision, 
-                vector<Instruction>({Instruction(GateName::Meas, embedding.at(2), 2)}));
+                vector<Instruction>({Instruction(GateName::Meas, 2, 2)}));
             
             auto vCX02_instructions = hardware_spec.to_basis_gates_impl(Instruction(GateName::Cnot, vector<int>({embedding.at(0)}), embedding.at(2)));
 

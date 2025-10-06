@@ -220,6 +220,7 @@ def dump_stats_summary(experiment: Experiment):
             print("num. algorithms per horizon (method=convex)", file=f)
         for (horizon, algos) in horizon_to_algorithms_count.items():
             print(horizon, ": ", len(algos), file=f)
+            
 def print_stats_summary(experiment: Experiment) -> None:
     print("------", experiment, "------")
     print("count hardware: ", get_hardware_count(experiment))
