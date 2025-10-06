@@ -137,7 +137,7 @@ string to_string(shared_ptr<Algorithm> algorithm, const string& tabs) {
         for(auto child : algorithm->children) {
             string child_alg;
             {
-                if (algorithm->has_meas()) {
+                if (algorithm->children.size() > 1) {
                     result += tabs + "if c = " + child->classical_state.str() + ":\n" ;
                     child_alg = to_string(child, tabs+"\t");
                 } else {
