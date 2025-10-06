@@ -56,6 +56,8 @@ bool Algorithm::operator==(const Algorithm &other) const {
         return false;
     }
 
+    // check children are the same
+
     int c = 0;
 
     for (auto child : this->children) {
@@ -254,14 +256,24 @@ void Algorithm::get_successor_classical_states(const cpp_int &current_classical_
     unordered_set<cpp_int> &result) const {
     // get all bits that might change
     unordered_set<int> bits;
+    auto copy_current_classical_state = current_classical_state;
+
     for (const auto& instruction : this->action->instruction_sequence) {
-        assert(instruction.instruction_type != InstructionType::Classical);
         if (instruction.instruction_type == InstructionType::Measurement) {
             bits.insert(instruction.c_target);
+        } else {
+            auto t = instruction.c_target;
+            assert(bits.find(t) == bits.end());
+            if (instruction.gate_name == GateName::Write0) {
+                copy_current_classical_state = copy_current_classical_state & ~(1 << instruction.c_target);
+            } else {
+                assert(instruction.gate_name == GateName::Write1);
+                copy_current_classical_state = copy_current_classical_state | (1 << instruction.c_target);
+            }
         }
     }
 
-    result.insert(current_classical_state);
+    result.insert(copy_current_classical_state);
 
     for (auto bit : bits) {
         unordered_set<cpp_int> new_states;
@@ -279,7 +291,10 @@ void Algorithm::get_successor_classical_states(const cpp_int &current_classical_
 
 void get_algorithm_end_nodes(const shared_ptr<Algorithm> &algorithm, vector<shared_ptr<Algorithm>> &end_nodes) {
     if (algorithm->children.empty()) {
-        end_nodes.push_back(algorithm);
+        if (!(*algorithm->action == HALT_ACTION)) {
+            end_nodes.push_back(algorithm);
+        }
+
         return;
     }
 

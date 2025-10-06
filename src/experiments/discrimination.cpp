@@ -39,25 +39,29 @@ public:
         assert(embedding.find(0) != embedding.end());
 
 
-        auto H0 = make_shared<POMDPAction>("H0", hardware_spec.to_basis_gates_impl(Instruction(GateName::H,
-            embedding.at(0))), this->precision, vector<Instruction>({Instruction(GateName::H, 0)}));
+        vector<Instruction> H_seq = hardware_spec.to_basis_gates_impl(Instruction(GateName::H,
+            embedding.at(0)));
+        H_seq.emplace_back(GateName::Write1, 2);
+        auto H0 = make_shared<POMDPAction>("H0", H_seq, this->precision, vector<Instruction>({Instruction(GateName::H, 0)}));
 
         auto P0 = make_shared<POMDPAction>("P0",
-            vector<Instruction>({Instruction(GateName::Meas, embedding.at(0), 0)}),
+            vector<Instruction>({Instruction(GateName::Meas, embedding.at(0), 0), Instruction(GateName::Write1, 3)}),
             this->precision,
             vector<Instruction>({Instruction(GateName::Meas, 0, 0)}));
 
         auto determine0 = make_shared<POMDPAction>("Is0",
-            vector<Instruction>({Instruction(GateName::Write0, 0)}),
+            vector<Instruction>({Instruction(GateName::Write0, 0), Instruction(GateName::Write1, 1)}),
             this->precision,
             vector<Instruction>({Instruction(GateName::Write0, 0)}));
 
         auto determinePlus = make_shared<POMDPAction>("IsPlus",
-            vector<Instruction>({Instruction(GateName::Write1, 0)}),
+            vector<Instruction>({Instruction(GateName::Write1, 0), Instruction(GateName::Write1, 1)}),
             this->precision,
             vector<Instruction>({Instruction(GateName::Write1, 0)}));
         return {H0, P0, determine0, determinePlus};
     };
+
+
 
 
 };
@@ -138,6 +142,22 @@ public:
         result.push_back(make_pair(make_shared<HybridState>(state1, classical_state), 0.5));
 
         return result;
+    }
+
+    [[nodiscard]] bool guard(const shared_ptr<POMDPVertex>& vertex, const unordered_map<int, int>& embedding, const shared_ptr<POMDPAction>& action) const override {
+        if (vertex->hybrid_state->classical_state->read(1)) {
+            return false;
+        }
+        if (vertex->hybrid_state->classical_state->read(2)) {
+            if (action->name == "H0") return false;
+        }
+
+        if (vertex->hybrid_state->classical_state->read(3)) {
+            return action->name != "H0";
+        } else {
+            return action->name != "Is0" && action->name != "IsPlus";
+        }
+        return true;
     }
 
     MyFloat postcondition(const Belief &belief, const unordered_map<int, int> &embedding) override {

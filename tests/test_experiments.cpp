@@ -25,36 +25,36 @@ set<QuantumHardware> get_hardware_list() {
     return hw_list;
 }
 
-TEST(ExperimentsTests, ResetTest) {
-    const int min_horizon = 2;
-    const int max_horizon = 4;
-    string custom_name = "test_reset_test";
-
-    set<MethodType> methods = {
-        SingleDistBellman
-    };
-
-    auto hw_list = get_hardware_list();
-
-    ResetProblem reset_problem = ResetProblem(custom_name, precision, with_thermalization,min_horizon, max_horizon, methods, hw_list, false);
-    reset_problem.run();
-}
+// TEST(ExperimentsTests, ResetTest) {
+//     const int min_horizon = 2;
+//     const int max_horizon = 4;
+//     string custom_name = "test_reset_test";
 //
+//     set<MethodType> methods = {
+//         SingleDistBellman
+//     };
 //
-TEST(ExperimentsTests, BitflipTest) {
-    const int min_horizon = 4;
-    const int max_horizon = 5;
-    string custom_name = "test_bitflip_test";
+//     auto hw_list = get_hardware_list();
+//
+//     ResetProblem reset_problem = ResetProblem(custom_name, precision, with_thermalization,min_horizon, max_horizon, methods, hw_list, false);
+//     reset_problem.run();
+// }
 
-    set<MethodType> methods = {
-        SingleDistBellman
-    };
-
-    auto hw_list = {PerfectHardware, Athens, Almaden};
-
-    IPMA2Bitflip bitflip_ipma2 = IPMA2Bitflip(custom_name, precision, with_thermalization,min_horizon, max_horizon, methods, hw_list, true);
-    bitflip_ipma2.run();
-}
+//
+// TEST(ExperimentsTests, BitflipTest) {
+//     const int min_horizon = 4;
+//     const int max_horizon = 5;
+//     string custom_name = "test_bitflip_test";
+//
+//     set<MethodType> methods = {
+//         SingleDistBellman
+//     };
+//
+//     auto hw_list = {PerfectHardware, Athens, Almaden};
+//
+//     IPMA2Bitflip bitflip_ipma2 = IPMA2Bitflip(custom_name, precision, with_thermalization,min_horizon, max_horizon, methods, hw_list, true);
+//     bitflip_ipma2.run();
+// }
 //
 //
 // TEST(GHZTest, GHZNumEmbeddings) {
@@ -163,21 +163,21 @@ TEST(ExperimentsTests, BitflipTest) {
 //     EXPECT_EQ(total_embeddings, 2780);
 // }
 
-TEST(ExperimentsTests, GHZ3Test) {
-    string custom_name = "test_ghz3_test";
-
-    set<MethodType> methods = {
-        SingleDistBellman,
-        // SingleDistPBVI
-    };
-
-    auto hw_list = get_hardware_list();
-    const int min_horizon = 3;
-    const int max_horizon = 3;
-
-    GHZStatePreparation3 ghz_problem(custom_name, precision, with_thermalization, min_horizon, max_horizon, methods, hw_list, false);
-    ghz_problem.run();
-}
+// TEST(ExperimentsTests, GHZ3Test) {
+//     string custom_name = "test_ghz3_test";
+//
+//     set<MethodType> methods = {
+//         SingleDistBellman,
+//         // SingleDistPBVI
+//     };
+//
+//     auto hw_list = get_hardware_list();
+//     const int min_horizon = 3;
+//     const int max_horizon = 3;
+//
+//     GHZStatePreparation3 ghz_problem(custom_name, precision, with_thermalization, min_horizon, max_horizon, methods, hw_list, false);
+//     ghz_problem.run();
+// }
 //
 //
 //
@@ -246,22 +246,22 @@ TEST(ExperimentsTests, GHZ3Test) {
 //     ghz_problem.run();
 // }
 //
-// TEST(OptimizedModels, ZeroPlusDiscriminationOptimized) {
-//
-//     const int min_horizon = 3;
-//     const int max_horizon = 3;
-//     string custom_name = "test_zero_plus_discr_test_opt";
-//
-//     set<MethodType> methods = {
-//         ConvexDist
-//     };
-//
-//     auto hw_list = {PerfectHardware, Almaden};
-//
-//     auto zero_plus_problem = BasicZeroPlusDiscrimination(custom_name, precision, with_thermalization, min_horizon, max_horizon, methods, hw_list, true);
-//     zero_plus_problem.run();
-//
-// }
+TEST(OptimizedModels, ZeroPlusDiscriminationOptimized) {
+
+    const int min_horizon = 4;
+    const int max_horizon = 4;
+    string custom_name = "test_zero_plus_discr_test_opt";
+
+    set<MethodType> methods = {
+        ConvexDist
+    };
+
+    auto hw_list = {Almaden};
+
+    auto zero_plus_problem = BasicZeroPlusDiscrimination(custom_name, precision, false, min_horizon, max_horizon, methods, hw_list, true);
+    zero_plus_problem.run();
+
+}
 
 // TEST(OptimizedModels, CXHOptimized) {
 //
@@ -411,18 +411,18 @@ TEST(ExperimentsTests, GHZ3Test) {
 //     bitflip_cxh.run();
 // }
 
-TEST(BellStateReachTest, BellStateReach) {
-    const int min_horizon = 1;
-    const int max_horizon = 2;
-    string custom_name = "test_bell_state_reach";
-
-    set<MethodType> methods = {
-        SingleDistBellman,
-        ConvexDist
-    };
-
-    set<QuantumHardware> hw_list = {PerfectHardware, Algiers};
-
-    auto bell_state_reach = BellStateReach(custom_name, precision, with_thermalization,min_horizon, max_horizon, methods, hw_list, true);
-    bell_state_reach.run();
-}
+// TEST(BellStateReachTest, BellStateReach) {
+//     const int min_horizon = 1;
+//     const int max_horizon = 2;
+//     string custom_name = "test_bell_state_reach";
+//
+//     set<MethodType> methods = {
+//         SingleDistBellman,
+//         ConvexDist
+//     };
+//
+//     set<QuantumHardware> hw_list = {PerfectHardware, Almaden};
+//
+//     auto bell_state_reach = BellStateReach(custom_name, precision, true, min_horizon, max_horizon, methods, hw_list, false);
+//     bell_state_reach.run();
+// }

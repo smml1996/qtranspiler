@@ -433,7 +433,7 @@ void POMDP::build_pomdp(const vector<shared_ptr<POMDPAction>> &actions_, Hardwar
             this->transition_matrix[current_v] = unordered_map<shared_ptr<POMDPAction>, unordered_map<shared_ptr<POMDPVertex>, MyFloat, POMDPVertexHash, POMDPVertexPtrEqualID>, POMDPActionHash, POMDPActionPtrEqual>();
         }
         for (auto action : actions) {
-            if (guard(*current_v, embedding, *action)) {
+            if (guard(current_v, embedding, action)) {
                 assert(this->transition_matrix_[current_v].find(action) == this->transition_matrix_[current_v].end());
 
 

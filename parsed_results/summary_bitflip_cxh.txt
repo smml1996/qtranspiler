@@ -2,27 +2,27 @@
 count hardware:  45
 methods used:  {'bellman'}
 count embeddings:  203
-total diff. algorithms (bellman):  14
+total diff. algorithms (bellman):  7
 total diff. algorithms (convex):  0
-accuracy perfect hardware: 0.5
+accuracy perfect hardware: 1.0
 
-min. accuracy: 0.5
-avg. accuracy: 0.50614
-max. accuracy: 0.50907
+min. accuracy: 0.50093
+avg. accuracy: 0.95868
+max. accuracy: 1.0
 
-min. pomdp build time: 0.4373
-avg. pomdp build time: 7.36725
-max. pomdp build time: 40.12422
+min. pomdp build time: 0.49808
+avg. pomdp build time: 7.42308
+max. pomdp build time: 38.51003
 
-min. method time: 0.502
-avg. method time: 335.36882
-max. method time: 435.0
+min. method time: 0.93832
+avg. method time: 2548.0195
+max. method time: 2638.0
 
-min. total time: 0.502
-avg. total time: 342.73358
-max. total time: 441.84689
+min. total time: 0.93832
+avg. total time: 2555.43793
+max. total time: 2644.10222
 
 num. algorithms per horizon (method=bellman)
-6 :  14
+7 :  7
 --
 

@@ -95,9 +95,9 @@ class IPMABitflip : public Experiment {
             this->BELL3[2][2] = complex<double>(0.5, 0.0);
         }
 
-        [[nodiscard]] bool guard(const POMDPVertex& vertex, const unordered_map<int, int>& embedding, const POMDPAction& action) const override {
-            if (action.instruction_sequence[0].gate_name != GateName::Meas) return true;
-            auto qs = vertex.hybrid_state->quantum_state;
+        [[nodiscard]] bool guard(const shared_ptr<POMDPVertex>& vertex, const unordered_map<int, int>& embedding, const shared_ptr<POMDPAction>& action) const override {
+            if (action->instruction_sequence[0].gate_name != GateName::Meas) return true;
+            auto qs = vertex->hybrid_state->quantum_state;
             auto P0 = Instruction(GateName::P0, embedding.at(2));
             auto P1 = Instruction(GateName::P1, embedding.at(2));
 

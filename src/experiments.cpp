@@ -80,7 +80,7 @@ MethodType str_to_method_type(const string &method) {
     throw invalid_argument("Method type not recognized: " + method);
 }
 
-bool Experiment::guard(const POMDPVertex&, const unordered_map<int, int>&, const POMDPAction&) const {
+bool Experiment::guard(const shared_ptr<POMDPVertex>&, const unordered_map<int, int>&, const shared_ptr<POMDPAction>&) const {
     return true;
 }
 
@@ -253,7 +253,7 @@ void Experiment::run() {
 
     vector<HardwareSpecification> hardware_specs = this->get_hardware_specs();
 
-    auto actual_guard = [this](const POMDPVertex& v, const std::unordered_map<int,int>& m, const POMDPAction& a) {
+    auto actual_guard = [this](const shared_ptr<POMDPVertex>& v, const std::unordered_map<int,int>& m, const shared_ptr<POMDPAction>& a) {
         return this->guard(v, m, a);
     };
 
@@ -322,7 +322,8 @@ void Experiment::run() {
                         method_time = chrono::duration<double>(end_method - start_method).count();
                         error = solver.get_error(horizon);
                     } else {
-                        ConvexDistributionSolver solver (pomdp, actual_reward_f, this->precision * (max_horizon+1), embedding);
+                        ConvexDistributionSolver solver(pomdp, actual_reward_f, this->precision * (max_horizon + 1),
+                                                        embedding, actual_guard);
                         auto start_method = chrono::high_resolution_clock::now();
                         auto result_temp = solver.solve(initial_states, horizon);
                         result = make_pair(make_shared<Algorithm>(*result_temp.first), result_temp.second);
@@ -473,7 +474,7 @@ inline vector<string> get_hardware_batches(int num_batches = 20, bool with_cnot=
 }
 
 
-void generate_experiment_file(const string& experiment_name, const string& method, int min_horizon, int max_horizon, int num_batches, bool with_cnot) {
+void generate_experiment_file(const string& experiment_name, const string& method, int min_horizon, int max_horizon, int num_batches, bool with_cnot, bool with_thermalization) {
     auto p = fs::path("..") / "scripts"/ (experiment_name + ".sh");
     std::ofstream results_file(p);
 
@@ -486,8 +487,15 @@ void generate_experiment_file(const string& experiment_name, const string& metho
 
     for (int i = 0; i < batches.size(); i++) {
         string custom_name = experiment_name + "_" + to_string(i);
-        results_file << "sbatch server_script.sh " << experiment_name << " " << custom_name << " " << method << " " <<
+        if (with_thermalization) {
+          custom_name = custom_name + "_therm";
+            results_file << "sbatch server_script_therm.sh " << experiment_name << " " << custom_name << " " << method << " " <<
                 batches[i] << " " << to_string(min_horizon) << " " << to_string(max_horizon) << endl;
+        }  else {
+            results_file << "sbatch server_script.sh " << experiment_name << " " << custom_name << " " << method << " " <<
+                batches[i] << " " << to_string(min_horizon) << " " << to_string(max_horizon) << endl;
+        }
+
     }
 
     results_file.close();
@@ -495,13 +503,15 @@ void generate_experiment_file(const string& experiment_name, const string& metho
 }
 
 void generate_all_experiments_file() {
-    generate_experiment_file("bitflip_ipma", "bellman", 3, 7, 20, true);
-    generate_experiment_file("bitflip_ipma2", "bellman", 3, 7, 20, true);
-    generate_experiment_file("bitflip_cxh", "bellman", 7, 7, 20, true);
-    generate_experiment_file("reset", "bellman", 2, 7, 1, false);
-    generate_experiment_file("basic_zero_plus_discr", "convex", 1, 4, 10, false);
-    generate_experiment_file("bell_state_reach", "\"bellman convex\"", 1, 4, 20, true);
-    generate_experiment_file("ghz3", "bellman", 3, 3, 5, true);
+    generate_experiment_file("bitflip_ipma", "bellman", 3, 7, 20, true, false);
+    generate_experiment_file("bitflip_ipma2", "bellman", 3, 7, 20, true, false);
+    generate_experiment_file("bitflip_cxh", "bellman", 7, 7, 20, true, false);
+    generate_experiment_file("reset", "bellman", 2, 7, 1, false, false);
+    generate_experiment_file("reset", "bellman", 2, 7, 1, false, true);
+    generate_experiment_file("basic_zero_plus_discr", "convex", 1, 4, 20, false, true);
+    generate_experiment_file("bell_state_reach", "\"bellman convex\"", 1, 4, 20, true, true);
+    generate_experiment_file("ghz3", "bellman", 3, 3, 5, true, false);
+    generate_experiment_file("ghz3", "bellman", 3, 3, 5, true, true);
 }
 
 MyFloat verify_single_distribution(const Belief &current_belief, Experiment &experiment, HardwareSpecification &hardware_spec,
@@ -551,7 +561,7 @@ MyFloat verify_single_distribution(const Belief &current_belief, Experiment &exp
     }
 
 
-    if (!obs_to_next_beliefs.empty() && !obs_to_next_beliefs.empty()) {
+    if (!obs_to_next_beliefs.empty()) {
         MyFloat bellman_val("0", precision);
         set<cpp_int> visited_cstates;
         for (int i = 0; i < algorithm->children.size(); i++) {

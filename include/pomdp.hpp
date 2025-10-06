@@ -87,7 +87,7 @@ struct POMDPActionPtrEqual {
     bool operator()(const shared_ptr<POMDPAction> &a, const shared_ptr<POMDPAction> &b) const;
 };
 
-typedef function<bool(POMDPVertex, unordered_map<int, int>, POMDPAction)> guard_type;
+typedef function<bool(shared_ptr<POMDPVertex>&, unordered_map<int, int>&, shared_ptr<POMDPAction>&)> guard_type;
 
 class POMDP {
     vector<shared_ptr<POMDPVertex>> states;

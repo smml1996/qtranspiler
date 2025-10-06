@@ -5,7 +5,7 @@
 #include <cassert>
 
 bool SingleDistributionSolver::is_belief_visited(const Belief &belief) const {
-    for (auto it : this->beliefs_to_rewards) {
+    for (const auto& it : this->beliefs_to_rewards) {
         if (it.first == belief) {
                 return true;
         }
@@ -16,7 +16,7 @@ bool SingleDistributionSolver::is_belief_visited(const Belief &belief) const {
 MyFloat SingleDistributionSolver::get_closest_L1(const Belief &belief) const {
     MyFloat result("-1", this->precision);
     bool first = true;
-    for (auto it : this->beliefs_to_rewards) {
+    for (const auto& it : this->beliefs_to_rewards) {
         auto existing_belief = it.first;
         auto current_l1_norm = l1_norm(existing_belief, belief, this->precision);
         if (first || result > current_l1_norm) {
@@ -26,7 +26,7 @@ MyFloat SingleDistributionSolver::get_closest_L1(const Belief &belief) const {
     }
 
     if (first) {
-        assert (this->beliefs_to_rewards.size() == 0);
+        assert (this->beliefs_to_rewards.empty());
         return MyFloat("0", this->precision);
     }
 
@@ -69,7 +69,7 @@ pair<shared_ptr<Algorithm>, MyFloat> SingleDistributionSolver::get_bellman_value
     bellman_values.emplace_back(halt_algorithm, curr_belief_val);
     
     for (auto & it : pomdp.actions) {
-        auto action = it;
+        const auto& action = it;
 
         // build next_beliefs, separate them by different observables
         map<cpp_int, Belief> obs_to_next_beliefs;
@@ -139,14 +139,6 @@ pair<shared_ptr<Algorithm>, MyFloat> SingleDistributionSolver::get_bellman_value
     assert(false);
 }
 
-SingleDistributionSolver::~SingleDistributionSolver() {
-    // for (auto it : this->beliefs_to_rewards) {
-    //     for (auto it2 : it.second) {
-    //         delete it2.second.first;
-    //     }
-    // }
-}
-
 
 pair<shared_ptr<Algorithm>, MyFloat> SingleDistributionSolver::PBVI_solve(const Belief &current_belief, const int &horizon) {
     Belief curr_belief_normalized = normalize_belief(current_belief, this->precision);
@@ -188,7 +180,7 @@ pair<shared_ptr<Algorithm>, MyFloat> SingleDistributionSolver::PBVI_solve(const 
 
 
     for (auto & it : pomdp.actions) {
-        auto action = it;
+        const auto& action = it;
 
         unordered_map<cpp_int, Belief> obs_to_next_beliefs; // for each belief we compute the sub-distributions to which it leads
         Belief next_belief; // we also compute the real belief which should be normalized
@@ -255,15 +247,16 @@ void SingleDistributionSolver::print_all_beliefs() const {
 }
 
 
-ConvexDistributionSolver::ConvexDistributionSolver(const POMDP &pomdp, const f_reward_type &get_reward, int precision, const unordered_map<int, int> &embedding) {
+ConvexDistributionSolver::ConvexDistributionSolver(const POMDP &pomdp, const f_reward_type &get_reward, int precision, const unordered_map<int, int> &embedding, const guard_type &g) {
     this->pomdp = pomdp;
     this->get_reward = get_reward;
     this->precision = precision;
     this->embedding = embedding;
     this->initial_classical_state = -1;
+    this->guard = g;
 }
 
-MyFloat get_algorithm_acc(POMDP &pomdp, shared_ptr<Algorithm> algorithm, const Belief &current_belief, const f_reward_type &get_reward, const unordered_map<int, int> &embedding, int precision) {
+MyFloat get_algorithm_acc(POMDP &pomdp, const shared_ptr<Algorithm>& algorithm, const Belief &current_belief, const f_reward_type &get_reward, const unordered_map<int, int> &embedding, int precision) {
     MyFloat curr_belief_val = get_reward(current_belief, embedding);
 
     if (algorithm == nullptr) {
@@ -295,7 +288,7 @@ MyFloat get_algorithm_acc(POMDP &pomdp, shared_ptr<Algorithm> algorithm, const B
 
     // assert(algorithm->children.size() <= obs_to_next_beliefs.size());
 
-    if (!obs_to_next_beliefs.empty() && !obs_to_next_beliefs.empty()) {
+    if (!obs_to_next_beliefs.empty()) {
         MyFloat bellman_val("0", precision);
         set<cpp_int> visited_cstates;
         for (int i = 0; i < algorithm->children.size(); i++) {
@@ -345,11 +338,19 @@ void ConvexDistributionSolver::set_minimax_values(
         minimax_matrix[current_alg_index][index] = to_double(acc);
 
     }
-
     // fs::path p = fs::path("..") / "temp" / ("a" + to_string(current_alg_index) + ".txt");
     // dump_to_file(p, algorithm);
 }
 
+bool ConvexDistributionSolver::is_action_allowed(shared_ptr<POMDPAction> &action,
+                                                 const vector<shared_ptr<POMDPVertex>> &states) {
+    for (auto state : states) {
+        if (this->guard(state, this->embedding, action)) {
+            return true;
+        }
+    }
+    return false;
+}
 
 
 cpp_int get_succ_classical_state(const shared_ptr<Algorithm> &current) {
@@ -362,7 +363,7 @@ cpp_int get_succ_classical_state(const shared_ptr<Algorithm> &current) {
     assert(!current->has_meas());
 
     cpp_int answer = current->classical_state;
-    for(Instruction instruction : current->action->instruction_sequence) {
+    for(const Instruction& instruction : current->action->instruction_sequence) {
         
         if(instruction.instruction_type == InstructionType::Classical) {
             if (instruction.gate_name == GateName::Write1) {
@@ -404,8 +405,6 @@ shared_ptr<Algorithm> normalize_algorithm(const shared_ptr<Algorithm> &algorithm
     for (const auto& end_node : end_nodes) {
 
         if (end_node->has_meas()) {
-            fs::path p = fs::path("..") / "temp" / ("a.txt");
-            dump_to_file(p, algorithm);
             unordered_set<cpp_int> all_c_succs = get_possible_next_cstates(end_node);
 
             for (const auto& c : all_c_succs) {
@@ -461,15 +460,13 @@ void ConvexDistributionSolver::get_matrix_maximin(const vector<shared_ptr<POMDPV
 
     if (current_algorithm == nullptr) {
         for (auto action : pomdp.actions) {
-            auto new_node = make_shared<Algorithm>(action, this->initial_classical_state, this->precision, 1); // assumes initial classical state is 0
-            new_node->reachable_states = initial_states;
-            get_matrix_maximin(initial_states, new_node, minimax_matrix, max_horizon, mapping_index_algorithm);
+            if (is_action_allowed(action, initial_states)) {
+                auto new_node = make_shared<Algorithm>(action, this->initial_classical_state, this->precision, 1); // assumes initial classical state is 0
+                new_node->reachable_states = initial_states;
+                get_matrix_maximin(initial_states, new_node, minimax_matrix, max_horizon, mapping_index_algorithm);
+            }
         }
     } else {
-
-        for (auto it : current_algorithm->reachable_states) {
-            assert(it->hybrid_state->classical_state->get_memory_val()  == current_algorithm->classical_state);
-        }
         auto copy_curr_algorithm = normalize_algorithm(current_algorithm);
         if(algorithm_exists(mapping_index_algorithm, copy_curr_algorithm) != -1) {
             return;
@@ -491,21 +488,24 @@ void ConvexDistributionSolver::get_matrix_maximin(const vector<shared_ptr<POMDPV
                     successor_cstates.insert(child_it->classical_state);
                 }
                 assert(end_node->reachable_states.size() > 0);
-                for (auto action : pomdp.actions) {
-                    unordered_map<cpp_int, vector<shared_ptr<POMDPVertex>>> reachable_states = get_reachable_states(this->pomdp, end_node->reachable_states, end_node->action);
+                unordered_map<cpp_int, vector<shared_ptr<POMDPVertex>>> reachable_states = get_reachable_states(this->pomdp, end_node->reachable_states, end_node->action);
 
+                for (auto action : pomdp.actions) {
                     for (auto it_reach : reachable_states) {
-                        auto next_cstate = it_reach.first;
-                        if (successor_cstates.find(next_cstate) == successor_cstates.end()) {
-                            if (next_cstate > max_succ_cstate) {
-                                auto new_node = make_shared<Algorithm>(action, next_cstate, this->precision,end_node->depth + 1);
-                                new_node->reachable_states = it_reach.second;
-                                end_node->children.push_back(new_node);
-                                get_matrix_maximin(initial_states, current_algorithm, minimax_matrix, max_horizon, mapping_index_algorithm);
-                                end_node->children.pop_back();
+                        if (is_action_allowed(action, it_reach.second)) {
+                            auto next_cstate = it_reach.first;
+                            if (successor_cstates.find(next_cstate) == successor_cstates.end()) {
+                                if (next_cstate > max_succ_cstate) {
+                                    auto new_node = make_shared<Algorithm>(action, next_cstate, this->precision,end_node->depth + 1);
+                                    new_node->reachable_states = it_reach.second;
+                                    end_node->children.push_back(new_node);
+                                    get_matrix_maximin(initial_states, current_algorithm, minimax_matrix, max_horizon, mapping_index_algorithm);
+                                    end_node->children.pop_back();
+                                }
                             }
                         }
                     }
+
                 }
             }
         }

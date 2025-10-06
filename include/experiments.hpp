@@ -57,7 +57,7 @@ protected:
 
         virtual set<QuantumHardware> get_allowed_hardware() const;
         virtual void run();
-        virtual bool guard(const POMDPVertex&, const unordered_map<int, int>&, const POMDPAction&) const;
+        virtual bool guard(const shared_ptr<POMDPVertex>&, const unordered_map<int, int>&, const shared_ptr<POMDPAction>&) const;
         virtual void make_setup_file() const;
 
         // for an experiment we need to define at least these functions
