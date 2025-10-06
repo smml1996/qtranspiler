@@ -4,12 +4,12 @@
     "num_qubits": 5,
     "basis_gates_type": "TYPE2",
     "basis_gates": [
-        "CNOT",
-        "SX",
         "X",
-        "MEAS",
+        "CNOT",
         "RESET",
-        "RZ"
+        "SX",
+        "RZ",
+        "MEAS"
     ],
     "instructions": [
         {
@@ -84,6 +84,41 @@
         },
         {
             "type": "instruction",
+            "target": 0,
+            "control": -1,
+            "op": "I",
+            "params": []
+        },
+        {
+            "type": "instruction",
+            "target": 1,
+            "control": -1,
+            "op": "I",
+            "params": []
+        },
+        {
+            "type": "instruction",
+            "target": 2,
+            "control": -1,
+            "op": "I",
+            "params": []
+        },
+        {
+            "type": "instruction",
+            "target": 3,
+            "control": -1,
+            "op": "I",
+            "params": []
+        },
+        {
+            "type": "instruction",
+            "target": 4,
+            "control": -1,
+            "op": "I",
+            "params": []
+        },
+        {
+            "type": "instruction",
             "target": 1,
             "control": 0,
             "op": "CNOT",
@@ -136,41 +171,6 @@
             "target": 3,
             "control": 4,
             "op": "CNOT",
-            "params": []
-        },
-        {
-            "type": "instruction",
-            "target": 0,
-            "control": -1,
-            "op": "I",
-            "params": []
-        },
-        {
-            "type": "instruction",
-            "target": 1,
-            "control": -1,
-            "op": "I",
-            "params": []
-        },
-        {
-            "type": "instruction",
-            "target": 2,
-            "control": -1,
-            "op": "I",
-            "params": []
-        },
-        {
-            "type": "instruction",
-            "target": 3,
-            "control": -1,
-            "op": "I",
-            "params": []
-        },
-        {
-            "type": "instruction",
-            "target": 4,
-            "control": -1,
-            "op": "I",
             "params": []
         },
         {
@@ -742,2230 +742,6 @@
         },
         {
             "probabilities": [
-                0.9921250020232166,
-                0.0005249998651188914,
-                0.0005249998651188914,
-                0.0005249998651188914,
-                0.0005249998651188914,
-                0.0005249998651188914,
-                0.0005249998651188914,
-                0.0005249998651188914,
-                0.0005249998651188914,
-                0.0005249998651188914,
-                0.0005249998651188914,
-                0.0005249998651188914,
-                0.0005249998651188914,
-                0.0005249998651188914,
-                0.0005249998651188914,
-                0.0005249998651188914
-            ],
-            "errors": [
-                [
-                    {
-                        "type": "instruction",
-                        "target": 0,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 0,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 0,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 0,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 0,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 0,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 0,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 0,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 0,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 0,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 0,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 0,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 0,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 0,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 0,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 0,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    }
-                ]
-            ]
-        },
-        {
-            "probabilities": [
-                0.9921250020232166,
-                0.0005249998651188914,
-                0.0005249998651188914,
-                0.0005249998651188914,
-                0.0005249998651188914,
-                0.0005249998651188914,
-                0.0005249998651188914,
-                0.0005249998651188914,
-                0.0005249998651188914,
-                0.0005249998651188914,
-                0.0005249998651188914,
-                0.0005249998651188914,
-                0.0005249998651188914,
-                0.0005249998651188914,
-                0.0005249998651188914,
-                0.0005249998651188914
-            ],
-            "errors": [
-                [
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 0,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 0,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 0,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 0,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 0,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 0,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 0,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 0,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 0,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 0,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 0,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 0,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 0,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 0,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 0,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 0,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    }
-                ]
-            ]
-        },
-        {
-            "probabilities": [
-                0.9913922026901125,
-                0.0005738531539924541,
-                0.0005738531539924541,
-                0.0005738531539924541,
-                0.0005738531539924541,
-                0.0005738531539924541,
-                0.0005738531539924541,
-                0.0005738531539924541,
-                0.0005738531539924541,
-                0.0005738531539924541,
-                0.0005738531539924541,
-                0.0005738531539924541,
-                0.0005738531539924541,
-                0.0005738531539924541,
-                0.0005738531539924541,
-                0.0005738531539924541
-            ],
-            "errors": [
-                [
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    }
-                ]
-            ]
-        },
-        {
-            "probabilities": [
-                0.9913922026901125,
-                0.0005738531539924541,
-                0.0005738531539924541,
-                0.0005738531539924541,
-                0.0005738531539924541,
-                0.0005738531539924541,
-                0.0005738531539924541,
-                0.0005738531539924541,
-                0.0005738531539924541,
-                0.0005738531539924541,
-                0.0005738531539924541,
-                0.0005738531539924541,
-                0.0005738531539924541,
-                0.0005738531539924541,
-                0.0005738531539924541,
-                0.0005738531539924541
-            ],
-            "errors": [
-                [
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 1,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    }
-                ]
-            ]
-        },
-        {
-            "probabilities": [
-                0.9928497246357134,
-                0.0004766850242858073,
-                0.0004766850242858073,
-                0.0004766850242858073,
-                0.0004766850242858073,
-                0.0004766850242858073,
-                0.0004766850242858073,
-                0.0004766850242858073,
-                0.0004766850242858073,
-                0.0004766850242858073,
-                0.0004766850242858073,
-                0.0004766850242858073,
-                0.0004766850242858073,
-                0.0004766850242858073,
-                0.0004766850242858073,
-                0.0004766850242858073
-            ],
-            "errors": [
-                [
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    }
-                ]
-            ]
-        },
-        {
-            "probabilities": [
-                0.9928497246357134,
-                0.0004766850242858073,
-                0.0004766850242858073,
-                0.0004766850242858073,
-                0.0004766850242858073,
-                0.0004766850242858073,
-                0.0004766850242858073,
-                0.0004766850242858073,
-                0.0004766850242858073,
-                0.0004766850242858073,
-                0.0004766850242858073,
-                0.0004766850242858073,
-                0.0004766850242858073,
-                0.0004766850242858073,
-                0.0004766850242858073,
-                0.0004766850242858073
-            ],
-            "errors": [
-                [
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 2,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    }
-                ]
-            ]
-        },
-        {
-            "probabilities": [
-                0.9934998218010468,
-                0.0004333452132635916,
-                0.0004333452132635916,
-                0.0004333452132635916,
-                0.0004333452132635916,
-                0.0004333452132635916,
-                0.0004333452132635916,
-                0.0004333452132635916,
-                0.0004333452132635916,
-                0.0004333452132635916,
-                0.0004333452132635916,
-                0.0004333452132635916,
-                0.0004333452132635916,
-                0.0004333452132635916,
-                0.0004333452132635916,
-                0.0004333452132635916
-            ],
-            "errors": [
-                [
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 4,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 4,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 4,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 4,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 4,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 4,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 4,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 4,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 4,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 4,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 4,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 4,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 4,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 4,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 4,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 4,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    }
-                ]
-            ]
-        },
-        {
-            "probabilities": [
-                0.9934998218010468,
-                0.0004333452132635916,
-                0.0004333452132635916,
-                0.0004333452132635916,
-                0.0004333452132635916,
-                0.0004333452132635916,
-                0.0004333452132635916,
-                0.0004333452132635916,
-                0.0004333452132635916,
-                0.0004333452132635916,
-                0.0004333452132635916,
-                0.0004333452132635916,
-                0.0004333452132635916,
-                0.0004333452132635916,
-                0.0004333452132635916,
-                0.0004333452132635916
-            ],
-            "errors": [
-                [
-                    {
-                        "type": "instruction",
-                        "target": 4,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 4,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 4,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 4,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 4,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 4,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 4,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 4,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 4,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 4,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 4,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 4,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 4,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "I",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 4,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "X",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 4,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "Y",
-                        "params": []
-                    }
-                ],
-                [
-                    {
-                        "type": "instruction",
-                        "target": 4,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    },
-                    {
-                        "type": "instruction",
-                        "target": 3,
-                        "control": -1,
-                        "op": "Z",
-                        "params": []
-                    }
-                ]
-            ]
-        },
-        {
-            "probabilities": [
                 0.9996899615987475,
                 0.00010334613375084518,
                 0.00010334613375084518,
@@ -3195,6 +971,2230 @@
             ]
         },
         {
+            "probabilities": [
+                0.9921250020232166,
+                0.0005249998651188914,
+                0.0005249998651188914,
+                0.0005249998651188914,
+                0.0005249998651188914,
+                0.0005249998651188914,
+                0.0005249998651188914,
+                0.0005249998651188914,
+                0.0005249998651188914,
+                0.0005249998651188914,
+                0.0005249998651188914,
+                0.0005249998651188914,
+                0.0005249998651188914,
+                0.0005249998651188914,
+                0.0005249998651188914,
+                0.0005249998651188914
+            ],
+            "errors": [
+                [
+                    {
+                        "type": "instruction",
+                        "target": 0,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 0,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 0,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 0,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 0,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 0,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 0,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 0,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 0,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 0,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 0,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 0,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 0,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 0,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 0,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 0,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    }
+                ]
+            ]
+        },
+        {
+            "probabilities": [
+                0.9921250020232166,
+                0.0005249998651188914,
+                0.0005249998651188914,
+                0.0005249998651188914,
+                0.0005249998651188914,
+                0.0005249998651188914,
+                0.0005249998651188914,
+                0.0005249998651188914,
+                0.0005249998651188914,
+                0.0005249998651188914,
+                0.0005249998651188914,
+                0.0005249998651188914,
+                0.0005249998651188914,
+                0.0005249998651188914,
+                0.0005249998651188914,
+                0.0005249998651188914
+            ],
+            "errors": [
+                [
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 0,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 0,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 0,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 0,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 0,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 0,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 0,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 0,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 0,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 0,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 0,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 0,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 0,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 0,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 0,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 0,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    }
+                ]
+            ]
+        },
+        {
+            "probabilities": [
+                0.9913922026901132,
+                0.0005738531539924546,
+                0.0005738531539924546,
+                0.0005738531539924546,
+                0.0005738531539924546,
+                0.0005738531539924546,
+                0.0005738531539924546,
+                0.0005738531539924546,
+                0.0005738531539924546,
+                0.0005738531539924546,
+                0.0005738531539924546,
+                0.0005738531539924546,
+                0.0005738531539924546,
+                0.0005738531539924546,
+                0.0005738531539924546,
+                0.0005738531539924546
+            ],
+            "errors": [
+                [
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    }
+                ]
+            ]
+        },
+        {
+            "probabilities": [
+                0.9913922026901132,
+                0.0005738531539924546,
+                0.0005738531539924546,
+                0.0005738531539924546,
+                0.0005738531539924546,
+                0.0005738531539924546,
+                0.0005738531539924546,
+                0.0005738531539924546,
+                0.0005738531539924546,
+                0.0005738531539924546,
+                0.0005738531539924546,
+                0.0005738531539924546,
+                0.0005738531539924546,
+                0.0005738531539924546,
+                0.0005738531539924546,
+                0.0005738531539924546
+            ],
+            "errors": [
+                [
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 1,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    }
+                ]
+            ]
+        },
+        {
+            "probabilities": [
+                0.9928497246357129,
+                0.000476685024285807,
+                0.000476685024285807,
+                0.000476685024285807,
+                0.000476685024285807,
+                0.000476685024285807,
+                0.000476685024285807,
+                0.000476685024285807,
+                0.000476685024285807,
+                0.000476685024285807,
+                0.000476685024285807,
+                0.000476685024285807,
+                0.000476685024285807,
+                0.000476685024285807,
+                0.000476685024285807,
+                0.000476685024285807
+            ],
+            "errors": [
+                [
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    }
+                ]
+            ]
+        },
+        {
+            "probabilities": [
+                0.9928497246357129,
+                0.000476685024285807,
+                0.000476685024285807,
+                0.000476685024285807,
+                0.000476685024285807,
+                0.000476685024285807,
+                0.000476685024285807,
+                0.000476685024285807,
+                0.000476685024285807,
+                0.000476685024285807,
+                0.000476685024285807,
+                0.000476685024285807,
+                0.000476685024285807,
+                0.000476685024285807,
+                0.000476685024285807,
+                0.000476685024285807
+            ],
+            "errors": [
+                [
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 2,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    }
+                ]
+            ]
+        },
+        {
+            "probabilities": [
+                0.9934998218010461,
+                0.0004333452132635913,
+                0.0004333452132635913,
+                0.0004333452132635913,
+                0.0004333452132635913,
+                0.0004333452132635913,
+                0.0004333452132635913,
+                0.0004333452132635913,
+                0.0004333452132635913,
+                0.0004333452132635913,
+                0.0004333452132635913,
+                0.0004333452132635913,
+                0.0004333452132635913,
+                0.0004333452132635913,
+                0.0004333452132635913,
+                0.0004333452132635913
+            ],
+            "errors": [
+                [
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 4,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 4,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 4,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 4,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 4,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 4,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 4,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 4,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 4,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 4,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 4,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 4,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 4,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 4,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 4,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 4,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    }
+                ]
+            ]
+        },
+        {
+            "probabilities": [
+                0.9934998218010461,
+                0.0004333452132635913,
+                0.0004333452132635913,
+                0.0004333452132635913,
+                0.0004333452132635913,
+                0.0004333452132635913,
+                0.0004333452132635913,
+                0.0004333452132635913,
+                0.0004333452132635913,
+                0.0004333452132635913,
+                0.0004333452132635913,
+                0.0004333452132635913,
+                0.0004333452132635913,
+                0.0004333452132635913,
+                0.0004333452132635913,
+                0.0004333452132635913
+            ],
+            "errors": [
+                [
+                    {
+                        "type": "instruction",
+                        "target": 4,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 4,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 4,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 4,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 4,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 4,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 4,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 4,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 4,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 4,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 4,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 4,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 4,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "I",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 4,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "X",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 4,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "Y",
+                        "params": []
+                    }
+                ],
+                [
+                    {
+                        "type": "instruction",
+                        "target": 4,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    },
+                    {
+                        "type": "instruction",
+                        "target": 3,
+                        "control": -1,
+                        "op": "Z",
+                        "params": []
+                    }
+                ]
+            ]
+        },
+        {
             "0": {
                 "0": 0.9867,
                 "1": 0.013299999999999979
@@ -3416,6 +3416,11 @@
         35.55555555555556,
         35.55555555555556,
         35.55555555555556,
+        35.55555555555556,
+        35.55555555555556,
+        35.55555555555556,
+        35.55555555555556,
+        35.55555555555556,
         526.2222222222222,
         561.7777777777777,
         604.4444444444445,
@@ -3424,11 +3429,6 @@
         412.4444444444444,
         376.88888888888886,
         341.3333333333333,
-        35.55555555555556,
-        35.55555555555556,
-        35.55555555555556,
-        35.55555555555556,
-        35.55555555555556,
         4017.7777777777774,
         4017.7777777777774,
         4017.7777777777774,

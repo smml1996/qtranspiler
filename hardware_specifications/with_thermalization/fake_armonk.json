@@ -5,10 +5,10 @@
     "basis_gates_type": "TYPE9",
     "basis_gates": [
         "X",
-        "RZ",
-        "MEAS",
         "RESET",
-        "SX"
+        "SX",
+        "RZ",
+        "MEAS"
     ],
     "instructions": [
         {
@@ -22,14 +22,14 @@
             "type": "instruction",
             "target": 0,
             "control": -1,
-            "op": "X",
+            "op": "SX",
             "params": []
         },
         {
             "type": "instruction",
             "target": 0,
             "control": -1,
-            "op": "SX",
+            "op": "X",
             "params": []
         },
         {
@@ -43,14 +43,14 @@
             "type": "instruction",
             "target": 0,
             "control": -1,
-            "op": "RZ",
+            "op": "RESET",
             "params": []
         },
         {
             "type": "instruction",
             "target": 0,
             "control": -1,
-            "op": "RESET",
+            "op": "RZ",
             "params": []
         }
     ],

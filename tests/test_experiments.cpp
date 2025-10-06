@@ -27,34 +27,34 @@ set<QuantumHardware> get_hardware_list() {
 
 // TEST(ExperimentsTests, ResetTest) {
 //     const int min_horizon = 2;
-//     const int max_horizon = 4;
+//     const int max_horizon = 7;
 //     string custom_name = "test_reset_test";
 //
 //     set<MethodType> methods = {
 //         SingleDistBellman
 //     };
 //
-//     auto hw_list = get_hardware_list();
+//     auto hw_list = {Almaden};
 //
-//     ResetProblem reset_problem = ResetProblem(custom_name, precision, with_thermalization,min_horizon, max_horizon, methods, hw_list, false);
+//     ResetProblem reset_problem = ResetProblem(custom_name, precision, true, min_horizon, max_horizon, methods, hw_list, true);
 //     reset_problem.run();
 // }
 
 //
-// TEST(ExperimentsTests, BitflipTest) {
-//     const int min_horizon = 4;
-//     const int max_horizon = 5;
-//     string custom_name = "test_bitflip_test";
-//
-//     set<MethodType> methods = {
-//         SingleDistBellman
-//     };
-//
-//     auto hw_list = {PerfectHardware, Athens, Almaden};
-//
-//     IPMA2Bitflip bitflip_ipma2 = IPMA2Bitflip(custom_name, precision, with_thermalization,min_horizon, max_horizon, methods, hw_list, true);
-//     bitflip_ipma2.run();
-// }
+TEST(ExperimentsTests, BitflipTest) {
+    const int min_horizon = 4;
+    const int max_horizon = 5;
+    string custom_name = "test_bitflip_test";
+
+    set<MethodType> methods = {
+        SingleDistBellman
+    };
+
+    auto hw_list = {PerfectHardware, Athens, Almaden};
+
+    IPMA2Bitflip bitflip_ipma2 = IPMA2Bitflip(custom_name, precision, true,min_horizon, max_horizon, methods, hw_list, true);
+    bitflip_ipma2.run();
+}
 //
 //
 // TEST(GHZTest, GHZNumEmbeddings) {
@@ -246,22 +246,22 @@ set<QuantumHardware> get_hardware_list() {
 //     ghz_problem.run();
 // }
 //
-TEST(OptimizedModels, ZeroPlusDiscriminationOptimized) {
-
-    const int min_horizon = 3;
-    const int max_horizon = 3;
-    string custom_name = "test_zero_plus_discr_test_opt";
-
-    set<MethodType> methods = {
-        ConvexDist
-    };
-
-    auto hw_list = {PerfectHardware};
-
-    auto zero_plus_problem = BasicZeroPlusDiscrimination(custom_name, precision, false, min_horizon, max_horizon, methods, hw_list, true);
-    zero_plus_problem.run();
-
-}
+// TEST(OptimizedModels, ZeroPlusDiscriminationOptimized) {
+//
+//     const int min_horizon = 3;
+//     const int max_horizon = 3;
+//     string custom_name = "test_zero_plus_discr_test_opt";
+//
+//     set<MethodType> methods = {
+//         ConvexDist
+//     };
+//
+//     auto hw_list = {PerfectHardware};
+//
+//     auto zero_plus_problem = BasicZeroPlusDiscrimination(custom_name, precision, false, min_horizon, max_horizon, methods, hw_list, true);
+//     zero_plus_problem.run();
+//
+// }
 
 // TEST(OptimizedModels, CXHOptimized) {
 //
