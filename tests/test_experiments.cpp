@@ -248,15 +248,15 @@ set<QuantumHardware> get_hardware_list() {
 //
 TEST(OptimizedModels, ZeroPlusDiscriminationOptimized) {
 
-    const int min_horizon = 4;
-    const int max_horizon = 4;
+    const int min_horizon = 3;
+    const int max_horizon = 3;
     string custom_name = "test_zero_plus_discr_test_opt";
 
     set<MethodType> methods = {
         ConvexDist
     };
 
-    auto hw_list = {Almaden};
+    auto hw_list = {PerfectHardware};
 
     auto zero_plus_problem = BasicZeroPlusDiscrimination(custom_name, precision, false, min_horizon, max_horizon, methods, hw_list, true);
     zero_plus_problem.run();

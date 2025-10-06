@@ -72,12 +72,14 @@ int main(int argc, char* argv[]) {
 
     vector<Setup> setups({
         // Setup("bell_state_reach", 10, make_shared<BellStateReach>(), true, 3),
-        Setup("ghz3", 5, make_shared<GHZStatePreparation3>(), true, 3),
         // Setup("basic_zero_plus_discr", 5, make_shared<BasicZeroPlusDiscrimination>(), false, 3),
         Setup("reset", 1, make_shared<ResetProblem>(), false, 7),
         Setup("bitflip_ipma", 20, make_shared<IPMABitflip>(), true, 7),
         Setup("bitflip_ipma2", 20, make_shared<IPMA2Bitflip>(), true, 7),
         Setup("bitflip_cxh", 20, make_shared<CXHBitflip>(), true, 7),
+
+        // DONE:
+            Setup("ghz3", 5, make_shared<GHZStatePreparation3>(), true, 3),
     });
 
     for (auto setup : setups) {
@@ -91,17 +93,17 @@ int main(int argc, char* argv[]) {
         vector<Algorithm> unique_algorithms;
         vector<int> is_algorithm_convex;
 
-        fs::path parsed_stats_path = exp_dir / "stats.csv";
-        ofstream parsed_stats_file(parsed_stats_path);
-        parsed_stats_file << join(vector<string>({"hardware",
-        "embedding_index",
-        "horizon",
-        "pomdp_build_time",
-        "probability",
-        "method",
-        "method_time",
-        "algorithm_index"})
-        , ",") << "\n";
+        // fs::path parsed_stats_path = exp_dir / "stats.csv";
+        // ofstream parsed_stats_file(parsed_stats_path);
+        // parsed_stats_file << join(vector<string>({"hardware",
+        // "embedding_index",
+        // "horizon",
+        // "pomdp_build_time",
+        // "probability",
+        // "method",
+        // "method_time",
+        // "algorithm_index"})
+        // , ",") << "\n";
 
         for (int batch = 0; batch < setup.num_batches; batch++) {
             fs::path raw_exp_path = fs::path("..") / "results" / (setup.name + "_" + to_string(batch));
@@ -137,8 +139,9 @@ int main(int argc, char* argv[]) {
                     real_index = unique_algorithms.size();
                     unique_algorithms.push_back(alg_object);
                     // dump algorithm
-                    dump_raw_algorithm(parsed_algorithms_path / ("R_" + to_string(real_index) + ".txt"),
-                        make_shared<Algorithm>(alg_object));
+                    dump_raw_algorithm(parsed_algorithms_path / ("R_" + to_string(real_index) + ".txt"), make_shared<Algorithm>(alg_object));
+                    dump_to_file(parsed_algorithms_path / ("A_" + to_string(real_index) + ".txt"), make_shared<Algorithm>(alg_object));
+
                     if (method == "convex") {
                         is_algorithm_convex.push_back(true);
                     } else {
@@ -148,19 +151,19 @@ int main(int argc, char* argv[]) {
                 }
                 algorithm_index = real_index;
 
-                parsed_stats_file << join(vector<string>({quantum_hardware,
-                embedding_index,
-                horizon,
-                pomdp_build_time,
-                probability,
-                method,
-                method_time,
-                to_string(algorithm_index)})
-                , ",") << "\n";
+                // parsed_stats_file << join(vector<string>({quantum_hardware,
+                // embedding_index,
+                // horizon,
+                // pomdp_build_time,
+                // probability,
+                // method,
+                // method_time,
+                // to_string(algorithm_index)})
+                // , ",") << "\n";
             }
 
         }
-        parsed_stats_file.close();
+        // parsed_stats_file.close();
 
         // test all algorithms in all hardware specifications
         // fs::path verification_path = exp_dir / "verification.csv";
