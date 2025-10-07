@@ -290,7 +290,7 @@ public:
                 vCX02_instructions.push_back(ins);
             }
 
-            vector<Instruction> pseudo_instruction_CX = {Instruction(GateName::Cnot, vector<int>({embedding.at(0)}), embedding.at(2)), Instruction(GateName::Cnot, vector<int>({embedding.at(0)}), embedding.at(1))};
+            vector<Instruction> pseudo_instruction_CX = {Instruction(GateName::Cnot, vector<int>({embedding.at(0)}), embedding.at(2)), Instruction(GateName::Cnot, vector<int>({0}), 1)};
 
             auto CX = make_shared<POMDPAction>("CX",
                 vCX02_instructions, this->precision, pseudo_instruction_CX);
