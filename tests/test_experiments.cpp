@@ -25,36 +25,36 @@ set<QuantumHardware> get_hardware_list() {
     return hw_list;
 }
 
-// TEST(ExperimentsTests, ResetTest) {
-//     const int min_horizon = 2;
-//     const int max_horizon = 7;
-//     string custom_name = "test_reset_test";
-//
-//     set<MethodType> methods = {
-//         SingleDistBellman
-//     };
-//
-//     auto hw_list = {Almaden};
-//
-//     ResetProblem reset_problem = ResetProblem(custom_name, precision, true, min_horizon, max_horizon, methods, hw_list, true);
-//     reset_problem.run();
-// }
-
-//
-TEST(ExperimentsTests, BitflipTest) {
-    const int min_horizon = 4;
-    const int max_horizon = 5;
-    string custom_name = "test_bitflip_test";
+TEST(ExperimentsTests, ResetTest) {
+    const int min_horizon = 2;
+    const int max_horizon = 7;
+    string custom_name = "test_reset_test";
 
     set<MethodType> methods = {
         SingleDistBellman
     };
 
-    auto hw_list = {PerfectHardware, Athens, Almaden};
+    auto hw_list = {Algiers};
 
-    IPMA2Bitflip bitflip_ipma2 = IPMA2Bitflip(custom_name, precision, true,min_horizon, max_horizon, methods, hw_list, true);
-    bitflip_ipma2.run();
+    ResetProblem reset_problem = ResetProblem(custom_name, precision, true, min_horizon, max_horizon, methods, hw_list, false);
+    reset_problem.run();
 }
+
+//
+// TEST(ExperimentsTests, BitflipTest) {
+//     const int min_horizon = 4;
+//     const int max_horizon = 5;
+//     string custom_name = "test_bitflip_test";
+//
+//     set<MethodType> methods = {
+//         SingleDistBellman
+//     };
+//
+//     auto hw_list = {PerfectHardware, Athens, Almaden};
+//
+//     IPMA2Bitflip bitflip_ipma2 = IPMA2Bitflip(custom_name, precision, true,min_horizon, max_horizon, methods, hw_list, true);
+//     bitflip_ipma2.run();
+// }
 //
 //
 // TEST(GHZTest, GHZNumEmbeddings) {
