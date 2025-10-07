@@ -261,6 +261,10 @@ void Experiment::run() {
         return this->postcondition(b, embedding);
     };
 
+    auto actual_reward_f_double = [this](const VertexDict &b, const unordered_map<int, int> &embedding) -> double {
+        return this->postcondition_double(b, embedding);
+    };
+
     // we store all unique algorithms
     vector<shared_ptr<Algorithm>> unique_algorithms;
 
@@ -322,7 +326,7 @@ void Experiment::run() {
                         method_time = chrono::duration<double>(end_method - start_method).count();
                         error = solver.get_error(horizon);
                     } else {
-                        ConvexDistributionSolver solver(pomdp, actual_reward_f, this->precision * (max_horizon + 1),
+                        ConvexDistributionSolver solver(pomdp, actual_reward_f_double, this->precision * (max_horizon + 1),
                                                         embedding, actual_guard);
                         auto start_method = chrono::high_resolution_clock::now();
                         auto result_temp = solver.solve(initial_states, horizon);

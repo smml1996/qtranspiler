@@ -79,6 +79,34 @@ class BellStateReach : public IPMABitflip {
         return result;
     }
 
+    double postcondition_double(const VertexDict &belief, const unordered_map<int, int> &embedding) override {
+        double result = 0.0;
+        for (auto it : belief.probs) {
+            auto is_target = this->target_vertices.find(it.first->id);
+            if (is_target != this->target_vertices.end()) {
+                if (is_target->second) {
+                    result = result + it.second;
+                }
+            } else {
+                auto hybrid_state = it.first->hybrid_state;
+                auto qs = hybrid_state->quantum_state;
+                auto current_rho = qs->multi_partial_trace(vector<int>({embedding.at(2)}));
+                assert (current_rho.size() == 4);
+                if (are_matrices_equal(current_rho, this->BELL0, this->precision) ||
+                    are_matrices_equal(current_rho, this->BELL1, this->precision) ||
+                    are_matrices_equal(current_rho, this->BELL2, this->precision) ||
+                    are_matrices_equal(current_rho, this->BELL3, this->precision)) { // equality up to a threshold because there might be floating point overflow
+                    result = result + it.second;
+                    this->target_vertices[it.first->id] =  true;
+                    }  else {
+                        this->target_vertices[it.first->id] =  false;
+                    }
+            }
+
+        }
+        return result;
+    }
+
     virtual vector<shared_ptr<POMDPAction>> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) const override {
 
         assert(embedding.size() == 3);

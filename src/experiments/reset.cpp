@@ -60,6 +60,27 @@ Experiment(name, precision, with_thermalization, min_horizon, max_horizon, false
             return answer;
         }
 
+        double postcondition_double(const VertexDict &belief, const unordered_map<int, int> &embedding) override {
+                auto state0 = make_shared<QuantumState>(vector<int>({embedding.at(0)}), this->precision);
+                double answer = 0;
+
+                for(const auto& it : belief.probs) {
+                    auto is_target = this->target_vertices.find(it.first->id);
+                    if (is_target != this->target_vertices.end()) {
+                        if (is_target->second) {
+                            answer = answer + it.second;
+                        }
+                    } else if (*(it.first->hybrid_state->quantum_state) == *state0) {
+                        answer = answer + it.second;
+                        this->target_vertices[it.first->id] =  true;
+                    } else {
+                        this->target_vertices[it.first->id] =  false;
+                    }
+                }
+
+                return answer;
+            }
+
         vector<shared_ptr<POMDPAction>> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) const override {
 
             assert(embedding.size() == 1);

@@ -7,6 +7,7 @@
 #include <functional>
 
 using f_reward_type = std::function<MyFloat(const Belief&, const unordered_map<int, int> &)>;
+using f_reward_type_double = std::function<double(const VertexDict&, const unordered_map<int, int> &)>;
 
 class SingleDistributionSolver {
     POMDP pomdp;
@@ -34,7 +35,7 @@ class SingleDistributionSolver {
 
 class ConvexDistributionSolver {
     POMDP pomdp;
-    f_reward_type get_reward;
+    f_reward_type_double get_reward;
     int precision;
     unordered_map<int, int> embedding;
     cpp_int initial_classical_state;
@@ -53,7 +54,7 @@ class ConvexDistributionSolver {
     bool is_action_allowed(shared_ptr<POMDPAction> &action, const vector<shared_ptr<POMDPVertex>> &states);
     static pair<vector<double>, double> solve_lp_maximin(const unordered_map<int, unordered_map<int, double>> &maximin_matrix, const int &n_algorithms, const int &n_initial_states);
     public:
-        ConvexDistributionSolver(const POMDP &pomdp, const f_reward_type &get_reward, int precision, const unordered_map<int, int> & embedding, const guard_type &g);
+        ConvexDistributionSolver(const POMDP &pomdp, const f_reward_type_double &get_reward, int precision, const unordered_map<int, int> & embedding, const guard_type &g);
         pair<shared_ptr<Algorithm>, double> solve(const vector<shared_ptr<POMDPVertex>> &initial_states, const int &horizon);
 };
 

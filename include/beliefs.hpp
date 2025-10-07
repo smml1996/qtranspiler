@@ -3,7 +3,6 @@
 #include "floats.hpp"
 #include "pomdp.hpp"
 
-
 class Belief {
 public:
     [[nodiscard]] MyFloat get_sum(int precision) const;
@@ -31,6 +30,17 @@ MyFloat l1_norm(const Belief &b1, const Belief &b2, int precision);
 Belief normalize_belief(const Belief &belief, int precision);
 
 cpp_int get_belief_cs(const Belief &belief);
+
+class VertexDict {
+public:
+    vertex_dict probs;
+
+    double get(const shared_ptr<POMDPVertex> &v);
+
+    void set_val(const shared_ptr<POMDPVertex> &v, const double &prob);
+
+    void add_val(const shared_ptr<POMDPVertex> &v, const double &prob);
+};
 
 
 

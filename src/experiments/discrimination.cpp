@@ -34,6 +34,20 @@ public:
         return result;
     }
 
+    double postcondition_double(const VertexDict &belief, const unordered_map<int, int> &embedding) override {
+        assert (embedding.size() == 1);
+        double result = 0;
+        for (auto it : belief.probs) {
+            auto hybrid_state = it.first->hybrid_state;
+            auto cs = hybrid_state->classical_state;
+            assert (it.first->hidden_index == 0 || it.first->hidden_index == 1);
+            if (it.first->hidden_index == cs->read(0)) {
+                result = result + it.second;
+            }
+        }
+        return result;
+    }
+
     vector<shared_ptr<POMDPAction>> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) const override {
         assert(embedding.size() == 1);
         assert(embedding.find(0) != embedding.end());
@@ -76,6 +90,20 @@ public:
     MyFloat postcondition(const Belief &belief, const unordered_map<int, int> &embedding) override {
         assert (embedding.size() == 1);
         MyFloat result("0", this->precision*(this->max_horizon+1));
+        for (auto it : belief.probs) {
+            auto hybrid_state = it.first->hybrid_state;
+            auto cs = hybrid_state->classical_state;
+            assert (it.first->hidden_index == 0 || it.first->hidden_index == 1);
+            if (it.first->hidden_index == 0 == cs->read(0)) {
+                result = result + it.second;
+            }
+        }
+        return result;
+    }
+
+    double postcondition_double(const VertexDict &belief, const unordered_map<int, int> &embedding) override {
+        assert (embedding.size() == 1);
+        double result = 0.0;
         for (auto it : belief.probs) {
             auto hybrid_state = it.first->hybrid_state;
             auto cs = hybrid_state->classical_state;
@@ -145,18 +173,18 @@ public:
     }
 
     [[nodiscard]] bool guard(const shared_ptr<POMDPVertex>& vertex, const unordered_map<int, int>& embedding, const shared_ptr<POMDPAction>& action) const override {
-        // if (vertex->hybrid_state->classical_state->read(1)) {
-        //     return false;
-        // }
-        // if (vertex->hybrid_state->classical_state->read(2)) {
-        //     if (action->name == "H0") return false;
-        // }
-        //
-        // if (vertex->hybrid_state->classical_state->read(3)) {
-        //     return action->name != "H0";
-        // } else {
-        //     return action->name != "Is0" && action->name != "IsPlus";
-        // }
+        if (vertex->hybrid_state->classical_state->read(1)) {
+            return false;
+        }
+        if (vertex->hybrid_state->classical_state->read(2)) {
+            if (action->name == "H0") return false;
+        }
+
+        if (vertex->hybrid_state->classical_state->read(3)) {
+            return action->name != "H0";
+        } else {
+            return action->name != "Is0" && action->name != "IsPlus";
+        }
         return true;
     }
 
@@ -166,6 +194,23 @@ public:
         auto H = Instruction(GateName::H, embedding.at(0));
         auto state1 = state0.apply_instruction(H);
         MyFloat result("0", this->precision*(this->max_horizon+1));
+        for (auto it : belief.probs) {
+            assert(it.first->hidden_index == 0 || it.first->hidden_index == 1);
+            auto hybrid_state = it.first->hybrid_state;
+            auto cs = hybrid_state->classical_state;
+            if (cs->read(0) == it.first->hidden_index) {
+                result = result + it.second;
+            }
+        }
+        return result;
+    }
+
+    double postcondition_double(const VertexDict &belief, const unordered_map<int, int> &embedding) override {
+        assert (embedding.size() == 1);
+        auto state0 = QuantumState({embedding.at(0)}, this->precision);
+        auto H = Instruction(GateName::H, embedding.at(0));
+        auto state1 = state0.apply_instruction(H);
+        double result = 0.0;
         for (auto it : belief.probs) {
             assert(it.first->hidden_index == 0 || it.first->hidden_index == 1);
             auto hybrid_state = it.first->hybrid_state;

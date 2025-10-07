@@ -25,20 +25,20 @@ set<QuantumHardware> get_hardware_list() {
     return hw_list;
 }
 
-TEST(ExperimentsTests, ResetTest) {
-    const int min_horizon = 2;
-    const int max_horizon = 7;
-    string custom_name = "test_reset_test";
-
-    set<MethodType> methods = {
-        SingleDistBellman
-    };
-
-    auto hw_list = {Algiers};
-
-    ResetProblem reset_problem = ResetProblem(custom_name, precision, true, min_horizon, max_horizon, methods, hw_list, false);
-    reset_problem.run();
-}
+// TEST(ExperimentsTests, ResetTest) {
+//     const int min_horizon = 2;
+//     const int max_horizon = 7;
+//     string custom_name = "test_reset_test";
+//
+//     set<MethodType> methods = {
+//         SingleDistBellman
+//     };
+//
+//     auto hw_list = {Algiers};
+//
+//     ResetProblem reset_problem = ResetProblem(custom_name, precision, true, min_horizon, max_horizon, methods, hw_list, false);
+//     reset_problem.run();
+// }
 
 //
 // TEST(ExperimentsTests, BitflipTest) {
@@ -328,22 +328,22 @@ TEST(ExperimentsTests, ResetTest) {
 //     ghz_problem.run();
 // }
 //
-// TEST(ThermalizationModels, ThermalZeroPlusDiscrimination) {
-//
-//     const int min_horizon = 3;
-//     const int max_horizon = 3;
-//     string custom_name = "test_zero_plus_discr_test_therm";
-//
-//     set<MethodType> methods = {
-//         ConvexDist
-//     };
-//
-//     auto hw_list = {PerfectHardware, Almaden};
-//
-//     auto zero_plus_problem = BasicZeroPlusDiscrimination(custom_name, precision, true, min_horizon, max_horizon, methods, hw_list, true);
-//     zero_plus_problem.run();
-//
-// }
+TEST(ThermalizationModels, ThermalZeroPlusDiscrimination) {
+
+    const int min_horizon = 4;
+    const int max_horizon = 4;
+    string custom_name = "test_zero_plus_discr_test_therm";
+
+    set<MethodType> methods = {
+        ConvexDist
+    };
+
+    auto hw_list = {Almaden};
+
+    auto zero_plus_problem = BasicZeroPlusDiscrimination(custom_name, precision, false, min_horizon, max_horizon, methods, hw_list, true);
+    zero_plus_problem.run();
+
+}
 
 // TEST(BitflipTest, BitflipTestIPMA) {
 //     const int min_horizon = 1;

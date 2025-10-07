@@ -115,6 +115,29 @@ Experiment(name, precision, with_thermalization, min_horizon, max_horizon, false
             return answer;
         }
 
+        double postcondition_double(const VertexDict &belief, const unordered_map<int, int> &embedding) override {
+            double answer = 0.0;
+
+            auto local_target_state = this->get_target_state(embedding);
+            for (auto it : belief.probs) {
+                auto is_target = this->target_vertices.find(it.first->id);
+                if (is_target != this->target_vertices.end()) {
+                    if (is_target->second) {
+                        answer = answer + it.second;
+                    }
+                } else {
+                    if(*it.first->hybrid_state->quantum_state == *local_target_state) {
+                        answer = answer + it.second;
+                        this->target_vertices[it.first->id] =  true;
+                    } else {
+                        this->target_vertices[it.first->id] = false;
+                    }
+                }
+
+            }
+            return answer;
+        }
+
         virtual vector<unordered_map<int, int>> get_hardware_scenarios(HardwareSpecification const & hardware_spec) const override {
             if (hardware_spec.get_hardware() == QuantumHardware::PerfectHardware) {
                 unordered_map<int, int> embedding;
