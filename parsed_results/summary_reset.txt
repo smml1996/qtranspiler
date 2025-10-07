@@ -1,0 +1,33 @@
+------ Experiment.reset ------
+count hardware:  55
+methods used:  {'bellman'}
+count embeddings:  109
+total diff. algorithms (bellman):  27
+total diff. algorithms (convex):  0
+accuracy perfect hardware: 1.0, 1.0, 1.0, 1.0, 1.0, 1.0
+
+min. accuracy: 0.502
+avg. accuracy: 0.93456
+max. accuracy: 1.0
+
+min. pomdp build time: 0.00044
+avg. pomdp build time: 0.00373
+max. pomdp build time: 0.99513
+
+min. method time: 0.0
+avg. method time: 0.99387
+max. method time: 6.0
+
+min. total time: 0.00044
+avg. total time: 0.99607
+max. total time: 6.00301
+
+num. algorithms per horizon (method=bellman)
+2 :  3
+3 :  3
+4 :  3
+5 :  6
+6 :  4
+7 :  8
+--
+
