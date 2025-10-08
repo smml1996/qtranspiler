@@ -5,26 +5,26 @@
             {
                 "c_target": -1,
                 "controls": [
-                    8
+                    0
                 ],
                 "gate_name": 22,
                 "instruction_type": 3,
                 "matrix": [],
                 "params": [],
                 "params_": [],
-                "target": 11
+                "target": 2
             },
             {
                 "c_target": -1,
                 "controls": [
-                    8
+                    1
                 ],
                 "gate_name": 22,
                 "instruction_type": 3,
                 "matrix": [],
                 "params": [],
                 "params_": [],
-                "target": 14
+                "target": 2
             }
         ]
     },
@@ -115,26 +115,26 @@
                                     {
                                         "c_target": -1,
                                         "controls": [
-                                            8
+                                            0
                                         ],
                                         "gate_name": 22,
                                         "instruction_type": 3,
                                         "matrix": [],
                                         "params": [],
                                         "params_": [],
-                                        "target": 11
+                                        "target": 2
                                     },
                                     {
                                         "c_target": -1,
                                         "controls": [
-                                            8
+                                            1
                                         ],
                                         "gate_name": 22,
                                         "instruction_type": 3,
                                         "matrix": [],
                                         "params": [],
                                         "params_": [],
-                                        "target": 14
+                                        "target": 2
                                     }
                                 ]
                             },
@@ -186,26 +186,26 @@
                                     {
                                         "c_target": -1,
                                         "controls": [
-                                            8
+                                            0
                                         ],
                                         "gate_name": 22,
                                         "instruction_type": 3,
                                         "matrix": [],
                                         "params": [],
                                         "params_": [],
-                                        "target": 11
+                                        "target": 2
                                     },
                                     {
                                         "c_target": -1,
                                         "controls": [
-                                            8
+                                            1
                                         ],
                                         "gate_name": 22,
                                         "instruction_type": 3,
                                         "matrix": [],
                                         "params": [],
                                         "params_": [],
-                                        "target": 14
+                                        "target": 2
                                     }
                                 ]
                             },

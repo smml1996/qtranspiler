@@ -328,22 +328,22 @@ set<QuantumHardware> get_hardware_list() {
 //     ghz_problem.run();
 // }
 //
-TEST(ThermalizationModels, ThermalZeroPlusDiscrimination) {
-
-    const int min_horizon = 4;
-    const int max_horizon = 4;
-    string custom_name = "test_zero_plus_discr_test_therm";
-
-    set<MethodType> methods = {
-        ConvexDist
-    };
-
-    auto hw_list = {Almaden};
-
-    auto zero_plus_problem = BasicZeroPlusDiscrimination(custom_name, precision, false, min_horizon, max_horizon, methods, hw_list, true);
-    zero_plus_problem.run();
-
-}
+// TEST(ThermalizationModels, ThermalZeroPlusDiscrimination) {
+//
+//     const int min_horizon = 4;
+//     const int max_horizon = 4;
+//     string custom_name = "test_zero_plus_discr_test_therm";
+//
+//     set<MethodType> methods = {
+//         ConvexDist
+//     };
+//
+//     auto hw_list = {Almaden};
+//
+//     auto zero_plus_problem = BasicZeroPlusDiscrimination(custom_name, precision, false, min_horizon, max_horizon, methods, hw_list, true);
+//     zero_plus_problem.run();
+//
+// }
 
 // TEST(BitflipTest, BitflipTestIPMA) {
 //     const int min_horizon = 1;
@@ -411,7 +411,7 @@ TEST(ThermalizationModels, ThermalZeroPlusDiscrimination) {
 //     bitflip_cxh.run();
 // }
 
-// TEST(BellStateReachTest, BellStateReach) {
+// TEST(BellStateReachTest, BellStateReachEmbeddings) {
 //     const int min_horizon = 1;
 //     const int max_horizon = 2;
 //     string custom_name = "test_bell_state_reach";
@@ -421,8 +421,30 @@ TEST(ThermalizationModels, ThermalZeroPlusDiscrimination) {
 //         ConvexDist
 //     };
 //
-//     set<QuantumHardware> hw_list = {PerfectHardware, Almaden};
+//     set<QuantumHardware> hw_list = get_hardware_list();
 //
-//     auto bell_state_reach = BellStateReach(custom_name, precision, true, min_horizon, max_horizon, methods, hw_list, false);
-//     bell_state_reach.run();
+//     auto bell_state_reach = BellStateReach(custom_name, precision, false, min_horizon, max_horizon, methods, hw_list, true);
+//
+//     for (auto hw : hw_list) {
+//         auto spec = HardwareSpecification(hw, false, true);
+//         cout << spec.get_hardware_name() << " ";
+//         cout << bell_state_reach.get_hardware_scenarios(spec).size() << endl;
+//     }
+//
 // }
+
+TEST(BellStateReachTest, BellStateReach) {
+    const int min_horizon = 1;
+    const int max_horizon = 3;
+    string custom_name = "test_bell_state_reach";
+
+    set<MethodType> methods = {
+        SingleDistBellman,
+        ConvexDist
+    };
+
+    set<QuantumHardware> hw_list = {PerfectHardware, Almaden};
+
+    auto bell_state_reach = BellStateReach(custom_name, precision, false, min_horizon, max_horizon, methods, hw_list, true);
+    bell_state_reach.run();
+}

@@ -22,26 +22,26 @@
                     {
                         "c_target": -1,
                         "controls": [
-                            21
+                            0
                         ],
                         "gate_name": 22,
                         "instruction_type": 3,
                         "matrix": [],
                         "params": [],
                         "params_": [],
-                        "target": 18
+                        "target": 2
                     },
                     {
                         "c_target": -1,
                         "controls": [
-                            21
+                            1
                         ],
                         "gate_name": 22,
                         "instruction_type": 3,
                         "matrix": [],
                         "params": [],
                         "params_": [],
-                        "target": 17
+                        "target": 2
                     }
                 ]
             },

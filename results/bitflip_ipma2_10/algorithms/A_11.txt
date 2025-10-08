@@ -1,4 +1,4 @@
-CNOT([q17,q12]); CNOT([q17,q11]); 
+CNOT([q0,q2]); CNOT([q1,q2]); 
 x2 := measure(q2); 
 if c = 0:
 	X([q0]); 

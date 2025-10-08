@@ -80,7 +80,8 @@ MethodType str_to_method_type(const string &method) {
     throw invalid_argument("Method type not recognized: " + method);
 }
 
-bool Experiment::guard(const shared_ptr<POMDPVertex>&, const unordered_map<int, int>&, const shared_ptr<POMDPAction>&) const {
+bool Experiment::guard(const shared_ptr<POMDPVertex>&, const unordered_map<int, int>&, const shared_ptr<POMDPAction>& a) const {
+    if (*a == HALT_ACTION) return false;
     return true;
 }
 
@@ -509,17 +510,21 @@ void generate_experiment_file(const string& experiment_name, const string& metho
 void generate_all_experiments_file() {
     generate_experiment_file("bitflip_ipma", "bellman", 3, 7, 20, true, false);
     generate_experiment_file("bitflip_ipma2", "bellman", 3, 7, 20, true, false);
+    generate_experiment_file("bitflip_ipma2", "bellman", 3, 4, 20, true, true);
     generate_experiment_file("bitflip_cxh", "bellman", 7, 7, 20, true, false);
     generate_experiment_file("reset", "bellman", 2, 7, 1, false, false);
-    // generate_experiment_file("basic_zero_plus_discr", "convex", 1, 4, 20, false, true);
-    // generate_experiment_file("bell_state_reach", "\"bellman convex\"", 1, 4, 20, true, true);
+    generate_experiment_file("reset", "bellman", 2, 5, 10, false, true);
+    generate_experiment_file("basic_zero_plus_discr", "convex", 1, 3, 1, false, true);
+    generate_experiment_file("basic_zero_plus_discr", "convex", 1, 3, 1, false, false);
+    generate_experiment_file("bell_state_reach", "\"bellman convex\"", 1, 3, 5, true, true);
+    generate_experiment_file("bell_state_reach", "\"bellman convex\"", 1, 3, 5, true, false);
     generate_experiment_file("ghz3", "bellman", 3, 3, 5, true, false);
 }
 
-MyFloat verify_single_distribution(const Belief &current_belief, Experiment &experiment, HardwareSpecification &hardware_spec,
+double verify_single_distribution(const VertexDict &current_belief, Experiment &experiment, HardwareSpecification &hardware_spec,
     const shared_ptr<Algorithm> &algorithm, const unordered_map<int, int> &embedding, int precision) {
 
-    MyFloat curr_belief_val = experiment.postcondition(current_belief, embedding);
+    double curr_belief_val = experiment.postcondition_double(current_belief, embedding);
 
     if (algorithm == nullptr) {
         return curr_belief_val;
@@ -536,7 +541,7 @@ MyFloat verify_single_distribution(const Belief &current_belief, Experiment &exp
         for (auto instruction : hardware_spec.to_basis_gates_impl(instruction_)) {
             seq.push_back(instruction.rename(embedding));
             if (hardware_spec.get_hardware() != QuantumHardware::PerfectHardware && hardware_spec.instructions_to_channels.find(make_shared<Instruction>(seq[seq.size()-1])) == hardware_spec.instructions_to_channels.end()) {
-                return MyFloat("0", precision);
+                return 0.0;
             }
         }
     }
@@ -544,19 +549,18 @@ MyFloat verify_single_distribution(const Belief &current_belief, Experiment &exp
     POMDPAction action = POMDPAction(action_->name, seq, precision, action_->pseudo_instruction_sequence);
 
     // build next_beliefs, separate them by different observables
-    unordered_map<cpp_int, Belief> obs_to_next_beliefs;
-    MyFloat zero("0", precision);
+    unordered_map<cpp_int, VertexDict> obs_to_next_beliefs;
     for(auto & prob : current_belief.probs) {
         auto current_v = prob.first;
-        if(prob.second > zero) {
+        if(prob.second > 0) {
             auto successors = action.get_successor_states(hardware_spec, current_v);
             for (auto &it_next_v: successors) {
-                MyFloat prob2(to_string(round_to(it_next_v.second, experiment.precision)), precision);
-                if (prob2 > zero) {
+                double prob2 = it_next_v.second;
+                if (prob2 > 0) {
                     obs_to_next_beliefs[it_next_v.first->hybrid_state->classical_state->get_memory_val()].add_val(it_next_v.first,
                                                                               prob.second * prob2);
                 }else {
-                    assert(prob2 == zero);
+                    assert(is_close(prob2, 0.0, 10));
                 }
             }
         }
@@ -564,7 +568,7 @@ MyFloat verify_single_distribution(const Belief &current_belief, Experiment &exp
 
 
     if (!obs_to_next_beliefs.empty()) {
-        MyFloat bellman_val("0", precision);
+        double bellman_val = 0.0;
         set<cpp_int> visited_cstates;
         for (int i = 0; i < algorithm->children.size(); i++) {
             if(obs_to_next_beliefs.find(algorithm->children[i]->classical_state) != obs_to_next_beliefs.end()) {
@@ -575,7 +579,7 @@ MyFloat verify_single_distribution(const Belief &current_belief, Experiment &exp
 
         for (auto it: obs_to_next_beliefs) {
             if (visited_cstates.find(it.first) == visited_cstates.end()) {
-                bellman_val = bellman_val + experiment.postcondition(it.second, embedding);
+                bellman_val = bellman_val + experiment.postcondition_double(it.second, embedding);
             }
         }
         return bellman_val;
@@ -586,13 +590,10 @@ MyFloat verify_single_distribution(const Belief &current_belief, Experiment &exp
 
 }
 
-MyFloat verify_algorithm(Experiment &experiment, const Algorithm &algorithm, HardwareSpecification &hardware_spec,
+double verify_algorithm(POMDP &pomdp, Experiment &experiment, const Algorithm &algorithm, HardwareSpecification &hardware_spec,
     unordered_map<int, int> &embedding, bool is_convex,int max_horizon) {
-    assert (experiment.precision == 8);
     auto initial_distribution_ = experiment.get_initial_distribution(embedding);
-    Belief initial_distribution;
-
-    int precision = (max_horizon + 1) * experiment.precision;
+    VertexDict initial_distribution;
     experiment.max_horizon = max_horizon;
 
     int hidden_index = -1;
@@ -600,24 +601,31 @@ MyFloat verify_algorithm(Experiment &experiment, const Algorithm &algorithm, Har
         hidden_index = 0;
     }
     for (auto it : initial_distribution_) {
-        initial_distribution.add_val(make_shared<POMDPVertex>(it.first, hidden_index), MyFloat(to_string(it.second), precision));
+        shared_ptr<POMDPVertex> v = pomdp.get_vertex(it.first, hidden_index);
+        initial_distribution.add_val(v, it.second);
         if (experiment.set_hidden_index) {
             hidden_index+=1;
         }
     }
 
+    auto postcondition = [&experiment](const VertexDict &b, const unordered_map<int, int> &embedding) -> double {
+        return experiment.postcondition_double(b, embedding);
+    };
+
     if (is_convex) {
-        MyFloat current_val("0", precision);
+        double current_val = 0.0;
         bool is_first = true;
         for (auto it : initial_distribution.probs) {
-            Belief current_distribution;
+            VertexDict current_distribution;
             assert(current_distribution.probs.size() == 0);
-            current_distribution.set_val(it.first, MyFloat("1", precision));
+            current_distribution.set_val(it.first, 1.0);
             assert(*algorithm.action == random_branch);
             assert(algorithm.children.size() == 2);
-            MyFloat prob1(to_string(round_to(algorithm.children_probs.at(0), precision)), precision);
-            MyFloat prob2(to_string(round_to(algorithm.children_probs.at(1), precision)), precision);
-            MyFloat value = prob1 * verify_single_distribution(current_distribution, experiment, hardware_spec, algorithm.children.at(0), embedding, precision) + prob2 *verify_single_distribution(current_distribution, experiment, hardware_spec, algorithm.children.at(1), embedding, precision);
+            double prob1 = algorithm.children_probs.at(0);
+            double prob2 = algorithm.children_probs.at(1);
+            auto acc_first = get_algorithm_acc_double(pomdp, algorithm.children.at(0), current_distribution, postcondition, embedding);
+            auto acc_second = get_algorithm_acc_double(pomdp, algorithm.children.at(1), current_distribution, postcondition, embedding);
+            double value = prob1 * acc_first + prob2 * acc_second;
             if (is_first) {
                 current_val = value ;
             } else {
@@ -628,7 +636,7 @@ MyFloat verify_algorithm(Experiment &experiment, const Algorithm &algorithm, Har
 
         return current_val;
     } else {
-        auto current_val = verify_single_distribution(initial_distribution, experiment, hardware_spec, make_shared<Algorithm>(algorithm), embedding, precision);
+        auto current_val = get_algorithm_acc_double(pomdp, make_shared<Algorithm>(algorithm), initial_distribution, postcondition, embedding);
 
         return current_val;
     }

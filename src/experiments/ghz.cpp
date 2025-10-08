@@ -4,7 +4,7 @@
 #include <queue>
 #include "experiments.hpp"
 
-inline bool are_adjacent_qubits(const unordered_map<int, unordered_set<int>> &graph, int qubit1,
+inline bool are_adjacent_qubits(const unordered_map<int, set<int>> &graph, int qubit1,
                          const unordered_set<int> &qubits) {
     queue<int> q;
     unordered_set<int> visited;

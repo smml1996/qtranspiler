@@ -327,6 +327,7 @@ double get_algorithm_acc_double(POMDP &pomdp, const shared_ptr<Algorithm>& algor
     for(auto & prob : current_belief.probs) {
         auto current_v = prob.first;
         if(prob.second > 0) {
+            assert (pomdp.transition_matrix_[current_v].find(action) != pomdp.transition_matrix_[current_v].end());
             for (auto &it_next_v: pomdp.transition_matrix_[current_v][action]) {
                 if (it_next_v.second > 0) {
                     obs_to_next_beliefs[it_next_v.first->hybrid_state->classical_state->get_memory_val()].add_val(it_next_v.first,
@@ -340,7 +341,6 @@ double get_algorithm_acc_double(POMDP &pomdp, const shared_ptr<Algorithm>& algor
     }
 
     // assert(algorithm->children.size() <= obs_to_next_beliefs.size());
-
     if (!obs_to_next_beliefs.empty()) {
         double bellman_val = 0.0;
         set<cpp_int> visited_cstates;
@@ -391,7 +391,7 @@ void ConvexDistributionSolver::set_minimax_values(
         minimax_matrix[current_alg_index][index] = acc;
 
     }
-    cout << current_alg_index << endl;
+    // cout << current_alg_index << endl;
     // fs::path p = fs::path("..") / "temp" / ("a" + to_string(current_alg_index) + ".txt");
     // dump_to_file(p, algorithm);
 }

@@ -1,5 +1,7 @@
 #include "utils.hpp"
 
+#include <set>
+#include <unordered_set>
 #include <boost/multiprecision/cpp_int.hpp>
 
 double get_rel_tol(const int &precision) {
@@ -105,7 +107,16 @@ pair<double, pair<complex<double>, complex<double>>> get_kraus_matrix_probabilit
         prob = 1.0;
     }
     return {prob, make_pair(new_a0, new_a1)};
+}
 
+set<int> get_intersection(set<int> set1, set<int> set2) {
+    set<int> result;
+    for (auto a : set1) {
+        if (set2.find(a) != set2.end()) {
+            result.insert(a);
+        }
+    }
+    return result;
 }
 
  
