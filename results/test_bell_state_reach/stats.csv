@@ -1,0 +1,8 @@
+hardware,embedding_index,horizon,pomdp_build_time,probability,method,method_time,algorithm_index,error
+almaden,0,1,0.162180,0.495800,bellman,0.000000,0,0.000000
+almaden,0,1,0.162180,-0.000000,convex,0.000000,1,0.000000
+almaden,0,2,0.162180,0.495800,bellman,0.000000,2,0.000000
+almaden,0,2,0.162180,0.495800,convex,0.000000,3,0.000000
+almaden,0,3,0.162180,0.976730,bellman,0.000000,4,0.000000
+almaden,0,3,0.162180,0.976730,convex,0.000000,5,0.000000
+almaden,0,4,0.162180,0.976730,bellman,0.000000,6,0.000000

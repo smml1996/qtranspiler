@@ -1,22 +1,11 @@
-{
-	H([q0]); CNOT([q0,q1]); 
-	H([q2]); CNOT([q2,q0]); CNOT([q2,q1]); H([q2]); x2 := measure(q2); 
-	if c = 1:
-		Z([q0]); 
-		HALT
+x3 := measure(q3); 
+if c = 0:
+	x3 := measure(q3); 
 	if c = 0:
+		H([q0]); CNOT([q0,q1]); 
 		HALT
-
-} ⊕_1.000000 {
-	H([q0]); CNOT([q0,q1]); 
-	H([q2]); CNOT([q2,q0]); CNOT([q2,q1]); H([q2]); x2 := measure(q2); 
-	if c = 0:
-		H([q2]); CNOT([q2,q0]); CNOT([q2,q1]); H([q2]); x2 := measure(q2); 
-		if c = 1:
-			HALT
-		if c = 0:
-			HALT
-	if c = 1:
-		Z([q0]); 
+	if c = 8:
 		HALT
-}
+if c = 8:
+	CNOT([q0,q1]); 
+	HALT

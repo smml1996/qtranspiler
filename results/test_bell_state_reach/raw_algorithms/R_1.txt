@@ -1,17 +1,7 @@
 {
     "action": {
-        "name": "PrepareBell",
+        "name": "CX01",
         "seq": [
-            {
-                "c_target": -1,
-                "controls": [],
-                "gate_name": 4,
-                "instruction_type": 2,
-                "matrix": [],
-                "params": [],
-                "params_": [],
-                "target": 0
-            },
             {
                 "c_target": -1,
                 "controls": [
@@ -42,5 +32,5 @@
     "children_probs": [],
     "classical_state": "0",
     "depth": 1,
-    "precision": 25
+    "precision": 20
 }

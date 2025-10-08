@@ -2,7 +2,7 @@ name: test_bell_state_reach
 precision: 5
 thermalization: 0
 min. horizon: 1
-max. horizon: 3
+max. horizon: 4
 hidden index: 0
 methods: bellman, convex
-quantum hardware: almaden, perfect_hardware
+quantum hardware: almaden

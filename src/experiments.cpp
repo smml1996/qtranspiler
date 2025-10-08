@@ -289,7 +289,6 @@ void Experiment::run() {
             auto end_pomdp_build = chrono::high_resolution_clock::now();    // end time
             auto pomdp_build_time = chrono::duration<double>(end_pomdp_build - start_pomdp_build).count();
             cout << pomdp_build_time << endl;
-            // pomdp.print_pomdp();
             // initial belief
             auto initial_belief = this->get_initial_belief(pomdp);
             auto initial_states = this->get_initial_states(pomdp);
@@ -480,7 +479,13 @@ inline vector<string> get_hardware_batches(int num_batches = 20, bool with_cnot=
 
 
 void generate_experiment_file(const string& experiment_name, const string& method, int min_horizon, int max_horizon, int num_batches, bool with_cnot, bool with_thermalization) {
-    auto p = fs::path("..") / "scripts"/ (experiment_name + ".sh");
+    filesystem::path p;
+    if (with_thermalization) {
+        p = fs::path("..") / "scripts"/ (experiment_name + "_therm.sh");
+    } else {
+        p = fs::path("..") / "scripts"/ (experiment_name + ".sh");
+    }
+
     std::ofstream results_file(p);
 
     if (!results_file.is_open()) {
@@ -516,8 +521,8 @@ void generate_all_experiments_file() {
     generate_experiment_file("reset", "bellman", 2, 5, 10, false, true);
     generate_experiment_file("basic_zero_plus_discr", "convex", 1, 3, 1, false, true);
     generate_experiment_file("basic_zero_plus_discr", "convex", 1, 3, 1, false, false);
-    generate_experiment_file("bell_state_reach", "\"bellman convex\"", 1, 3, 5, true, true);
-    generate_experiment_file("bell_state_reach", "\"bellman convex\"", 1, 3, 5, true, false);
+    generate_experiment_file("bell_state_reach", "\"bellman convex\"", 1, 3, 1, true, true);
+    generate_experiment_file("bell_state_reach", "\"bellman convex\"", 1, 3, 1, true, false);
     generate_experiment_file("ghz3", "bellman", 3, 3, 5, true, false);
 }
 
