@@ -117,14 +117,19 @@ class BellStateReach : public IPMABitflip {
         for (auto it : hardware_spec.to_basis_gates_impl(Instruction(GateName::H, embedding.at(0)))) {
             seq_prepare_bell.push_back(it);
         }
+        seq_prepare_bell.push_back(Instruction(GateName::Cnot, vector<int>({embedding.at(0)}), embedding.at(1)));
 
-        auto H = make_shared<POMDPAction>("H0",
+        auto PrepareBell = make_shared<POMDPAction>("PrepareBell",
             seq_prepare_bell,
-            this->precision, vector<Instruction>({Instruction(GateName::H, 0)}));
+            this->precision, vector<Instruction>({
+                Instruction(GateName::H, 0),
+                Instruction(GateName::Cnot,
+                    vector<int>({embedding.at(0)}),
+                    embedding.at(1))}));
 
 
         auto CX01 = make_shared<POMDPAction>("CX01",vector<Instruction>({Instruction(GateName::Cnot, vector<int>({embedding.at(0)}), embedding.at(1))}), this->precision, vector<Instruction>({Instruction(GateName::Cnot, vector<int>({0}), 1)}));
-        return {H, CX01, MEASData};
+        return {PrepareBell, CX01, MEASData};
     }
 
     unordered_set<int> get_fourth(const HardwareSpecification &hardware_spec, unordered_set<int> invalid_qubits) const {

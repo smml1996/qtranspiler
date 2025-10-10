@@ -627,12 +627,14 @@ double verify_algorithm(POMDP &pomdp, Experiment &experiment, const Algorithm &a
             assert(current_distribution.probs.size() == 0);
             current_distribution.set_val(it.first, 1.0);
             assert(*algorithm.action == random_branch);
-            assert(algorithm.children.size() == 2);
-            double prob1 = algorithm.children_probs.at(0);
-            double prob2 = algorithm.children_probs.at(1);
-            auto acc_first = get_algorithm_acc_double(pomdp, algorithm.children.at(0), current_distribution, postcondition, embedding);
-            auto acc_second = get_algorithm_acc_double(pomdp, algorithm.children.at(1), current_distribution, postcondition, embedding);
-            double value = prob1 * acc_first + prob2 * acc_second;
+            double value = 0;
+
+            for (int c_index = 0; c_index < algorithm.children.size(); c_index++) {
+                auto prob = algorithm.children_probs.at(c_index);
+                auto acc = get_algorithm_acc_double(pomdp, algorithm.children.at(c_index), current_distribution, postcondition, embedding);
+                value += prob * acc;
+            }
+
             if (is_first) {
                 current_val = value ;
             } else {
