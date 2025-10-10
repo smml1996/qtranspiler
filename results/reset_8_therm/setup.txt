@@ -1,0 +1,8 @@
+name: reset_8_therm
+precision: 8
+thermalization: 1
+min. horizon: 2
+max. horizon: 5
+hidden index: 0
+methods: bellman
+quantum hardware: burlington, osaka, oslo, paris, poughkeepsie
