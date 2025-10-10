@@ -138,3 +138,26 @@ cpp_int get_belief_cs(const Belief &belief) {
     return current_classical_state;
 }
 
+double VertexDict::get(const shared_ptr<POMDPVertex> &v) {
+    if (this->probs.find(v) == this->probs.end()) {
+        return 0.0;
+    }
+    return this->probs.at(v);
+}
+
+void VertexDict::set_val(const shared_ptr<POMDPVertex> &v, const double &prob) {
+    if (is_close(prob, 0, 10)) {
+        return;
+    }
+    this->probs[v] = prob;
+}
+
+
+void VertexDict::add_val(const shared_ptr<POMDPVertex> &v, const double &val) {
+    assert(v != nullptr);
+    auto final_val =  this->get(v) + val;
+    this->probs.insert_or_assign(v, final_val);
+    if (is_close(this->probs.at(v), 0, 10)) {
+        this->probs.erase(v);
+    }
+}

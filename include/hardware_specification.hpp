@@ -77,10 +77,12 @@ QuantumHardware to_quantum_hardware(const string &quantum_hardware);
 class HardwareSpecification {
     QuantumHardware quantum_hardware;
     unordered_map<int, int> qubit_to_indegree;
+    unordered_map<int, int> qubit_to_outdegree;
     public:
         int num_qubits;
         BasisGates basis_gates_type;
-        unordered_map<int, unordered_set<int>> digraph;
+        unordered_map<int, set<int>> digraph;
+        unordered_map<int, set<int>> rev_digraph;
         unordered_map<shared_ptr<Instruction>, shared_ptr<Channel>, InstructionHash, InstructionPtrEqual>
         instructions_to_channels;
         unordered_set<GateName> basis_gates;
@@ -88,6 +90,7 @@ class HardwareSpecification {
                               const bool &optimize);
         [[nodiscard]] string get_hardware_name() const;
         [[nodiscard]] int get_qubit_indegree(int qubit) const;
+        [[nodiscard]] int get_qubit_outdegree(int qubit) const;
         [[nodiscard]] vector<Instruction> to_basis_gates_impl(const Instruction &current_ins) const;
         [[nodiscard]] vector<pair<int, double>> get_sorted_qubit_couplers(int target) const;
         [[nodiscard]] vector<pair<pair<int, int>, double>> get_sorted_qubit_couplers2() const;

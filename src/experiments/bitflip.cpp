@@ -96,6 +96,7 @@ class IPMABitflip : public Experiment {
         }
 
         [[nodiscard]] bool guard(const shared_ptr<POMDPVertex>& vertex, const unordered_map<int, int>& embedding, const shared_ptr<POMDPAction>& action) const override {
+            if (*action == HALT_ACTION) return false;
             if (action->instruction_sequence[0].gate_name != GateName::Meas) return true;
             auto qs = vertex->hybrid_state->quantum_state;
             auto P0 = Instruction(GateName::P0, embedding.at(2));
@@ -152,6 +153,31 @@ class IPMABitflip : public Experiment {
 
         MyFloat postcondition(const Belief &belief, const unordered_map<int, int> &embedding) override {
             MyFloat result("0", this->precision*(this->max_horizon+1));
+            for (auto it : belief.probs) {
+                auto is_target = this->target_vertices.find(it.first->id);
+                if (is_target != this->target_vertices.end()) {
+                    if (is_target->second) {
+                        result = result + it.second;
+                    }
+                } else {
+                    auto hybrid_state = it.first->hybrid_state;
+                    auto qs = hybrid_state->quantum_state;
+                    auto current_rho = qs->multi_partial_trace(vector<int>({embedding.at(2)}));
+                    assert (current_rho.size() == 4);
+                    if (are_matrices_equal(current_rho, this->BELL0, this->precision) || are_matrices_equal(current_rho, this->BELL1, this->precision)) { // equality up to a threshold because there might be floating point overflow
+                        result = result + it.second;
+                        this->target_vertices[it.first->id] =  true;
+                    }  else {
+                        this->target_vertices[it.first->id] =  false;
+                    }
+                }
+
+            }
+            return result;
+        }
+
+    double postcondition_double(const VertexDict &belief, const unordered_map<int, int> &embedding) override {
+            double result = 0.0;
             for (auto it : belief.probs) {
                 auto is_target = this->target_vertices.find(it.first->id);
                 if (is_target != this->target_vertices.end()) {
@@ -265,7 +291,7 @@ public:
                 vCX02_instructions.push_back(ins);
             }
 
-            vector<Instruction> pseudo_instruction_CX = {Instruction(GateName::Cnot, vector<int>({embedding.at(0)}), embedding.at(2)), Instruction(GateName::Cnot, vector<int>({embedding.at(0)}), embedding.at(1))};
+            vector<Instruction> pseudo_instruction_CX = {Instruction(GateName::Cnot, vector<int>({0}), 2), Instruction(GateName::Cnot, vector<int>({1}), 2)};
 
             auto CX = make_shared<POMDPAction>("CX",
                 vCX02_instructions, this->precision, pseudo_instruction_CX);
@@ -426,6 +452,29 @@ public:
         return result;
     }
 
+    double postcondition_double(const VertexDict &belief, const unordered_map<int, int> &embedding) override {
+        double result = 0;
+        for (auto it : belief.probs) {
+            auto is_target = this->target_vertices.find(it.first->id);
+            if (is_target != this->target_vertices.end()) {
+                if (is_target->second) {
+                    result = result + it.second;
+                }
+            } else {
+                auto hybrid_state = it.first->hybrid_state;
+                auto cs = hybrid_state->classical_state;
+
+                if (cs->get_memory_val() == it.first->hidden_index) {
+                    result = result + it.second;
+                    this->target_vertices[it.first->id] = true;
+                } else {
+                    this->target_vertices[it.first->id] = false;
+                }
+            }
+        }
+        return result;
+    }
+
 };
 
 class BellStateDiscrimination3: public BellStateDiscrimination2, IPMA3Bitflip {
@@ -437,6 +486,10 @@ public:
 
     MyFloat postcondition(const Belief &belief, const unordered_map<int, int> &embedding) override {
         return BellStateDiscrimination2::postcondition(belief, embedding);
+    }
+
+    double postcondition_double(const VertexDict &belief, const unordered_map<int, int> &embedding) override {
+        return BellStateDiscrimination2::postcondition_double(belief, embedding);
     }
 
     vector<shared_ptr<POMDPAction>> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) const override {

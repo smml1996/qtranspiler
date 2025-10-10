@@ -1,4 +1,4 @@
-name: ghz3_1
+name: ghz3_1_therm
 precision: 8
 thermalization: 0
 min. horizon: 3

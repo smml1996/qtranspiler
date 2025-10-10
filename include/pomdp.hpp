@@ -92,11 +92,10 @@ typedef function<bool(shared_ptr<POMDPVertex>&, unordered_map<int, int>&, shared
 class POMDP {
     vector<shared_ptr<POMDPVertex>> states;
     int precision;
-    unordered_map<shared_ptr<POMDPVertex>, unordered_map<shared_ptr<POMDPAction>, unordered_map<shared_ptr<POMDPVertex>,
-    double, POMDPVertexHash, POMDPVertexPtrEqualID>, POMDPActionHash, POMDPActionPtrEqual>, POMDPVertexHash,
-    POMDPVertexPtrEqualID> transition_matrix_;
-
 public:
+        unordered_map<shared_ptr<POMDPVertex>, unordered_map<shared_ptr<POMDPAction>, unordered_map<shared_ptr<POMDPVertex>,
+        double, POMDPVertexHash, POMDPVertexPtrEqualID>, POMDPActionHash, POMDPActionPtrEqual>, POMDPVertexHash,
+        POMDPVertexPtrEqualID> transition_matrix_;
         shared_ptr<POMDPVertex> initial_state;
         unordered_map<shared_ptr<POMDPVertex>, unordered_map<shared_ptr<POMDPAction>, unordered_map<shared_ptr<POMDPVertex>, MyFloat, POMDPVertexHash,
             POMDPVertexPtrEqualID>, POMDPActionHash, POMDPActionPtrEqual>, POMDPVertexHash, POMDPVertexPtrEqualID>

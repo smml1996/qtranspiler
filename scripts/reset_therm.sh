@@ -1,0 +1,10 @@
+sbatch server_script_therm.sh reset reset_0_therm bellman yorktown,ourense,jakarta,hanoi,cambridge,washington 2 5
+sbatch server_script_therm.sh reset reset_1_therm bellman athens,essex,perfect_hardware,auckland,prague,kyiv 2 5
+sbatch server_script_therm.sh reset reset_2_therm bellman vigo,manila,melbourne,montreal,rochester,torino 2 5
+sbatch server_script_therm.sh reset reset_3_therm bellman belem,london,guadalupe,mumbai,brooklyn,fez 2 5
+sbatch server_script_therm.sh reset reset_4_therm bellman valencia,lima,almaden,geneva,manhattan,makarresh 2 5
+sbatch server_script_therm.sh reset reset_5_therm bellman bogota,lagos,boeblingen,toronto,cusco 2 5
+sbatch server_script_therm.sh reset reset_6_therm bellman santiago,perth,singapore,sydney,brisbane 2 5
+sbatch server_script_therm.sh reset reset_7_therm bellman rome,casablanca,johannesburg,cairo,kawasaki 2 5
+sbatch server_script_therm.sh reset reset_8_therm bellman burlington,oslo,poughkeepsie,paris,osaka 2 5
+sbatch server_script_therm.sh reset reset_9_therm bellman quito,nairobi,kolkata,algiers,kyoto 2 5

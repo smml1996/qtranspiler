@@ -1,4 +1,4 @@
-name: reset_0
+name: reset_0_therm
 precision: 8
 thermalization: 1
 min. horizon: 2

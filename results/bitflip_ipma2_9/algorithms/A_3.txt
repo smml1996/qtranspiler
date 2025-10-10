@@ -1,48 +1,48 @@
-CNOT([q24,q25]); CNOT([q24,q26]); 
-x2 := measure(q25); 
+CNOT([q0,q2]); CNOT([q1,q2]); 
+x2 := measure(q2); 
 if c = 0:
-	x2 := measure(q25); 
+	x2 := measure(q2); 
 	if c = 0:
-		x2 := measure(q25); 
+		x2 := measure(q2); 
 		if c = 0:
-			x2 := measure(q25); 
+			x2 := measure(q2); 
 			if c = 0:
 				HALT
 			if c = 4:
 				HALT
 		if c = 4:
-			x2 := measure(q25); 
+			x2 := measure(q2); 
 			if c = 0:
 				HALT
 			if c = 4:
 				HALT
 	if c = 4:
-		x2 := measure(q25); 
+		x2 := measure(q2); 
 		if c = 0:
-			x2 := measure(q25); 
+			x2 := measure(q2); 
 			if c = 0:
 				HALT
 			if c = 4:
 				HALT
 		if c = 4:
-			X([q24]); 
+			X([q0]); 
 			HALT
 if c = 4:
-	x2 := measure(q25); 
+	x2 := measure(q2); 
 	if c = 0:
-		x2 := measure(q25); 
+		x2 := measure(q2); 
 		if c = 0:
-			x2 := measure(q25); 
+			x2 := measure(q2); 
 			if c = 0:
 				HALT
 			if c = 4:
 				HALT
 		if c = 4:
-			X([q24]); 
+			X([q0]); 
 			HALT
 	if c = 4:
-		X([q24]); 
-		x2 := measure(q25); 
+		X([q0]); 
+		x2 := measure(q2); 
 		if c = 0:
 			HALT
 		if c = 4:

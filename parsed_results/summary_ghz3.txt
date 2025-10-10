@@ -7,20 +7,20 @@ total diff. algorithms (convex):  0
 accuracy perfect hardware: 1.0
 
 min. accuracy: 0.11999
-avg. accuracy: 0.91396
+avg. accuracy: 0.91399
 max. accuracy: 1.0
 
-min. pomdp build time: 0.41997
-avg. pomdp build time: 11.13022
-max. pomdp build time: 44.30177
+min. pomdp build time: 0.39477
+avg. pomdp build time: 8.80895
+max. pomdp build time: 33.1842
 
 min. method time: 0.0
-avg. method time: 1.00166
-max. method time: 4.0
+avg. method time: 1.00082
+max. method time: 3.0
 
-min. total time: 0.41997
-avg. total time: 12.13106
-max. total time: 45.30177
+min. total time: 0.39477
+avg. total time: 9.80895
+max. total time: 34.1842
 
 num. algorithms per horizon (method=bellman)
 3 :  12

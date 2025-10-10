@@ -8,6 +8,7 @@ from qiskit import QuantumCircuit, transpile # pyright: ignore
 from qiskit_ibm_runtime.fake_provider import * # pyright: ignore
 from qiskit_aer.noise import NoiseModel as IBMNoiseModel # pyright: ignore
 import json
+import qiskit
 
 class Precision:
     PRECISION: int = 8  # round number to `PRECISION` floating point digits
@@ -448,10 +449,24 @@ class QuantumChannel:
         for err in err_seq:
             if isinstance(err, Instruction):
                 if len(sequences) == 0:
-                    sequences.append([err])
+                    if err.op == Op.RESET:
+                        sequences.append([Instruction(err.target, Op.CUSTOM, params=np.array([[complex(1, 0),complex(0,0)], [complex(0,0),complex(0,0)]]))])
+                        sequences.append([Instruction(err.target, Op.CUSTOM, params=np.array([[complex(0, 0),complex(1,0)], [complex(0,0),complex(0,0)]]))])
+                    else:
+                        sequences.append([err])
                 else:
-                    for seq in sequences:
-                        seq.append(err)
+                    if err.op == Op.RESET:
+                        all_seqs_temp = []
+                        for seq in sequences:
+                            for matrix in[np.array([[complex(1, 0),complex(0,0)], [complex(0,0),complex(0,0)]]), np.array([[complex(0,0),complex(1, 0)], [complex(0,0),complex(0,0)]])]:
+                                temp_seq = deepcopy(seq)
+                                temp_seq.append(Instruction(err.target, Op.CUSTOM, params=matrix))
+                                all_seqs_temp.append(temp_seq)
+
+                        sequences = all_seqs_temp
+                    else:
+                        for seq in sequences:
+                            seq.append(err)
             else:
                 assert isinstance(err, KrausOperator)
                 if len(sequences) == 0:
@@ -471,6 +486,7 @@ class QuantumChannel:
         assert len(sequences) > 0
         return sequences
 
+
     def flatten(self):
         total_probabilities = sum(self.probabilities)
         assert isclose(total_probabilities, 1.0, rel_tol=Precision.rel_tol)
@@ -481,8 +497,9 @@ class QuantumChannel:
             flattened_sequences = self.flatten_sequence(err_seq)
 
             for flattened_seq in flattened_sequences:
-                new_probabilities.append(prob)
-                new_errors.append(flattened_seq)
+                if not isclose(prob, 0.0, rel_tol=Precision.rel_tol, abs_tol=Precision.isclose_abstol):
+                    new_probabilities.append(prob)
+                    new_errors.append(flattened_seq)
 
         self.errors = new_errors
         self.probabilities = new_probabilities
@@ -897,7 +914,7 @@ class NoiseModel:
         qubits_and_noises = sorted(qubits_and_noises, key=lambda x : x[0], reverse=reverse)
         return qubits_and_noises
 
-HARDWARE_SPECS_PATH = "hardware_specs/"
+HARDWARE_SPECS_PATH = ""
 
 def dump_hardware_spec(hardware_spec: HardwareSpec, with_thermalization: bool):
     noise_model = NoiseModel(hardware_spec, thermal_relaxation=with_thermalization)
@@ -908,9 +925,10 @@ def dump_hardware_spec(hardware_spec: HardwareSpec, with_thermalization: bool):
     
 
 if __name__ == "__main__":
-    Precision.PRECISION = 10
+    print(qiskit.__version__)
+    Precision.PRECISION = 8
     Precision.update_threshold()
     for hardware_spec in HardwareSpec:
         print(f"dumping {hardware_spec.value}")
         dump_hardware_spec(hardware_spec, True)
-        # dump_hardware_spec(hardware_spec, False)
+        dump_hardware_spec(hardware_spec, False)

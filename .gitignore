@@ -53,3 +53,5 @@ CMakeFiles/
 .vscode/
 .DS_Store
 
+hardware_specifications/with_thermalization/*
+

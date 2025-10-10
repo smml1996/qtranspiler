@@ -1,5 +1,5 @@
-X([q3]); 
-CNOT([q3,q2]); CNOT([q3,q1]); 
+X([q0]); 
+CNOT([q0,q2]); CNOT([q1,q2]); 
 x2 := measure(q2); 
 if c = 0:
 	x2 := measure(q2); 
@@ -26,7 +26,7 @@ if c = 0:
 			if c = 4:
 				HALT
 		if c = 4:
-			X([q3]); 
+			X([q0]); 
 			HALT
 if c = 4:
 	x2 := measure(q2); 
@@ -39,10 +39,10 @@ if c = 4:
 			if c = 4:
 				HALT
 		if c = 4:
-			X([q3]); 
+			X([q0]); 
 			HALT
 	if c = 4:
-		X([q3]); 
+		X([q0]); 
 		x2 := measure(q2); 
 		if c = 0:
 			HALT

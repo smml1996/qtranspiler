@@ -73,12 +73,12 @@ TEST(HardwareSpecificationTest, Digraph) {
         EXPECT_TRUE(spec.digraph.find(source) != spec.digraph.end());
     }
 
-    unordered_map<int, unordered_set<int>> digraph;
-    digraph[0] = unordered_set<int>({1});
-    digraph[1] = unordered_set<int>({0, 2, 3});
-    digraph[2] = unordered_set<int>({1});
-    digraph[3] = unordered_set<int>({1,4});
-    digraph[4] = unordered_set<int>({3});
+    unordered_map<int, set<int>> digraph;
+    digraph[0] = set<int>({1});
+    digraph[1] = set<int>({0, 2, 3});
+    digraph[2] = set<int>({1});
+    digraph[3] = set<int>({1,4});
+    digraph[4] = set<int>({3});
 
     EXPECT_EQ(spec.digraph, digraph);
 }

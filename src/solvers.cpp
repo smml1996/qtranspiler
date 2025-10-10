@@ -247,7 +247,7 @@ void SingleDistributionSolver::print_all_beliefs() const {
 }
 
 
-ConvexDistributionSolver::ConvexDistributionSolver(const POMDP &pomdp, const f_reward_type &get_reward, int precision, const unordered_map<int, int> &embedding, const guard_type &g) {
+ConvexDistributionSolver::ConvexDistributionSolver(const POMDP &pomdp, const f_reward_type_double &get_reward, int precision, const unordered_map<int, int> &embedding, const guard_type &g) {
     this->pomdp = pomdp;
     this->get_reward = get_reward;
     this->precision = precision;
@@ -309,6 +309,59 @@ MyFloat get_algorithm_acc(POMDP &pomdp, const shared_ptr<Algorithm>& algorithm, 
     }
 }
 
+
+double get_algorithm_acc_double(POMDP &pomdp, const shared_ptr<Algorithm>& algorithm, const VertexDict &current_belief, const f_reward_type_double &get_reward, const unordered_map<int, int> &embedding) {
+    double curr_belief_val = get_reward(current_belief, embedding);
+
+    if (algorithm == nullptr) {
+        return curr_belief_val;
+    }
+    auto action = algorithm->action;
+    if (*action == HALT_ACTION) {
+        return curr_belief_val;
+    }
+
+    // build next_beliefs, separate them by different observables
+    unordered_map<cpp_int, VertexDict> obs_to_next_beliefs;
+
+    for(auto & prob : current_belief.probs) {
+        auto current_v = prob.first;
+        if(prob.second > 0) {
+            assert (pomdp.transition_matrix_[current_v].find(action) != pomdp.transition_matrix_[current_v].end());
+            for (auto &it_next_v: pomdp.transition_matrix_[current_v][action]) {
+                if (it_next_v.second > 0) {
+                    obs_to_next_beliefs[it_next_v.first->hybrid_state->classical_state->get_memory_val()].add_val(it_next_v.first,
+                                                                              prob.second * it_next_v.second);
+                } else {
+                    // cout << it_next_v.second << endl;
+                    // assert(it_next_v.second == zero);
+                }
+            }
+        }
+    }
+
+    // assert(algorithm->children.size() <= obs_to_next_beliefs.size());
+    if (!obs_to_next_beliefs.empty()) {
+        double bellman_val = 0.0;
+        set<cpp_int> visited_cstates;
+        for (int i = 0; i < algorithm->children.size(); i++) {
+            if(obs_to_next_beliefs.find(algorithm->children[i]->classical_state) != obs_to_next_beliefs.end()) {
+                visited_cstates.insert(algorithm->children[i]->classical_state);
+                bellman_val = bellman_val + get_algorithm_acc_double(pomdp, algorithm->children[i], obs_to_next_beliefs[algorithm->children[i]->classical_state], get_reward, embedding);
+            }
+        }
+
+        for (auto it: obs_to_next_beliefs) {
+            if (visited_cstates.find(it.first) == visited_cstates.end()) {
+                bellman_val = bellman_val + get_reward(it.second, embedding);
+            }
+        }
+        return bellman_val;
+    } else {
+        return curr_belief_val;
+    }
+}
+
 void ConvexDistributionSolver::set_minimax_values(
     const shared_ptr<Algorithm> &algorithm,
     const vector<shared_ptr<POMDPVertex>> &initial_states,
@@ -332,13 +385,13 @@ void ConvexDistributionSolver::set_minimax_values(
     for (int index = 0; index < initial_states.size(); index++) {
         assert(minimax_matrix[current_alg_index].find(index) == minimax_matrix[current_alg_index].end());
 
-        Belief initial_belief;
-        initial_belief.set_val(initial_states[index], MyFloat("1", this->precision));
-        auto acc = get_algorithm_acc(pomdp,algorithm, initial_belief, this->get_reward, this->embedding, precision);
-        minimax_matrix[current_alg_index][index] = to_double(acc);
+        VertexDict initial_belief;
+        initial_belief.set_val(initial_states[index], 1);
+        auto acc = get_algorithm_acc_double(pomdp,algorithm, initial_belief, this->get_reward, this->embedding);
+        minimax_matrix[current_alg_index][index] = acc;
 
     }
-    cout << current_alg_index << endl;
+    // cout << current_alg_index << endl;
     // fs::path p = fs::path("..") / "temp" / ("a" + to_string(current_alg_index) + ".txt");
     // dump_to_file(p, algorithm);
 }

@@ -513,7 +513,6 @@ string int_to_bin(cpp_int n, int zero_padding=-1) {
 
 string remove_unused(const string &bin_string, const vector<int> &used_qubits, int padding) {
     string answer;
-
     for (int index = 0; index < bin_string.size(); index++) {
         char c = bin_string.at(index);
         if (std::find(used_qubits.begin(), used_qubits.end(), index) == used_qubits.end()) {
@@ -569,6 +568,7 @@ vector<vector<complex<double>>> QuantumState::multi_partial_trace(const vector<i
     for (auto q : this->qubits_used) {
         local_qubits_used.push_back(q);
     }
+
 
     auto final_dim = pow(2 ,(local_qubits_used.size() - remove_indices.size()));
 
@@ -704,7 +704,7 @@ std::ostream &operator<<(ostream& os, const QuantumState& quantum_state) {
         if (!is_first) {
             os <<" + ";
         }
-        os << it.second << "|" << it.first << ">";
+        os << it.second << "|" << to_binary(it.first) << ">";
         is_first = false;
     }
     return os;

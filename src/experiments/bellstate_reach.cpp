@@ -25,28 +25,24 @@ class BellStateReach : public IPMABitflip {
         shared_ptr<ClassicalState> classical_state0 = make_shared<ClassicalState>();
 
         auto H0 = Instruction(GateName::H, embedding.at(0));
-        auto CX01 = Instruction(GateName::Cnot, vector<int>({embedding.at(0)}), embedding.at(1));
 
         auto X0 = Instruction(GateName::X, embedding.at(0));
         auto Z0 = Instruction(GateName::Z, embedding.at(0));
 
-        auto X1 = Instruction(GateName::X, embedding.at(1));
-        auto X2 = Instruction(GateName::X, embedding.at(2));
+        auto X3 = Instruction(GateName::X, embedding.at(3));
 
         auto  state0 =  make_shared<QuantumState>(get_qubits_used(embedding), this->precision);
-        state0 = state0->apply_instruction(X2);
-        result.push_back(make_pair(make_shared<HybridState>(state0, classical_state0), 0.25));
+        result.push_back(make_pair(make_shared<HybridState>(state0, classical_state0), 0.25)); // |00>
 
-        auto state1 = state0->apply_instruction(X0);
-        state1 = state1->apply_instruction(X1); // |111>
+        auto state1 = state0->apply_instruction(X0); // |10>
         result.push_back(make_pair(make_shared<HybridState>(state1, classical_state0), 0.25));
 
-        auto bell0 = state0->apply_instruction(H0);
-        bell0 = bell0->apply_instruction(CX01);
-        result.push_back(make_pair(make_shared<HybridState>(bell0, classical_state0), 0.25));
+        auto state_plus = state0->apply_instruction(H0);
+        state_plus = state_plus->apply_instruction(X3); // |+1>
+        result.push_back(make_pair(make_shared<HybridState>(state_plus, classical_state0), 0.25));
 
-        auto bell1 = bell0->apply_instruction(Z0);
-        result.push_back(make_pair(make_shared<HybridState>(bell1, classical_state0), 0.25));
+        auto state_minus = state_plus->apply_instruction(Z0);
+        result.push_back(make_pair(make_shared<HybridState>(state_minus, classical_state0), 0.25));
 
         return result;
     }
@@ -62,12 +58,9 @@ class BellStateReach : public IPMABitflip {
             } else {
                 auto hybrid_state = it.first->hybrid_state;
                 auto qs = hybrid_state->quantum_state;
-                auto current_rho = qs->multi_partial_trace(vector<int>({embedding.at(2)}));
+                auto current_rho = qs->multi_partial_trace(vector<int>({embedding.at(3)}));
                 assert (current_rho.size() == 4);
-                if (are_matrices_equal(current_rho, this->BELL0, this->precision) ||
-                    are_matrices_equal(current_rho, this->BELL1, this->precision) ||
-                    are_matrices_equal(current_rho, this->BELL2, this->precision) ||
-                    are_matrices_equal(current_rho, this->BELL3, this->precision)) { // equality up to a threshold because there might be floating point overflow
+                if (are_matrices_equal(current_rho, this->BELL0, this->precision) || are_matrices_equal(current_rho, this->BELL1, this->precision)) { // equality up to a threshold because there might be floating point overflow
                     result = result + it.second;
                     this->target_vertices[it.first->id] =  true;
                 }  else {
@@ -79,91 +72,135 @@ class BellStateReach : public IPMABitflip {
         return result;
     }
 
+    double postcondition_double(const VertexDict &belief, const unordered_map<int, int> &embedding) override {
+        double result = 0.0;
+        for (auto it : belief.probs) {
+            auto is_target = this->target_vertices.find(it.first->id);
+            if (is_target != this->target_vertices.end()) {
+                if (is_target->second) {
+                    result = result + it.second;
+                }
+            } else {
+                auto hybrid_state = it.first->hybrid_state;
+                auto qs = hybrid_state->quantum_state;
+                auto current_rho = qs->multi_partial_trace(vector<int>({embedding.at(3)}));
+                assert (current_rho.size() == 4);
+                if (are_matrices_equal(current_rho, this->BELL0, this->precision) || are_matrices_equal(current_rho, this->BELL1, this->precision)) { // equality up to a threshold because there might be floating point overflow
+                    result = result + it.second;
+                    this->target_vertices[it.first->id] =  true;
+                    }  else {
+                        this->target_vertices[it.first->id] =  false;
+                    }
+            }
+
+        }
+        return result;
+    }
+    [[nodiscard]] bool guard(const shared_ptr<POMDPVertex>& vertex, const unordered_map<int, int>& embedding, const shared_ptr<POMDPAction>& action) const override {
+        return true;
+    }
+
+
     virtual vector<shared_ptr<POMDPAction>> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) const override {
 
         assert(embedding.size() == 3);
         assert(embedding.find(0) != embedding.end());
         assert(embedding.find(1) != embedding.end());
-        assert(embedding.find(2) != embedding.end());
+        assert(embedding.find(3) != embedding.end());
 
 
-        auto MEAS2 = make_shared<POMDPAction>("MEAS",
-            vector<Instruction>({Instruction(GateName::Meas, embedding.at(0), 0), Instruction(GateName::Meas, embedding.at(1), 1)}),
-            this->precision,
-            vector<Instruction>({Instruction(GateName::Meas, 0, 0), Instruction(GateName::Meas, 1, 1)}));
-
-        vector<Instruction> seq_bell_meas = {Instruction(GateName::Cnot, vector<int>({embedding.at(0)}), embedding.at(1))};
-        for (auto it : hardware_spec.to_basis_gates_impl(Instruction(GateName::H, embedding.at(0)))) {
-            seq_bell_meas.push_back(it);
-        }
-
-        seq_bell_meas.push_back(Instruction(GateName::Meas, embedding.at(0), 0));
-        seq_bell_meas.push_back(Instruction(GateName::Meas, embedding.at(1), 1));
-
-        auto MEASBell = make_shared<POMDPAction>("MEASBell",
-            seq_bell_meas,
-            this->precision,
-            vector<Instruction>({
-                Instruction(GateName::Cnot, vector<int>({0}), 1),
-                Instruction(GateName::H, 0), Instruction(GateName::Meas, 0, 0),
-                Instruction(GateName::Meas, 1, 1)}));
-
-        auto PA = make_shared<POMDPAction>("PA",
-            vector<Instruction>({Instruction(GateName::Meas, embedding.at(2), 2)}),
-            this->precision,
-            vector<Instruction>({Instruction(GateName::Meas, 2, 2)}));
+        vector<Instruction> meas_data_seq({Instruction(GateName::Meas, embedding.at(3), 3)});
+        vector<Instruction> v_meas_data_seq({Instruction(GateName::Meas, 3, 3)});
+        auto MEASData = make_shared<POMDPAction>("MEASData",meas_data_seq, this->precision, v_meas_data_seq);
 
         vector<Instruction> seq_prepare_bell;
         for (auto it : hardware_spec.to_basis_gates_impl(Instruction(GateName::H, embedding.at(0)))) {
             seq_prepare_bell.push_back(it);
         }
-        seq_prepare_bell.push_back(Instruction(GateName::Cnot, vector<int>({embedding.at(0)}), embedding.at(1)));
 
-        auto prepare_bell = make_shared<POMDPAction>("PrepareBell",
+        auto H = make_shared<POMDPAction>("H0",
             seq_prepare_bell,
-            this->precision, vector<Instruction>({Instruction(H, 0), Instruction(GateName::Cnot, vector<int>({0}), 1)}));
+            this->precision, vector<Instruction>({Instruction(GateName::H, 0)}));
 
-        return {PA, MEAS2, MEASBell, prepare_bell};
+
+        auto CX01 = make_shared<POMDPAction>("CX01",vector<Instruction>({Instruction(GateName::Cnot, vector<int>({embedding.at(0)}), embedding.at(1))}), this->precision, vector<Instruction>({Instruction(GateName::Cnot, vector<int>({0}), 1)}));
+        return {H, CX01, MEASData};
     }
 
+    unordered_set<int> get_fourth(const HardwareSpecification &hardware_spec, unordered_set<int> invalid_qubits) const {
+        auto vals = get_meas_pivot_qubits(hardware_spec, 0);
+        for (auto it : invalid_qubits) {
+            vals.erase(it);
+        }
+        return vals;
+    }
+
+    vector<int> get_shortest_path(const HardwareSpecification &hardware_spec, const int &source, const int &target) const {
+
+        queue<pair<int, int>> q;
+        unordered_set<int> visited;
+
+        q.push(make_pair(source, 0));
+        visited.insert(source);
+        unordered_map<int, int> paths;
+        while (!q.empty()) {
+            auto current = q.front();
+            auto qubit = current.first;
+            auto distance = current.second;
+            assert(qubit != target);
+            q.pop();
+
+
+            auto it = hardware_spec.digraph.find(qubit);
+            if (it != hardware_spec.digraph.end()) {
+                for (auto qubit2 : hardware_spec.digraph.at(qubit)) {
+                    if (paths.find(qubit2)  == paths.end()) {
+                        paths[qubit2] = qubit;
+                    }
+                    if (qubit2 == target) {
+                        vector<int> answer;
+                        int last_seen = target;
+                        answer.push_back(target);
+                        while (last_seen != source) {
+                            last_seen = paths[last_seen];
+                            answer.push_back(last_seen);
+                        }
+                        reverse(answer.begin(), answer.end());
+                        return answer;
+                    }
+
+                    if (visited.find(qubit2) == visited.end()) {
+                        q.push(make_pair(qubit2, distance + 1));
+                        visited.insert(qubit2);
+                    }
+                }
+            }
+        }
+        return {};
+    }
     vector<unordered_map<int, int>> get_hardware_scenarios(HardwareSpecification const & hardware_spec) const override {
         if (hardware_spec.get_hardware() == QuantumHardware::PerfectHardware ) {
             unordered_map<int, int> m;
             m[0] = 0;
             m[1] = 1;
-            m[2] = 2;
+            m[3] = 3;
             return {m};
         }
         vector<unordered_map<int, int>> result;
-        unordered_set<int> pivot_qubits;
-        if (hardware_spec.get_hardware() != QuantumHardware::PerfectHardware && hardware_spec.num_qubits < 14) {
-
-            for(int qubit = 0; qubit < hardware_spec.num_qubits; qubit++) {
-                if (hardware_spec.get_qubit_indegree(qubit) > 1) {
-                    pivot_qubits.insert(qubit);
+        for (auto it_source : hardware_spec.digraph) {
+            int qubit0 = it_source.first;
+            for (auto qubit1 : it_source.second) {
+                assert(qubit0 != qubit1);
+                auto possible_fourth = get_fourth(hardware_spec, {qubit0, qubit1});
+                for (auto qubit3 : possible_fourth) {
+                    unordered_map<int, int> m;
+                    m[0] = qubit0;
+                    m[1] = qubit1;
+                    m[3] = qubit3;
+                    result.push_back(m);
                 }
-
             }
-        } else {
-            pivot_qubits = get_meas_pivot_qubits(hardware_spec, 0);
-        }
-        auto sorted_couplers = hardware_spec.get_sorted_qubit_couplers2();
-        for (auto ancilla : pivot_qubits) {
-            unordered_map<int, int> d_temp;
-            d_temp[0] = sorted_couplers.at(0).first.first;
-            d_temp[1] = sorted_couplers.at(0).first.second;
-            d_temp[2] = ancilla;
-
-            if (d_temp.at(0) != d_temp.at(1) && d_temp.at(0) != d_temp.at(2) && d_temp.at(1) != d_temp.at(2) && !does_result_contains_d(result, d_temp)) result.push_back(d_temp);
-
-            unordered_map<int, int> d_temp2;
-            d_temp2[0] = sorted_couplers.at(sorted_couplers.size()-1).first.first;
-            d_temp2[1] = sorted_couplers.at(sorted_couplers.size()-1).first.second;
-            d_temp2[2] = ancilla;
-            if (d_temp2.at(0) != d_temp2.at(1) && d_temp2.at(0) != d_temp2.at(2) && d_temp2.at(1) != d_temp2.at(2) && !does_result_contains_d(result, d_temp2)) result.push_back(d_temp2);
-
         }
         return result;
     }
-
 };

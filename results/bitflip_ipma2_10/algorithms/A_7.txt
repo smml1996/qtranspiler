@@ -1,50 +1,92 @@
-X([q22]); 
-CNOT([q22,q19]); CNOT([q22,q16]); 
-x2 := measure(q19); 
+CNOT([q0,q2]); CNOT([q1,q2]); 
+x2 := measure(q2); 
 if c = 0:
-	x2 := measure(q19); 
+	x2 := measure(q2); 
 	if c = 0:
-		x2 := measure(q19); 
+		x2 := measure(q2); 
 		if c = 0:
-			x2 := measure(q19); 
+			x2 := measure(q2); 
 			if c = 0:
-				HALT
+				x2 := measure(q2); 
+				if c = 0:
+					HALT
+				if c = 4:
+					HALT
 			if c = 4:
-				HALT
+				x2 := measure(q2); 
+				if c = 0:
+					HALT
+				if c = 4:
+					HALT
 		if c = 4:
-			x2 := measure(q19); 
+			x2 := measure(q2); 
 			if c = 0:
-				HALT
+				x2 := measure(q2); 
+				if c = 0:
+					HALT
+				if c = 4:
+					HALT
 			if c = 4:
+				CNOT([q0,q2]); CNOT([q1,q2]); 
 				HALT
 	if c = 4:
-		x2 := measure(q19); 
+		x2 := measure(q2); 
 		if c = 0:
-			x2 := measure(q19); 
+			x2 := measure(q2); 
 			if c = 0:
-				HALT
+				x2 := measure(q2); 
+				if c = 0:
+					HALT
+				if c = 4:
+					HALT
 			if c = 4:
+				CNOT([q0,q2]); CNOT([q1,q2]); 
 				HALT
 		if c = 4:
-			X([q22]); 
-			HALT
+			x2 := measure(q2); 
+			if c = 0:
+				CNOT([q0,q2]); CNOT([q1,q2]); 
+				HALT
+			if c = 4:
+				X([q0]); 
+				HALT
 if c = 4:
-	x2 := measure(q19); 
+	x2 := measure(q2); 
 	if c = 0:
-		x2 := measure(q19); 
+		x2 := measure(q2); 
 		if c = 0:
-			x2 := measure(q19); 
+			x2 := measure(q2); 
+			if c = 0:
+				x2 := measure(q2); 
+				if c = 0:
+					HALT
+				if c = 4:
+					HALT
+			if c = 4:
+				CNOT([q0,q2]); CNOT([q1,q2]); 
+				HALT
+		if c = 4:
+			x2 := measure(q2); 
+			if c = 0:
+				CNOT([q0,q2]); CNOT([q1,q2]); 
+				HALT
+			if c = 4:
+				X([q0]); 
+				HALT
+	if c = 4:
+		x2 := measure(q2); 
+		if c = 0:
+			x2 := measure(q2); 
+			if c = 0:
+				CNOT([q0,q2]); CNOT([q1,q2]); 
+				HALT
+			if c = 4:
+				X([q0]); 
+				HALT
+		if c = 4:
+			X([q0]); 
+			x2 := measure(q2); 
 			if c = 0:
 				HALT
 			if c = 4:
 				HALT
-		if c = 4:
-			X([q22]); 
-			HALT
-	if c = 4:
-		X([q22]); 
-		x2 := measure(q19); 
-		if c = 0:
-			HALT
-		if c = 4:
-			HALT

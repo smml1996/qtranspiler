@@ -266,8 +266,7 @@ void Algorithm::get_successor_classical_states(const cpp_int &current_classical_
             assert(bits.find(t) == bits.end());
             if (instruction.gate_name == GateName::Write0) {
                 copy_current_classical_state = copy_current_classical_state & ~(1 << instruction.c_target);
-            } else {
-                assert(instruction.gate_name == GateName::Write1);
+            } else if (instruction.gate_name == GateName::Write1) {
                 copy_current_classical_state = copy_current_classical_state | (1 << instruction.c_target);
             }
         }

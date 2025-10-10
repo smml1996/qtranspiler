@@ -4,18 +4,18 @@
     "num_qubits": 1,
     "basis_gates_type": "TYPE9",
     "basis_gates": [
-        "SX",
         "X",
-        "MEAS",
         "RESET",
-        "RZ"
+        "SX",
+        "RZ",
+        "MEAS"
     ],
     "instructions": [
         {
             "type": "instruction",
             "target": 0,
             "control": -1,
-            "op": "X",
+            "op": "I",
             "params": []
         },
         {
@@ -29,7 +29,7 @@
             "type": "instruction",
             "target": 0,
             "control": -1,
-            "op": "I",
+            "op": "X",
             "params": []
         },
         {

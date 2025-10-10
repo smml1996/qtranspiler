@@ -19,6 +19,13 @@ int HardwareSpecification::get_qubit_indegree(int qubit) const {
     return 0;
 }
 
+int HardwareSpecification::get_qubit_outdegree(int qubit) const {
+    if (this->qubit_to_outdegree.find(qubit) != this->qubit_to_outdegree.end()) {
+        return this->qubit_to_outdegree.at(qubit);
+    }
+    return 0;
+}
+
 vector<pair<int, double>> HardwareSpecification::get_sorted_qubit_couplers(int target) const {
     assert (target >= 0);
     vector<pair<int, double>> result;
@@ -154,7 +161,7 @@ HardwareSpecification::HardwareSpecification(const QuantumHardware &quantum_hard
             this->instructions_to_channels[instruction] = channel;
         }
 
-        // compute in degree of qubits
+        // compute degree of qubits
         for (auto it : this->instructions_to_channels) {
             auto ins = it.first;
             if (ins->gate_name == GateName::Cnot || ins->gate_name == GateName::Cz) {
@@ -162,7 +169,13 @@ HardwareSpecification::HardwareSpecification(const QuantumHardware &quantum_hard
                 if (this->qubit_to_indegree.find(target) == this->qubit_to_indegree.end()) {
                     this->qubit_to_indegree[target] = 0;
                 }
+
+                assert(ins->controls.size() == 1);
+                if (this->qubit_to_outdegree.find(ins->controls[0]) == this->qubit_to_outdegree.end()) {
+                    this->qubit_to_outdegree[ins->controls[0]] = 0;
+                }
                 this->qubit_to_indegree[target]++;
+                this->qubit_to_outdegree[ins->controls[0]]++;
             }
         }
 
@@ -177,7 +190,7 @@ HardwareSpecification::HardwareSpecification(const QuantumHardware &quantum_hard
             assert(it.second >= 0);
         }
 
-        // compute digraph
+        // compute digraph and reverse digraph
         for (auto it : this->instructions_to_channels) {
             auto instruction = it.first;
 
@@ -186,9 +199,13 @@ HardwareSpecification::HardwareSpecification(const QuantumHardware &quantum_hard
                 int source = instruction->controls[0];
                 int target = instruction->target;
                 if (this->digraph.find(source) == this->digraph.end()) {
-                    this->digraph[source] = unordered_set<int>();
+                    this->digraph[source] = set<int>();
+                }
+                if (this->rev_digraph.find(target) == this->rev_digraph.end()) {
+                    this->rev_digraph[target] = set<int>();
                 }
                 this->digraph[source].insert(target);
+                this->rev_digraph[target].insert(source);
             }
         }
     }
