@@ -37,8 +37,10 @@ public:
     shared_ptr<Experiment> experiment;
     bool with_cnot;
     int max_horizon;
-    Setup(string name_, int num_batches_, shared_ptr<Experiment> exp_, bool with_cnot_, int max_horizon_) {
+    bool with_thermalization;
+    Setup(string name_, int num_batches_, shared_ptr<Experiment> exp_, bool with_cnot_, int max_horizon_, bool with_thermalization_=false) {
         this->name = name_;
+        this->with_thermalization = with_thermalization_;
         this->num_batches = num_batches_;
         this->experiment = exp_;
         this->with_cnot = with_cnot_;
@@ -70,9 +72,12 @@ bool are_actions_valid(const HardwareSpecification &hardware_spec, vector<shared
 int main(int argc, char* argv[]) {
     // load all hardware specs
     cout << "started loading hardware specs" << endl;
-    vector<HardwareSpecification> all_specs;
+    map<bool, vector<HardwareSpecification>> all_specs;
+    all_specs[false] = vector<HardwareSpecification>({});
+    all_specs[true] = vector<HardwareSpecification>({});
     for (auto index = 0; index < QuantumHardware::HardwareCount; index++) {
-        all_specs.push_back(HardwareSpecification(static_cast<QuantumHardware>(index), false, true));
+        all_specs[false].push_back(HardwareSpecification(static_cast<QuantumHardware>(index), false, true));
+        all_specs[true].push_back(HardwareSpecification(static_cast<QuantumHardware>(index), true, true));
     }
     cout << "end loading hardware specs" << endl << endl;
 
@@ -83,9 +88,10 @@ int main(int argc, char* argv[]) {
     }
 
     vector<Setup> setups({
-        // Setup("bell_state_reach", 10, make_shared<BellStateReach>(), true, 3),
-        // Setup("basic_zero_plus_discr", 5, make_shared<BasicZeroPlusDiscrimination>(), false, 3),
-
+        Setup("basic_zero_plus_discr", 1, make_shared<BasicZeroPlusDiscrimination>(), false, 3),
+        Setup("basic_zero_plus_discr", 1, make_shared<BasicZeroPlusDiscrimination>(), false, 3, true),
+        Setup("bell_state_reach", 1, make_shared<BellStateReach>(), true, 3),
+        Setup("reset", 10, make_shared<ResetProblem>(), false, 5, true),
         // Setup("reset", 1, make_shared<ResetProblem>(), false, 7),
         // Setup("ghz3", 5, make_shared<GHZStatePreparation3>(), true, 3),
         // Setup("bitflip_ipma2", 20, make_shared<IPMA2Bitflip>(), true, 7),
@@ -94,8 +100,12 @@ int main(int argc, char* argv[]) {
     });
 
     for (auto setup : setups) {
+        string therm_str;
+        if (setup.with_thermalization) {
+            therm_str = "_therm";
+        }
         cout << "parsing experiment " << setup.experiment->name << endl;
-        fs::path exp_dir = parsed_results_path / setup.name;
+        fs::path exp_dir = parsed_results_path / (setup.name + therm_str);
         fs::create_directories(exp_dir);
 
         fs::path parsed_algorithms_path = exp_dir / "raw_algorithms";
@@ -117,7 +127,7 @@ int main(int argc, char* argv[]) {
         , ",") << "\n";
 
         for (int batch = 0; batch < setup.num_batches; batch++) {
-            fs::path raw_exp_path = fs::path("..") / "results" / (setup.name + "_" + to_string(batch));
+            fs::path raw_exp_path = fs::path("..") / "results" / (setup.name + "_" + to_string(batch) + therm_str);
             ifstream f(raw_exp_path / "stats.csv");
 
             string line;
@@ -190,7 +200,7 @@ int main(int argc, char* argv[]) {
             std::cerr << "Error opening verification file " << verification_path << endl;
             return 1;
         }
-        for (auto &hardware_spec : all_specs) {
+        for (auto &hardware_spec : all_specs[setup.with_thermalization]) {
             if ((setup.with_cnot && hardware_spec.basis_gates_type != BasisGates::TYPE5 && hardware_spec.basis_gates_type != BasisGates::TYPE2) or !setup.with_cnot) {
                 auto embeddings = setup.experiment->get_hardware_scenarios(hardware_spec);
                 for (int embedding_index = 0; embedding_index < embeddings.size(); ++embedding_index) {

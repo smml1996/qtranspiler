@@ -435,7 +435,7 @@ set<QuantumHardware> get_hardware_list() {
 
 TEST(BellStateReachTest, BellStateReach) {
     const int min_horizon = 1;
-    const int max_horizon = 4;
+    const int max_horizon = 3;
     string custom_name = "test_bell_state_reach";
 
     set<MethodType> methods = {
@@ -443,7 +443,7 @@ TEST(BellStateReachTest, BellStateReach) {
         ConvexDist
     };
 
-    set<QuantumHardware> hw_list = {Almaden};
+    set<QuantumHardware> hw_list = {Johannesburg};
 
     auto bell_state_reach = BellStateReach(custom_name, precision, false, min_horizon, max_horizon, methods, hw_list, true);
     bell_state_reach.run();

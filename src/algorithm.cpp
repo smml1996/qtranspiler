@@ -319,7 +319,7 @@ shared_ptr<Algorithm> get_mixed_algorithm(const vector<double> &x, const unorder
     assert(new_head->children.size() == 0);
     int count = 0;
     for(int i = 0; i < x.size(); i++) {
-        if(x[i] > 0) {
+        if(!is_close(x[i], 0.0, 6)) {
             assert(!(*mapping_index_algorithm.find(i)->second->action == random_branch));
             new_head->children.push_back(mapping_index_algorithm.find(i)->second);
             assert(new_head->children_probs.find(i) == new_head->children_probs.end());

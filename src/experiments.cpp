@@ -518,8 +518,8 @@ void generate_all_experiments_file() {
     generate_experiment_file("bitflip_ipma2", "bellman", 3, 4, -1, true, true);
     generate_experiment_file("bitflip_cxh", "bellman", 7, 7, 20, true, false);
     generate_experiment_file("bitflip_cxh", "bellman", 7, 7, -1, true, true);
-    generate_experiment_file("reset", "bellman", 2, 7, 1, false, false);
-    generate_experiment_file("reset", "bellman", 2, 5, 10, false, true);
+    generate_experiment_file("reset", "\"convex bellman\"", 2, 7, 1, false, false);
+    generate_experiment_file("reset", "\"convex bellman\"", 2, 5, 10, false, true);
     generate_experiment_file("basic_zero_plus_discr", "convex", 1, 3, 1, false, true);
     generate_experiment_file("basic_zero_plus_discr", "convex", 1, 3, 1, false, false);
     generate_experiment_file("bell_state_reach", "\"bellman convex\"", 1, 3, -1, true, true);

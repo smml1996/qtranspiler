@@ -636,6 +636,17 @@ pair<shared_ptr<Algorithm>, double> ConvexDistributionSolver::solve(const vector
 
     auto result = this->solve_lp_maximin(maximin_matrix, maximin_matrix.size(), initial_states.size());
 
+    // check result
+    double sum_ = 0.0;
+    auto val = result.first;
+    for (int i = 0 ; i < val.size() ; i++) {
+        sum_ += val[i];
+    }
+
+    assert(is_close(sum_, 1.0, 10));
+    for (int i = 0 ; i < result.first.size() ; i++) {
+        result.first[i] /= sum_;
+    }
     auto mixed_algorithm = get_mixed_algorithm(result.first, mapping_index_algorithm, this->initial_classical_state);
     this->pomdp.actions.pop_back();
     return make_pair(mixed_algorithm, result.second);
