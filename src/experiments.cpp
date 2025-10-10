@@ -455,27 +455,35 @@ inline vector<string> get_hardware_batches(int num_batches = 20, bool with_cnot=
     sort(hardware_specs.begin(), hardware_specs.end(), [](const HardwareSpecification& a, const HardwareSpecification& b) {
          return a.num_qubits < b.num_qubits;
      });
-
+    assert (num_batches != 0);
     vector<string> result;
-    result.reserve(num_batches);
-    for (int i = 0; i < num_batches; i++) {
-        result.emplace_back();
-    }
-
-    int current_batch = 0;
-    for (auto &hs : hardware_specs) {
-        if ((with_cnot && hs.basis_gates_type != BasisGates::TYPE5 && hs.basis_gates_type != BasisGates::TYPE2) or !with_cnot) {
-            if (!result[current_batch].empty()) {
-                result[current_batch] += ",";
-            }
-            result[current_batch] += hs.get_hardware_name();
+    if (num_batches > 0) {
+        result.reserve(num_batches);
+        for (int i = 0; i < num_batches; i++) {
+            result.emplace_back();
         }
-        current_batch+=1;
-        current_batch %=num_batches;
-    }
 
+        int current_batch = 0;
+        for (auto &hs : hardware_specs) {
+            if ((with_cnot && hs.basis_gates_type != BasisGates::TYPE5 && hs.basis_gates_type != BasisGates::TYPE2) or !with_cnot) {
+                if (!result[current_batch].empty()) {
+                    result[current_batch] += ",";
+                }
+                result[current_batch] += hs.get_hardware_name();
+            }
+            current_batch+=1;
+            current_batch %=num_batches;
+        }
+    } else {
+        for (auto &hs : hardware_specs) {
+            if ((with_cnot && hs.basis_gates_type != BasisGates::TYPE5 && hs.basis_gates_type != BasisGates::TYPE2) or !with_cnot) {
+                result.push_back(hs.get_hardware_name());
+            }
+        }
+    }
     return result;
 }
+
 
 
 void generate_experiment_file(const string& experiment_name, const string& method, int min_horizon, int max_horizon, int num_batches, bool with_cnot, bool with_thermalization) {
