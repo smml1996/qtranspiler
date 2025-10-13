@@ -1,0 +1,215 @@
+------ Experiment.bitflip_ipma ------
+%%%%%%%%%%%% bellman %%%%%%%%%%%%
+count hardware (bellman):  45
+count embeddings (bellman):  141
+total diff. algorithms (bellman):  22
+accuracy perfect hardware (bellman): 0.5, 1.0, 1.0, 1.0, 1.0
+
+min. accuracy (bellman): 0.5
+avg. accuracy (bellman): 0.84523
+max. accuracy (bellman): 1.0
+
+min. pomdp build time (bellman): 0.01102
+avg. pomdp build time (bellman): 0.16028
+max. pomdp build time (bellman): 0.885
+
+min. method time (bellman): 0.0
+avg. method time (bellman): 261.51349
+max. method time (bellman): 1074.0
+
+min. total time (bellman): 0.01102
+avg. total time (bellman): 261.67306
+max. total time (bellman): 1074.18068
+
+min. total time (bellman): 0.01102
+avg. total time (bellman): 261.67306
+max. total time (bellman): 1074.18068
+
+num. algorithms per horizon (method=bellman)
+3 :  6
+4 :  3
+5 :  5
+6 :  3
+7 :  5
+--
+
+
+number of improvements per horizon:
+--> horizon 3: 0 
+--> horizon 4: 15 
+--> horizon 5: 18 
+--> horizon 6: 140 
+--> horizon 7: 140 
+--- ALGORITHMS ---
+perfect hardware algorithm:  [(3, 0), (4, 14), (5, 15), (6, 16), (7, 17)]
+Algorithm 17
+	 max: 1.0
+	 avg: 0.9138395744680852
+	 std: 0.10161249132205534
+Algorithm 16
+	 max: 1.0
+	 avg: 0.9138400000000002
+	 std: 0.10161228890106888
+Algorithm 14
+	 max: 1.0
+	 avg: 0.9138403546099292
+	 std: 0.10161211873317465
+Algorithm 1
+	 max: 1.0
+	 avg: 0.9138403546099292
+	 std: 0.10161211873317465
+Algorithm 15
+	 max: 1.0
+	 avg: 0.9138402836879436
+	 std: 0.10161209347979953
+Algorithm 2
+	 max: 1.0
+	 avg: 0.9138402836879436
+	 std: 0.10161209347979953
+Algorithm 6
+	 max: 1.0
+	 avg: 0.9138402127659575
+	 std: 0.10161206872546534
+Algorithm 4
+	 max: 1.0
+	 avg: 0.9454790780141845
+	 std: 0.09378149474710355
+Algorithm 7
+	 max: 1.0
+	 avg: 0.9454790780141843
+	 std: 0.09378139864219731
+Algorithm 3
+	 max: 1.0
+	 avg: 0.9454795035460993
+	 std: 0.09378137574262997
+Algorithm 11
+	 max: 0.52109
+	 avg: 0.05451879432624111
+	 std: 0.09378126384971709
+Algorithm 21
+	 max: 0.52109
+	 avg: 0.05451858156028368
+	 std: 0.09378119973474398
+Algorithm 12
+	 max: 0.52108
+	 avg: 0.05451858156028368
+	 std: 0.09378085938263248
+Algorithm 20
+	 max: 0.51539
+	 avg: 0.08615921985815607
+	 std: 0.10161229778688152
+Algorithm 9
+	 max: 0.51539
+	 avg: 0.08615921985815607
+	 std: 0.10161229778688152
+Algorithm 10
+	 max: 0.51539
+	 avg: 0.08615879432624117
+	 std: 0.10161205920049322
+Algorithm 19
+	 max: 0.5
+	 avg: 0.5
+	 std: 0.0
+Algorithm 18
+	 max: 0.5
+	 avg: 0.5
+	 std: 0.0
+Algorithm 13
+	 max: 0.5
+	 avg: 0.5
+	 std: 0.0
+Algorithm 8
+	 max: 0.5
+	 avg: 0.5
+	 std: 0.0
+Algorithm 5
+	 max: 0.5
+	 avg: 0.5
+	 std: 0.0
+Algorithm 0
+	 max: 0.5
+	 avg: 0.5
+	 std: 0.0
+
+
+Improvements with respect to perfect algorithms per horizon
+Horizon = 3
+-> Algorithm: 5
+--> Max: (0.0, ('algiers', 0))
+--> Avg: 0.0
+--> Std: 0.0
+-> Algorithm: 8
+--> Max: (0.0, ('algiers', 0))
+--> Avg: 0.0
+--> Std: 0.0
+-> Algorithm: 13
+--> Max: (0.0, ('algiers', 0))
+--> Avg: 0.0
+--> Std: 0.0
+-> Algorithm: 18
+--> Max: (0.0, ('algiers', 0))
+--> Avg: 0.0
+--> Std: 0.0
+-> Algorithm: 19
+--> Max: (0.0, ('algiers', 0))
+--> Avg: 0.0
+--> Std: 0.0
+
+Horizon = 4
+-> Algorithm: 9
+--> Max: (0.03078000000000003, ('washington', 2))
+--> Avg: -0.8276811347517732
+--> Std: 0.20322441651003945
+-> Algorithm: 1
+--> Max: (0.0, ('algiers', 0))
+--> Avg: 0.0
+--> Std: 0.0
+
+Horizon = 5
+-> Algorithm: 20
+--> Max: (0.03078000000000003, ('washington', 2))
+--> Avg: -0.8276810638297873
+--> Std: 0.2032243912550928
+-> Algorithm: 10
+--> Max: (0.03078000000000003, ('washington', 2))
+--> Avg: -0.8276814893617024
+--> Std: 0.203224152659556
+-> Algorithm: 6
+--> Max: (0.0, ('algiers', 0))
+--> Avg: -7.092198581606746e-08
+--> Std: 8.421519210720361e-07
+-> Algorithm: 2
+--> Max: (0.0, ('algiers', 0))
+--> Avg: 0.0
+--> Std: 0.0
+
+Horizon = 6
+-> Algorithm: 3
+--> Max: (0.09277000000000002, ('paris', 2))
+--> Avg: 0.0316395035460993
+--> Std: 0.026051278946565615
+-> Algorithm: 11
+--> Max: (0.03648000000000007, ('washington', 2))
+--> Avg: -0.8593212056737587
+--> Std: 0.19380727904830458
+
+Horizon = 7
+-> Algorithm: 4
+--> Max: (0.09277000000000002, ('paris', 2))
+--> Avg: 0.03163950354609928
+--> Std: 0.02605123304803827
+-> Algorithm: 7
+--> Max: (0.09277000000000002, ('paris', 2))
+--> Avg: 0.03163950354609928
+--> Std: 0.02605110928063857
+-> Algorithm: 21
+--> Max: (0.03648000000000007, ('washington', 2))
+--> Avg: -0.8593209929078014
+--> Std: 0.1938073662955969
+-> Algorithm: 12
+--> Max: (0.03647, ('washington', 2))
+--> Avg: -0.8593209929078014
+--> Std: 0.19380706966798916
+
+
+

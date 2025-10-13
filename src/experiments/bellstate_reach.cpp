@@ -6,7 +6,6 @@
 
 #include "experiments.hpp"
 #include "utils.hpp"
-#include <complex>
 #include <unordered_set>
 #include "bitflip.cpp"
 
@@ -32,17 +31,17 @@ class BellStateReach : public IPMABitflip {
         auto X3 = Instruction(GateName::X, embedding.at(3));
 
         auto  state0 =  make_shared<QuantumState>(get_qubits_used(embedding), this->precision);
-        result.push_back(make_pair(make_shared<HybridState>(state0, classical_state0), 0.25)); // |00>
+        result.push_back(make_pair(make_shared<HybridState>(state0, classical_state0), 0.2)); // |00>
 
         auto state1 = state0->apply_instruction(X0); // |10>
-        result.push_back(make_pair(make_shared<HybridState>(state1, classical_state0), 0.25));
+        result.push_back(make_pair(make_shared<HybridState>(state1, classical_state0), 0.2));
 
         auto state_plus = state0->apply_instruction(H0);
         state_plus = state_plus->apply_instruction(X3); // |+1>
-        result.push_back(make_pair(make_shared<HybridState>(state_plus, classical_state0), 0.25));
+        result.push_back(make_pair(make_shared<HybridState>(state_plus, classical_state0), 0.3));
 
         auto state_minus = state_plus->apply_instruction(Z0);
-        result.push_back(make_pair(make_shared<HybridState>(state_minus, classical_state0), 0.25));
+        result.push_back(make_pair(make_shared<HybridState>(state_minus, classical_state0), 0.3));
 
         return result;
     }
@@ -124,15 +123,15 @@ class BellStateReach : public IPMABitflip {
             this->precision, vector<Instruction>({
                 Instruction(GateName::H, 0),
                 Instruction(GateName::Cnot,
-                    vector<int>({embedding.at(0)}),
-                    embedding.at(1))}));
+                    vector<int>({0}),
+                    1)}));
 
 
         auto CX01 = make_shared<POMDPAction>("CX01",vector<Instruction>({Instruction(GateName::Cnot, vector<int>({embedding.at(0)}), embedding.at(1))}), this->precision, vector<Instruction>({Instruction(GateName::Cnot, vector<int>({0}), 1)}));
         return {PrepareBell, CX01, MEASData};
     }
 
-    unordered_set<int> get_fourth(const HardwareSpecification &hardware_spec, unordered_set<int> invalid_qubits) const {
+    static set<int> get_fourth(const HardwareSpecification &hardware_spec, unordered_set<int> invalid_qubits) {
         auto vals = get_meas_pivot_qubits(hardware_spec, 0);
         for (auto it : invalid_qubits) {
             vals.erase(it);
@@ -141,7 +140,6 @@ class BellStateReach : public IPMABitflip {
     }
 
     vector<int> get_shortest_path(const HardwareSpecification &hardware_spec, const int &source, const int &target) const {
-
         queue<pair<int, int>> q;
         unordered_set<int> visited;
 

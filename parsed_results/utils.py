@@ -1,31 +1,71 @@
-from typing import Set, Dict, Optional
-
-import numpy as np
-import pandas as pd
+from typing import List, Set, Dict, Optional, Tuple
 from enum import Enum
 import os
+import pandas as pd
+import statistics
 
-parsed_results_path = ""
+parsed_results_path: str = ""
+
 class Experiment(Enum):
     basic_zero_plus_discr =  "basic_zero_plus_discr"
+    basic_zero_plus_discr_therm =  "basic_zero_plus_discr_therm"
     bell_state_reach = "bell_state_reach"
     bitflip_cxh = "bitflip_cxh"
     bitflip_ipma = "bitflip_ipma"
     bitflip_ipma2 = "bitflip_ipma2"
     ghz3 = "ghz3"
     reset = "reset"
+    reset_therm = "reset_therm"
+    
+def get_nice_name (experiment: Experiment) -> str:
+    if experiment in [Experiment.basic_zero_plus_discr, Experiment.basic_zero_plus_discr_therm]:
+        return "state discrimination of |0> and |+>"
+    
+    if experiment == Experiment.bell_state_reach:
+        return "Bell state from ind. states"
+    
+    if experiment == Experiment.bitflip_cxh:
+        return "Bitflip [CXH]"
+    
+    if experiment == Experiment.bitflip_ipma:
+        return "Bitflip [IPMA]"
+    
+    if experiment == Experiment.bitflip_ipma2:
+        return "Bitflip [IPMA2]"
+    
+    if experiment == Experiment.ghz3:
+        return "GHZ"
+    
+    if experiment in [Experiment.reset, Experiment.reset_therm]:
+        return "Reset"
+    
+    raise Exception(f"Nice name not implemented for {experiment}")
+
+def get_thermalization_str(experiment: Experiment) -> str:
+    if experiment in [Experiment.reset_therm, Experiment.basic_zero_plus_discr_therm]:
+        return "yes"
+    return "no"
 
 class StatsFileLine:
-    def __init__(self, line: str):
+    def __init__(self, line: str, is_verification=False):
+        line = line.strip()
         elements = line.split(",")
         self.hardware = elements[0]
         self.embedding_index = int(elements[1])
-        self.horizon = int(elements[2])
-        self.pomdp_build_time = float(elements[3])
-        self.probability = float(elements[4])
-        self.method = elements[5]
-        self.method_time = float(elements[6])
-        self.algorithm_index = int(elements[7])
+        if is_verification:
+            self.horizon = None
+            self.pomdp_build_time = None
+            self.probability = float(elements[3])
+            self.method = elements[4]
+            self.method_time = None
+            self.algorithm_index = int(elements[2])
+        else:
+            self.horizon = int(elements[2])
+            self.pomdp_build_time = float(elements[3])
+            self.probability = float(elements[4])
+            self.method = elements[5]
+            self.method_time = float(elements[6])
+            self.algorithm_index = int(elements[7])
 
 def get_experiment_path(experiment: Experiment) -> str:
     return os.path.join(parsed_results_path, experiment.value)
@@ -36,26 +76,28 @@ def get_stats_path(experiment: Experiment) -> str:
 def get_verification_path(experiment: Experiment) -> str:
     return os.path.join(get_experiment_path(experiment), "verification.csv")
 
-def get_all_hardware(experiment: Experiment) -> Set[int]:
+def get_all_hardware(experiment: Experiment, method: str) -> Set[str]:
     f = open(get_stats_path(experiment))
     lines = f.readlines()
     f.close()
 
-    diff_hardware = set()
+    diff_hardware: Set[str] = set()
     for line in lines[1:]:
         stats_line = StatsFileLine(line)
-        diff_hardware.add(stats_line.hardware)
+        if stats_line.method == method:
+            diff_hardware.add(stats_line.hardware)
     return diff_hardware
 
-def get_embedding_count(experiment: Experiment) -> int:
+def get_embedding_count(experiment: Experiment, method: str) -> int:
     f = open(get_stats_path(experiment))
     lines = f.readlines()
     f.close()
 
-    diff_embeddings = set()
+    diff_embeddings: Set[Tuple[str, int]] = set()
     for line in lines[1:]:
         stats_line = StatsFileLine(line)
-        diff_embeddings.add((stats_line.hardware, stats_line.embedding_index))
+        if stats_line.method == method:
+            diff_embeddings.add((stats_line.hardware, stats_line.embedding_index))
     return len(diff_embeddings)
 
 def get_algorithms_count(experiment: Experiment, method: str) -> int:
@@ -63,19 +105,44 @@ def get_algorithms_count(experiment: Experiment, method: str) -> int:
     lines = f.readlines()
     f.close()
 
-    all_algorithms = set()
+    all_algorithms: Set[int] = set()
     for line in lines[1:]:
         stats_line = StatsFileLine(line)
         if stats_line.method == method:
             all_algorithms.add(stats_line.algorithm_index)
     return len(all_algorithms)
 
+def get_perfect_hardware_algorithms(experiment, method) -> List[Tuple[int, int]]:
+    f = open(get_stats_path(experiment))
+    lines = f.readlines()
+    f.close()
+    all_algorithms_sorted: List[Tuple[int, int]] = []
+    for line in lines[1:]:
+        stats_line = StatsFileLine(line)
+        if stats_line.method == method and stats_line.hardware == "perfect_hardware":
+            all_algorithms_sorted.append((stats_line.horizon, stats_line.algorithm_index))
+    return sorted(all_algorithms_sorted)
+
+
+def get_algorithms_at_horizon(experiment: Experiment, method: str, horizon: int) -> Set[int]:
+    f = open(get_stats_path(experiment))
+    lines = f.readlines()
+    f.close()
+
+    all_algorithms: Set[int] = set()
+    for line in lines[1:]:
+        stats_line = StatsFileLine(line)
+        if stats_line.method == method and stats_line.horizon == horizon:
+            all_algorithms.add(stats_line.algorithm_index)
+    return all_algorithms
+
+
 def get_methods_used(experiment: Experiment) -> Set[str]:
     f = open(get_stats_path(experiment))
     lines = f.readlines()
     f.close()
 
-    all_methods = set()
+    all_methods: Set[str] = set()
     for line in lines[1:]:
         stats_line = StatsFileLine(line)
         all_methods.add(stats_line.method)
@@ -86,7 +153,7 @@ def get_horizon_to_algorithms_count(experiment: Experiment, method:str) -> Dict[
     lines = f.readlines()
     f.close()
 
-    result = dict()
+    result: Dict[int, Set[int]] = dict()
     for line in lines[1:]:
         stats_line = StatsFileLine(line)
         if method == stats_line.method:
@@ -96,10 +163,10 @@ def get_horizon_to_algorithms_count(experiment: Experiment, method:str) -> Dict[
     return result
 
 
-def get_hardware_count(experiment: Experiment) -> int:
-    return len(get_all_hardware(experiment))
+def get_hardware_count(experiment: Experiment, method: str) -> int:
+    return len(get_all_hardware(experiment, method))
 
-def get_perfect_hardware_accuracy(experiment: Experiment) -> str:
+def get_perfect_hardware_accuracy(experiment: Experiment, method: str) -> str:
     f = open(get_stats_path(experiment))
     lines = f.readlines()
     f.close()
@@ -107,7 +174,7 @@ def get_perfect_hardware_accuracy(experiment: Experiment) -> str:
     result = ""
     for line in lines[1:]:
         stats_line = StatsFileLine(line)
-        if stats_line.hardware == "perfect_hardware":
+        if stats_line.hardware == "perfect_hardware" and stats_line.method == method:
             if len(result) > 0:
                 result += ", "
             result += str(stats_line.probability)
@@ -117,6 +184,7 @@ class Stat(Enum):
     minimum = 0
     maximum = 1
     average = 2
+    std = 3
 
 class StatField(Enum):
     probability = 0
@@ -125,12 +193,12 @@ class StatField(Enum):
     total_time = 3
 
 
-def get_stat(experiment: Experiment, field: StatField,  stat: Stat) -> Optional[float]:
+def get_stat(experiment: Experiment, field: StatField,  stat: Stat, method: str) -> Optional[float]:
     f = open(get_stats_path(experiment))
     lines = f.readlines()
     f.close()
 
-    result = None
+    result: Optional[float] = None
     if stat == Stat.average:
         count = 0
     else:
@@ -138,134 +206,371 @@ def get_stat(experiment: Experiment, field: StatField,  stat: Stat) -> Optional[
 
     for line in lines[1:]:
         stats_line = StatsFileLine(line)
-        if result is None:
-            result = stats_line.probability
-        else:
-            if stat == Stat.minimum:
-                if field == StatField.probability:
-                    result = min(result, stats_line.probability)
-                elif field == StatField.pomdp_build_time:
-                    result = min(result, stats_line.pomdp_build_time)
-                elif field == StatField.method_time:
-                    result = min(result, stats_line.method_time)
-                else:
-                    assert(field == StatField.total_time)
-                    result = min(result, stats_line.method_time + stats_line.pomdp_build_time)
-
-            elif stat == Stat.maximum:
-                if field == StatField.probability:
-                    result = max(result, stats_line.probability)
-                elif field == StatField.pomdp_build_time:
-                    result = max(result, stats_line.pomdp_build_time)
-                elif field == StatField.method_time:
-                    result = max(result, stats_line.method_time)
-                else:
-                    assert(field == StatField.total_time)
-                    result = max(result, stats_line.method_time + stats_line.pomdp_build_time)
+        if stats_line.method == method:
+            if result is None:
+                result = stats_line.probability
             else:
-                count += 1
-                assert(stat == Stat.average)
-                if field == StatField.probability:
-                    result += stats_line.probability
-                elif field == StatField.pomdp_build_time:
-                    result += stats_line.pomdp_build_time
-                elif field == StatField.method_time:
-                    result += stats_line.method_time
+                if stat == Stat.minimum:
+                    if field == StatField.probability:
+                        result = min(result, stats_line.probability)
+                    elif field == StatField.pomdp_build_time:
+                        result = min(result, stats_line.pomdp_build_time)
+                    elif field == StatField.method_time:
+                        result = min(result, stats_line.method_time)
+                    else:
+                        assert(field == StatField.total_time)
+                        result = min(result, stats_line.method_time + stats_line.pomdp_build_time)
+
+                elif stat == Stat.maximum:
+                    if field == StatField.probability:
+                        result = max(result, stats_line.probability)
+                    elif field == StatField.pomdp_build_time:
+                        result = max(result, stats_line.pomdp_build_time)
+                    elif field == StatField.method_time:
+                        result = max(result, stats_line.method_time)
+                    else:
+                        assert(field == StatField.total_time)
+                        result = max(result, stats_line.method_time + stats_line.pomdp_build_time)
                 else:
-                    assert(field == StatField.total_time)
-                    result += stats_line.method_time + stats_line.pomdp_build_time
+                    count += 1
+                    assert(stat == Stat.average)
+                    if field == StatField.probability:
+                        result += stats_line.probability
+                    elif field == StatField.pomdp_build_time:
+                        result += stats_line.pomdp_build_time
+                    elif field == StatField.method_time:
+                        result += stats_line.method_time
+                    else:
+                        assert(field == StatField.total_time)
+                        result += stats_line.method_time + stats_line.pomdp_build_time
+    if result is None:
+        raise Exception("get stat result is None")
     return round(result/count, 5)
 
-def dump_stats_summary(experiment: Experiment):
-    with open(f"summary_{experiment.value}.txt", "w") as f:
-        print("------", experiment, "------", file=f)
-        print("count hardware: ", get_hardware_count(experiment), file=f)
-        print("methods used: ", get_methods_used(experiment), file=f)
-        print("count embeddings: ", get_embedding_count(experiment), file=f)
-        print("total diff. algorithms (bellman): ", get_algorithms_count(experiment, method="bellman"), file=f)
-        print("total diff. algorithms (convex): ", get_algorithms_count(experiment, method="convex"), file=f)
-        print("accuracy perfect hardware:", get_perfect_hardware_accuracy(experiment), file=f)
-        print(file=f)
+def get_algorithms_stat(experiment: Experiment, method_: str) -> List[Tuple[int, float, float, float]]:
+    # returns the algorithm index and the improvement
+    f = open(get_verification_path(experiment))
+    lines = f.readlines()
+    f.close()
+    alg_to_improvements: Dict[int, List[float]] = dict()
 
-        print("min. accuracy:", get_stat(experiment, StatField.probability, Stat.minimum), file=f)
-        print("avg. accuracy:", get_stat(experiment, StatField.probability, Stat.average), file=f)
-        print("max. accuracy:", get_stat(experiment, StatField.probability, Stat.maximum), file=f)
-        print(file=f)
+    for line in lines[1:]:
+        stats_line = StatsFileLine(line, True)
+        method = stats_line.method
+        if method == method_:
+            algorithm_index = stats_line.algorithm_index
+            if algorithm_index not in alg_to_improvements.keys():
+                alg_to_improvements[algorithm_index] = []
+            alg_to_improvements[algorithm_index].append(stats_line.probability)
 
-        print("min. pomdp build time:", get_stat(experiment, StatField.pomdp_build_time, Stat.minimum), file=f)
-        print("avg. pomdp build time:", get_stat(experiment, StatField.pomdp_build_time, Stat.average), file=f)
-        print("max. pomdp build time:", get_stat(experiment, StatField.pomdp_build_time, Stat.maximum), file=f)
-        print(file=f)
+    answer: List[Tuple[int, float, float, float]] = []
+    for algorithm_index in alg_to_improvements.keys():
+        x = alg_to_improvements[algorithm_index]
+        answer.append((algorithm_index, max(x), sum(x)/len(x), statistics.stdev(x)))
 
-        print("min. method time:", get_stat(experiment, StatField.method_time, Stat.minimum), file=f)
-        print("avg. method time:", get_stat(experiment, StatField.method_time, Stat.average), file=f)
-        print("max. method time:", get_stat(experiment, StatField.method_time, Stat.maximum), file=f)
-        print(file=f)
+    return sorted(answer, key=lambda x: (x[1], x[3], x[2], x[0]), reverse=True)
 
-        print("min. total time:", get_stat(experiment, StatField.total_time, Stat.minimum), file=f)
-        print("avg. total time:", get_stat(experiment, StatField.total_time, Stat.average), file=f)
-        print("max. total time:", get_stat(experiment, StatField.total_time, Stat.maximum), file=f)
-        print(file=f)
+def get_improvements(experiment: Experiment, method: str, horizon: int, algorithm_index: int) -> List[Tuple[int, Tuple[float, Tuple[str, int]], float, float]]:
 
-        horizon_to_algorithms_count = get_horizon_to_algorithms_count(experiment, "bellman")
-        if len(horizon_to_algorithms_count) > 0:
-            print("num. algorithms per horizon (method=bellman)", file=f)
-        for (horizon, algos) in horizon_to_algorithms_count.items():
-            print(horizon, ": ", len(algos), file=f)
-        print("--", file=f)
-        print(file=f)
+    algorithms_to_evaluate = get_algorithms_at_horizon(experiment, method, horizon)
+    assert algorithm_index in algorithms_to_evaluate
+    alg_to_scenario_acc = dict()
 
-        horizon_to_algorithms_count = get_horizon_to_algorithms_count(experiment, "convex")
-        if len(horizon_to_algorithms_count) > 0:
-            print("num. algorithms per horizon (method=convex)", file=f)
-        for (horizon, algos) in horizon_to_algorithms_count.items():
-            print(horizon, ": ", len(algos), file=f)
+    f = open(get_verification_path(experiment))
+    lines = f.readlines()
+    f.close()
+
+    for line in lines[1:]:
+        stats_line = StatsFileLine(line, True)
+        if stats_line.method == method and stats_line.algorithm_index in algorithms_to_evaluate:
+            hardware_scenario = (stats_line.hardware, stats_line.embedding_index)
+            if stats_line.algorithm_index not in alg_to_scenario_acc.keys():
+                alg_to_scenario_acc[stats_line.algorithm_index] = dict()
+            alg_to_scenario_acc[stats_line.algorithm_index][hardware_scenario] = stats_line.probability
+
+    answer = []
+    for other_alg_index in alg_to_scenario_acc.keys():
+        if other_alg_index == algorithm_index:
+            continue
+
+        current_max = None
+        current_hard_max = None
+        points = []
+        count = 0
+
+        for (hardware_scenario, new_alg_prob) in alg_to_scenario_acc[other_alg_index].items():
+            perfect_acc = alg_to_scenario_acc[algorithm_index][hardware_scenario]
+            count += 1
+            points.append(new_alg_prob - perfect_acc)
+            if current_max is None or current_max < new_alg_prob - perfect_acc:
+                current_max = new_alg_prob - alg_to_scenario_acc[algorithm_index][hardware_scenario]
+                current_hard_max = hardware_scenario
+
+        answer.append((other_alg_index, (current_max, current_hard_max), sum(points)/ len(points), statistics.stdev(points)))
+
+    return sorted(answer, key=lambda x : (x[1][0], x[3], x[2]) , reverse=True)
+
+def dump_summary_table(save: bool=True):
+    experiment_name: List[str] = []
+    final_methods: List[str] = []
+    with_thermalization: List[str] = []
+    hardware_count: List[int] = []
+    num_embeddings: List[int] = []
+    num_algorithms: List[int] = []
+    
+    min_accuracy: List[Optional[float]] = []
+    avg_accuracy: List[Optional[float]] = []
+    max_accuracy: List[Optional[float]] = []
+    
+    min_build: List[Optional[float]] = []
+    avg_build: List[Optional[float]] = []
+    max_build: List[Optional[float]] = []
+    
+    min_method: List[Optional[float]] = []
+    avg_method: List[Optional[float]] = []
+    max_method: List[Optional[float]] = []
+    
+    min_total_time: List[Optional[float]] = []
+    avg_total_time: List[Optional[float]] = []
+    max_total_time: List[Optional[float]] = []
+    for experiment in Experiment:
+        methods = sorted(get_methods_used(experiment))
+        for method in methods:
+            experiment_name.append(get_nice_name(experiment))
+            with_thermalization.append(get_thermalization_str(experiment))
+            final_methods.append(method)
+            hardware_count.append(get_hardware_count(experiment, method=method))
+            num_embeddings.append(get_embedding_count(experiment, method=method))
+            num_algorithms.append(get_algorithms_count(experiment, method=method))
+            min_accuracy.append(get_stat(experiment, StatField.probability, Stat.minimum, method=method))
+            avg_accuracy.append(get_stat(experiment, StatField.probability, Stat.average, method=method))
+            max_accuracy.append(get_stat(experiment, StatField.probability, Stat.maximum, method=method))
             
-def print_stats_summary(experiment: Experiment) -> None:
-    print("------", experiment, "------")
-    print("count hardware: ", get_hardware_count(experiment))
-    print("methods used: ", get_methods_used(experiment))
-    print("count embeddings: ", get_embedding_count(experiment))
-    print("total diff. algorithms (bellman): ", get_algorithms_count(experiment, method="bellman"))
-    print("total diff. algorithms (convex): ", get_algorithms_count(experiment, method="convex"))
-    print("accuracy perfect hardware:", get_perfect_hardware_accuracy(experiment))
-    print()
+    
 
-    print("min. accuracy:", get_stat(experiment, StatField.probability, Stat.minimum))
-    print("avg. accuracy:", get_stat(experiment, StatField.probability, Stat.average))
-    print("max. accuracy:", get_stat(experiment, StatField.probability, Stat.maximum))
-    print()
+            min_build.append(get_stat(experiment, StatField.pomdp_build_time, Stat.minimum, method=method))
+            avg_build.append(get_stat(experiment, StatField.pomdp_build_time, Stat.average, method=method))
+            max_build.append(get_stat(experiment, StatField.pomdp_build_time, Stat.maximum, method=method))
+            
 
-    print("min. pomdp build time:", get_stat(experiment, StatField.pomdp_build_time, Stat.minimum))
-    print("avg. pomdp build time:", get_stat(experiment, StatField.pomdp_build_time, Stat.average))
-    print("max. pomdp build time:", get_stat(experiment, StatField.pomdp_build_time, Stat.maximum))
-    print()
-    print("min. method time:", get_stat(experiment, StatField.method_time, Stat.minimum))
-    print("avg. method time:", get_stat(experiment, StatField.method_time, Stat.average))
-    print("max. method time:", get_stat(experiment, StatField.method_time, Stat.maximum))
-    print()
+            min_method.append(get_stat(experiment, StatField.method_time, Stat.minimum, method=method))
+            avg_method.append(get_stat(experiment, StatField.method_time, Stat.average, method=method))
+            max_method.append(get_stat(experiment, StatField.method_time, Stat.maximum, method=method))
 
-    print("min. total time:", get_stat(experiment, StatField.total_time, Stat.minimum))
-    print("avg. total time:", get_stat(experiment, StatField.total_time, Stat.average))
-    print("max. total time:", get_stat(experiment, StatField.total_time, Stat.maximum))
-    print()
+            min_total_time.append(get_stat(experiment, StatField.total_time, Stat.minimum, method=method))
+            avg_total_time.append(get_stat(experiment, StatField.total_time, Stat.average, method=method))
+            max_total_time.append(get_stat(experiment, StatField.total_time, Stat.maximum, method=method))
+            
+    df = pd.DataFrame({
+        "experiment": experiment_name,
+        "with therm.": with_thermalization,
+        "method": final_methods,
+        "#hardware": hardware_count,
+        "#embeddings": num_embeddings,
+        "#diff. algorithms": num_algorithms,
+        "min. acc.": min_accuracy,
+        "avg. acc.": avg_accuracy,
+        "max. acc.": max_accuracy,
+        "min. build time": min_build,
+        "avg. build time": avg_build,
+        "max. build time": max_build,
+        "min. method time": min_method,
+        "avg. method time": avg_method,
+        "max. method time": max_method,
+        "min. total time": min_method,
+        "avg. total time": avg_method,
+        "max. total time": max_method,
+    })
+    
+    if save:
+        df.to_csv("summary.csv")
+    return df
 
-    horizon_to_algorithms_count = get_horizon_to_algorithms_count(experiment, "bellman")
-    if len(horizon_to_algorithms_count) > 0:
-        print("num. algorithms per horizon (method=bellman)")
-    for (horizon, algos) in horizon_to_algorithms_count.items():
-        print(horizon, ": ", len(algos))
-    print("--")
-    print()
+def get_improvements_per_horizon(experiment: Experiment, method: str, horizon: int) -> int:
+    f = open(get_stats_path(experiment))
+    lines = f.readlines()
+    f.close()
 
-    horizon_to_algorithms_count = get_horizon_to_algorithms_count(experiment, "convex")
-    if len(horizon_to_algorithms_count) > 0:
-        print("num. algorithms per horizon (method=convex)")
-    for (horizon, algos) in horizon_to_algorithms_count.items():
-        print(horizon, ": ", len(algos))
+    hard_to_prob: Dict[Tuple[str, int], float] = dict()
+    perfect_alg_index = -1
+    for line in lines[1:]:
+        stats_line = StatsFileLine(line, is_verification=False)
+        if stats_line.method == method and stats_line.horizon == horizon:
+            hardware_scenario = (stats_line.hardware, stats_line.embedding_index)
+            assert hardware_scenario not in hard_to_prob.keys()
+            hard_to_prob[hardware_scenario] = stats_line.probability
+            if stats_line.hardware == "perfect_hardware":
+                assert perfect_alg_index == -1
+                perfect_alg_index = stats_line.algorithm_index
 
-    print("---------------")
-    print()
-    print()
-    print()
+    assert perfect_alg_index != -1
+    f = open(get_verification_path(experiment))
+    lines = f.readlines()
+    f.close()
+    hardware_scenarios: Set[Tuple[str, int]] = set()
+    for line in lines[1:]:
+        stats_line = StatsFileLine(line, is_verification=True)
+        if stats_line.method == method and stats_line.algorithm_index == perfect_alg_index:
+            hardware_scenario = (stats_line.hardware, stats_line.embedding_index)
+            assert hardware_scenario not in hardware_scenarios
+            if stats_line.probability < hard_to_prob[hardware_scenario]:
+                hardware_scenarios.add(hardware_scenario)
+    return len(hardware_scenarios)
 
+def dump_stats_summary(experiment: Experiment):
+    methods = get_methods_used(experiment)
+    for method in methods:
+        with open(f"summary_{experiment.value}_{method}.txt", "w") as f:
+            print("------", experiment, "------", file=f)
+            print(f"%%%%%%%%%%%% {method} %%%%%%%%%%%%", file=f)
+            print(f"count hardware ({method}): ", get_hardware_count(experiment, method=method), file=f)
+
+            print(f"count embeddings ({method}): ", get_embedding_count(experiment, method=method), file=f)
+            print(f"total diff. algorithms ({method}): ", get_algorithms_count(experiment, method=method), file=f)
+            print(f"accuracy perfect hardware ({method}):", get_perfect_hardware_accuracy(experiment, method=method), file=f)
+            print(file=f)
+
+            print(f"min. accuracy ({method}):", get_stat(experiment, StatField.probability, Stat.minimum, method=method), file=f)
+            print(f"avg. accuracy ({method}):", get_stat(experiment, StatField.probability, Stat.average, method=method), file=f)
+            print(f"max. accuracy ({method}):", get_stat(experiment, StatField.probability, Stat.maximum, method=method), file=f)
+            print(file=f)
+
+            print(f"min. pomdp build time ({method}):", get_stat(experiment, StatField.pomdp_build_time, Stat.minimum, method=method), file=f)
+            print(f"avg. pomdp build time ({method}):", get_stat(experiment, StatField.pomdp_build_time, Stat.average, method=method), file=f)
+            print(f"max. pomdp build time ({method}):", get_stat(experiment, StatField.pomdp_build_time, Stat.maximum, method=method), file=f)
+            print(file=f)
+
+            print(f"min. method time ({method}):", get_stat(experiment, StatField.method_time, Stat.minimum, method=method), file=f)
+            print(f"avg. method time ({method}):", get_stat(experiment, StatField.method_time, Stat.average, method=method), file=f)
+            print(f"max. method time ({method}):", get_stat(experiment, StatField.method_time, Stat.maximum, method=method), file=f)
+            print(file=f)
+
+            print(f"min. total time ({method}):", get_stat(experiment, StatField.total_time, Stat.minimum, method=method), file=f)
+            print(f"avg. total time ({method}):", get_stat(experiment, StatField.total_time, Stat.average, method=method), file=f)
+            print(f"max. total time ({method}):", get_stat(experiment, StatField.total_time, Stat.maximum, method=method), file=f)
+            print(file=f)
+
+            print(f"min. total time ({method}):", get_stat(experiment, StatField.total_time, Stat.minimum, method=method), file=f)
+            print(f"avg. total time ({method}):", get_stat(experiment, StatField.total_time, Stat.average, method=method), file=f)
+            print(f"max. total time ({method}):", get_stat(experiment, StatField.total_time, Stat.maximum, method=method), file=f)
+            print(file=f)
+
+            horizon_to_algorithms_count = get_horizon_to_algorithms_count(experiment, method)
+            if len(horizon_to_algorithms_count) > 0:
+                print(f"num. algorithms per horizon (method={method})", file=f)
+            for (horizon, algos) in horizon_to_algorithms_count.items():
+                print(horizon, ": ", len(algos), file=f)
+            print("--", file=f)
+            print(file=f)
+            print(file=f)
+
+            print("number of improvements per horizon:", file=f)
+            for horizon in horizon_to_algorithms_count.keys():
+                print(f"--> horizon {horizon}: {get_improvements_per_horizon(experiment, method, horizon)} ", file=f)
+
+            print("--- ALGORITHMS ---", file=f)
+            perfect_hard_algos = get_perfect_hardware_algorithms(experiment, method)
+            print("perfect hardware algorithm: ", perfect_hard_algos, file=f)
+            improvements = get_algorithms_stat(experiment, method)
+
+            for (algorithm_index, max_, avg_, std_) in improvements:
+                print(f"Algorithm {algorithm_index}", file=f)
+                print(f"\t max: {max_}", file=f)
+                print(f"\t avg: {avg_}", file=f)
+                print(f"\t std: {std_}", file=f)
+
+            print(file=f)
+            print(file=f)
+            print("Improvements with respect to perfect algorithms per horizon", file=f)
+            for (horizon, algorithm_index) in perfect_hard_algos:
+                stats = get_improvements(experiment, method, horizon, algorithm_index)
+                print(f"Horizon = {horizon}", file=f)
+                for (algorithm_index , max_val, avg_val, stdev_val) in stats:
+                    print("-> Algorithm:", algorithm_index, file=f)
+                    print("--> Max:", max_val, file=f)
+                    print("--> Avg:", avg_val, file=f)
+                    print("--> Std:", stdev_val, file=f)
+                print(file=f)
+
+
+            print(file=f)
+            print(file=f)
+
+
+def get_improvements_df(experiment: Experiment, method: str):
+    perfect_algorithms_ = get_perfect_hardware_algorithms(experiment, method)
+
+    perfect_algorithms = dict()
+
+    perfect_alg_probs = dict()
+
+    for (horizon, alg_index) in perfect_algorithms_:
+        if alg_index not in perfect_algorithms.keys():
+            perfect_algorithms[alg_index] = []
+        perfect_algorithms[alg_index].append(horizon)
+        perfect_alg_probs[horizon] = dict()
+
+    f = open(get_verification_path(experiment))
+    lines = f.readlines()[1:]
+    f.close()
+
+    for line in lines:
+        stat_line = StatsFileLine(line, is_verification=True)
+        if stat_line.method == method:
+            hardware_scenario = (stat_line.hardware, stat_line.embedding_index)
+            if stat_line.algorithm_index in perfect_algorithms.keys():
+                horizons = perfect_algorithms[stat_line.algorithm_index]
+                for horizon in horizons:
+                    assert hardware_scenario not in perfect_alg_probs[horizon].keys()
+                    perfect_alg_probs[horizon][hardware_scenario] = stat_line.probability
+
+    hardwares = []
+    horizons = []
+    embeddings = []
+    probabilities = []
+    perfect_probabilities = []
+
+    f = open(get_stats_path(experiment))
+    lines = f.readlines()[1:]
+    f.close()
+
+    for line in lines:
+        stat_line = StatsFileLine(line, is_verification=False)
+        if stat_line.method == method:
+            hardware = stat_line.hardware
+            embedding_index = stat_line.embedding_index
+            hardware_scenario = (hardware, embedding_index)
+            if hardware_scenario not in perfect_alg_probs[stat_line.horizon]:
+                print(stat_line.horizon)
+            perfect_prob = perfect_alg_probs[stat_line.horizon][hardware_scenario]
+            if stat_line.probability > perfect_prob:
+                hardwares.append(hardware)
+                horizons.append(stat_line.horizon)
+                embeddings.append(embedding_index)
+                probabilities.append(stat_line.probability)
+                perfect_probabilities.append(perfect_prob)
+
+    return pd.DataFrame({
+        "hardware": hardwares,
+        "embedding_index": embeddings,
+        "horizon": horizons,
+        "probability_opt": probabilities,
+        "perfect_opt": perfect_probabilities
+    })
+
+def get_all_improvements_df():
+    final_df = None
+    for experiment in Experiment:
+        if experiment not in [Experiment.basic_zero_plus_discr_therm, Experiment.reset_therm, Experiment.ghz3]:
+            all_methods = get_methods_used(experiment)
+            for method in all_methods:
+                if method == "bellman":
+                    temp_df = get_improvements_df(experiment, method)
+                    temp_df["experiment"] = get_nice_name(experiment) + f"[{method}]"
+
+                    if final_df is None:
+                        final_df = temp_df
+                    else:
+                        final_df = pd.concat([final_df,  temp_df], ignore_index=True)
+
+    return final_df

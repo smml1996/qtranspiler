@@ -231,7 +231,7 @@ class IPMABitflip : public Experiment {
 
         vector<unordered_map<int, int>> get_hardware_scenarios(HardwareSpecification const & hardware_spec) const override {
             vector<unordered_map<int, int>> result;
-            unordered_set<int> pivot_qubits;
+            set<int> pivot_qubits;
             if (hardware_spec.get_hardware() != QuantumHardware::PerfectHardware && hardware_spec.num_qubits < 14) {
                 
                 for(int qubit = 0; qubit < hardware_spec.num_qubits; qubit++) {
@@ -358,7 +358,7 @@ class CXHBitflip : public IPMABitflip {
 
     vector<unordered_map<int, int>> get_hardware_scenarios(HardwareSpecification const & hardware_spec) const override {
         vector<unordered_map<int, int>> result;
-        unordered_set<int> pivot_qubits;
+        set<int> pivot_qubits;
         if (hardware_spec.get_hardware() != QuantumHardware::PerfectHardware && hardware_spec.num_qubits < 14) {
 
             for(int qubit = 0; qubit < hardware_spec.num_qubits; qubit++) {

@@ -76,7 +76,7 @@ class ReadoutNoise {
     ReadoutNoise(int target, double success0, double success1);
 };
 
-unordered_set<int> get_meas_pivot_qubits(const HardwareSpecification &hardware_spec, const int &min_indegree);
+set<int> get_meas_pivot_qubits(const HardwareSpecification &hardware_spec, const int &min_indegree);
 
 
 // utils for running experiments in server

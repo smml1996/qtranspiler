@@ -1,0 +1,95 @@
+------ Experiment.bitflip_cxh ------
+%%%%%%%%%%%% bellman %%%%%%%%%%%%
+count hardware (bellman):  45
+count embeddings (bellman):  203
+total diff. algorithms (bellman):  7
+accuracy perfect hardware (bellman): 1.0
+
+min. accuracy (bellman): 0.50097
+avg. accuracy (bellman): 0.95875
+max. accuracy (bellman): 1.0
+
+min. pomdp build time (bellman): 0.43565
+avg. pomdp build time (bellman): 6.99926
+max. pomdp build time (bellman): 38.43304
+
+min. method time (bellman): 0.93832
+avg. method time (bellman): 2641.0294
+max. method time (bellman): 2868.0
+
+min. total time (bellman): 0.93832
+avg. total time (bellman): 2648.02401
+max. total time (bellman): 2873.93415
+
+min. total time (bellman): 0.93832
+avg. total time (bellman): 2648.02401
+max. total time (bellman): 2873.93415
+
+num. algorithms per horizon (method=bellman)
+7 :  7
+--
+
+
+number of improvements per horizon:
+--> horizon 7: 41 
+--- ALGORITHMS ---
+perfect hardware algorithm:  [(7, 0)]
+Algorithm 5
+	 max: 1.0
+	 avg: 0.9360966502463051
+	 std: 0.08239244348348365
+Algorithm 4
+	 max: 1.0
+	 avg: 0.9533649753694591
+	 std: 0.07780705098857683
+Algorithm 3
+	 max: 1.0
+	 avg: 0.9533649753694591
+	 std: 0.07780705098857683
+Algorithm 0
+	 max: 1.0
+	 avg: 0.9533649753694591
+	 std: 0.07780705098857683
+Algorithm 6
+	 max: 1.0
+	 avg: 0.943540935960591
+	 std: 0.07668036620929068
+Algorithm 2
+	 max: 1.0
+	 avg: 0.943540935960591
+	 std: 0.07668036620929068
+Algorithm 1
+	 max: 0.72217
+	 avg: 0.5172680788177341
+	 std: 0.031430593845155126
+
+
+Improvements with respect to perfect algorithms per horizon
+Horizon = 7
+-> Algorithm: 2
+--> Max: (0.031940000000000024, ('cambridge', 3))
+--> Avg: -0.009824039408866999
+--> Std: 0.008936392689193383
+-> Algorithm: 6
+--> Max: (0.031940000000000024, ('cambridge', 3))
+--> Avg: -0.009824039408866999
+--> Std: 0.008936392689193383
+-> Algorithm: 1
+--> Max: (0.026060000000000028, ('cambridge', 3))
+--> Avg: -0.43609689655172423
+--> Std: 0.08239261001974317
+-> Algorithm: 5
+--> Max: (0.015699999999999936, ('kolkata', 2))
+--> Avg: -0.017268325123152718
+--> Std: 0.031431148345070235
+-> Algorithm: 3
+--> Max: (0.0, ('algiers', 0))
+--> Avg: 0.0
+--> Std: 0.0
+-> Algorithm: 4
+--> Max: (0.0, ('algiers', 0))
+--> Avg: 0.0
+--> Std: 0.0
+
+
+

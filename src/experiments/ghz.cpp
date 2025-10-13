@@ -4,7 +4,7 @@
 #include <queue>
 #include "experiments.hpp"
 
-inline bool are_adjacent_qubits(const unordered_map<int, set<int>> &graph, int qubit1,
+inline bool are_adjacent_qubits(const map<int, set<int>> &graph, int qubit1,
                          const unordered_set<int> &qubits) {
     queue<int> q;
     unordered_set<int> visited;
@@ -138,7 +138,7 @@ Experiment(name, precision, with_thermalization, min_horizon, max_horizon, false
             return answer;
         }
 
-        virtual vector<unordered_map<int, int>> get_hardware_scenarios(HardwareSpecification const & hardware_spec) const override {
+        vector<unordered_map<int, int>> get_hardware_scenarios(HardwareSpecification const & hardware_spec) const override {
             if (hardware_spec.get_hardware() == QuantumHardware::PerfectHardware) {
                 unordered_map<int, int> embedding;
                 embedding[0] = 0;

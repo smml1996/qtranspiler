@@ -17,26 +17,66 @@ bool with_thermalization = false;
 
 
 
-set<QuantumHardware> get_hardware_list() {
+set<QuantumHardware> get_hardware_list(bool with_cnot=false) {
     set<QuantumHardware> hw_list;
     for (int i = 0; i < HardwareCount; i++) {
-        hw_list.insert(static_cast<QuantumHardware>(i));
+        auto hs = HardwareSpecification(static_cast<QuantumHardware>(i), false, false);
+        if ((with_cnot && hs.basis_gates_type != BasisGates::TYPE5 && hs.basis_gates_type != BasisGates::TYPE2) or !with_cnot) {
+            hw_list.insert(static_cast<QuantumHardware>(i));
+        }
     }
     return hw_list;
 }
 
-// TEST(ExperimentsTests, ResetTest) {
-//     const int min_horizon = 2;
-//     const int max_horizon = 7;
-//     string custom_name = "test_reset_test";
+// TEST(Experiments, CountHardwareScenarios) {
+//     auto hw_list = get_hardware_list(true);
+//     vector<HardwareSpecification> hs;
+//
+//     for (auto qh : hw_list) {
+//         hs.push_back(HardwareSpecification(qh, false, true));
+//     }
+//     const int min_horizon = 4;
+//     const int max_horizon = 5;
+//     string custom_name = "dummy";
 //
 //     set<MethodType> methods = {
 //         SingleDistBellman
 //     };
 //
+//     const IPMABitflip bitflip_ipma = IPMABitflip("ipma_dummy", precision, true,min_horizon, max_horizon, methods, hw_list, true);
+//     const IPMA2Bitflip bitflip_ipma2 = IPMA2Bitflip("ipma2_dummy", precision, true,min_horizon, max_horizon, methods, hw_list, true);
+//     const CXHBitflip bitflip_cxh = CXHBitflip("cxh_dummy", precision, true,min_horizon, max_horizon, methods, hw_list, true);
+//
+//     int count_ipma = 0;
+//     int count_ipma2 = 0;
+//     int count_cxh = 0;
+//     for (auto spec : hs) {
+//         count_ipma += bitflip_ipma.get_hardware_scenarios(spec).size();
+//         count_ipma2 += bitflip_ipma2.get_hardware_scenarios(spec).size();
+//         count_cxh += bitflip_cxh.get_hardware_scenarios(spec).size();
+//     }
+//
+//
+//
+//     cout << "ipma scenarios: " << count_ipma << endl;
+//     cout << "ipma2 scenarios: " << count_ipma2 << endl;
+//     cout << "count cxh: " << count_cxh << endl;
+//
+// }
+
+// TEST(ExperimentsTests, ResetTest) {
+//     const int min_horizon = 4;
+//     const int max_horizon = 4;
+//     string custom_name = "test_reset_test";
+//
+//     set<MethodType> methods = {
+//         // SingleDistBellman
+//         ConvexDist
+//     };
+//
 //     auto hw_list = {Algiers};
 //
-//     ResetProblem reset_problem = ResetProblem(custom_name, precision, true, min_horizon, max_horizon, methods, hw_list, false);
+//     ResetProblem reset_problem = ResetProblem(custom_name, precision, false, min_horizon, max_horizon, methods, hw_list, true);
 //     reset_problem.run();
 // }
 
@@ -436,14 +476,14 @@ set<QuantumHardware> get_hardware_list() {
 TEST(BellStateReachTest, BellStateReach) {
     const int min_horizon = 1;
     const int max_horizon = 3;
-    string custom_name = "test_bell_state_reach";
+    string custom_name = "bell_state_reach_0";
 
     set<MethodType> methods = {
         SingleDistBellman,
         ConvexDist
     };
 
-    set<QuantumHardware> hw_list = {Johannesburg};
+    set<QuantumHardware> hw_list = get_hardware_list(true);
 
     auto bell_state_reach = BellStateReach(custom_name, precision, false, min_horizon, max_horizon, methods, hw_list, true);
     bell_state_reach.run();

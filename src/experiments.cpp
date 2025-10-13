@@ -288,7 +288,7 @@ void Experiment::run() {
             pomdp.build_pomdp(actions, hardware_spec, this->max_horizon, embedding, nullptr, initial_distribution, qubits_used, actual_guard, this->set_hidden_index);
             auto end_pomdp_build = chrono::high_resolution_clock::now();    // end time
             auto pomdp_build_time = chrono::duration<double>(end_pomdp_build - start_pomdp_build).count();
-            cout << pomdp_build_time << endl;
+            // cout << pomdp_build_time << endl;
             // initial belief
             auto initial_belief = this->get_initial_belief(pomdp);
             auto initial_states = this->get_initial_states(pomdp);
@@ -385,11 +385,11 @@ ReadoutNoise::ReadoutNoise(int target, double success0, double success1) {
     this->abs_diff = abs(success0-success1);
 }
 
-unordered_set<int> get_meas_pivot_qubits(const HardwareSpecification &hardware_spec, const int &min_indegree) {
+set<int> get_meas_pivot_qubits(const HardwareSpecification &hardware_spec, const int &min_indegree) {
     if (hardware_spec.get_hardware() == QuantumHardware::PerfectHardware) {
         return {0};
     }
-    unordered_set<int> result;
+    set<int> result;
     vector<ReadoutNoise> noises;
 
     for (int qubit = 0; qubit < hardware_spec.num_qubits; qubit++) {

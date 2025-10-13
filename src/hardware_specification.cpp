@@ -43,7 +43,10 @@ vector<pair<int, double>> HardwareSpecification::get_sorted_qubit_couplers(int t
     }
 
     sort(result.begin(), result.end(), [](const pair<int, double> &a, const pair<int, double> &b) {
-        return a.second > b.second;
+        if (a.second != b.second) {
+            return a.second > b.second;
+        }
+        return a.first > b.first;
     });
     return result;
 }

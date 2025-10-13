@@ -1,0 +1,8 @@
+name: reset_13_therm
+precision: 8
+thermalization: 1
+min. horizon: 1
+max. horizon: 3
+hidden index: 0
+methods: convex
+quantum hardware: belem, brooklyn, fez, guadalupe, london, mumbai

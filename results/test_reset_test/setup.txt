@@ -1,0 +1,8 @@
+name: test_reset_test
+precision: 5
+thermalization: 0
+min. horizon: 4
+max. horizon: 4
+hidden index: 0
+methods: convex
+quantum hardware: algiers

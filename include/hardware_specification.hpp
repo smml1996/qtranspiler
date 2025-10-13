@@ -81,8 +81,8 @@ class HardwareSpecification {
     public:
         int num_qubits;
         BasisGates basis_gates_type;
-        unordered_map<int, set<int>> digraph;
-        unordered_map<int, set<int>> rev_digraph;
+        map<int, set<int>> digraph;
+        map<int, set<int>> rev_digraph;
         unordered_map<shared_ptr<Instruction>, shared_ptr<Channel>, InstructionHash, InstructionPtrEqual>
         instructions_to_channels;
         unordered_set<GateName> basis_gates;

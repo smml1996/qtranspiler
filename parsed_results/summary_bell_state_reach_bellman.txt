@@ -1,0 +1,111 @@
+------ Experiment.bell_state_reach ------
+%%%%%%%%%%%% bellman %%%%%%%%%%%%
+count hardware (bellman):  45
+count embeddings (bellman):  3317
+total diff. algorithms (bellman):  9
+accuracy perfect hardware (bellman): 0.6, 1.0, 1.0
+
+min. accuracy (bellman): 0.28
+avg. accuracy (bellman): 0.77402
+max. accuracy (bellman): 1.0
+
+min. pomdp build time (bellman): 0.01045
+avg. pomdp build time (bellman): 1.14405
+max. pomdp build time (bellman): 4.9925
+
+min. method time (bellman): 0.0
+avg. method time (bellman): 6e-05
+max. method time (bellman): 0.5977
+
+min. total time (bellman): 0.01045
+avg. total time (bellman): 1.14405
+max. total time (bellman): 4.9925
+
+min. total time (bellman): 0.01045
+avg. total time (bellman): 1.14405
+max. total time (bellman): 4.9925
+
+num. algorithms per horizon (method=bellman)
+1 :  1
+2 :  3
+3 :  5
+--
+
+
+number of improvements per horizon:
+--> horizon 1: 1664 
+--> horizon 2: 1694 
+--> horizon 3: 2313 
+--- ALGORITHMS ---
+perfect hardware algorithm:  [(1, 0), (2, 2), (3, 67)]
+Algorithm 67
+	 max: 1.0
+	 avg: 0.8627823334338277
+	 std: 0.16489213129610308
+Algorithm 2
+	 max: 1.0
+	 avg: 0.8627823334338277
+	 std: 0.16489213129610308
+Algorithm 4
+	 max: 1.0
+	 avg: 0.8777341272233931
+	 std: 0.15299643705454943
+Algorithm 25
+	 max: 0.7
+	 avg: 0.6274761953572513
+	 std: 0.0890419253370445
+Algorithm 35
+	 max: 0.6
+	 avg: 0.5795849472414849
+	 std: 0.06281973710161651
+Algorithm 34
+	 max: 0.6
+	 avg: 0.5795849472414849
+	 std: 0.06281973710161651
+Algorithm 0
+	 max: 0.6
+	 avg: 0.5795849472414849
+	 std: 0.06281973710161651
+Algorithm 7
+	 max: 0.5
+	 avg: 0.445685734097066
+	 std: 0.06818783957188955
+Algorithm 24
+	 max: 0.3
+	 avg: 0.29999999999998206
+	 std: 0.0
+
+
+Improvements with respect to perfect algorithms per horizon
+Horizon = 1
+
+Horizon = 2
+-> Algorithm: 34
+--> Max: (0.06345, ('lagos', 12))
+--> Avg: -0.28319738619234197
+--> Std: 0.13502388390436526
+-> Algorithm: 24
+--> Max: (0.02172999999999997, ('manhattan', 1))
+--> Avg: -0.5627823334338218
+--> Std: 0.16489213129610308
+
+Horizon = 3
+-> Algorithm: 35
+--> Max: (0.06345, ('lagos', 12))
+--> Avg: -0.28319738619234197
+--> Std: 0.13502388390436526
+-> Algorithm: 4
+--> Max: (0.04945999999999995, ('lagos', 12))
+--> Avg: 0.014951793789568665
+--> Std: 0.0165109736622258
+-> Algorithm: 25
+--> Max: (0.03440000000000004, ('cambridge', 21))
+--> Avg: -0.23530613807657555
+--> Std: 0.07770899543243655
+-> Algorithm: 7
+--> Max: (0.03323999999999999, ('washington', 10))
+--> Avg: -0.41709659933675
+--> Std: 0.11344321042782353
+
+
+

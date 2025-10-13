@@ -615,7 +615,7 @@ pair<vector<double>, double> ConvexDistributionSolver::solve_lp_maximin(const un
     // Solve
     auto result = solver.Solve();
     vector<double> mixed_algorithm;
-    cout << "v: " << v->solution_value() << endl;
+    // cout << "v: " << v->solution_value() << endl;
     double final_value = v->solution_value();
     if (result == operations_research::MPSolver::OPTIMAL) {
         for (int i = 0; i < n_algorithms; ++i) {
@@ -643,7 +643,9 @@ pair<shared_ptr<Algorithm>, double> ConvexDistributionSolver::solve(const vector
         sum_ += val[i];
     }
 
-    assert(is_close(sum_, 1.0, 10));
+    if (!is_close(sum_, 1.0, 10)) {
+        throw runtime_error("sum_ is incorrect: " + to_string(sum_));
+    }
     for (int i = 0 ; i < result.first.size() ; i++) {
         result.first[i] /= sum_;
     }

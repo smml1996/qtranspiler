@@ -100,16 +100,13 @@ Experiment(name, precision, with_thermalization, min_horizon, max_horizon, false
 
         vector<unordered_map<int, int>> get_hardware_scenarios(HardwareSpecification const & hardware_spec) const override {
             vector<unordered_map<int, int>> result;
-            unordered_set<int> parsed_pivots;
             auto pivot_qubits = get_meas_pivot_qubits(hardware_spec, 0);
             for (auto target: pivot_qubits) {
                 unordered_map<int, int> d_temp;
                 d_temp[0] = target;
                 result.push_back(d_temp);
-                parsed_pivots.insert(target);
             }
             return result;
-
         }
 };
 #endif

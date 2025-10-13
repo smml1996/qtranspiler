@@ -1,23 +1,26 @@
 {
 	x3 := measure(q3); 
 	if c = 0:
-		H([q0]); CNOT([q14,q9]); 
+		CNOT([q0,q1]); 
+		H([q0]); CNOT([q18,q15]); 
 		HALT
 	if c = 8:
-		CNOT([q0,q1]); 
+		H([q0]); CNOT([q18,q15]); 
+		H([q0]); CNOT([q18,q15]); 
 		HALT
 
-} ⊕_0.002178 {
+} ⊕_0.000112 {
 	x3 := measure(q3); 
 	if c = 0:
+		CNOT([q0,q1]); 
+		H([q0]); CNOT([q18,q15]); 
+		HALT
+	if c = 8:
 		x3 := measure(q3); 
 		if c = 0:
-			H([q0]); CNOT([q14,q9]); 
+			H([q0]); CNOT([q18,q15]); 
 			HALT
 		if c = 8:
 			CNOT([q0,q1]); 
 			HALT
-	if c = 8:
-		CNOT([q0,q1]); 
-		HALT
 }

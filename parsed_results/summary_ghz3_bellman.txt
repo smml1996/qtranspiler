@@ -1,0 +1,135 @@
+------ Experiment.ghz3 ------
+%%%%%%%%%%%% bellman %%%%%%%%%%%%
+count hardware (bellman):  45
+count embeddings (bellman):  1193
+total diff. algorithms (bellman):  12
+accuracy perfect hardware (bellman): 1.0
+
+min. accuracy (bellman): 0.11999
+avg. accuracy (bellman): 0.91399
+max. accuracy (bellman): 1.0
+
+min. pomdp build time (bellman): 0.39477
+avg. pomdp build time (bellman): 8.80895
+max. pomdp build time (bellman): 33.1842
+
+min. method time (bellman): 0.0
+avg. method time (bellman): 1.00082
+max. method time (bellman): 3.0
+
+min. total time (bellman): 0.39477
+avg. total time (bellman): 9.80895
+max. total time (bellman): 34.1842
+
+min. total time (bellman): 0.39477
+avg. total time (bellman): 9.80895
+max. total time (bellman): 34.1842
+
+num. algorithms per horizon (method=bellman)
+3 :  12
+--
+
+
+number of improvements per horizon:
+--> horizon 3: 1161 
+--- ALGORITHMS ---
+perfect hardware algorithm:  [(3, 8)]
+Algorithm 5
+	 max: 1.0
+	 avg: 0.6924269153394804
+	 std: 0.42474659742826226
+Algorithm 1
+	 max: 1.0
+	 avg: 0.6917598826487845
+	 std: 0.4245782955107081
+Algorithm 4
+	 max: 1.0
+	 avg: 0.6930694803017609
+	 std: 0.4242352444779665
+Algorithm 0
+	 max: 1.0
+	 avg: 0.6929373428331933
+	 std: 0.42418670282188636
+Algorithm 2
+	 max: 1.0
+	 avg: 0.11352086336965632
+	 std: 0.30923085481965124
+Algorithm 6
+	 max: 1.0
+	 avg: 0.11335610226320202
+	 std: 0.30910822381871694
+Algorithm 7
+	 max: 1.0
+	 avg: 0.11178798826487847
+	 std: 0.30729712021744704
+Algorithm 10
+	 max: 1.0
+	 avg: 0.11138764459346188
+	 std: 0.30664666052473855
+Algorithm 9
+	 max: 1.0
+	 avg: 0.10323689857502096
+	 std: 0.2964138373237387
+Algorithm 11
+	 max: 1.0
+	 avg: 0.10322409891031015
+	 std: 0.29637555264832083
+Algorithm 3
+	 max: 1.0
+	 avg: 0.10322363788767817
+	 std: 0.29637496791743967
+Algorithm 8
+	 max: 1.0
+	 avg: 0.10321751047778707
+	 std: 0.29635830787873446
+
+
+Improvements with respect to perfect algorithms per horizon
+Horizon = 3
+-> Algorithm: 5
+--> Max: (0.99115, ('hanoi', 12))
+--> Avg: 0.5892094048616937
+--> Std: 0.6376412077606504
+-> Algorithm: 4
+--> Max: (0.99112, ('hanoi', 12))
+--> Avg: 0.5898519698239736
+--> Std: 0.6374047301333496
+-> Algorithm: 0
+--> Max: (0.99105, ('hanoi', 12))
+--> Avg: 0.5897198323554065
+--> Std: 0.6373512676241305
+-> Algorithm: 1
+--> Max: (0.99097, ('hanoi', 12))
+--> Avg: 0.5885423721709975
+--> Std: 0.6374233201737532
+-> Algorithm: 6
+--> Max: (0.99086, ('hanoi', 3))
+--> Avg: 0.010138591785414932
+--> Std: 0.4495829411786597
+-> Algorithm: 2
+--> Max: (0.99084, ('hanoi', 3))
+--> Avg: 0.010303352891869245
+--> Std: 0.44969865081831084
+-> Algorithm: 10
+--> Max: (0.99084, ('hanoi', 3))
+--> Avg: 0.008170134115674773
+--> Std: 0.44743640302823795
+-> Algorithm: 7
+--> Max: (0.99082, ('hanoi', 3))
+--> Avg: 0.008570477787091371
+--> Std: 0.44797837805885754
+-> Algorithm: 9
+--> Max: (0.13111, ('manhattan', 42))
+--> Avg: 1.93880972338636e-05
+--> Std: 0.010608315152760802
+-> Algorithm: 3
+--> Max: (0.1311, ('manhattan', 42))
+--> Avg: 6.127409891030337e-06
+--> Std: 0.010643385999172316
+-> Algorithm: 11
+--> Max: (0.010150000000000103, ('washington', 145))
+--> Avg: 6.588432523051125e-06
+--> Std: 0.0004769703173762817
+
+
+

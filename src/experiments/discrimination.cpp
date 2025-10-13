@@ -173,18 +173,6 @@ public:
     }
 
     [[nodiscard]] bool guard(const shared_ptr<POMDPVertex>& vertex, const unordered_map<int, int>& embedding, const shared_ptr<POMDPAction>& action) const override {
-        if (vertex->hybrid_state->classical_state->read(1)) {
-            return false;
-        }
-        if (vertex->hybrid_state->classical_state->read(2)) {
-            if (action->name == "H0") return false;
-        }
-
-        if (vertex->hybrid_state->classical_state->read(3)) {
-            return action->name != "H0";
-        } else {
-            return action->name != "Is0" && action->name != "IsPlus";
-        }
         return true;
     }
 

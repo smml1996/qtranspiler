@@ -1,53 +1,36 @@
 {
     "action": {
-        "name": "RANDOM_BRANCH",
-        "seq": []
+        "name": "CX01",
+        "seq": [
+            {
+                "c_target": -1,
+                "controls": [
+                    0
+                ],
+                "gate_name": 22,
+                "instruction_type": 3,
+                "matrix": [],
+                "params": [],
+                "params_": [],
+                "target": 1
+            }
+        ]
     },
     "children": [
         {
             "action": {
-                "name": "CX01",
-                "seq": [
-                    {
-                        "c_target": -1,
-                        "controls": [
-                            0
-                        ],
-                        "gate_name": 22,
-                        "instruction_type": 3,
-                        "matrix": [],
-                        "params": [],
-                        "params_": [],
-                        "target": 1
-                    }
-                ]
+                "name": "HALT__",
+                "seq": []
             },
-            "children": [
-                {
-                    "action": {
-                        "name": "HALT__",
-                        "seq": []
-                    },
-                    "children": [],
-                    "children_probs": [],
-                    "classical_state": "0",
-                    "depth": 2,
-                    "precision": 32
-                }
-            ],
+            "children": [],
             "children_probs": [],
             "classical_state": "0",
-            "depth": 1,
-            "precision": 32
+            "depth": -1,
+            "precision": 0
         }
     ],
-    "children_probs": [
-        [
-            0,
-            1.0
-        ]
-    ],
+    "children_probs": [],
     "classical_state": "0",
-    "depth": -1,
-    "precision": 5
+    "depth": 1,
+    "precision": 20
 }
