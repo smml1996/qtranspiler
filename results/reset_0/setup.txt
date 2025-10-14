@@ -1,6 +1,6 @@
-name: reset_0_therm
+name: reset_0
 precision: 8
-thermalization: 1
+thermalization: 0
 min. horizon: 2
 max. horizon: 7
 hidden index: 0

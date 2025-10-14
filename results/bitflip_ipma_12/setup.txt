@@ -1,4 +1,4 @@
-name: bitflip_ipma_12_therm
+name: bitflip_ipma_12
 precision: 8
 thermalization: 0
 min. horizon: 3

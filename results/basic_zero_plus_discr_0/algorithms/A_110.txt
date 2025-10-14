@@ -1,44 +1,16 @@
 {
-	x0 := measure(q0); 
-	if c = 8:
-		x0 := measure(q0); 
-		if c = 9:
-			x0 := measure(q0); 
-			if c = 8:
-				HALT
-			if c = 9:
-				HALT
-		if c = 8:
-			HALT
-	if c = 9:
-		x0 := measure(q0); 
-		if c = 8:
-			x0 := measure(q0); 
-			if c = 9:
-				HALT
-			if c = 8:
-				HALT
-		if c = 9:
-			HALT
+	H([q0]); 
+	x0 := 1; 
+	HALT
 
-} ⊕_0.051009 {
+} ⊕_0.746458 {
 	x0 := measure(q0); 
 	if c = 8:
 		x0 := measure(q0); 
-		if c = 8:
-			x0 := measure(q0); 
-			if c = 9:
-				HALT
-			if c = 8:
-				HALT
 		if c = 9:
-			x0 := 1; 
+			HALT
+		if c = 8:
 			HALT
 	if c = 9:
-		x0 := measure(q0); 
-		if c = 8:
-			x0 := 1; 
-			HALT
-		if c = 9:
-			HALT
+		HALT
 }

@@ -17,12 +17,12 @@
     "children": [
         {
             "action": {
-                "name": "CX02",
+                "name": "CX12",
                 "seq": [
                     {
                         "c_target": -1,
                         "controls": [
-                            0
+                            1
                         ],
                         "gate_name": 22,
                         "instruction_type": 3,
@@ -36,12 +36,12 @@
             "children": [
                 {
                     "action": {
-                        "name": "CX02",
+                        "name": "CX12",
                         "seq": [
                             {
                                 "c_target": -1,
                                 "controls": [
-                                    0
+                                    1
                                 ],
                                 "gate_name": 22,
                                 "instruction_type": 3,
@@ -78,12 +78,12 @@
         },
         {
             "action": {
-                "name": "CX02",
+                "name": "CX12",
                 "seq": [
                     {
                         "c_target": -1,
                         "controls": [
-                            0
+                            1
                         ],
                         "gate_name": 22,
                         "instruction_type": 3,
@@ -97,12 +97,12 @@
             "children": [
                 {
                     "action": {
-                        "name": "CX02",
+                        "name": "CX12",
                         "seq": [
                             {
                                 "c_target": -1,
                                 "controls": [
-                                    0
+                                    1
                                 ],
                                 "gate_name": 22,
                                 "instruction_type": 3,

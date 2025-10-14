@@ -17,38 +17,34 @@
     "children": [
         {
             "action": {
-                "name": "CX12",
+                "name": "X0",
                 "seq": [
                     {
                         "c_target": -1,
-                        "controls": [
-                            1
-                        ],
-                        "gate_name": 22,
-                        "instruction_type": 3,
+                        "controls": [],
+                        "gate_name": 1,
+                        "instruction_type": 2,
                         "matrix": [],
                         "params": [],
                         "params_": [],
-                        "target": 2
+                        "target": 0
                     }
                 ]
             },
             "children": [
                 {
                     "action": {
-                        "name": "CX12",
+                        "name": "X0",
                         "seq": [
                             {
                                 "c_target": -1,
-                                "controls": [
-                                    1
-                                ],
-                                "gate_name": 22,
-                                "instruction_type": 3,
+                                "controls": [],
+                                "gate_name": 1,
+                                "instruction_type": 2,
                                 "matrix": [],
                                 "params": [],
                                 "params_": [],
-                                "target": 2
+                                "target": 0
                             }
                         ]
                     },

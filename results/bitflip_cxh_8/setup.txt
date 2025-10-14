@@ -1,4 +1,4 @@
-name: bitflip_cxh_8_therm
+name: bitflip_cxh_8
 precision: 8
 thermalization: 0
 min. horizon: 7

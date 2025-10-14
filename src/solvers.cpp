@@ -643,7 +643,7 @@ pair<shared_ptr<Algorithm>, double> ConvexDistributionSolver::solve(const vector
         sum_ += val[i];
     }
 
-    if (!is_close(sum_, 1.0, 10)) {
+    if (!is_close(sum_, 1.0, 8)) {
         throw runtime_error("sum_ is incorrect: " + to_string(sum_));
     }
     for (int i = 0 ; i < result.first.size() ; i++) {

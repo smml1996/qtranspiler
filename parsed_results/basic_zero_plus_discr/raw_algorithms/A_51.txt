@@ -8,18 +8,19 @@
 		x0 := 0; 
 		HALT
 
-} ⊕_0.496294 {
+} ⊕_0.460734 {
 	x0 := measure(q0); 
 	if c = 8:
 		x0 := measure(q0); 
+		if c = 8:
+			H([q0]); 
+			HALT
 		if c = 9:
 			x0 := measure(q0); 
 			if c = 8:
 				HALT
 			if c = 9:
 				HALT
-		if c = 8:
-			HALT
 	if c = 9:
 		x0 := measure(q0); 
 		if c = 8:

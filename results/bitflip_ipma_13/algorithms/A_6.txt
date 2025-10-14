@@ -1,4 +1,29 @@
-X([q0]); 
-X([q0]); 
-X([q0]); 
-HALT
+x2 := measure(q2); 
+if c = 0:
+	x2 := measure(q2); 
+	if c = 0:
+		x2 := measure(q2); 
+		if c = 0:
+			HALT
+		if c = 4:
+			HALT
+	if c = 4:
+		x2 := measure(q2); 
+		if c = 0:
+			HALT
+		if c = 4:
+			HALT
+if c = 4:
+	x2 := measure(q2); 
+	if c = 0:
+		x2 := measure(q2); 
+		if c = 0:
+			HALT
+		if c = 4:
+			HALT
+	if c = 4:
+		x2 := measure(q2); 
+		if c = 0:
+			HALT
+		if c = 4:
+			HALT

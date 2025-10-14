@@ -8,21 +8,21 @@ parsed_results_path: str = ""
 
 class Experiment(Enum):
     basic_zero_plus_discr =  "basic_zero_plus_discr"
-    basic_zero_plus_discr_therm =  "basic_zero_plus_discr_therm"
+    # basic_zero_plus_discr_therm =  "basic_zero_plus_discr_therm"
     bell_state_reach = "bell_state_reach"
     bitflip_cxh = "bitflip_cxh"
     bitflip_ipma = "bitflip_ipma"
     bitflip_ipma2 = "bitflip_ipma2"
     ghz3 = "ghz3"
     reset = "reset"
-    reset_therm = "reset_therm"
+    # reset_therm = "reset_therm"
     
 def get_nice_name (experiment: Experiment) -> str:
-    if experiment in [Experiment.basic_zero_plus_discr, Experiment.basic_zero_plus_discr_therm]:
+    if experiment in [Experiment.basic_zero_plus_discr]:
         return "state discrimination of |0> and |+>"
     
     if experiment == Experiment.bell_state_reach:
-        return "Bell state from ind. states"
+        return "Bell state reach"
     
     if experiment == Experiment.bitflip_cxh:
         return "Bitflip [CXH]"
@@ -36,14 +36,14 @@ def get_nice_name (experiment: Experiment) -> str:
     if experiment == Experiment.ghz3:
         return "GHZ"
     
-    if experiment in [Experiment.reset, Experiment.reset_therm]:
+    if experiment in [Experiment.reset]:
         return "Reset"
     
     raise Exception(f"Nice name not implemented for {experiment}")
 
 def get_thermalization_str(experiment: Experiment) -> str:
-    if experiment in [Experiment.reset_therm, Experiment.basic_zero_plus_discr_therm]:
-        return "yes"
+    # if experiment in [Experiment.reset_therm, Experiment.basic_zero_plus_discr_therm]:
+    #     return "yes"
     return "no"
 
 class StatsFileLine:
@@ -561,7 +561,7 @@ def get_improvements_df(experiment: Experiment, method: str):
 def get_all_improvements_df():
     final_df = None
     for experiment in Experiment:
-        if experiment not in [Experiment.basic_zero_plus_discr_therm, Experiment.reset_therm, Experiment.ghz3]:
+        if experiment not in [Experiment.ghz3]:
             all_methods = get_methods_used(experiment)
             for method in all_methods:
                 if method == "bellman":

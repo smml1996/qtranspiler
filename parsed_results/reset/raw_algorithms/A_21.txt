@@ -1,3 +1,8 @@
+X([q0]); 
+X([q0]); 
+X([q0]); 
+X([q0]); 
+X([q0]); 
 x0 := measure(q0); 
 if c = 0:
 	x0 := measure(q0); 

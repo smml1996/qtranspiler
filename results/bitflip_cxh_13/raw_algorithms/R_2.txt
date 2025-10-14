@@ -17,12 +17,12 @@
     "children": [
         {
             "action": {
-                "name": "CX01",
+                "name": "CX21",
                 "seq": [
                     {
                         "c_target": -1,
                         "controls": [
-                            0
+                            2
                         ],
                         "gate_name": 22,
                         "instruction_type": 3,
@@ -36,26 +36,24 @@
             "children": [
                 {
                     "action": {
-                        "name": "CX21",
+                        "name": "H2",
                         "seq": [
                             {
                                 "c_target": -1,
-                                "controls": [
-                                    2
-                                ],
-                                "gate_name": 22,
-                                "instruction_type": 3,
+                                "controls": [],
+                                "gate_name": 4,
+                                "instruction_type": 2,
                                 "matrix": [],
                                 "params": [],
                                 "params_": [],
-                                "target": 1
+                                "target": 2
                             }
                         ]
                     },
                     "children": [
                         {
                             "action": {
-                                "name": "H2",
+                                "name": "H1",
                                 "seq": [
                                     {
                                         "c_target": -1,
@@ -65,20 +63,22 @@
                                         "matrix": [],
                                         "params": [],
                                         "params_": [],
-                                        "target": 2
+                                        "target": 1
                                     }
                                 ]
                             },
                             "children": [
                                 {
                                     "action": {
-                                        "name": "H1",
+                                        "name": "CX21",
                                         "seq": [
                                             {
                                                 "c_target": -1,
-                                                "controls": [],
-                                                "gate_name": 4,
-                                                "instruction_type": 2,
+                                                "controls": [
+                                                    2
+                                                ],
+                                                "gate_name": 22,
+                                                "instruction_type": 3,
                                                 "matrix": [],
                                                 "params": [],
                                                 "params_": [],
@@ -89,12 +89,12 @@
                                     "children": [
                                         {
                                             "action": {
-                                                "name": "CX21",
+                                                "name": "CX01",
                                                 "seq": [
                                                     {
                                                         "c_target": -1,
                                                         "controls": [
-                                                            2
+                                                            0
                                                         ],
                                                         "gate_name": 22,
                                                         "instruction_type": 3,
@@ -108,19 +108,17 @@
                                             "children": [
                                                 {
                                                     "action": {
-                                                        "name": "CX01",
+                                                        "name": "P2",
                                                         "seq": [
                                                             {
-                                                                "c_target": -1,
-                                                                "controls": [
-                                                                    0
-                                                                ],
-                                                                "gate_name": 22,
-                                                                "instruction_type": 3,
+                                                                "c_target": 2,
+                                                                "controls": [],
+                                                                "gate_name": 18,
+                                                                "instruction_type": 0,
                                                                 "matrix": [],
                                                                 "params": [],
                                                                 "params_": [],
-                                                                "target": 1
+                                                                "target": 2
                                                             }
                                                         ]
                                                     },
@@ -133,6 +131,17 @@
                                                             "children": [],
                                                             "children_probs": [],
                                                             "classical_state": "0",
+                                                            "depth": -1,
+                                                            "precision": 0
+                                                        },
+                                                        {
+                                                            "action": {
+                                                                "name": "HALT__",
+                                                                "seq": []
+                                                            },
+                                                            "children": [],
+                                                            "children_probs": [],
+                                                            "classical_state": "4",
                                                             "depth": -1,
                                                             "precision": 0
                                                         }

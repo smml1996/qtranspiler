@@ -23,12 +23,35 @@
             "children": [
                 {
                     "action": {
-                        "name": "HALT__",
-                        "seq": []
+                        "name": "IsPlus",
+                        "seq": [
+                            {
+                                "c_target": 0,
+                                "controls": [],
+                                "gate_name": 30,
+                                "instruction_type": 1,
+                                "matrix": [],
+                                "params": [],
+                                "params_": [],
+                                "target": 0
+                            }
+                        ]
                     },
-                    "children": [],
+                    "children": [
+                        {
+                            "action": {
+                                "name": "HALT__",
+                                "seq": []
+                            },
+                            "children": [],
+                            "children_probs": [],
+                            "classical_state": "4",
+                            "depth": 3,
+                            "precision": 32
+                        }
+                    ],
                     "children_probs": [],
-                    "classical_state": "0",
+                    "classical_state": "4",
                     "depth": 2,
                     "precision": 32
                 }
@@ -57,12 +80,46 @@
             "children": [
                 {
                     "action": {
-                        "name": "HALT__",
-                        "seq": []
+                        "name": "P0",
+                        "seq": [
+                            {
+                                "c_target": 0,
+                                "controls": [],
+                                "gate_name": 18,
+                                "instruction_type": 0,
+                                "matrix": [],
+                                "params": [],
+                                "params_": [],
+                                "target": 0
+                            }
+                        ]
                     },
-                    "children": [],
+                    "children": [
+                        {
+                            "action": {
+                                "name": "HALT__",
+                                "seq": []
+                            },
+                            "children": [],
+                            "children_probs": [],
+                            "classical_state": "9",
+                            "depth": 3,
+                            "precision": 32
+                        },
+                        {
+                            "action": {
+                                "name": "HALT__",
+                                "seq": []
+                            },
+                            "children": [],
+                            "children_probs": [],
+                            "classical_state": "8",
+                            "depth": 3,
+                            "precision": 32
+                        }
+                    ],
                     "children_probs": [],
-                    "classical_state": "9",
+                    "classical_state": "8",
                     "depth": 2,
                     "precision": 32
                 },
@@ -73,7 +130,7 @@
                     },
                     "children": [],
                     "children_probs": [],
-                    "classical_state": "8",
+                    "classical_state": "9",
                     "depth": 2,
                     "precision": 32
                 }
@@ -87,11 +144,11 @@
     "children_probs": [
         [
             1,
-            0.9980506822806638
+            0.7004270153298958
         ],
         [
             0,
-            0.0019493177193361157
+            0.2995729846701041
         ]
     ],
     "classical_state": "0",

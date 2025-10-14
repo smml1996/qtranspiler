@@ -2,514 +2,114 @@
 %%%%%%%%%%%% convex %%%%%%%%%%%%
 count hardware (convex):  45
 count embeddings (convex):  3317
-total diff. algorithms (convex):  59
+total diff. algorithms (convex):  9
 accuracy perfect hardware (convex): 0.5, 1.0, 1.0
 
 min. accuracy (convex): 0.23333
 avg. accuracy (convex): 0.73661
 max. accuracy (convex): 1.0
 
-min. pomdp build time (convex): 0.01045
-avg. pomdp build time (convex): 1.14404
-max. pomdp build time (convex): 4.9925
+min. pomdp build time (convex): 0.01172
+avg. pomdp build time (convex): 1.14957
+max. pomdp build time (convex): 3.48319
 
 min. method time (convex): 0.0
 avg. method time (convex): 5e-05
-max. method time (convex): 0.49808
+max. method time (convex): 0.49767
 
-min. total time (convex): 0.01045
-avg. total time (convex): 1.14404
-max. total time (convex): 4.9925
+min. total time (convex): 0.01172
+avg. total time (convex): 1.14957
+max. total time (convex): 3.48319
 
-min. total time (convex): 0.01045
-avg. total time (convex): 1.14404
-max. total time (convex): 4.9925
+min. total time (convex): 0.01172
+avg. total time (convex): 1.14957
+max. total time (convex): 3.48319
 
 num. algorithms per horizon (method=convex)
 1 :  1
-2 :  3
-3 :  56
+2 :  1
+3 :  8
 --
 
 
 number of improvements per horizon:
---> horizon 1: 1659 
---> horizon 2: 1663 
---> horizon 3: 1681 
+--> horizon 1: 9 
+--> horizon 2: 23 
+--> horizon 3: 165 
 --- ALGORITHMS ---
 perfect hardware algorithm:  [(1, 1), (2, 3), (3, 3)]
-Algorithm 59
+Algorithm 14
 	 max: 1.0
-	 avg: 0.8616006331022001
-	 std: 0.16586597832134392
-Algorithm 57
-	 max: 1.0
-	 avg: 0.8616153934277968
-	 std: 0.16585402019680975
-Algorithm 61
-	 max: 1.0
-	 avg: 0.8616435031655137
-	 std: 0.1658310674880856
-Algorithm 56
-	 max: 1.0
-	 avg: 0.8616763611697323
-	 std: 0.16580372549618283
-Algorithm 64
-	 max: 1.0
-	 avg: 0.8616849623153474
-	 std: 0.1657965764704948
-Algorithm 60
-	 max: 1.0
-	 avg: 0.8616988785046719
-	 std: 0.1657848626515317
-Algorithm 58
-	 max: 1.0
-	 avg: 0.8617017244498011
-	 std: 0.16578280860890912
-Algorithm 62
-	 max: 1.0
-	 avg: 0.8617094905034682
-	 std: 0.16577639317856815
-Algorithm 63
-	 max: 1.0
-	 avg: 0.8617230690382868
-	 std: 0.16576488395216846
-Algorithm 38
-	 max: 1.0
-	 avg: 0.8618686132047055
-	 std: 0.16564480605168427
-Algorithm 33
-	 max: 1.0
-	 avg: 0.8621321374736224
-	 std: 0.16542743168848947
-Algorithm 11
-	 max: 1.0
-	 avg: 0.8621333524268904
-	 std: 0.16542654013554972
+	 avg: 0.8627813264998506
+	 std: 0.16489290931269715
 Algorithm 13
 	 max: 1.0
-	 avg: 0.8621518510702418
-	 std: 0.16541109363466797
-Algorithm 32
-	 max: 1.0
-	 avg: 0.8621523907144981
-	 std: 0.16541066098092483
-Algorithm 37
-	 max: 1.0
-	 avg: 0.862306551100392
-	 std: 0.16528382597664132
-Algorithm 40
-	 max: 1.0
-	 avg: 0.8623458396141133
-	 std: 0.16525148123261646
-Algorithm 53
-	 max: 1.0
-	 avg: 0.8623787639433255
-	 std: 0.16522409312912395
-Algorithm 55
-	 max: 1.0
-	 avg: 0.8623974344286995
-	 std: 0.165209101031362
-Algorithm 54
-	 max: 1.0
-	 avg: 0.8624033222791703
-	 std: 0.16520431752824258
-Algorithm 51
-	 max: 1.0
-	 avg: 0.8624200150738591
-	 std: 0.16519031478151916
-Algorithm 52
-	 max: 1.0
-	 avg: 0.8624542478142871
-	 std: 0.16516213827660078
-Algorithm 45
-	 max: 1.0
-	 avg: 0.862488498643351
-	 std: 0.16513400684499763
-Algorithm 47
-	 max: 1.0
-	 avg: 0.8624902622851959
-	 std: 0.1651327706355646
-Algorithm 48
-	 max: 1.0
-	 avg: 0.8624972746457622
-	 std: 0.16512685351327644
-Algorithm 44
-	 max: 1.0
-	 avg: 0.8625042025927017
-	 std: 0.16512079105894692
-Algorithm 49
-	 max: 1.0
-	 avg: 0.8625109104612574
-	 std: 0.16511522076471832
-Algorithm 50
-	 max: 1.0
-	 avg: 0.8625119505577286
-	 std: 0.16511454665374173
-Algorithm 22
-	 max: 1.0
-	 avg: 0.8625293066023506
-	 std: 0.1651005098251154
-Algorithm 20
-	 max: 1.0
-	 avg: 0.8625412059089529
-	 std: 0.16509051418594176
-Algorithm 18
-	 max: 1.0
-	 avg: 0.8625590081398802
-	 std: 0.16507571858135228
-Algorithm 16
-	 max: 1.0
-	 avg: 0.8625844226710835
-	 std: 0.165054899846491
-Algorithm 17
-	 max: 1.0
-	 avg: 0.8625881308411173
-	 std: 0.1650520869831531
-Algorithm 15
-	 max: 1.0
-	 avg: 0.8625946548085592
-	 std: 0.16504662368654693
-Algorithm 27
-	 max: 1.0
-	 avg: 0.8626116189327687
-	 std: 0.16503268919415848
-Algorithm 31
-	 max: 1.0
-	 avg: 0.862619785951156
-	 std: 0.16502615134824614
-Algorithm 26
-	 max: 1.0
-	 avg: 0.8626200030147682
-	 std: 0.16502592331166427
-Algorithm 41
-	 max: 1.0
-	 avg: 0.8626410762737413
-	 std: 0.16500840011996387
-Algorithm 42
-	 max: 1.0
-	 avg: 0.8626425474826629
-	 std: 0.1650072699657448
-Algorithm 43
-	 max: 1.0
-	 avg: 0.8626498070545647
-	 std: 0.16500141171589347
-Algorithm 36
-	 max: 1.0
-	 avg: 0.8626640669279457
-	 std: 0.1649893888133426
-Algorithm 19
-	 max: 1.0
-	 avg: 0.862666162194753
-	 std: 0.16498769889084752
-Algorithm 12
-	 max: 1.0
-	 avg: 0.8627260838106731
-	 std: 0.16493852790059663
-Algorithm 66
-	 max: 1.0
-	 avg: 0.8627356617425355
-	 std: 0.16493095496635413
-Algorithm 21
-	 max: 1.0
-	 avg: 0.8627477178173022
-	 std: 0.16492057188430595
-Algorithm 39
-	 max: 1.0
-	 avg: 0.8627526198372003
-	 std: 0.16491657573534535
-Algorithm 30
-	 max: 1.0
-	 avg: 0.8627605245703965
-	 std: 0.16491002084560455
-Algorithm 9
-	 max: 1.0
-	 avg: 0.8627705969249346
-	 std: 0.16490152794569038
-Algorithm 23
-	 max: 1.0
-	 avg: 0.8627723846849567
-	 std: 0.16490018340457607
-Algorithm 5
-	 max: 1.0
-	 avg: 0.8627814862827864
-	 std: 0.1648927607853076
-Algorithm 6
-	 max: 1.0
-	 avg: 0.8627815706964129
-	 std: 0.16489270179581547
+	 avg: 0.8627813114259887
+	 std: 0.16489289284226297
 Algorithm 3
 	 max: 1.0
-	 avg: 0.8627822279167939
-	 std: 0.1648921140664815
-Algorithm 14
-	 max: 0.99993
-	 avg: 0.8627184504069972
-	 std: 0.16488006701900482
-Algorithm 10
-	 max: 0.99992
-	 avg: 0.8627107868555913
-	 std: 0.16487855116116687
+	 avg: 0.8627822550497458
+	 std: 0.1648921157260969
 Algorithm 1
 	 max: 0.5
-	 avg: 0.4829872143503164
+	 avg: 0.4829872143503165
 	 std: 0.05235042299979167
-Algorithm 29
+Algorithm 15
+	 max: 0.49639
+	 avg: 0.03726846849562859
+	 std: 0.08219763434212375
+Algorithm 9
 	 max: 0.49638
-	 avg: 0.03721262888151941
-	 std: 0.08221883003868447
-Algorithm 28
+	 avg: 0.03721172444980404
+	 std: 0.08221853611737148
+Algorithm 6
 	 max: 0.49638
-	 avg: 0.037211715405486866
-	 std: 0.08221853717519544
-Algorithm 8
+	 avg: 0.03721864033765439
+	 std: 0.08221681746856055
+Algorithm 10
 	 max: 0.49638
-	 avg: 0.03721986735001498
-	 std: 0.08221644362751789
-Algorithm 46
+	 avg: 0.037226324992463006
+	 std: 0.08221419476708837
+Algorithm 16
 	 max: 0.49638
-	 avg: 0.03723028338860407
-	 std: 0.08221220354143297
-Algorithm 65
-	 max: 0.49638
-	 avg: 0.037261335544166344
-	 std: 0.0822000047872724
+	 avg: 0.0372608712692191
+	 std: 0.082200193788095
 
 
 Improvements with respect to perfect algorithms per horizon
 Horizon = 1
 
 Horizon = 2
--> Algorithm: 14
---> Max: (-1.999999999996449e-05, ('cambridge', 21))
---> Avg: -6.377750979800905e-05
---> Std: 1.2699170805719113e-05
--> Algorithm: 10
---> Max: (-2.0000000000020002e-05, ('manhattan', 1))
---> Avg: -7.144106119987867e-05
---> Std: 1.4062068676826079e-05
 
 Horizon = 3
--> Algorithm: 65
---> Max: (0.031019999999999992, ('washington', 10))
---> Avg: -0.8255208923726277
---> Std: 0.2212855314974482
--> Algorithm: 46
---> Max: (0.031019999999999992, ('washington', 10))
---> Avg: -0.8255519445281886
---> Std: 0.22127539014663827
--> Algorithm: 8
---> Max: (0.031019999999999992, ('washington', 10))
---> Avg: -0.8255623605667807
---> Std: 0.22127203907353268
--> Algorithm: 29
---> Max: (0.031019999999999992, ('washington', 10))
---> Avg: -0.8255695990352766
---> Std: 0.22126941594263386
--> Algorithm: 28
---> Max: (0.031019999999999992, ('washington', 10))
---> Avg: -0.825570512511309
---> Std: 0.22126866315220298
--> Algorithm: 5
---> Max: (1.0000000000065512e-05, ('paris', 90))
---> Avg: -7.416340066324712e-07
---> Std: 2.6663916166275973e-06
--> Algorithm: 6
---> Max: (1.0000000000065512e-05, ('paris', 90))
---> Avg: -6.572203798612079e-07
---> Std: 2.5384414576160717e-06
--> Algorithm: 59
---> Max: (0.0, ('perfect_hardware', 0))
---> Avg: -0.0011815948145914965
---> Std: 0.0013049683134022684
--> Algorithm: 57
---> Max: (0.0, ('perfect_hardware', 0))
---> Avg: -0.0011668344889960742
---> Std: 0.0012887433170316533
--> Algorithm: 61
---> Max: (0.0, ('perfect_hardware', 0))
---> Avg: -0.0011387247512812733
---> Std: 0.0012578998266849551
--> Algorithm: 56
---> Max: (0.0, ('perfect_hardware', 0))
---> Avg: -0.0011058667470605977
---> Std: 0.0012212561303499914
--> Algorithm: 64
---> Max: (0.0, ('perfect_hardware', 0))
---> Avg: -0.0010972656014470877
---> Std: 0.0012116799763966463
--> Algorithm: 60
---> Max: (0.0, ('perfect_hardware', 0))
---> Avg: -0.0010833494121193863
---> Std: 0.0011964071021901787
--> Algorithm: 58
---> Max: (0.0, ('perfect_hardware', 0))
---> Avg: -0.0010805034669882454
---> Std: 0.0011933038266430651
--> Algorithm: 62
---> Max: (0.0, ('perfect_hardware', 0))
---> Avg: -0.0010727374133252864
---> Std: 0.001184616455757649
--> Algorithm: 63
---> Max: (0.0, ('perfect_hardware', 0))
---> Avg: -0.0010591588785046771
---> Std: 0.0011697385025878132
--> Algorithm: 38
---> Max: (0.0, ('perfect_hardware', 0))
---> Avg: -0.0009136147120892415
---> Std: 0.0010089384536519342
--> Algorithm: 33
---> Max: (0.0, ('perfect_hardware', 0))
---> Avg: -0.0006500904431715469
---> Std: 0.0007182117781568253
--> Algorithm: 11
---> Max: (0.0, ('perfect_hardware', 0))
---> Avg: -0.0006488754899005188
---> Std: 0.0007168494906694297
--> Algorithm: 13
---> Max: (0.0, ('perfect_hardware', 0))
---> Avg: -0.0006303768465480899
---> Std: 0.0006962815741069393
--> Algorithm: 32
---> Max: (0.0, ('perfect_hardware', 0))
---> Avg: -0.0006298372022912308
---> Std: 0.0006956337878034584
--> Algorithm: 37
---> Max: (0.0, ('perfect_hardware', 0))
---> Avg: -0.00047567681640036264
---> Std: 0.0005257243855270101
--> Algorithm: 40
---> Max: (0.0, ('perfect_hardware', 0))
---> Avg: -0.0004363883026831455
---> Std: 0.0004823586037768593
--> Algorithm: 53
---> Max: (0.0, ('perfect_hardware', 0))
---> Avg: -0.0004034639734700122
---> Std: 0.00044569942694057857
--> Algorithm: 55
---> Max: (0.0, ('perfect_hardware', 0))
---> Avg: -0.00038479348809164753
---> Std: 0.0004251275206188117
--> Algorithm: 54
---> Max: (0.0, ('perfect_hardware', 0))
---> Avg: -0.00037890563762436885
---> Std: 0.00041854381929309285
--> Algorithm: 51
---> Max: (0.0, ('perfect_hardware', 0))
---> Avg: -0.0003622128429303573
---> Std: 0.0004001993463353807
--> Algorithm: 52
---> Max: (0.0, ('perfect_hardware', 0))
---> Avg: -0.00032798010250226174
---> Std: 0.000362165975505516
--> Algorithm: 45
---> Max: (0.0, ('perfect_hardware', 0))
---> Avg: -0.00029372927343985426
---> Std: 0.0003247678807755763
--> Algorithm: 47
---> Max: (0.0, ('perfect_hardware', 0))
---> Avg: -0.000291965631594814
---> Std: 0.000322873381951221
--> Algorithm: 48
---> Max: (0.0, ('washington', 10))
---> Avg: -0.0002849532710280369
---> Std: 0.0003150524674156224
--> Algorithm: 44
---> Max: (0.0, ('washington', 10))
---> Avg: -0.0002780253240880317
---> Std: 0.0003073717164879298
--> Algorithm: 49
---> Max: (0.0, ('washington', 10))
---> Avg: -0.0002713174555321067
---> Std: 0.00030001866785471287
--> Algorithm: 50
---> Max: (0.0, ('washington', 10))
---> Avg: -0.00027027735905939043
---> Std: 0.00029894151064748176
--> Algorithm: 22
---> Max: (0.0, ('washington', 4))
---> Avg: -0.00025292131444075986
---> Std: 0.0002797259733449374
--> Algorithm: 20
---> Max: (0.0, ('washington', 4))
---> Avg: -0.00024102200783840793
---> Std: 0.00026654212251352134
--> Algorithm: 18
---> Max: (0.0, ('washington', 4))
---> Avg: -0.00022321977690684363
---> Std: 0.00024675689749302835
--> Algorithm: 16
---> Max: (0.0, ('washington', 4))
---> Avg: -0.0001978052457039512
---> Std: 0.00021885656783036296
--> Algorithm: 17
---> Max: (0.0, ('washington', 4))
---> Avg: -0.0001940970756707876
---> Std: 0.0002147346812600054
 -> Algorithm: 15
---> Max: (0.0, ('washington', 4))
---> Avg: -0.00018757310823032923
---> Std: 0.00020741004671728992
--> Algorithm: 27
---> Max: (0.0, ('washington', 4))
---> Avg: -0.00017060898402170612
---> Std: 0.00018894536985645245
--> Algorithm: 31
---> Max: (0.0, ('washington', 4))
---> Avg: -0.0001624419656315948
---> Std: 0.00017995762475201733
--> Algorithm: 26
---> Max: (0.0, ('washington', 4))
---> Avg: -0.00016222490201989762
---> Std: 0.00017972165536921938
--> Algorithm: 41
---> Max: (0.0, ('algiers', 18))
---> Avg: -0.00014115164305094925
---> Std: 0.00015603752209076183
--> Algorithm: 42
---> Max: (0.0, ('algiers', 18))
---> Avg: -0.00013968043412722347
---> Std: 0.0001543993588735382
--> Algorithm: 43
---> Max: (0.0, ('algiers', 18))
---> Avg: -0.00013242086222490157
---> Std: 0.00014646730706029766
--> Algorithm: 36
---> Max: (0.0, ('algiers', 18))
---> Avg: -0.00011816098884534039
---> Std: 0.00013074988096639013
--> Algorithm: 19
---> Max: (0.0, ('algiers', 18))
---> Avg: -0.00011606572203798511
---> Std: 0.00012826173584026842
--> Algorithm: 12
---> Max: (0.0, ('algiers', 0))
---> Avg: -5.6144106119986804e-05
---> Std: 6.227488558262449e-05
--> Algorithm: 66
---> Max: (0.0, ('algiers', 0))
---> Avg: -4.656617425384323e-05
---> Std: 5.1867968006972556e-05
--> Algorithm: 21
---> Max: (0.0, ('algiers', 0))
---> Avg: -3.451009948748817e-05
---> Std: 3.8653173559183705e-05
--> Algorithm: 39
---> Max: (0.0, ('algiers', 0))
---> Avg: -2.9608079589991212e-05
---> Std: 3.3385069686998325e-05
--> Algorithm: 30
---> Max: (0.0, ('algiers', 0))
---> Avg: -2.17033463973475e-05
---> Std: 2.4524894991069314e-05
+--> Max: (0.031030000000000002, ('washington', 39))
+--> Avg: -0.8255137865541179
+--> Std: 0.22128803335699992
+-> Algorithm: 16
+--> Max: (0.031019999999999992, ('washington', 39))
+--> Avg: -0.825521383780527
+--> Std: 0.22128533968120262
+-> Algorithm: 10
+--> Max: (0.031019999999999992, ('washington', 39))
+--> Avg: -0.8255559300572842
+--> Std: 0.22127453374151726
+-> Algorithm: 6
+--> Max: (0.031019999999999992, ('washington', 39))
+--> Avg: -0.8255636147120904
+--> Std: 0.22127151351925628
 -> Algorithm: 9
---> Max: (0.0, ('algiers', 0))
---> Avg: -1.1630991860115098e-05
---> Std: 1.3665797493044059e-05
--> Algorithm: 23
---> Max: (0.0, ('algiers', 0))
---> Avg: -9.843231835995683e-06
---> Std: 1.1593726733200992e-05
+--> Max: (0.031019999999999992, ('washington', 39))
+--> Avg: -0.8255705305999432
+--> Std: 0.22126866798161393
+-> Algorithm: 13
+--> Max: (9.99999999995449e-06, ('washington', 516))
+--> Avg: -9.436237564064481e-07
+--> Std: 2.9340590563200905e-06
+-> Algorithm: 14
+--> Max: (9.99999999995449e-06, ('auckland', 78))
+--> Avg: -9.285498944829914e-07
+--> Std: 2.9234331696283e-06
 
 
 

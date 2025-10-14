@@ -1,5 +1,5 @@
 name: bell_state_reach_0
-precision: 5
+precision: 8
 thermalization: 0
 min. horizon: 1
 max. horizon: 3

@@ -2,92 +2,92 @@
 %%%%%%%%%%%% bellman %%%%%%%%%%%%
 count hardware (bellman):  55
 count embeddings (bellman):  109
-total diff. algorithms (bellman):  27
+total diff. algorithms (bellman):  22
 accuracy perfect hardware (bellman): 1.0, 1.0, 1.0, 1.0, 1.0, 1.0
 
-min. accuracy (bellman): 0.502
-avg. accuracy (bellman): 0.93456
+min. accuracy (bellman): 0.50195
+avg. accuracy (bellman): 0.93435
 max. accuracy (bellman): 1.0
 
-min. pomdp build time (bellman): 0.00044
-avg. pomdp build time (bellman): 0.00373
-max. pomdp build time (bellman): 0.99513
+min. pomdp build time (bellman): 0.00045
+avg. pomdp build time (bellman): 0.00308
+max. pomdp build time (bellman): 0.99509
 
 min. method time (bellman): 0.0
-avg. method time (bellman): 0.99387
+avg. method time (bellman): 1.17763
 max. method time (bellman): 6.0
 
-min. total time (bellman): 0.00044
-avg. total time (bellman): 0.99607
-max. total time (bellman): 6.00301
+min. total time (bellman): 0.00045
+avg. total time (bellman): 1.17919
+max. total time (bellman): 6.00473
 
-min. total time (bellman): 0.00044
-avg. total time (bellman): 0.99607
-max. total time (bellman): 6.00301
+min. total time (bellman): 0.00045
+avg. total time (bellman): 1.17919
+max. total time (bellman): 6.00473
 
 num. algorithms per horizon (method=bellman)
 2 :  3
-3 :  3
+3 :  4
 4 :  3
-5 :  6
+5 :  4
 6 :  4
-7 :  8
+7 :  4
 --
 
 
 number of improvements per horizon:
---> horizon 2: 108 
---> horizon 3: 108 
+--> horizon 2: 3 
+--> horizon 3: 3 
 --> horizon 4: 108 
 --> horizon 5: 108 
 --> horizon 6: 108 
 --> horizon 7: 108 
 --- ALGORITHMS ---
-perfect hardware algorithm:  [(2, 21), (3, 22), (4, 23), (5, 24), (6, 25), (7, 26)]
-Algorithm 26
-	 max: 1.0
-	 avg: 0.9055331192660552
-	 std: 0.13754884533554998
-Algorithm 25
-	 max: 1.0
-	 avg: 0.9055331192660552
-	 std: 0.13754884533554998
-Algorithm 24
-	 max: 1.0
-	 avg: 0.9055331192660552
-	 std: 0.13754884533554998
-Algorithm 23
-	 max: 1.0
-	 avg: 0.9055331192660552
-	 std: 0.13754884533554998
-Algorithm 22
-	 max: 1.0
-	 avg: 0.9055331192660552
-	 std: 0.13754884533554998
+perfect hardware algorithm:  [(2, 16), (3, 17), (4, 18), (5, 19), (6, 20), (7, 21)]
 Algorithm 21
 	 max: 1.0
-	 avg: 0.9055331192660552
+	 avg: 0.905533119266055
 	 std: 0.13754884533554998
-Algorithm 1
+Algorithm 20
 	 max: 1.0
-	 avg: 0.9055331192660552
+	 avg: 0.905533119266055
 	 std: 0.13754884533554998
-Algorithm 0
+Algorithm 19
 	 max: 1.0
-	 avg: 0.9055331192660552
+	 avg: 0.905533119266055
+	 std: 0.13754884533554998
+Algorithm 18
+	 max: 1.0
+	 avg: 0.905533119266055
+	 std: 0.13754884533554998
+Algorithm 17
+	 max: 1.0
+	 avg: 0.905533119266055
 	 std: 0.13754884533554998
 Algorithm 16
 	 max: 1.0
-	 avg: 0.9385611926605505
-	 std: 0.13128591597282493
-Algorithm 7
+	 avg: 0.905533119266055
+	 std: 0.13754884533554998
+Algorithm 13
 	 max: 1.0
-	 avg: 0.9385611926605505
-	 std: 0.13128591597282493
+	 avg: 0.905533119266055
+	 std: 0.13754884533554998
+Algorithm 1
+	 max: 1.0
+	 avg: 0.905533119266055
+	 std: 0.13754884533554998
+Algorithm 0
+	 max: 1.0
+	 avg: 0.905533119266055
+	 std: 0.13754884533554998
 Algorithm 2
 	 max: 1.0
 	 avg: 0.9385611926605505
 	 std: 0.13128591597282493
+Algorithm 14
+	 max: 1.0
+	 avg: 0.9390264220183482
+	 std: 0.13114468068259105
 Algorithm 3
 	 max: 1.0
 	 avg: 0.9390264220183482
@@ -96,59 +96,39 @@ Algorithm 4
 	 max: 1.0
 	 avg: 0.9475217431192652
 	 std: 0.12710618458190948
-Algorithm 17
+Algorithm 6
 	 max: 1.0
 	 avg: 0.9487556880733942
 	 std: 0.1265317940235881
 Algorithm 15
 	 max: 1.0
-	 avg: 0.9487556880733942
-	 std: 0.1265317940235881
-Algorithm 6
-	 max: 1.0
-	 avg: 0.9487556880733942
-	 std: 0.1265317940235881
-Algorithm 8
-	 max: 1.0
-	 avg: 0.9491376146788987
-	 std: 0.12649480932769594
-Algorithm 20
-	 max: 1.0
-	 avg: 0.9493020183486238
-	 std: 0.1264176543488833
+	 avg: 0.9493564220183485
+	 std: 0.12639388069402063
 Algorithm 5
 	 max: 1.0
 	 avg: 0.9493564220183485
 	 std: 0.12639388069402063
-Algorithm 19
+Algorithm 12
 	 max: 0.61959
 	 avg: 0.05064357798165138
 	 std: 0.12639388069402063
-Algorithm 14
+Algorithm 11
 	 max: 0.61874
 	 avg: 0.05124431192660552
 	 std: 0.1265317940235881
-Algorithm 13
-	 max: 0.61874
-	 avg: 0.05124431192660552
-	 std: 0.1265317940235881
-Algorithm 18
+Algorithm 10
 	 max: 0.5961
 	 avg: 0.06097357798165135
 	 std: 0.13114468068259105
-Algorithm 12
+Algorithm 9
 	 max: 0.59553
 	 avg: 0.06143880733944952
 	 std: 0.13128591597282493
-Algorithm 11
-	 max: 0.59553
-	 avg: 0.06143880733944952
-	 std: 0.13128591597282493
-Algorithm 10
+Algorithm 8
 	 max: 0.56405
 	 avg: 0.09446688073394492
 	 std: 0.13754884533554998
-Algorithm 9
+Algorithm 7
 	 max: 0.56405
 	 avg: 0.09446688073394492
 	 std: 0.13754884533554998
@@ -156,7 +136,7 @@ Algorithm 9
 
 Improvements with respect to perfect algorithms per horizon
 Horizon = 2
--> Algorithm: 9
+-> Algorithm: 7
 --> Max: (0.12810000000000005, ('torino', 1))
 --> Avg: -0.8110662385321102
 --> Std: 0.27509769067109996
@@ -166,7 +146,7 @@ Horizon = 2
 --> Std: 0.0
 
 Horizon = 3
--> Algorithm: 10
+-> Algorithm: 8
 --> Max: (0.12810000000000005, ('torino', 1))
 --> Avg: -0.8110662385321102
 --> Std: 0.27509769067109996
@@ -174,41 +154,37 @@ Horizon = 3
 --> Max: (0.0, ('algiers', 0))
 --> Avg: 0.0
 --> Std: 0.0
+-> Algorithm: 13
+--> Max: (0.0, ('algiers', 0))
+--> Avg: 0.0
+--> Std: 0.0
 
 Horizon = 4
--> Algorithm: 11
+-> Algorithm: 9
 --> Max: (0.15958, ('torino', 1))
 --> Avg: -0.8440943119266056
 --> Std: 0.26721829692554866
 -> Algorithm: 2
---> Max: (0.09619, ('paris', 1))
+--> Max: (0.09619, ('paris', 0))
 --> Avg: 0.03302807339449541
 --> Std: 0.030095430884815588
 
 Horizon = 5
--> Algorithm: 18
+-> Algorithm: 10
 --> Max: (0.16014999999999996, ('torino', 1))
 --> Avg: -0.8445595412844039
 --> Std: 0.2670230232561636
--> Algorithm: 12
---> Max: (0.15958, ('torino', 1))
---> Avg: -0.8440943119266056
---> Std: 0.26721829692554866
 -> Algorithm: 3
---> Max: (0.10156999999999994, ('brisbane', 1))
+--> Max: (0.10156999999999994, ('brisbane', 0))
 --> Avg: 0.03349330275229357
 --> Std: 0.03059296161050671
--> Algorithm: 7
---> Max: (0.09619, ('paris', 1))
---> Avg: 0.03302807339449541
---> Std: 0.030095430884815588
--> Algorithm: 16
---> Max: (0.09619, ('paris', 1))
---> Avg: 0.03302807339449541
---> Std: 0.030095430884815588
+-> Algorithm: 14
+--> Max: (0.10156999999999994, ('brisbane', 0))
+--> Avg: 0.03349330275229357
+--> Std: 0.03059296161050671
 
 Horizon = 6
--> Algorithm: 13
+-> Algorithm: 11
 --> Max: (0.18278999999999995, ('torino', 1))
 --> Avg: -0.8542888073394492
 --> Std: 0.2604898916028568
@@ -217,39 +193,23 @@ Horizon = 6
 --> Avg: 0.04322256880733944
 --> Std: 0.044776956983179
 -> Algorithm: 4
---> Max: (0.13868999999999998, ('brisbane', 1))
+--> Max: (0.13868999999999998, ('brisbane', 0))
 --> Avg: 0.04198862385321101
 --> Std: 0.04278382925020746
 
 Horizon = 7
--> Algorithm: 19
+-> Algorithm: 12
 --> Max: (0.18363999999999997, ('torino', 1))
 --> Avg: -0.8548895412844039
 --> Std: 0.26022078706212554
--> Algorithm: 14
---> Max: (0.18278999999999995, ('torino', 1))
---> Avg: -0.8542888073394492
---> Std: 0.2604898916028568
 -> Algorithm: 5
---> Max: (0.15498, ('brisbane', 1))
---> Avg: 0.04382330275229357
+--> Max: (0.15498, ('brisbane', 0))
+--> Avg: 0.04382330275229359
 --> Std: 0.04555587602980188
--> Algorithm: 20
---> Max: (0.15132999999999996, ('brisbane', 1))
---> Avg: 0.043768899082568834
---> Std: 0.045446007674949544
--> Algorithm: 8
---> Max: (0.14612999999999998, ('almaden', 1))
---> Avg: 0.04360449541284403
---> Std: 0.04513128502422105
 -> Algorithm: 15
---> Max: (0.14549, ('almaden', 1))
---> Avg: 0.04322256880733944
---> Std: 0.044776956983179
--> Algorithm: 17
---> Max: (0.14549, ('almaden', 1))
---> Avg: 0.04322256880733944
---> Std: 0.044776956983179
+--> Max: (0.15498, ('brisbane', 0))
+--> Avg: 0.04382330275229359
+--> Std: 0.04555587602980188
 
 
 
