@@ -19,7 +19,7 @@ class Experiment(Enum):
     
 def get_nice_name (experiment: Experiment) -> str:
     if experiment in [Experiment.basic_zero_plus_discr]:
-        return "state discrimination of |0> and |+>"
+        return "state discr."
     
     if experiment == Experiment.bell_state_reach:
         return "Bell state reach"
@@ -312,8 +312,9 @@ def get_improvements(experiment: Experiment, method: str, horizon: int, algorith
 
 def dump_summary_table(save: bool=True):
     experiment_name: List[str] = []
+    horizons: List[int] = []
     final_methods: List[str] = []
-    with_thermalization: List[str] = []
+    # with_thermalization: List[str] = []
     hardware_count: List[int] = []
     num_embeddings: List[int] = []
     num_algorithms: List[int] = []
@@ -337,7 +338,8 @@ def dump_summary_table(save: bool=True):
         methods = sorted(get_methods_used(experiment))
         for method in methods:
             experiment_name.append(get_nice_name(experiment))
-            with_thermalization.append(get_thermalization_str(experiment))
+            # with_thermalization.append(get_thermalization_str(experiment))
+            horizons.append(max(get_horizon_to_algorithms_count(experiment, method).keys()))
             final_methods.append(method)
             hardware_count.append(get_hardware_count(experiment, method=method))
             num_embeddings.append(get_embedding_count(experiment, method=method))
@@ -363,23 +365,24 @@ def dump_summary_table(save: bool=True):
             
     df = pd.DataFrame({
         "experiment": experiment_name,
-        "with therm.": with_thermalization,
+        "horizon": horizons,
+        # "with therm.": with_thermalization,
         "method": final_methods,
-        "#hardware": hardware_count,
-        "#embeddings": num_embeddings,
-        "#diff. algorithms": num_algorithms,
+        "#hard.": hardware_count,
+        "#emb.": num_embeddings,
+        "#diff. algo.": num_algorithms,
         "min. acc.": min_accuracy,
         "avg. acc.": avg_accuracy,
         "max. acc.": max_accuracy,
-        "min. build time": min_build,
+        # "min. build time": min_build,
         "avg. build time": avg_build,
         "max. build time": max_build,
-        "min. method time": min_method,
+        # "min. method time": min_method,
         "avg. method time": avg_method,
         "max. method time": max_method,
-        "min. total time": min_method,
-        "avg. total time": avg_method,
-        "max. total time": max_method,
+        # "min. total time": min_method,
+        # "avg. total time": avg_method,
+        # "max. total time": max_method,
     })
     
     if save:

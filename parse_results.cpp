@@ -30,6 +30,16 @@ void split_str(string const &str, const char delim, vector<string> &out) {
     }
 }
 
+unordered_set<shared_ptr<Instruction>, InstructionHash, InstructionPtrEqual> get_unique_instructions(const vector<shared_ptr<POMDPAction>> &actions) {
+    unordered_set<shared_ptr<Instruction>, InstructionHash, InstructionPtrEqual> result;
+    for (auto action : actions) {
+        for (auto instruction : action->instruction_sequence) {
+            result.insert(make_shared<Instruction>(instruction));
+        }
+    }
+    return result;
+}
+
 class Setup {
 public:
     string name;
@@ -88,15 +98,15 @@ int main(int argc, char* argv[]) {
     }
 
     vector<Setup> setups({
-        // Setup("basic_zero_plus_discr", 1, make_shared<BasicZeroPlusDiscrimination>(), false, 3),
+        Setup("basic_zero_plus_discr", 1, make_shared<BasicZeroPlusDiscrimination>(), false, 3),
         // Setup("basic_zero_plus_discr", 1, make_shared<BasicZeroPlusDiscrimination>(), false, 3, true),
-        // Setup("bell_state_reach", 1, make_shared<BellStateReach>(), true, 3),
+        Setup("bell_state_reach", 1, make_shared<BellStateReach>(), true, 3),
         // Setup("reset", 20, make_shared<ResetProblem>(), false, 5, true),
-        // Setup("reset", 2, make_shared<ResetProblem>(), false, 7, false),
-        // Setup("ghz3", 5, make_shared<GHZStatePreparation3>(), true, 3),
-        // Setup("bitflip_ipma2", 20, make_shared<IPMA2Bitflip>(), true, 7),
+        Setup("reset", 22, make_shared<ResetProblem>(), false, 8, false),
+        Setup("ghz3", 5, make_shared<GHZStatePreparation3>(), true, 3),
+        Setup("bitflip_ipma2", 50, make_shared<IPMA2Bitflip>(), true, 8, false),
         Setup("bitflip_cxh", 20, make_shared<CXHBitflip>(), true, 7),
-        // Setup("bitflip_ipma", 20, make_shared<IPMABitflip>(), true, 7),
+        Setup("bitflip_ipma", 20, make_shared<IPMABitflip>(), true, 7),
     });
 
     for (auto setup : setups) {
@@ -114,129 +124,178 @@ int main(int argc, char* argv[]) {
         vector<Algorithm> unique_algorithms;
         vector<int> is_algorithm_convex;
 
-        fs::path parsed_stats_path = exp_dir / "stats.csv";
-        ofstream parsed_stats_file(parsed_stats_path);
-        parsed_stats_file << join(vector<string>({"hardware",
+        // fs::path parsed_stats_path = exp_dir / "stats.csv";
+        // ofstream parsed_stats_file(parsed_stats_path);
+        // parsed_stats_file << join(vector<string>({"hardware",
+        // "embedding_index",
+        // "horizon",
+        // "pomdp_build_time",
+        // "probability",
+        // "method",
+        // "method_time",
+        // "algorithm_index"})
+        // , ",") << "\n";
+        //
+        // for (int batch = 0; batch < setup.num_batches; batch++) {
+        //     fs::path raw_exp_path = fs::path("..") / "results" / (setup.name + "_" + to_string(batch) + therm_str);
+        //     ifstream f(raw_exp_path / "stats.csv");
+        //
+        //     string line;
+        //     getline(f, line);
+        //
+        //     while (getline(f, line)) {
+        //         vector<string> tokens;
+        //         split_str(line, ',', tokens);
+        //         string quantum_hardware = tokens[0];
+        //         string embedding_index = tokens[1];
+        //         string horizon = tokens[2];
+        //         string pomdp_build_time = tokens[3];
+        //         string probability = tokens[4];
+        //         string method = tokens[5];
+        //         string method_time = tokens[6];
+        //         int algorithm_index = stoi(tokens[7]);
+        //
+        //         std::ifstream curr_alg_file(raw_exp_path / "raw_algorithms" / ("R_" + to_string(algorithm_index+1) + ".txt"));
+        //         if (!curr_alg_file.is_open()) {
+        //             std::cerr << "Error opening file\n";
+        //             return 1;
+        //         }
+        //
+        //         json current_algorithm;
+        //         curr_alg_file >> current_algorithm;
+        //         curr_alg_file.close();
+        //         Algorithm alg_object(current_algorithm);
+        //         int real_index = get_algorithm_index(alg_object, unique_algorithms);
+        //         if (real_index == -1) {
+        //             real_index = unique_algorithms.size();
+        //             unique_algorithms.push_back(alg_object);
+        //             // dump algorithm
+        //             dump_raw_algorithm(parsed_algorithms_path / ("R_" + to_string(real_index) + ".txt"), make_shared<Algorithm>(alg_object));
+        //             dump_to_file(parsed_algorithms_path / ("A_" + to_string(real_index) + ".txt"), make_shared<Algorithm>(alg_object));
+        //
+        //             if (method == "convex") {
+        //                 is_algorithm_convex.push_back(true);
+        //             } else {
+        //                 assert(method == "bellman");
+        //                 is_algorithm_convex.push_back(false);
+        //             }
+        //         }
+        //         algorithm_index = real_index;
+        //
+        //         parsed_stats_file << join(vector<string>({quantum_hardware,
+        //         embedding_index,
+        //         horizon,
+        //         pomdp_build_time,
+        //         probability,
+        //         method,
+        //         method_time,
+        //         to_string(algorithm_index)})
+        //         , ",") << "\n";
+        //     }
+        //
+        // }
+        // parsed_stats_file.close();
+
+        // // test all algorithms in all hardware specifications
+        // fs::path verification_path = exp_dir / "verification.csv";
+        // ofstream verification_file(verification_path);
+        // verification_file << join(vector<string>({"hardware",
+        // "embedding_index",
+        // "algorithm_index",
+        // "probability",
+        // "method"})
+        // , ",") << "\n";
+        //
+        // if (!verification_file.is_open()) {
+        //     std::cerr << "Error opening verification file " << verification_path << endl;
+        //     return 1;
+        // }
+        // for (auto &hardware_spec : all_specs[setup.with_thermalization]) {
+        //     if ((setup.with_cnot && hardware_spec.basis_gates_type != BasisGates::TYPE5 && hardware_spec.basis_gates_type != BasisGates::TYPE2) or !setup.with_cnot) {
+        //         auto embeddings = setup.experiment->get_hardware_scenarios(hardware_spec);
+        //         for (int embedding_index = 0; embedding_index < embeddings.size(); ++embedding_index) {
+        //             cout << "testing hardware spec " << hardware_spec.get_hardware_name() << ", embedding " << (embedding_index+1) << "/ " << embeddings.size() << endl;
+        //             auto embedding = embeddings[embedding_index];
+        //             POMDP pomdp(setup.experiment->precision);
+        //             auto actions = setup.experiment->get_actions(hardware_spec, embedding);
+        //             auto initial_distribution = setup.experiment->get_initial_distribution(embedding);
+        //             auto qubits_used = setup.experiment->get_qubits_used(embedding);
+        //             auto guard = [&setup](const shared_ptr<POMDPVertex>& v, const std::unordered_map<int,int>& m, const shared_ptr<POMDPAction>& a) {
+        //                 return setup.experiment->guard(v, m, a);
+        //             };
+        //             pomdp.build_pomdp(actions, hardware_spec, setup.max_horizon, embedding, nullptr, initial_distribution, qubits_used, guard, setup.experiment->set_hidden_index);
+        //             for (int algorithm_index = 0; algorithm_index < unique_algorithms.size(); ++algorithm_index) {
+        //
+        //                 auto unique_algorithm = unique_algorithms[algorithm_index];
+        //
+        //                 double probability = 0.0;
+        //
+        //                 probability = verify_algorithm(pomdp, *setup.experiment, unique_algorithm, hardware_spec, embeddings[embedding_index], is_algorithm_convex[algorithm_index], setup.max_horizon);
+        //                 string method = "bellman";
+        //                 if (is_algorithm_convex[algorithm_index]) {
+        //                     method = "convex";
+        //                 }
+        //                 verification_file << join(vector<string>({hardware_spec.get_hardware_name(),
+        //                     to_string(embedding_index),
+        //                     to_string(algorithm_index),
+        //                     to_string(round_to(probability, 5)),
+        //                     method})
+        //                     , ",") << "\n";
+        //             }
+        //             verification_file.flush();
+        //         }
+        //     }
+        // }
+        // verification_file.close();
+
+        // dump hardware specifications
+        fs::path unitary_specs = exp_dir / "unitary_specs.csv";
+        ofstream unitary_specs_file(unitary_specs);
+        unitary_specs_file << join(vector<string>({"hardware",
         "embedding_index",
-        "horizon",
-        "pomdp_build_time",
-        "probability",
-        "method",
-        "method_time",
-        "algorithm_index"})
+        "gate_name",
+        "probability"})
         , ",") << "\n";
 
-        for (int batch = 0; batch < setup.num_batches; batch++) {
-            fs::path raw_exp_path = fs::path("..") / "results" / (setup.name + "_" + to_string(batch) + therm_str);
-            ifstream f(raw_exp_path / "stats.csv");
-
-            string line;
-            getline(f, line);
-
-            while (getline(f, line)) {
-                vector<string> tokens;
-                split_str(line, ',', tokens);
-                string quantum_hardware = tokens[0];
-                string embedding_index = tokens[1];
-                string horizon = tokens[2];
-                string pomdp_build_time = tokens[3];
-                string probability = tokens[4];
-                string method = tokens[5];
-                string method_time = tokens[6];
-                int algorithm_index = stoi(tokens[7]);
-
-                std::ifstream curr_alg_file(raw_exp_path / "raw_algorithms" / ("R_" + to_string(algorithm_index+1) + ".txt"));
-                if (!curr_alg_file.is_open()) {
-                    std::cerr << "Error opening file\n";
-                    return 1;
-                }
-
-                json current_algorithm;
-                curr_alg_file >> current_algorithm;
-                curr_alg_file.close();
-                Algorithm alg_object(current_algorithm);
-                int real_index = get_algorithm_index(alg_object, unique_algorithms);
-                if (real_index == -1) {
-                    real_index = unique_algorithms.size();
-                    unique_algorithms.push_back(alg_object);
-                    // dump algorithm
-                    dump_raw_algorithm(parsed_algorithms_path / ("R_" + to_string(real_index) + ".txt"), make_shared<Algorithm>(alg_object));
-                    dump_to_file(parsed_algorithms_path / ("A_" + to_string(real_index) + ".txt"), make_shared<Algorithm>(alg_object));
-
-                    if (method == "convex") {
-                        is_algorithm_convex.push_back(true);
-                    } else {
-                        assert(method == "bellman");
-                        is_algorithm_convex.push_back(false);
-                    }
-                }
-                algorithm_index = real_index;
-
-                parsed_stats_file << join(vector<string>({quantum_hardware,
-                embedding_index,
-                horizon,
-                pomdp_build_time,
-                probability,
-                method,
-                method_time,
-                to_string(algorithm_index)})
-                , ",") << "\n";
-            }
-
-        }
-        parsed_stats_file.close();
-
-        // test all algorithms in all hardware specifications
-        fs::path verification_path = exp_dir / "verification.csv";
-        ofstream verification_file(verification_path);
-        verification_file << join(vector<string>({"hardware",
+        fs::path measurement_specs = exp_dir / "measurement_specs.csv";
+        ofstream measurement_specs_file(unitary_specs);
+        measurement_specs_file << join(vector<string>({"hardware",
         "embedding_index",
-        "algorithm_index",
-        "probability",
-        "method"})
+        "meas0_sucess",
+        "meas1_sucess"})
         , ",") << "\n";
 
-        if (!verification_file.is_open()) {
-            std::cerr << "Error opening verification file " << verification_path << endl;
-            return 1;
-        }
         for (auto &hardware_spec : all_specs[setup.with_thermalization]) {
             if ((setup.with_cnot && hardware_spec.basis_gates_type != BasisGates::TYPE5 && hardware_spec.basis_gates_type != BasisGates::TYPE2) or !setup.with_cnot) {
                 auto embeddings = setup.experiment->get_hardware_scenarios(hardware_spec);
                 for (int embedding_index = 0; embedding_index < embeddings.size(); ++embedding_index) {
-                    cout << "testing hardware spec " << hardware_spec.get_hardware_name() << ", embedding " << (embedding_index+1) << "/ " << embeddings.size() << endl;
                     auto embedding = embeddings[embedding_index];
-                    POMDP pomdp(setup.experiment->precision);
                     auto actions = setup.experiment->get_actions(hardware_spec, embedding);
-                    auto initial_distribution = setup.experiment->get_initial_distribution(embedding);
-                    auto qubits_used = setup.experiment->get_qubits_used(embedding);
-                    auto guard = [&setup](const shared_ptr<POMDPVertex>& v, const std::unordered_map<int,int>& m, const shared_ptr<POMDPAction>& a) {
-                        return setup.experiment->guard(v, m, a);
-                    };
-                    pomdp.build_pomdp(actions, hardware_spec, setup.max_horizon, embedding, nullptr, initial_distribution, qubits_used, guard, setup.experiment->set_hidden_index);
-                    for (int algorithm_index = 0; algorithm_index < unique_algorithms.size(); ++algorithm_index) {
-
-                        auto unique_algorithm = unique_algorithms[algorithm_index];
-
-                        double probability = 0.0;
-
-                        probability = verify_algorithm(pomdp, *setup.experiment, unique_algorithm, hardware_spec, embeddings[embedding_index], is_algorithm_convex[algorithm_index], setup.max_horizon);
-                        string method = "bellman";
-                        if (is_algorithm_convex[algorithm_index]) {
-                            method = "convex";
+                    auto unique_instructions = get_unique_instructions(actions);
+                    for (auto instruction : unique_instructions) {
+                        if (instruction->instruction_type == InstructionType::Measurement) {
+                            shared_ptr<MeasurementChannel> meas_channel = static_pointer_cast<MeasurementChannel>(hardware_spec.get_channel(instruction));
+                            measurement_specs_file << join(vector<string>({hardware_spec.get_hardware_name(),
+                                to_string(embedding_index),
+                                to_string(meas_channel->get_ind_probability(0,0)),
+                                to_string(meas_channel->get_ind_probability(1,1)),})
+                                , ",") << "\n";
+                        } else if (instruction->instruction_type == InstructionType::UnitaryMultiQubit || instruction->instruction_type == InstructionType::UnitarySingleQubit) {
+                            shared_ptr<QuantumChannel> quantum_channel = static_pointer_cast<QuantumChannel>(hardware_spec.get_channel(instruction));
+                            unitary_specs_file << join(vector<string>({hardware_spec.get_hardware_name(),
+                        to_string(embedding_index),
+                        gate_to_string(instruction->gate_name),
+                        to_string(quantum_channel->estimated_success_prob)})
+                        , ",") << "\n";
                         }
-                        verification_file << join(vector<string>({hardware_spec.get_hardware_name(),
-                            to_string(embedding_index),
-                            to_string(algorithm_index),
-                            to_string(round_to(probability, 5)),
-                            method})
-                            , ",") << "\n";
                     }
-                    verification_file.flush();
                 }
             }
         }
-        verification_file.close();
+
+        unitary_specs_file.close();
+        measurement_specs_file.close();
+
     }
 
     return 0;

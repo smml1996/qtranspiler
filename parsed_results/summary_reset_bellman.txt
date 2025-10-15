@@ -2,28 +2,28 @@
 %%%%%%%%%%%% bellman %%%%%%%%%%%%
 count hardware (bellman):  55
 count embeddings (bellman):  109
-total diff. algorithms (bellman):  22
-accuracy perfect hardware (bellman): 1.0, 1.0, 1.0, 1.0, 1.0, 1.0
+total diff. algorithms (bellman):  35
+accuracy perfect hardware (bellman): 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0
 
 min. accuracy (bellman): 0.50195
-avg. accuracy (bellman): 0.93435
+avg. accuracy (bellman): 0.94003
 max. accuracy (bellman): 1.0
 
 min. pomdp build time (bellman): 0.00045
-avg. pomdp build time (bellman): 0.00308
+avg. pomdp build time (bellman): 0.00274
 max. pomdp build time (bellman): 0.99509
 
 min. method time (bellman): 0.0
-avg. method time (bellman): 1.17763
-max. method time (bellman): 6.0
+avg. method time (bellman): 15.06199
+max. method time (bellman): 100.0
 
 min. total time (bellman): 0.00045
-avg. total time (bellman): 1.17919
-max. total time (bellman): 6.00473
+avg. total time (bellman): 15.06359
+max. total time (bellman): 100.00518
 
 min. total time (bellman): 0.00045
-avg. total time (bellman): 1.17919
-max. total time (bellman): 6.00473
+avg. total time (bellman): 15.06359
+max. total time (bellman): 100.00518
 
 num. algorithms per horizon (method=bellman)
 2 :  3
@@ -32,6 +32,8 @@ num. algorithms per horizon (method=bellman)
 5 :  4
 6 :  4
 7 :  4
+8 :  7
+9 :  6
 --
 
 
@@ -42,8 +44,18 @@ number of improvements per horizon:
 --> horizon 5: 108 
 --> horizon 6: 108 
 --> horizon 7: 108 
+--> horizon 8: 108 
+--> horizon 9: 108 
 --- ALGORITHMS ---
-perfect hardware algorithm:  [(2, 16), (3, 17), (4, 18), (5, 19), (6, 20), (7, 21)]
+perfect hardware algorithm:  [(2, 16), (3, 17), (4, 18), (5, 19), (6, 20), (7, 21), (8, 143), (9, 144)]
+Algorithm 144
+	 max: 1.0
+	 avg: 0.905533119266055
+	 std: 0.13754884533554998
+Algorithm 143
+	 max: 1.0
+	 avg: 0.905533119266055
+	 std: 0.13754884533554998
 Algorithm 21
 	 max: 1.0
 	 avg: 0.905533119266055
@@ -108,6 +120,50 @@ Algorithm 5
 	 max: 1.0
 	 avg: 0.9493564220183485
 	 std: 0.12639388069402063
+Algorithm 149
+	 max: 1.0
+	 avg: 0.9518101834862387
+	 std: 0.1248340570219466
+Algorithm 138
+	 max: 1.0
+	 avg: 0.9530057798165137
+	 std: 0.12411262036504184
+Algorithm 146
+	 max: 1.0
+	 avg: 0.9534105504587154
+	 std: 0.12385473894427071
+Algorithm 142
+	 max: 1.0
+	 avg: 0.9539766055045868
+	 std: 0.12349658699152741
+Algorithm 145
+	 max: 1.0
+	 avg: 0.9543575229357792
+	 std: 0.12337441462321981
+Algorithm 140
+	 max: 1.0
+	 avg: 0.9538911009174312
+	 std: 0.12335657197988524
+Algorithm 150
+	 max: 1.0
+	 avg: 0.9545429357798163
+	 std: 0.1232645188451089
+Algorithm 139
+	 max: 1.0
+	 avg: 0.9545429357798163
+	 std: 0.1232645188451089
+Algorithm 141
+	 max: 1.0
+	 avg: 0.9545566972477064
+	 std: 0.12325235834311234
+Algorithm 148
+	 max: 0.63878
+	 avg: 0.045443302752293566
+	 std: 0.12325235834311234
+Algorithm 147
+	 max: 0.63776
+	 avg: 0.04610889908256883
+	 std: 0.12335657197988524
 Algorithm 12
 	 max: 0.61959
 	 avg: 0.05064357798165138
@@ -210,6 +266,54 @@ Horizon = 7
 --> Max: (0.15498, ('brisbane', 0))
 --> Avg: 0.04382330275229359
 --> Std: 0.04555587602980188
+
+Horizon = 8
+-> Algorithm: 147
+--> Max: (0.20181, ('torino', 1))
+--> Avg: -0.8594242201834862
+--> Std: 0.255739229012874
+-> Algorithm: 140
+--> Max: (0.17890000000000006, ('toronto', 0))
+--> Avg: 0.04835798165137612
+--> Std: 0.053577086067124864
+-> Algorithm: 149
+--> Max: (0.17782999999999993, ('brisbane', 0))
+--> Avg: 0.04627706422018352
+--> Std: 0.049773318847342006
+-> Algorithm: 138
+--> Max: (0.17755999999999994, ('brisbane', 0))
+--> Avg: 0.04747266055045873
+--> Std: 0.05178023161762071
+-> Algorithm: 142
+--> Max: (0.17720000000000002, ('toronto', 0))
+--> Avg: 0.04844348623853211
+--> Std: 0.053407889786409916
+-> Algorithm: 146
+--> Max: (0.17296, ('brisbane', 0))
+--> Avg: 0.047877431192660545
+--> Std: 0.052450308377507984
+
+Horizon = 9
+-> Algorithm: 148
+--> Max: (0.20283, ('torino', 1))
+--> Avg: -0.8600898165137615
+--> Std: 0.25544190804035927
+-> Algorithm: 145
+--> Max: (0.18967999999999996, ('brisbane', 0))
+--> Avg: 0.048824403669724806
+--> Std: 0.05418160510985242
+-> Algorithm: 141
+--> Max: (0.18677, ('brisbane', 0))
+--> Avg: 0.04902357798165137
+--> Std: 0.05450769667913602
+-> Algorithm: 139
+--> Max: (0.18538, ('brisbane', 0))
+--> Avg: 0.049009816513761455
+--> Std: 0.054466739867719945
+-> Algorithm: 150
+--> Max: (0.18538, ('brisbane', 0))
+--> Avg: 0.049009816513761455
+--> Std: 0.054466739867719945
 
 
 
