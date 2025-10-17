@@ -3,6 +3,7 @@ from enum import Enum
 import os
 import pandas as pd
 import statistics
+import math
 
 parsed_results_path: str = ""
 
@@ -100,17 +101,19 @@ def get_embedding_count(experiment: Experiment, method: str) -> int:
             diff_embeddings.add((stats_line.hardware, stats_line.embedding_index))
     return len(diff_embeddings)
 
-def get_algorithms_count(experiment: Experiment, method: str) -> int:
+def get_algorithms(experiment: Experiment, method: str) -> Set[int]:
     f = open(get_stats_path(experiment))
     lines = f.readlines()
     f.close()
-
     all_algorithms: Set[int] = set()
     for line in lines[1:]:
         stats_line = StatsFileLine(line)
         if stats_line.method == method:
             all_algorithms.add(stats_line.algorithm_index)
-    return len(all_algorithms)
+    return all_algorithms
+
+def get_algorithms_count(experiment: Experiment, method: str) -> int:
+    return len(get_algorithms(experiment, method))
 
 def get_perfect_hardware_algorithms(experiment, method) -> List[Tuple[int, int]]:
     f = open(get_stats_path(experiment))
@@ -401,7 +404,7 @@ def get_improvements_per_horizon(experiment: Experiment, method: str, horizon: i
         if stats_line.method == method and stats_line.horizon == horizon:
             hardware_scenario = (stats_line.hardware, stats_line.embedding_index)
             assert hardware_scenario not in hard_to_prob.keys()
-            hard_to_prob[hardware_scenario] = stats_line.probability
+            hard_to_prob[hardware_scenario] = stats_line.probability # optimal algorithm
             if stats_line.hardware == "perfect_hardware":
                 assert perfect_alg_index == -1
                 perfect_alg_index = stats_line.algorithm_index
@@ -577,3 +580,230 @@ def get_all_improvements_df():
                         final_df = pd.concat([final_df,  temp_df], ignore_index=True)
 
     return final_df
+
+class UnitarySpec:
+    is_multiqubit: bool
+    succ_prob: float
+    gate_name: str
+    hardware: str
+    embedding_index: int
+    def __init__(self, line: str):
+        elements = line.split(",")
+        self.hardware = elements[0]
+        self.embedding_index = int(elements[1])
+        self.gate_name = elements[2]
+        self.succ_prob = float(elements[3])
+        if self.gate_name == "CNOT":
+            self.is_multiqubit = True
+        else:
+            self.is_multiqubit = False
+            if self.gate_name not in ["SX", "RZ", "X", "U2", "H", "U3", "RY", "RX", "U1"]:
+                raise Exception("unknown gate:", self.gate_name)
+
+
+class MeasSpec:
+    hardware: str
+    embedding_index: int
+    success0: float
+    success1: float
+    meas_succ: float
+    diff_meas: float
+    abs_meas_diff: float
+
+    def __init__(self, line):
+        elements = line.split(",")
+        self.hardware = elements[0]
+        self.embedding_index = int(elements[1])
+        self.success0 = float(elements[2])
+        self.success1 = float(elements[3])
+        self.meas_succ = (self.success1 + self.success0)/2.0
+        self.diff_meas = self.success0 - self.success1
+        self.abs_meas_diff = abs(self.success0 - self.success1)
+
+def get_algorithms_to_specs(experiment: Experiment, method: str) -> Dict[int, Set[Tuple[str, int]]]:
+    f = open(get_stats_path(experiment))
+    lines = f.readlines()[1:]
+    f.close()
+
+    result = dict()
+    for line in lines:
+        stat_line = StatsFileLine(line, is_verification=False)
+        if stat_line.method == method:
+            if stat_line.algorithm_index not in result:
+                result[stat_line.algorithm_index] = set()
+            result[stat_line.algorithm_index].add((stat_line.hardware, stat_line.embedding_index))
+
+    return result
+
+
+
+def dump_summary_specs_per_algo(experiment: Experiment, method: str) -> None:
+    experiment_path = get_experiment_path(experiment)
+
+    # load specifications
+    meas_specs_path = os.path.join(experiment_path, "measurement_specs.csv")
+    meas_specs_file = open(meas_specs_path)
+    meas_specs_ = meas_specs_file.readlines()[1:]
+    meas_specs = []
+    for line in meas_specs_:
+        meas_specs.append(MeasSpec(line))
+    meas_specs_file.close()
+
+    unitary_specs_path = os.path.join(experiment_path, "unitary_specs.csv")
+    unitary_specs_file = open(unitary_specs_path)
+    unitary_specs_ = unitary_specs_file.readlines()[1:]
+    unitary_specs = []
+    for line in unitary_specs_:
+        unitary_specs.append(UnitarySpec(line))
+    unitary_specs_file.close()
+
+    algorithms_to_specs = get_algorithms_to_specs(experiment, method)
+    summary_specs_path = os.path.join(experiment_path, f"specs_summary_per_alg_{method}.csv")
+    summary_file = open(summary_specs_path, "w")
+    summary_file.write(f"algorithm_index,min_success0,avg_success0,max_success0,min_success1,avg_success1,max_success1,min_meas_succ,avg_meas_succ,max_meas_succ,min_diff_meas,avg_diff_meas,max_diff_meas,min_abs_diff_meas,avg_abs_diff_meas,max_abs_diff_meas,min_succ_1Q,avg_succ_1Q,max_succ_1Q,min_succ_2Q,avg_succ_2Q,max_succ_2Q,num_hardwares\n")
+    for (algorithm_index, specs) in algorithms_to_specs.items():
+        min_success0 = 100
+        avg_success0 = 0.0
+        max_success0 = 0.0
+        min_success1 = 100
+        avg_success1 = 0.0
+        max_success1 = 0.0
+        min_meas_succ = 100
+        avg_meas_succ = 0.0
+        max_meas_succ = 0.0
+        min_diff_meas = 100
+        avg_diff_meas = 0.0
+        max_diff_meas = 0.0
+        min_abs_diff_meas = 100
+        avg_abs_diff_meas = 0.0
+        max_abs_diff_meas = 0.0
+        min_succ_1Q = 100
+        avg_succ_1Q = 0.0
+        max_succ_1Q = 0.0
+        min_succ_2Q = 100
+        avg_succ_2Q = 0.0
+        max_succ_2Q = 0.0
+        num_hardware_specs = 0
+        for spec_ in meas_specs:
+            if (spec_.hardware, spec_.embedding_index) in specs:
+                min_success0 = min(min_success0, spec_.success0)
+                avg_success0 = avg_success0 + spec_.success0
+                max_success0 = max(max_success0, spec_.success0)
+                min_success1 = min(min_success1, spec_.success1)
+                avg_success1 = avg_success1 + spec_.success1
+                max_success1 = max(max_success1, spec_.success1)
+                min_meas_succ = min(min_meas_succ, spec_.meas_succ)
+                avg_meas_succ += spec_.meas_succ
+                max_meas_succ = max(max_meas_succ, spec_.meas_succ)
+                min_diff_meas = min(min_diff_meas, spec_.diff_meas)
+                avg_diff_meas += spec_.diff_meas
+                max_diff_meas = max(max_diff_meas, spec_.diff_meas)
+                min_abs_diff_meas = min(min_abs_diff_meas, spec_.abs_meas_diff)
+                avg_abs_diff_meas += spec_.abs_meas_diff
+                max_abs_diff_meas = max(max_abs_diff_meas, spec_.abs_meas_diff)
+
+        count_1Q = 0
+        count_2Q = 0
+        for spec_ in unitary_specs:
+            if (spec_.hardware, spec_.embedding_index) in specs:
+                if spec_.is_multiqubit:
+                    count_2Q += 1
+                    min_succ_2Q = min(min_succ_2Q, spec_.succ_prob)
+                    avg_succ_2Q += spec_.succ_prob
+                    max_succ_2Q = max(max_succ_2Q, spec_.succ_prob)
+                else:
+                    count_1Q += 1
+                    min_succ_1Q = min(min_succ_1Q, spec_.succ_prob)
+                    avg_succ_1Q += spec_.succ_prob
+                    max_succ_1Q = max(max_succ_1Q, spec_.succ_prob)
+        avg_success0 /= len(specs)
+        avg_success1 /= len(specs)
+        avg_meas_succ /= len(specs)
+        avg_diff_meas /= len(specs)
+        avg_abs_diff_meas /= len(specs)
+        avg_abs_diff_meas /= len(specs)
+        num_hardware_specs = len(specs)
+        avg_succ_1Q /= count_1Q
+        if count_2Q != 0:
+            avg_succ_2Q /= count_2Q
+        summary_file.write(f"{algorithm_index},{min_success0},{avg_success0},{max_success0},{min_success1},{avg_success1},{max_success1},{min_meas_succ},{avg_meas_succ},{max_meas_succ},{min_diff_meas},{avg_diff_meas},{max_diff_meas},{min_abs_diff_meas},{avg_abs_diff_meas},{max_abs_diff_meas},{min_succ_1Q},{avg_succ_1Q},{max_succ_1Q},{min_succ_2Q},{avg_succ_2Q},{max_succ_2Q},{num_hardware_specs}\n")
+    summary_file.close()
+
+def dump_all_summary_specs():
+    for experiment in Experiment:
+        methods = get_methods_used(experiment)
+        for method in methods:
+            dump_summary_specs_per_algo(experiment, method)
+
+
+def get_class(algorithm: int, d: Dict[int, Set[int]]):
+    for (key, vals) in d.items():
+        if key == algorithm:
+            return key
+        if algorithm in vals:
+            return key
+
+    return -1
+
+def have_same_stats(stats: List[StatsFileLine], algorithm1: int, algorithm2: int) -> bool:
+    stats1 = set()
+    stats2 = set()
+    for stat_line in stats:
+        if stat_line.algorithm_index == algorithm1:
+            stats1.add((stat_line.hardware, stat_line.embedding_index, stat_line.probability))
+        elif stat_line.algorithm_index == algorithm2:
+            stats2.add((stat_line.hardware, stat_line.embedding_index, stat_line.probability))
+    assert len(stats1) == len(stats2)
+    return stats1 == stats2
+
+def find_witness(stats: List[StatsFileLine], algorithm1: int, algorithm2: int) -> Optional[Tuple[str, int, float]]:
+    stats1 = set()
+    for stat_line in stats:
+        if stat_line.algorithm_index == algorithm1:
+            stats1.add((stat_line.hardware, stat_line.embedding_index, stat_line.probability))
+
+    for stat_line in stats:
+        if stat_line.algorithm_index == algorithm2:
+            if (stat_line.hardware, stat_line.embedding_index, stat_line.probability) not in stats1:
+                return (stat_line.hardware, stat_line.embedding_index, stat_line.probability)
+    return None
+
+def truncate(x, n):
+    factor = 10 ** n
+    return math.trunc(x * factor) / factor
+
+def get_algorithms_classes(experiment: Experiment, method: str) -> Dict[int, Set[int]]:
+    # load stats
+    p = get_verification_path(experiment)
+    f = open(p)
+    lines = f.readlines()[1:]
+    f.close()
+
+    all_stats = []
+    for line in lines:
+        stat_line = StatsFileLine(line, is_verification=True)
+        stat_line.probability = truncate(stat_line.probability, 6)
+        all_stats.append(stat_line)
+
+    all_algorithms = get_algorithms(experiment, method)
+    print(all_algorithms)
+
+    result = dict()
+    for algorithm1 in all_algorithms:
+        found = False
+        for algorithm2 in result.keys():
+            if have_same_stats(all_stats, algorithm1, algorithm2):
+                found = True
+                result[algorithm2].add(algorithm1)
+                break
+            else:
+                witness = find_witness(all_stats, algorithm1, algorithm2)
+                assert witness is not None
+                print(f"{algorithm1} {algorithm2} are not equal because: {witness}")
+
+        if not found:
+            result[algorithm1]  = set()
+
+    return result
+
+

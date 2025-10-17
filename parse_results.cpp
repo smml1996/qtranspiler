@@ -258,7 +258,7 @@ int main(int argc, char* argv[]) {
         , ",") << "\n";
 
         fs::path measurement_specs = exp_dir / "measurement_specs.csv";
-        ofstream measurement_specs_file(unitary_specs);
+        ofstream measurement_specs_file(measurement_specs);
         measurement_specs_file << join(vector<string>({"hardware",
         "embedding_index",
         "meas0_sucess",
