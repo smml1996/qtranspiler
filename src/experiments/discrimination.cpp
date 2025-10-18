@@ -209,4 +209,9 @@ public:
         }
         return result;
     }
+
+    shared_ptr<Algorithm> get_textbook_algorithm(MethodType &method,
+        const int &horizon) override {
+        assert(false && "Not implemented");
+    }
 };

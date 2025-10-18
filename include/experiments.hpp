@@ -41,8 +41,17 @@ protected:
 
     vector<HardwareSpecification> get_hardware_specs() const;
     Belief get_initial_belief(const POMDP &pomdp) const;
+    vector<shared_ptr<POMDPVertex>> get_initial_states(const POMDP &pomdp) const;
 
-        vector<shared_ptr<POMDPVertex>> get_initial_states(const POMDP &pomdp) const;
+    // textbook algorithms helper functions
+    void update_classical_state(shared_ptr<Algorithm> algorithm,const cpp_int &classical_state);
+    shared_ptr<Algorithm> build_meas_sequence(const int &total_meas, const int &write_address,
+        const shared_ptr<POMDPAction> &meas_action,
+        const shared_ptr<ClassicalState> &current_cstate,
+        const shared_ptr<Algorithm> &on_most0,
+        const shared_ptr<Algorithm> &on_most1,
+        int ones_count=0,
+        int zeros_count=0);
 
     public:
     int precision;
@@ -50,23 +59,27 @@ protected:
     bool set_hidden_index;
     int max_horizon;
     static int round_in_file;
-        Experiment(const string &name, int precision, bool with_thermalization, int min_horizon, int max_horizon,
-            bool set_hidden_index, const set<MethodType> &method_types, const set<QuantumHardware> &hw_list, bool optimize);
-        virtual ~Experiment() = default;
-        Experiment() = default;
+    Experiment(const string &name, int precision, bool with_thermalization, int min_horizon, int max_horizon,
+        bool set_hidden_index, const set<MethodType> &method_types, const set<QuantumHardware> &hw_list, bool optimize);
+    virtual ~Experiment() = default;
+    Experiment() = default;
 
     static vector<int> get_qubits_used(const unordered_map<int, int> &embedding);
-        virtual set<QuantumHardware> get_allowed_hardware() const;
-        virtual void run();
-        virtual bool guard(const shared_ptr<POMDPVertex>&, const unordered_map<int, int>&, const shared_ptr<POMDPAction>&) const;
-        virtual void make_setup_file() const;
+    virtual set<QuantumHardware> get_allowed_hardware() const;
+    virtual void run();
+    virtual bool guard(const shared_ptr<POMDPVertex>&, const unordered_map<int, int>&, const shared_ptr<POMDPAction>&) const;
+    virtual void make_setup_file() const;
 
-        // for an experiment we need to define at least these functions
-        virtual vector<pair<shared_ptr<HybridState>, double>> get_initial_distribution(unordered_map<int, int> &embedding) const = 0;
-        virtual MyFloat postcondition(const Belief &belief, const unordered_map<int, int> &embedding) = 0;
-        virtual double postcondition_double(const VertexDict &belief, const unordered_map<int, int> &embedding) = 0;
-        virtual vector<shared_ptr<POMDPAction>> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) const = 0;
-        virtual vector<unordered_map<int, int>> get_hardware_scenarios(HardwareSpecification const & hardware_spec) const = 0;
+    // for an experiment we need to define at least these functions
+    virtual vector<pair<shared_ptr<HybridState>, double>> get_initial_distribution(unordered_map<int, int> &embedding) const = 0;
+    virtual MyFloat postcondition(const Belief &belief, const unordered_map<int, int> &embedding) = 0;
+    virtual double postcondition_double(const VertexDict &belief, const unordered_map<int, int> &embedding) = 0;
+    virtual vector<shared_ptr<POMDPAction>> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) const = 0;
+    virtual vector<unordered_map<int, int>> get_hardware_scenarios(HardwareSpecification const & hardware_spec) const = 0;
+    map<string, shared_ptr<POMDPAction>> get_actions_dictionary(HardwareSpecification &hardware_spec, const int &);
+
+    // textbook algorithm
+    virtual shared_ptr<Algorithm> get_textbook_algorithm(MethodType &method, const int &horizon);
 };
 
 class ReadoutNoise {

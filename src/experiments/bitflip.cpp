@@ -255,6 +255,19 @@ class IPMABitflip : public Experiment {
             }
             return result; 
         }
+
+    shared_ptr<Algorithm> get_textbook_algorithm(MethodType &method, const int &horizon) override {
+            assert (method == MethodType::SingleDistBellman);
+            auto hardware_spec = HardwareSpecification(QuantumHardware::PerfectHardware, false, false);
+            auto action_mappings = this->get_actions_dictionary(hardware_spec, 3);
+            shared_ptr<Algorithm> first_cx = make_shared<Algorithm>(action_mappings["CX02"], 0, 10, 1);
+            shared_ptr<Algorithm> second_cx = make_shared<Algorithm>(action_mappings["CX12"], 0, 10, 1);
+            shared_ptr<Algorithm> on1 = make_shared<Algorithm>(action_mappings["X0"], 0, 10, 1);
+            shared_ptr<Algorithm> on0 = make_shared<Algorithm>(make_shared<POMDPAction>(HALT_ACTION), 0, 10, 1);
+            first_cx->children.push_back(second_cx);
+            second_cx->children.push_back(this->build_meas_sequence(horizon-3, 2, action_mappings["P2"], make_shared<ClassicalState>(), on0, on1));
+            return first_cx;
+    }
 };
 
 
@@ -298,6 +311,17 @@ public:
 
             return {X0, P2, CX};
         }
+
+    shared_ptr<Algorithm> get_textbook_algorithm(MethodType &method, const int &horizon) override {
+        assert (method == MethodType::SingleDistBellman);
+        auto hardware_spec = HardwareSpecification(QuantumHardware::PerfectHardware, false, false);
+        auto action_mappings = this->get_actions_dictionary(hardware_spec, 3);
+        shared_ptr<Algorithm> cx = make_shared<Algorithm>(action_mappings["CX"], 0, 10, 1);
+        shared_ptr<Algorithm> on1 = make_shared<Algorithm>(action_mappings["X0"], 0, 10, 1);
+        shared_ptr<Algorithm> on0 = make_shared<Algorithm>(make_shared<POMDPAction>(HALT_ACTION), 0, 10, 1);
+        cx->children.push_back(this->build_meas_sequence(horizon-2, 2, action_mappings["P2"], make_shared<ClassicalState>(), on0, on1));
+        return cx;
+    }
 };
 
 class IPMA3Bitflip : public IPMABitflip {
@@ -411,8 +435,12 @@ class CXHBitflip : public IPMABitflip {
                 this->precision, 
                 vector<Instruction>{Instruction(GateName::Cnot, vector<int>({0}), 1)});
 
-            return {H2, H1, CX21, CX01, P2};
-        }
+        return {H2, H1, CX21, CX01, P2};
+    }
+
+    shared_ptr<Algorithm> get_textbook_algorithm(MethodType &method, const int &horizon) override {
+        throw runtime_error("Textbook algorithm for CXH not implemented");
+    }
 };
 
 // CONVEX experiments

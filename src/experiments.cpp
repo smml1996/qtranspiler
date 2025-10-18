@@ -208,8 +208,40 @@ vector<shared_ptr<POMDPVertex>> Experiment::get_initial_states(const POMDP &pomd
     return initial_states;
 }
 
+void Experiment::update_classical_state(shared_ptr<Algorithm> algorithm, const cpp_int &classical_state) {
+    algorithm->classical_state = classical_state;
+    for (auto child : algorithm->children) {
+        update_classical_state(child, classical_state);
+    }
+}
+
+shared_ptr<Algorithm> Experiment::build_meas_sequence(const int &total_meas, const int &write_address,
+                                                      const shared_ptr<POMDPAction> &meas_action,
+                                                      const shared_ptr<ClassicalState> &current_cstate,
+                                                      const shared_ptr<Algorithm> &on_most0, const shared_ptr<Algorithm> &on_most1, int ones_count, int zeros_count) {
+    assert(total_meas >= 0);
+    if (total_meas == 0) {
+        shared_ptr<Algorithm> result;
+        if (ones_count > zeros_count) {
+            result = deep_copy_algorithm(on_most1);
+        } else {
+            result = deep_copy_algorithm(on_most0);
+        }
+        update_classical_state(result, current_cstate->get_memory_val());
+        return result;
+    }
+
+    shared_ptr<Algorithm> head = make_shared<Algorithm>(meas_action, current_cstate->get_memory_val(), 10, -1);
+    auto state0 = current_cstate->write(write_address, false);
+    auto state1 = current_cstate->write(write_address, true);
+    head->children.push_back(this->build_meas_sequence(total_meas-1, write_address, meas_action, state0, on_most0, on_most1, ones_count, zeros_count+1));
+    head->children.push_back(this->build_meas_sequence(total_meas-1, write_address, meas_action, state1, on_most0, on_most1, ones_count+1, zeros_count));
+
+    return head;
+}
+
 Experiment::Experiment(const string &name, int precision, bool with_thermalization, int min_horizon, int max_horizon,
-    bool set_hidden_index, const set<MethodType> &method_types, const set<QuantumHardware> &hw_list, bool optimize) {
+                       bool set_hidden_index, const set<MethodType> &method_types, const set<QuantumHardware> &hw_list, bool optimize) {
     this->name = name;
     this->precision = precision;
     this->with_thermalization = with_thermalization;
@@ -374,6 +406,24 @@ void Experiment::run() {
     }
 
     cout << "Done" << endl;
+}
+
+map<string, shared_ptr<POMDPAction>> Experiment::get_actions_dictionary(HardwareSpecification &hardware_spec, const int &num_qubits) {
+    map<string, shared_ptr<POMDPAction>> actions_dictionary;
+    unordered_map<int, int> embedding;
+    for (int i = 0; i< num_qubits; i++) embedding[i] = i;
+
+    auto actions = this->get_actions(hardware_spec, embedding);
+
+    for (auto action : actions) {
+        actions_dictionary[action->name] = action;
+    }
+
+    return actions_dictionary;
+}
+
+shared_ptr<Algorithm> Experiment::get_textbook_algorithm(MethodType &method, const int &horizon) {
+    throw runtime_error("Not implemented");
 }
 
 ReadoutNoise::ReadoutNoise(int target, double success0, double success1) {

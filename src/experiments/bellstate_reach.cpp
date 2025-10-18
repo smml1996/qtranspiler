@@ -7,6 +7,8 @@
 #include "experiments.hpp"
 #include "utils.hpp"
 #include <unordered_set>
+#include <absl/strings/str_format.h>
+
 #include "bitflip.cpp"
 
 using namespace std;
@@ -100,7 +102,7 @@ class BellStateReach : public IPMABitflip {
     }
 
 
-    virtual vector<shared_ptr<POMDPAction>> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) const override {
+    vector<shared_ptr<POMDPAction>> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) const override {
 
         assert(embedding.size() == 3);
         assert(embedding.find(0) != embedding.end());
@@ -205,5 +207,28 @@ class BellStateReach : public IPMABitflip {
             }
         }
         return result;
+    }
+
+    shared_ptr<Algorithm> get_textbook_algorithm(MethodType &method, const int &horizon) override {
+        auto hardware_spec = HardwareSpecification(QuantumHardware::PerfectHardware, false, false);
+        auto action_mappings = this->get_actions_dictionary(hardware_spec, 3);
+        assert(horizon > 0 && horizon < 4);
+
+        auto on0_algorithm = make_shared<Algorithm>(action_mappings["CX01"], 0, 10, 1);
+        auto on1_algorithm = make_shared<Algorithm>(action_mappings["PrepareBell"], 0, 10, 1);
+        auto meas_action = action_mappings["MEASData"];
+        if (horizon == 1) {
+            if (method == MethodType::SingleDistBellman) {
+                return on1_algorithm;
+            }
+            auto new_head = make_shared<Algorithm>(make_shared<POMDPAction>(random_branch), 0, 5, -1); // we are not going to use precisio
+            new_head->children.push_back(on0_algorithm);
+            new_head->children.push_back(on1_algorithm);
+            new_head->children_probs.insert({0, 0.5});
+            new_head->children_probs.insert({1, 0.5});
+            return new_head;
+        }
+
+        return this->build_meas_sequence(horizon-1, 3, meas_action, make_shared<ClassicalState>(), on0_algorithm, on1_algorithm);
     }
 };

@@ -1,0 +1,25 @@
+parsing experiment reset
+textbook alg at h=2 is index151
+textbook alg at h=3 is index152
+textbook alg at h=4 is index153
+textbook alg at h=5 is index154
+textbook alg at h=6 is index155
+textbook alg at h=7 is index156
+textbook alg at h=8 is index157
+textbook alg at h=9 is index158
+
+parsing experiment bitflip_ipma
+textbook alg at h=3 is index22
+textbook alg at h=4 is index23
+textbook alg at h=5 is index24
+textbook alg at h=6 is index25
+textbook alg at h=7 is index26
+
+parsing experiment bitflip_ipma2
+textbook alg at h=3 is index34
+textbook alg at h=4 is index35
+textbook alg at h=5 is index36
+textbook alg at h=6 is index37
+textbook alg at h=7 is index38
+textbook alg at h=8 is index39
+
