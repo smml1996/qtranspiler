@@ -31,8 +31,8 @@ parsing experiment basic_zero_plus
 parsing experiment BellStateReach
 [bellman] textbook alg at h=1 is index0
 [bellman] textbook alg at h=2 is index2
-[bellman] textbook alg at h=3 is index18
+[bellman] textbook alg at h=3 is index14
 [convex] textbook alg at h=1 is index1
 [convex] textbook alg at h=2 is index2
-[convex] textbook alg at h=3 is index18
+[convex] textbook alg at h=3 is index14
 

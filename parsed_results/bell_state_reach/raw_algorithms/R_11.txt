@@ -36,35 +36,103 @@
             "children": [
                 {
                     "action": {
-                        "name": "HALT__",
-                        "seq": []
+                        "name": "MEASData",
+                        "seq": [
+                            {
+                                "c_target": 3,
+                                "controls": [],
+                                "gate_name": 18,
+                                "instruction_type": 0,
+                                "matrix": [],
+                                "params": [],
+                                "params_": [],
+                                "target": 3
+                            }
+                        ]
                     },
-                    "children": [],
+                    "children": [
+                        {
+                            "action": {
+                                "name": "HALT__",
+                                "seq": []
+                            },
+                            "children": [],
+                            "children_probs": [],
+                            "classical_state": "0",
+                            "depth": -1,
+                            "precision": 0
+                        },
+                        {
+                            "action": {
+                                "name": "HALT__",
+                                "seq": []
+                            },
+                            "children": [],
+                            "children_probs": [],
+                            "classical_state": "8",
+                            "depth": -1,
+                            "precision": 0
+                        }
+                    ],
                     "children_probs": [],
                     "classical_state": "0",
-                    "depth": -1,
-                    "precision": 0
+                    "depth": 1,
+                    "precision": 32
                 },
                 {
                     "action": {
-                        "name": "HALT__",
-                        "seq": []
+                        "name": "MEASData",
+                        "seq": [
+                            {
+                                "c_target": 3,
+                                "controls": [],
+                                "gate_name": 18,
+                                "instruction_type": 0,
+                                "matrix": [],
+                                "params": [],
+                                "params_": [],
+                                "target": 3
+                            }
+                        ]
                     },
-                    "children": [],
+                    "children": [
+                        {
+                            "action": {
+                                "name": "HALT__",
+                                "seq": []
+                            },
+                            "children": [],
+                            "children_probs": [],
+                            "classical_state": "0",
+                            "depth": -1,
+                            "precision": 0
+                        },
+                        {
+                            "action": {
+                                "name": "HALT__",
+                                "seq": []
+                            },
+                            "children": [],
+                            "children_probs": [],
+                            "classical_state": "8",
+                            "depth": -1,
+                            "precision": 0
+                        }
+                    ],
                     "children_probs": [],
                     "classical_state": "8",
-                    "depth": -1,
-                    "precision": 0
+                    "depth": 1,
+                    "precision": 32
                 }
             ],
             "children_probs": [],
             "classical_state": "0",
-            "depth": 1,
+            "depth": 2,
             "precision": 32
         }
     ],
     "children_probs": [],
     "classical_state": "0",
-    "depth": 2,
+    "depth": 3,
     "precision": 32
 }

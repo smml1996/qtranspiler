@@ -379,9 +379,9 @@ void ConvexDistributionSolver::set_minimax_values(
         minimax_matrix[current_alg_index][index] = acc;
 
     }
-    cout << current_alg_index << endl;
-    fs::path p = fs::path("..") / "temp" / ("a" + to_string(current_alg_index) + ".txt");
-    dump_to_file(p, algorithm);
+    // cout << current_alg_index << endl;
+    // fs::path p = fs::path("..") / "temp" / ("a" + to_string(current_alg_index) + ".txt");
+    // dump_to_file(p, algorithm);
 }
 
 bool ConvexDistributionSolver::is_action_allowed(shared_ptr<POMDPAction> &action,

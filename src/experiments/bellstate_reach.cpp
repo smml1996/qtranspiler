@@ -193,11 +193,11 @@ class BellStateReach : public IPMABitflip {
         }
         vector<unordered_map<int, int>> result;
         vector<pair<pair<int, int>, double>> couplers = hardware_spec.get_sorted_qubit_couplers2();
-        pair<int, int> first_pair = {couplers[0].first.first, couplers[1].first.second}; // most noisy pair of couplers for this target
+        pair<int, int> first_pair = {couplers[0].first.first, couplers[0].first.second}; // most noisy pair of couplers for this target
         vector<pair<int, int>> selected_couplers;
         selected_couplers.push_back(first_pair);
         if (couplers.size() > 0) {
-            pair<int, int> second_pair = {couplers[couplers.size() -1].first.first, couplers[couplers.size() -2].first.second}; // least noisy pair of couplers for this target
+            pair<int, int> second_pair = {couplers[couplers.size() -1].first.first, couplers[couplers.size() -1].first.second}; // least noisy pair of couplers for this target
             selected_couplers.push_back(second_pair);
         }
 
