@@ -439,7 +439,37 @@ class CXHBitflip : public IPMABitflip {
     }
 
     shared_ptr<Algorithm> get_textbook_algorithm(MethodType &method, const int &horizon) override {
-        throw runtime_error("Textbook algorithm for CXH not implemented");
+        assert(horizon == 7);
+        // H([q2]);
+        // CNOT([q2,q1]);
+        // H([q2]);
+        // H([q1]);
+        // CNOT([q2,q1]);
+        // CNOT([q0,q1]);
+        // x2 := measure(q2);
+
+        auto hardware_spec = HardwareSpecification(QuantumHardware::PerfectHardware, false, false);
+        auto action_mappings = this->get_actions_dictionary(hardware_spec, 3);
+
+        shared_ptr<Algorithm> head = make_shared<Algorithm>(action_mappings["H2"], 0, 10, 1);
+        head->children.push_back(
+            make_shared<Algorithm>(action_mappings["CX21"], 0, 10, 2)
+            );
+
+        auto second_ins = head->children.at(0);
+        auto third_ins = make_shared<Algorithm>(action_mappings["H2"], 0, 10, 3);
+        second_ins->children.push_back(third_ins);
+
+        auto fourth_ins = make_shared<Algorithm>(action_mappings["H1"], 0, 10, 4);
+        third_ins->children.push_back(fourth_ins);
+
+        auto fifth_ins = make_shared<Algorithm>(action_mappings["CX21"], 0, 10, 5);
+        fourth_ins->children.push_back(fifth_ins);
+        auto sixth_ins = make_shared<Algorithm>(action_mappings["CX01"], 0, 10, 6);
+        fifth_ins->children.push_back(sixth_ins);
+        auto seventh_ins = make_shared<Algorithm>(action_mappings["P2"], 0, 10, 7);
+        sixth_ins->children.push_back(seventh_ins);
+        return normalize_algorithm(head);
     }
 };
 

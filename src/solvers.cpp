@@ -248,7 +248,6 @@ ConvexDistributionSolver::ConvexDistributionSolver(const POMDP &pomdp, const f_r
 
 MyFloat get_algorithm_acc(POMDP &pomdp, const shared_ptr<Algorithm>& algorithm, const Belief &current_belief, const f_reward_type &get_reward, const unordered_map<int, int> &embedding, int precision) {
     MyFloat curr_belief_val = get_reward(current_belief, embedding);
-
     if (algorithm == nullptr) {
         return curr_belief_val;
     }
@@ -298,7 +297,6 @@ MyFloat get_algorithm_acc(POMDP &pomdp, const shared_ptr<Algorithm>& algorithm, 
         return curr_belief_val;
     }
 }
-
 
 double get_algorithm_acc_double(POMDP &pomdp, const shared_ptr<Algorithm>& algorithm, const VertexDict &current_belief, const f_reward_type_double &get_reward, const unordered_map<int, int> &embedding) {
     double curr_belief_val = get_reward(current_belief, embedding);
@@ -381,9 +379,9 @@ void ConvexDistributionSolver::set_minimax_values(
         minimax_matrix[current_alg_index][index] = acc;
 
     }
-    // cout << current_alg_index << endl;
-    // fs::path p = fs::path("..") / "temp" / ("a" + to_string(current_alg_index) + ".txt");
-    // dump_to_file(p, algorithm);
+    cout << current_alg_index << endl;
+    fs::path p = fs::path("..") / "temp" / ("a" + to_string(current_alg_index) + ".txt");
+    dump_to_file(p, algorithm);
 }
 
 bool ConvexDistributionSolver::is_action_allowed(shared_ptr<POMDPAction> &action,

@@ -67,7 +67,10 @@ vector<pair<pair<int,int>, double>> HardwareSpecification::get_sorted_qubit_coup
     }
 
     sort(result.begin(), result.end(), [](const pair<pair<int, int>, double> &a, const pair<pair<int, int>, double> &b) {
-        return a.second > b.second;
+        if (a.second != b.second) {
+            return a.second > b.second;
+        }
+        return a.first > b.first;
     });
     return result;
 }

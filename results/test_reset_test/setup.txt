@@ -1,8 +1,8 @@
 name: test_reset_test
-precision: 5
+precision: 8
 thermalization: 0
-min. horizon: 4
-max. horizon: 4
+min. horizon: 2
+max. horizon: 2
 hidden index: 0
 methods: convex
-quantum hardware: algiers
+quantum hardware: brisbane

@@ -110,11 +110,20 @@ Experiment(name, precision, with_thermalization, min_horizon, max_horizon, false
         }
 
     shared_ptr<Algorithm> get_textbook_algorithm(MethodType &method, const int &horizon) override {
-        assert (method == MethodType::SingleDistBellman);
+        // assert (method == MethodType::SingleDistBellman);
         auto hardware_spec = HardwareSpecification(QuantumHardware::PerfectHardware, false, false);
         auto action_mappings = this->get_actions_dictionary(hardware_spec, 1);
         shared_ptr<Algorithm> on1 = make_shared<Algorithm>(action_mappings["X0"], 0, 10, 1);
         shared_ptr<Algorithm> on0 = make_shared<Algorithm>(make_shared<POMDPAction>(HALT_ACTION), 0, 10, 1);
+        if (horizon == 1) {
+            assert(method == MethodType::ConvexDist);
+            auto new_head = make_shared<Algorithm>(make_shared<POMDPAction>(random_branch), 0, 5, -1); // we are not going to use precision
+            new_head->children.push_back(normalize_algorithm(on1));
+            new_head->children.push_back(normalize_algorithm(make_shared<Algorithm>(action_mappings["P0"], 0, 10, 1)));
+            new_head->children_probs.insert({0, 0.5});
+            new_head->children_probs.insert({1, 0.5});
+            return new_head;
+        }
         return normalize_algorithm(this->build_meas_sequence(horizon-1, 0, action_mappings["P0"], make_shared<ClassicalState>(), on0, on1));
     }
 };

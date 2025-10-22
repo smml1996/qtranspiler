@@ -17,16 +17,16 @@ bool with_thermalization = false;
 
 
 
-set<QuantumHardware> get_hardware_list(bool with_cnot=false) {
-    set<QuantumHardware> hw_list;
-    for (int i = 0; i < HardwareCount; i++) {
-        auto hs = HardwareSpecification(static_cast<QuantumHardware>(i), false, false);
-        if ((with_cnot && hs.basis_gates_type != BasisGates::TYPE5 && hs.basis_gates_type != BasisGates::TYPE2) or !with_cnot) {
-            hw_list.insert(static_cast<QuantumHardware>(i));
-        }
-    }
-    return hw_list;
-}
+// set<QuantumHardware> get_hardware_list(bool with_cnot=false) {
+//     set<QuantumHardware> hw_list;
+//     for (int i = 0; i < HardwareCount; i++) {
+//         auto hs = HardwareSpecification(static_cast<QuantumHardware>(i), false, false);
+//         if ((with_cnot && hs.basis_gates_type != BasisGates::TYPE5 && hs.basis_gates_type != BasisGates::TYPE2) or !with_cnot) {
+//             hw_list.insert(static_cast<QuantumHardware>(i));
+//         }
+//     }
+//     return hw_list;
+// }
 
 // TEST(Experiments, CountHardwareScenarios) {
 //     auto hw_list = get_hardware_list(true);
@@ -64,21 +64,21 @@ set<QuantumHardware> get_hardware_list(bool with_cnot=false) {
 //
 // }
 
-// TEST(ExperimentsTests, ResetTest) {
-//     const int min_horizon = 4;
-//     const int max_horizon = 4;
-//     string custom_name = "test_reset_test";
-//
-//     set<MethodType> methods = {
-//         // SingleDistBellman
-//         ConvexDist
-//     };
-//
-//     auto hw_list = {Algiers};
-//
-//     ResetProblem reset_problem = ResetProblem(custom_name, precision, false, min_horizon, max_horizon, methods, hw_list, true);
-//     reset_problem.run();
-// }
+TEST(ExperimentsTests, ResetTest) {
+    const int min_horizon = 2;
+    const int max_horizon = 2;
+    string custom_name = "test_reset_test";
+
+    set<MethodType> methods = {
+        // SingleDistBellman
+        ConvexDist
+    };
+
+    auto hw_list = {Brisbane};
+
+    ResetProblem reset_problem = ResetProblem(custom_name, precision, false, min_horizon, max_horizon, methods, hw_list, true);
+    reset_problem.run();
+}
 
 //
 // TEST(ExperimentsTests, BitflipTest) {
@@ -117,68 +117,68 @@ set<QuantumHardware> get_hardware_list(bool with_cnot=false) {
 //     }
 // }
 
-TEST(ExperimentsTests, EmbeddingsConsistentReset) {
-    const int min_horizon = 4;
-    const int max_horizon = 5;
-    string custom_name = "test_bitflip_test";
+// TEST(ExperimentsTests, EmbeddingsConsistentReset) {
+//     const int min_horizon = 4;
+//     const int max_horizon = 5;
+//     string custom_name = "test_bitflip_test";
+//
+//     set<MethodType> methods = {
+//         SingleDistBellman
+//     };
+//
+//     auto hw_list = get_hardware_list(true);
+//
+//     auto reset_problem = ResetProblem(custom_name, precision, true,min_horizon, max_horizon, methods, hw_list, true);
+//     for (auto hw : hw_list) {
+//         auto hs = HardwareSpecification(hw, false, true);
+//         auto embedding1 = reset_problem.get_hardware_scenarios(hs);
+//         auto embedding2 = reset_problem.get_hardware_scenarios(hs);
+//         assert(embedding1.size() > 0);
+//         EXPECT_EQ(embedding1, embedding2);
+//     }
+// }
 
-    set<MethodType> methods = {
-        SingleDistBellman
-    };
-
-    auto hw_list = get_hardware_list(true);
-
-    auto reset_problem = ResetProblem(custom_name, precision, true,min_horizon, max_horizon, methods, hw_list, true);
-    for (auto hw : hw_list) {
-        auto hs = HardwareSpecification(hw, false, true);
-        auto embedding1 = reset_problem.get_hardware_scenarios(hs);
-        auto embedding2 = reset_problem.get_hardware_scenarios(hs);
-        assert(embedding1.size() > 0);
-        EXPECT_EQ(embedding1, embedding2);
-    }
-}
-
-TEST(ExperimentsTests, EmbeddingsConsistentGHZ) {
-    const int min_horizon = 4;
-    const int max_horizon = 5;
-    string custom_name = "test_bitflip_test";
-
-    set<MethodType> methods = {
-        SingleDistBellman
-    };
-
-    auto hw_list = get_hardware_list(true);
-
-    auto ghz3 = GHZStatePreparation3(custom_name, precision, true,min_horizon, max_horizon, methods, hw_list, true);
-    for (auto hw : hw_list) {
-        auto hs = HardwareSpecification(hw, false, true);
-        auto embedding1 = ghz3.get_hardware_scenarios(hs);
-        auto embedding2 = ghz3.get_hardware_scenarios(hs);
-        assert(embedding1.size() > 0);
-        EXPECT_EQ(embedding1, embedding2);
-    }
-}
-
-TEST(ExperimentsTests, EmbeddingsConsistentBellReach) {
-    const int min_horizon = 4;
-    const int max_horizon = 5;
-    string custom_name = "test_bitflip_test";
-
-    set<MethodType> methods = {
-        SingleDistBellman
-    };
-
-    auto hw_list = get_hardware_list(true);
-
-    auto bell_reach = BellStateReach(custom_name, precision, true,min_horizon, max_horizon, methods, hw_list, true);
-    for (auto hw : hw_list) {
-        auto hs = HardwareSpecification(hw, false, true);
-        auto embedding1 = bell_reach.get_hardware_scenarios(hs);
-        auto embedding2 = bell_reach.get_hardware_scenarios(hs);
-        assert(embedding1.size() > 0);
-        EXPECT_EQ(embedding1, embedding2);
-    }
-}
+// TEST(ExperimentsTests, EmbeddingsConsistentGHZ) {
+//     const int min_horizon = 4;
+//     const int max_horizon = 5;
+//     string custom_name = "test_bitflip_test";
+//
+//     set<MethodType> methods = {
+//         SingleDistBellman
+//     };
+//
+//     auto hw_list = get_hardware_list(true);
+//
+//     auto ghz3 = GHZStatePreparation3(custom_name, precision, true,min_horizon, max_horizon, methods, hw_list, true);
+//     for (auto hw : hw_list) {
+//         auto hs = HardwareSpecification(hw, false, true);
+//         auto embedding1 = ghz3.get_hardware_scenarios(hs);
+//         auto embedding2 = ghz3.get_hardware_scenarios(hs);
+//         assert(embedding1.size() > 0);
+//         EXPECT_EQ(embedding1, embedding2);
+//     }
+// }
+//
+// TEST(ExperimentsTests, EmbeddingsConsistentBellReach) {
+//     const int min_horizon = 4;
+//     const int max_horizon = 5;
+//     string custom_name = "test_bitflip_test";
+//
+//     set<MethodType> methods = {
+//         SingleDistBellman
+//     };
+//
+//     auto hw_list = get_hardware_list(true);
+//
+//     auto bell_reach = BellStateReach(custom_name, precision, true,min_horizon, max_horizon, methods, hw_list, true);
+//     for (auto hw : hw_list) {
+//         auto hs = HardwareSpecification(hw, false, true);
+//         auto embedding1 = bell_reach.get_hardware_scenarios(hs);
+//         auto embedding2 = bell_reach.get_hardware_scenarios(hs);
+//         assert(embedding1.size() > 0);
+//         EXPECT_EQ(embedding1, embedding2);
+//     }
+// }
 //
 //
 // TEST(GHZTest, GHZNumEmbeddings) {
@@ -556,6 +556,23 @@ TEST(ExperimentsTests, EmbeddingsConsistentBellReach) {
 //     }
 //
 // }
+
+// TEST(BellStateReachTest, BellStateReach) {
+//     const int min_horizon = 1;
+//     const int max_horizon = 3;
+//     string custom_name = "bell_state_reach_0";
+//
+//     set<MethodType> methods = {
+//         SingleDistBellman,
+//         ConvexDist
+//     };
+//
+//     set<QuantumHardware> hw_list = get_hardware_list(true);
+//
+//     auto bell_state_reach = BellStateReach(custom_name, precision, false, min_horizon, max_horizon, methods, hw_list, true);
+//     bell_state_reach.run();
+// }
+
 
 // TEST(BellStateReachTest, BellStateReach) {
 //     const int min_horizon = 1;

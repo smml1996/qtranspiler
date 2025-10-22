@@ -192,19 +192,28 @@ class BellStateReach : public IPMABitflip {
             return {m};
         }
         vector<unordered_map<int, int>> result;
-        for (auto it_source : hardware_spec.digraph) {
-            int qubit0 = it_source.first;
-            for (auto qubit1 : it_source.second) {
-                assert(qubit0 != qubit1);
-                auto possible_fourth = get_fourth(hardware_spec, {qubit0, qubit1});
-                for (auto qubit3 : possible_fourth) {
-                    unordered_map<int, int> m;
-                    m[0] = qubit0;
-                    m[1] = qubit1;
-                    m[3] = qubit3;
-                    result.push_back(m);
-                }
+        vector<pair<pair<int, int>, double>> couplers = hardware_spec.get_sorted_qubit_couplers2();
+        pair<int, int> first_pair = {couplers[0].first.first, couplers[1].first.second}; // most noisy pair of couplers for this target
+        vector<pair<int, int>> selected_couplers;
+        selected_couplers.push_back(first_pair);
+        if (couplers.size() > 0) {
+            pair<int, int> second_pair = {couplers[couplers.size() -1].first.first, couplers[couplers.size() -2].first.second}; // least noisy pair of couplers for this target
+            selected_couplers.push_back(second_pair);
+        }
+
+        for (auto it_source : selected_couplers) {
+            auto qubit0 = it_source.first;
+            auto qubit1 = it_source.second;
+            assert(qubit0 != qubit1);
+            auto possible_fourth = get_fourth(hardware_spec, {qubit0, qubit1});
+            for (auto qubit3 : possible_fourth) {
+                unordered_map<int, int> m;
+                m[0] = qubit0;
+                m[1] = qubit1;
+                m[3] = qubit3;
+                result.push_back(m);
             }
+
         }
         return result;
     }

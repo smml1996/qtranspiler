@@ -92,6 +92,7 @@ void generate_improvements_file(const Setup &setup, vector<Algorithm> unique_alg
     "hardware",
         "embedding_index",
         "method",
+        "horizon",
         "algorithm_index",
         "baseline_index",
         "algorithm_prob",
@@ -144,18 +145,37 @@ void generate_improvements_file(const Setup &setup, vector<Algorithm> unique_alg
                     is_baseline_convex = true;
                 }
                 int baseline_index = get_algorithm_index(*baseline_algorithm, unique_algorithms);
-                assert(algorithm_index != -1 && baseline_index != -1);
+                if (algorithm_index == -1 or baseline_index == -1) {
+                    cout << "algorithms not found ("<< algorithm_index << ", " << baseline_index << ")" << endl;
+                    cout << quantum_hardware << " " << embedding_index << " " << horizon << endl;
+                    if (algorithm_index ==-1) {
+                        cout << to_string(make_shared<Algorithm>(alg_object)) << endl;
+                    }
+                    if (baseline_index == -1) {
+                        cout << to_string(baseline_algorithm) << endl;
+                    }
+                    assert(false);
+                }
 
                 QuantumHardware qw = to_quantum_hardware(quantum_hardware);
                 auto spec = qw_to_spec.at(qw);
                 auto embeddings = setup.experiment->get_hardware_scenarios(spec);
                 auto embedding = embeddings[embedding_index];
-                auto algorithm_prob = to_double(precise_verify_algorithm(*setup.experiment, alg_object,spec, embedding, is_convex, setup.max_horizon));
-                auto baseline_prob = to_double(precise_verify_algorithm(*setup.experiment, *baseline_algorithm,spec, embedding, is_baseline_convex, setup.max_horizon));
+                POMDP pomdp(setup.experiment->precision);
+                auto actions = setup.experiment->get_actions(spec, embedding);
+                auto initial_distribution = setup.experiment->get_initial_distribution(embedding);
+                auto qubits_used = setup.experiment->get_qubits_used(embedding);
+                auto guard = [&setup](const shared_ptr<POMDPVertex>& v, const std::unordered_map<int,int>& m, const shared_ptr<POMDPAction>& a) {
+                    return setup.experiment->guard(v, m, a);
+                };
+                pomdp.build_pomdp(actions, spec, setup.max_horizon, embedding, nullptr, initial_distribution, qubits_used, guard, setup.experiment->set_hidden_index);
+                auto algorithm_prob = to_double(precise_verify_algorithm(pomdp, *setup.experiment, alg_object, embedding, is_convex, setup.max_horizon));
+                auto baseline_prob = to_double(precise_verify_algorithm(pomdp, *setup.experiment, *baseline_algorithm, embedding, is_baseline_convex, setup.max_horizon));
                 improvements_file << join(vector<string>({
                     quantum_hardware,
                         to_string(embedding_index),
                         str_method,
+                    to_string(horizon),
                         to_string(algorithm_index),
                         to_string(baseline_index),
                         to_string(round_to(algorithm_prob, 5)),
@@ -184,7 +204,7 @@ int main(int argc, char* argv[]) {
         assert(qw_to_spec.find(qw) == qw_to_spec.end());
         qw_to_spec.insert({qw, hs});
         all_specs[false].push_back(hs);
-        all_specs[true].push_back(HardwareSpecification(static_cast<QuantumHardware>(index), true, true));
+        // all_specs[true].push_back(HardwareSpecification(static_cast<QuantumHardware>(index), true, true));
     }
     cout << "end loading hardware specs" << endl << endl;
 
@@ -195,15 +215,17 @@ int main(int argc, char* argv[]) {
     }
 
     vector<Setup> setups({
-        Setup("basic_zero_plus_discr", 1, make_shared<BasicZeroPlusDiscrimination>(), false, 3),
+        // Setup("basic_zero_plus_discr", 1, make_shared<BasicZeroPlusDiscrimination>(), false, 3),
         // Setup("basic_zero_plus_discr", 1, make_shared<BasicZeroPlusDiscrimination>(), false, 3, true),
-        // Setup("bell_state_reach", 1, make_shared<BellStateReach>(), true, 3),
         // Setup("reset", 20, make_shared<ResetProblem>(), false, 5, true),
-        // Setup("reset", 22, make_shared<ResetProblem>(), false, 9, false),
         // Setup("ghz3", 5, make_shared<GHZStatePreparation3>(), true, 3),
         // Setup("bitflip_ipma2", 50, make_shared<IPMA2Bitflip>(), true, 8, false),
-        // Setup("bitflip_cxh", 20, make_shared<CXHBitflip>(), true, 7),
         // Setup("bitflip_ipma", 20, make_shared<IPMABitflip>(), true, 7),
+
+        // Setup("bell_state_reach", 1, make_shared<BellStateReach>(), true, 3),
+        // Setup("reset", 22, make_shared<ResetProblem>(), false, 9, false),
+
+            Setup("bitflip_cxh", 20, make_shared<CXHBitflip>(), true, 7),
     });
 
     for (auto setup : setups) {
@@ -331,8 +353,6 @@ int main(int argc, char* argv[]) {
                 }
             }
 
-        } else {
-            assert(false);
         }
 
         generate_improvements_file(setup, unique_algorithms, qw_to_spec);
