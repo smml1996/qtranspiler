@@ -3,3 +3,4 @@ if c = 0:
 	HALT
 if c = 1:
 	X([q0]); 
+	HALT

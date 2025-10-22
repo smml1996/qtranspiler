@@ -5,3 +5,4 @@ if c = 0:
 	HALT
 if c = 4:
 	X([q0]); 
+	HALT

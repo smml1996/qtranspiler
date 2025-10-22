@@ -8,13 +8,13 @@
 #include "instruction.hpp"
 #include "algorithm.hpp"
 #include <string>
+#include <utility>
 #include <vector>
 #include "experiments.hpp"
 #include <nlohmann/json.hpp>
 #include "bitflip.cpp"
 #include "discrimination.cpp"
 #include "ghz.cpp"
-#include "reset.cpp"
 #include "bellstate_reach.cpp"
 
 using namespace std;
@@ -49,10 +49,10 @@ public:
     int max_horizon;
     bool with_thermalization;
     Setup(string name_, int num_batches_, shared_ptr<Experiment> exp_, bool with_cnot_, int max_horizon_, bool with_thermalization_=false) {
-        this->name = name_;
+        this->name = std::move(name_);
         this->with_thermalization = with_thermalization_;
         this->num_batches = num_batches_;
-        this->experiment = exp_;
+        this->experiment = std::move(exp_);
         this->with_cnot = with_cnot_;
         this->max_horizon = max_horizon_;
     }
@@ -79,14 +79,111 @@ bool are_actions_valid(const HardwareSpecification &hardware_spec, vector<shared
     return true;
 }
 
+void generate_improvements_file(const Setup &setup, vector<Algorithm> unique_algorithms, const map<QuantumHardware, HardwareSpecification> &qw_to_spec) {
+    filesystem::path parsed_results_path = fs::path("..") /"parsed_results";
+    string therm_str;
+    if (setup.with_thermalization) {
+        therm_str = "_therm";
+    }
+    fs::path exp_dir = parsed_results_path / (setup.name + therm_str);
+    fs::path improvements_path = exp_dir / "improvements.csv";
+    ofstream improvements_file(improvements_path);
+    improvements_file << join(vector<string>({
+    "hardware",
+        "embedding_index",
+        "method",
+        "algorithm_index",
+        "baseline_index",
+        "algorithm_prob",
+        "baseline_prob",
+        "diff",
+    }), ",") << "\n";
+
+    for (int batch = 0; batch < setup.num_batches; batch++) {
+            fs::path raw_exp_path = fs::path("..") / "results" / (setup.name + "_" + to_string(batch) + therm_str);
+            ifstream f(raw_exp_path / "stats.csv");
+
+            string line;
+            getline(f, line);
+
+            while (getline(f, line)) {
+                vector<string> tokens;
+                split_str(line, ',', tokens);
+                string quantum_hardware = tokens[0];
+                int embedding_index = stoi(tokens[1]);
+                int horizon = stoi(tokens[2]);
+                // string pomdp_build_time = tokens[3];
+                string probability = tokens[4];
+                string str_method = tokens[5];
+                int algorithm_index_ = stoi(tokens[7]);
+
+                std::ifstream curr_alg_file(raw_exp_path / "raw_algorithms" / ("R_" + to_string(algorithm_index_+1) + ".txt"));
+                json current_algorithm;
+                curr_alg_file >> current_algorithm;
+                curr_alg_file.close();
+                Algorithm alg_object(current_algorithm);
+
+                MethodType method;
+                bool is_convex;
+                if (str_method == "bellman") {
+                    method = MethodType::SingleDistBellman;
+                    is_convex = false;
+                } else {
+                    assert(str_method == "convex");
+                    method = MethodType::ConvexDist;
+                    is_convex = true;
+                }
+
+
+
+                int algorithm_index = get_algorithm_index(alg_object, unique_algorithms);
+                auto baseline_algorithm = setup.experiment->get_textbook_algorithm(method, horizon);
+
+                bool is_baseline_convex = false;
+                if (*baseline_algorithm->action == POMDPAction(random_branch)) {
+                    is_baseline_convex = true;
+                }
+                int baseline_index = get_algorithm_index(*baseline_algorithm, unique_algorithms);
+                assert(algorithm_index != -1 && baseline_index != -1);
+
+                QuantumHardware qw = to_quantum_hardware(quantum_hardware);
+                auto spec = qw_to_spec.at(qw);
+                auto embeddings = setup.experiment->get_hardware_scenarios(spec);
+                auto embedding = embeddings[embedding_index];
+                auto algorithm_prob = to_double(precise_verify_algorithm(*setup.experiment, alg_object,spec, embedding, is_convex, setup.max_horizon));
+                auto baseline_prob = to_double(precise_verify_algorithm(*setup.experiment, *baseline_algorithm,spec, embedding, is_baseline_convex, setup.max_horizon));
+                improvements_file << join(vector<string>({
+                    quantum_hardware,
+                        to_string(embedding_index),
+                        str_method,
+                        to_string(algorithm_index),
+                        to_string(baseline_index),
+                        to_string(round_to(algorithm_prob, 5)),
+                        to_string(round_to(baseline_prob,5)),
+                        to_string(round_to(algorithm_prob-baseline_prob, 5)),
+                    }), ",") << "\n";
+
+            }
+
+        }
+
+
+    improvements_file.close();
+}
+
 int main(int argc, char* argv[]) {
     // load all hardware specs
     cout << "started loading hardware specs" << endl;
     map<bool, vector<HardwareSpecification>> all_specs;
+    map<QuantumHardware, HardwareSpecification> qw_to_spec;
     all_specs[false] = vector<HardwareSpecification>({});
     all_specs[true] = vector<HardwareSpecification>({});
     for (auto index = 0; index < QuantumHardware::HardwareCount; index++) {
-        all_specs[false].push_back(HardwareSpecification(static_cast<QuantumHardware>(index), false, true));
+        auto qw = static_cast<QuantumHardware>(index);
+        auto hs = HardwareSpecification(qw, false, true);
+        assert(qw_to_spec.find(qw) == qw_to_spec.end());
+        qw_to_spec.insert({qw, hs});
+        all_specs[false].push_back(hs);
         all_specs[true].push_back(HardwareSpecification(static_cast<QuantumHardware>(index), true, true));
     }
     cout << "end loading hardware specs" << endl << endl;
@@ -98,15 +195,15 @@ int main(int argc, char* argv[]) {
     }
 
     vector<Setup> setups({
-        // Setup("basic_zero_plus_discr", 1, make_shared<BasicZeroPlusDiscrimination>(), false, 3),
+        Setup("basic_zero_plus_discr", 1, make_shared<BasicZeroPlusDiscrimination>(), false, 3),
         // Setup("basic_zero_plus_discr", 1, make_shared<BasicZeroPlusDiscrimination>(), false, 3, true),
         // Setup("bell_state_reach", 1, make_shared<BellStateReach>(), true, 3),
         // Setup("reset", 20, make_shared<ResetProblem>(), false, 5, true),
-        Setup("reset", 22, make_shared<ResetProblem>(), false, 9, false),
+        // Setup("reset", 22, make_shared<ResetProblem>(), false, 9, false),
         // Setup("ghz3", 5, make_shared<GHZStatePreparation3>(), true, 3),
-        Setup("bitflip_ipma2", 50, make_shared<IPMA2Bitflip>(), true, 8, false),
+        // Setup("bitflip_ipma2", 50, make_shared<IPMA2Bitflip>(), true, 8, false),
         // Setup("bitflip_cxh", 20, make_shared<CXHBitflip>(), true, 7),
-        Setup("bitflip_ipma", 20, make_shared<IPMABitflip>(), true, 7),
+        // Setup("bitflip_ipma", 20, make_shared<IPMABitflip>(), true, 7),
     });
 
     for (auto setup : setups) {
@@ -124,17 +221,17 @@ int main(int argc, char* argv[]) {
         vector<Algorithm> unique_algorithms;
         vector<int> is_algorithm_convex;
 
-        fs::path parsed_stats_path = exp_dir / "stats.csv";
-        ofstream parsed_stats_file(parsed_stats_path);
-        parsed_stats_file << join(vector<string>({"hardware",
-        "embedding_index",
-        "horizon",
-        "pomdp_build_time",
-        "probability",
-        "method",
-        "method_time",
-        "algorithm_index"})
-        , ",") << "\n";
+        // fs::path parsed_stats_path = exp_dir / "stats.csv";
+        // ofstream parsed_stats_file(parsed_stats_path);
+        // parsed_stats_file << join(vector<string>({"hardware",
+        // "embedding_index",
+        // "horizon",
+        // "pomdp_build_time",
+        // "probability",
+        // "method",
+        // "method_time",
+        // "algorithm_index"})
+        // , ",") << "\n";
 
         for (int batch = 0; batch < setup.num_batches; batch++) {
             fs::path raw_exp_path = fs::path("..") / "results" / (setup.name + "_" + to_string(batch) + therm_str);
@@ -170,8 +267,8 @@ int main(int argc, char* argv[]) {
                     real_index = unique_algorithms.size();
                     unique_algorithms.push_back(alg_object);
                     // dump algorithm
-                    dump_raw_algorithm(parsed_algorithms_path / ("R_" + to_string(real_index) + ".txt"), make_shared<Algorithm>(alg_object));
-                    dump_to_file(parsed_algorithms_path / ("A_" + to_string(real_index) + ".txt"), make_shared<Algorithm>(alg_object));
+                    // dump_raw_algorithm(parsed_algorithms_path / ("R_" + to_string(real_index) + ".txt"), make_shared<Algorithm>(alg_object));
+                    // dump_to_file(parsed_algorithms_path / ("A_" + to_string(real_index) + ".txt"), make_shared<Algorithm>(alg_object));
 
                     if (method == "convex") {
                         is_algorithm_convex.push_back(true);
@@ -182,97 +279,114 @@ int main(int argc, char* argv[]) {
                 }
                 algorithm_index = real_index;
 
-                parsed_stats_file << join(vector<string>({quantum_hardware,
-                embedding_index,
-                horizon,
-                pomdp_build_time,
-                probability,
-                method,
-                method_time,
-                to_string(algorithm_index)})
-                , ",") << "\n";
+                // parsed_stats_file << join(vector<string>({quantum_hardware,
+                // embedding_index,
+                // horizon,
+                // pomdp_build_time,
+                // probability,
+                // method,
+                // method_time,
+                // to_string(algorithm_index)})
+                // , ",") << "\n";
             }
 
         }
-        parsed_stats_file.close();
-        if (setup.name == "reset" || setup.name == "bitflip_ipma" || setup.name == "bitflip_ipma2") {
+        // parsed_stats_file.close();
+        if (setup.name == "reset" || setup.name == "bitflip_ipma" || setup.name == "bitflip_ipma2" || setup.name == "basic_zero_plus_discr" || setup.name == "bell_state_reach") {
             int min_horizon;
 
-            if (setup.name == "reset") {
+            if (setup.name == "basic_zero_plus_discr" || setup.name == "bell_state_reach") {
+                min_horizon = 1;
+            } else if (setup.name == "reset") {
                 min_horizon = 2;
             } else {
                 min_horizon = 3;
             }
-             auto m = MethodType::SingleDistBellman;
-            for (int h = min_horizon; h <= setup.max_horizon; h++) {
-                auto textbook_alg = setup.experiment->get_textbook_algorithm(m, h);
-                int real_index = get_algorithm_index(*textbook_alg, unique_algorithms);
-                if (real_index == -1) {
-                    real_index = unique_algorithms.size();
-                    unique_algorithms.push_back(*textbook_alg);
-                    // dump algorithm
-                    dump_raw_algorithm(parsed_algorithms_path / ("R_" + to_string(real_index) + ".txt"), textbook_alg);
-                    dump_to_file(parsed_algorithms_path / ("A_" + to_string(real_index) + ".txt"), textbook_alg);
-                    is_algorithm_convex.push_back(false);
-                }
-                cout << "textbook alg at h=" << h << " is index" << real_index << endl;
+            vector<MethodType> methods = {MethodType::SingleDistBellman};
+            if (setup.name == "bell_state_reach") {
+                methods.push_back(MethodType::ConvexDist);
+            } else if (setup.name == "basic_zero_plus_discr") {
+                methods.clear();
+                methods.push_back(MethodType::ConvexDist);
             }
+
+            for (auto m : methods) {
+                for (int h = min_horizon; h <= setup.max_horizon; h++) {
+                    auto textbook_alg = setup.experiment->get_textbook_algorithm(m, h);
+                    int real_index = get_algorithm_index(*textbook_alg, unique_algorithms);
+                    if (real_index == -1) {
+                        real_index = unique_algorithms.size();
+                        unique_algorithms.push_back(*textbook_alg);
+                        // dump algorithm
+                        // dump_raw_algorithm(parsed_algorithms_path / ("R_" + to_string(real_index) + ".txt"), textbook_alg);
+                        // dump_to_file(parsed_algorithms_path / ("A_" + to_string(real_index) + ".txt"), textbook_alg);
+                        if (m == MethodType::SingleDistBellman) {
+                            is_algorithm_convex.push_back(false);
+                        } else {
+                            is_algorithm_convex.push_back(true);
+                        }
+
+                    }
+                    cout <<"[" <<get_method_string(m)<< "] textbook alg at h=" << h << " is index" << real_index << endl;
+                }
+            }
+
         } else {
             assert(false);
         }
 
-
+        generate_improvements_file(setup, unique_algorithms, qw_to_spec);
         // test all algorithms in all hardware specifications
-        fs::path verification_path = exp_dir / "verification.csv";
-        ofstream verification_file(verification_path);
-        verification_file << join(vector<string>({"hardware",
-        "embedding_index",
-        "algorithm_index",
-        "probability",
-        "method"})
-        , ",") << "\n";
-
-        if (!verification_file.is_open()) {
-            std::cerr << "Error opening verification file " << verification_path << endl;
-            return 1;
-        }
-        for (auto &hardware_spec : all_specs[setup.with_thermalization]) {
-            if ((setup.with_cnot && hardware_spec.basis_gates_type != BasisGates::TYPE5 && hardware_spec.basis_gates_type != BasisGates::TYPE2) or !setup.with_cnot) {
-                auto embeddings = setup.experiment->get_hardware_scenarios(hardware_spec);
-                for (int embedding_index = 0; embedding_index < embeddings.size(); ++embedding_index) {
-                    cout << "testing hardware spec " << hardware_spec.get_hardware_name() << ", embedding " << (embedding_index+1) << "/ " << embeddings.size() << endl;
-                    auto embedding = embeddings[embedding_index];
-                    POMDP pomdp(setup.experiment->precision);
-                    auto actions = setup.experiment->get_actions(hardware_spec, embedding);
-                    auto initial_distribution = setup.experiment->get_initial_distribution(embedding);
-                    auto qubits_used = setup.experiment->get_qubits_used(embedding);
-                    auto guard = [&setup](const shared_ptr<POMDPVertex>& v, const std::unordered_map<int,int>& m, const shared_ptr<POMDPAction>& a) {
-                        return setup.experiment->guard(v, m, a);
-                    };
-                    pomdp.build_pomdp(actions, hardware_spec, setup.max_horizon, embedding, nullptr, initial_distribution, qubits_used, guard, setup.experiment->set_hidden_index);
-                    for (int algorithm_index = 0; algorithm_index < unique_algorithms.size(); ++algorithm_index) {
-
-                        auto unique_algorithm = unique_algorithms[algorithm_index];
-
-                        double probability = 0.0;
-
-                        probability = verify_algorithm(pomdp, *setup.experiment, unique_algorithm, hardware_spec, embeddings[embedding_index], is_algorithm_convex[algorithm_index], setup.max_horizon);
-                        string method = "bellman";
-                        if (is_algorithm_convex[algorithm_index]) {
-                            method = "convex";
-                        }
-                        verification_file << join(vector<string>({hardware_spec.get_hardware_name(),
-                            to_string(embedding_index),
-                            to_string(algorithm_index),
-                            to_string(round_to(probability, 5)),
-                            method})
-                            , ",") << "\n";
-                    }
-                    verification_file.flush();
-                }
-            }
-        }
-        verification_file.close();
+        // fs::path verification_path = exp_dir / "verification.csv";
+        // ofstream verification_file(verification_path);
+        // verification_file << join(vector<string>({"hardware",
+        // "embedding_index",
+        // "algorithm_index",
+        // "probability",
+        // "method"})
+        // , ",") << "\n";
+        //
+        // if (!verification_file.is_open()) {
+        //     std::cerr << "Error opening verification file " << verification_path << endl;
+        //     return 1;
+        // }
+        // for (auto &hardware_spec : all_specs[setup.with_thermalization]) {
+        //     if ((setup.with_cnot && hardware_spec.basis_gates_type != BasisGates::TYPE5 && hardware_spec.basis_gates_type != BasisGates::TYPE2) or !setup.with_cnot) {
+        //         auto embeddings = setup.experiment->get_hardware_scenarios(hardware_spec);
+        //         for (int embedding_index = 0; embedding_index < embeddings.size(); ++embedding_index) {
+        //             cout << "testing hardware spec " << hardware_spec.get_hardware_name() << ", embedding " << (embedding_index+1) << "/ " << embeddings.size() << endl;
+        //             auto embedding = embeddings[embedding_index];
+        //             POMDP pomdp(setup.experiment->precision);
+        //             auto actions = setup.experiment->get_actions(hardware_spec, embedding);
+        //             auto initial_distribution = setup.experiment->get_initial_distribution(embedding);
+        //             auto qubits_used = setup.experiment->get_qubits_used(embedding);
+        //             auto guard = [&setup](const shared_ptr<POMDPVertex>& v, const std::unordered_map<int,int>& m, const shared_ptr<POMDPAction>& a) {
+        //                 return setup.experiment->guard(v, m, a);
+        //             };
+        //             pomdp.build_pomdp(actions, hardware_spec, setup.max_horizon, embedding, nullptr, initial_distribution, qubits_used, guard, setup.experiment->set_hidden_index);
+        //             for (int algorithm_index = 0; algorithm_index < unique_algorithms.size(); ++algorithm_index) {
+        //
+        //                 auto unique_algorithm = unique_algorithms[algorithm_index];
+        //
+        //                 double probability = 0.0;
+        //
+        //                 probability = verify_algorithm(pomdp, *setup.experiment, unique_algorithm, hardware_spec, embeddings[embedding_index], is_algorithm_convex[algorithm_index], setup.max_horizon);
+        //                 string method = "bellman";
+        //                 if (is_algorithm_convex[algorithm_index]) {
+        //                     method = "convex";
+        //                 }
+        //                 verification_file << join(vector<string>({hardware_spec.get_hardware_name(),
+        //                     to_string(embedding_index),
+        //                     to_string(algorithm_index),
+        //                     to_string(round_to(probability, 5)),
+        //                     method})
+        //                     , ",") << "\n";
+        //             }
+        //             verification_file.flush();
+        //         }
+        //     }
+        // }
+        // verification_file.close();
 
         // dump hardware specifications
         // fs::path unitary_specs = exp_dir / "unitary_specs.csv";

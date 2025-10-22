@@ -273,10 +273,19 @@ def get_algorithms_stat(experiment: Experiment, method_: str) -> List[Tuple[int,
 
     return sorted(answer, key=lambda x: (x[1], x[3], x[2], x[0]), reverse=True)
 
+def get_max_improvement(experiment: Experiment, method: str) -> float:
+    result = 0
+    perfect_hard_algos = get_perfect_hardware_algorithms(experiment, method)
+    for (horizon, _) in perfect_hard_algos:
+        algorithm_index = get_baseline_index(experiment, method, horizon)
+        stats = get_improvements(experiment, method, horizon, algorithm_index)
+        if len(stats) > 0:
+            result = max(result, stats[0][1][0])
+    return result
+
 def get_improvements(experiment: Experiment, method: str, horizon: int, algorithm_index: int) -> List[Tuple[int, Tuple[float, Tuple[str, int]], float, float]]:
 
     algorithms_to_evaluate = get_algorithms_at_horizon(experiment, method, horizon)
-    assert algorithm_index in algorithms_to_evaluate
     alg_to_scenario_acc = dict()
 
     f = open(get_verification_path(experiment))
@@ -285,7 +294,7 @@ def get_improvements(experiment: Experiment, method: str, horizon: int, algorith
 
     for line in lines[1:]:
         stats_line = StatsFileLine(line, True)
-        if stats_line.method == method and stats_line.algorithm_index in algorithms_to_evaluate:
+        if (stats_line.method == method and stats_line.algorithm_index in algorithms_to_evaluate) or stats_line.algorithm_index == algorithm_index:
             hardware_scenario = (stats_line.hardware, stats_line.embedding_index)
             if stats_line.algorithm_index not in alg_to_scenario_acc.keys():
                 alg_to_scenario_acc[stats_line.algorithm_index] = dict()
@@ -313,114 +322,135 @@ def get_improvements(experiment: Experiment, method: str, horizon: int, algorith
 
     return sorted(answer, key=lambda x : (x[1][0], x[3], x[2]) , reverse=True)
 
-def dump_summary_table(save: bool=True):
+def get_count_improvements(experiment: Experiment, method: str) -> int:
+    result = 0
+    perfect_hard_algos = get_perfect_hardware_algorithms(experiment, method)
+    for (horizon, _) in perfect_hard_algos:
+        result += get_improvements_per_horizon(experiment, method, horizon)
+    return result
+
+def dump_summary_table(method, save: bool=True):
     experiment_name: List[str] = []
     horizons: List[int] = []
-    final_methods: List[str] = []
-    # with_thermalization: List[str] = []
     hardware_count: List[int] = []
     num_embeddings: List[int] = []
     num_algorithms: List[int] = []
-    
-    min_accuracy: List[Optional[float]] = []
-    avg_accuracy: List[Optional[float]] = []
-    max_accuracy: List[Optional[float]] = []
-    
-    min_build: List[Optional[float]] = []
+    max_improvements: List[float] = []
+    count_improvements: List[float] = []
+
     avg_build: List[Optional[float]] = []
     max_build: List[Optional[float]] = []
-    
-    min_method: List[Optional[float]] = []
+
     avg_method: List[Optional[float]] = []
     max_method: List[Optional[float]] = []
-    
-    min_total_time: List[Optional[float]] = []
-    avg_total_time: List[Optional[float]] = []
-    max_total_time: List[Optional[float]] = []
+
     for experiment in Experiment:
-        methods = sorted(get_methods_used(experiment))
-        for method in methods:
+        methods_used = get_methods_used(experiment)
+        if method in methods_used:
             experiment_name.append(get_nice_name(experiment))
-            # with_thermalization.append(get_thermalization_str(experiment))
             horizons.append(max(get_horizon_to_algorithms_count(experiment, method).keys()))
-            final_methods.append(method)
             hardware_count.append(get_hardware_count(experiment, method=method))
             num_embeddings.append(get_embedding_count(experiment, method=method))
             num_algorithms.append(get_algorithms_count(experiment, method=method))
-            min_accuracy.append(get_stat(experiment, StatField.probability, Stat.minimum, method=method))
-            avg_accuracy.append(get_stat(experiment, StatField.probability, Stat.average, method=method))
-            max_accuracy.append(get_stat(experiment, StatField.probability, Stat.maximum, method=method))
-            
-    
+            max_improvements.append(get_max_improvement(experiment, method))
+            count_improvements.append(get_count_improvements(experiment, method))
 
-            min_build.append(get_stat(experiment, StatField.pomdp_build_time, Stat.minimum, method=method))
             avg_build.append(get_stat(experiment, StatField.pomdp_build_time, Stat.average, method=method))
             max_build.append(get_stat(experiment, StatField.pomdp_build_time, Stat.maximum, method=method))
-            
 
-            min_method.append(get_stat(experiment, StatField.method_time, Stat.minimum, method=method))
             avg_method.append(get_stat(experiment, StatField.method_time, Stat.average, method=method))
             max_method.append(get_stat(experiment, StatField.method_time, Stat.maximum, method=method))
-
-            min_total_time.append(get_stat(experiment, StatField.total_time, Stat.minimum, method=method))
-            avg_total_time.append(get_stat(experiment, StatField.total_time, Stat.average, method=method))
-            max_total_time.append(get_stat(experiment, StatField.total_time, Stat.maximum, method=method))
             
     df = pd.DataFrame({
         "experiment": experiment_name,
         "horizon": horizons,
-        # "with therm.": with_thermalization,
-        "method": final_methods,
         "#hard.": hardware_count,
         "#emb.": num_embeddings,
         "#diff. algo.": num_algorithms,
-        "min. acc.": min_accuracy,
-        "avg. acc.": avg_accuracy,
-        "max. acc.": max_accuracy,
-        # "min. build time": min_build,
+        "#improv.": count_improvements,
+        "max. improv.": max_improvements,
         "avg. build time": avg_build,
         "max. build time": max_build,
-        # "min. method time": min_method,
         "avg. method time": avg_method,
         "max. method time": max_method,
-        # "min. total time": min_method,
-        # "avg. total time": avg_method,
-        # "max. total time": max_method,
     })
     
     if save:
-        df.to_csv("summary.csv")
+        df.to_csv(f"summary_{method}.csv")
     return df
 
+def get_baseline_index(experiment: Experiment, method: str, horizon: int) -> int:
+    # CHANGE ME IF EXPERIMENTS CHANGE
+    indices = [-1] * 15
+    if experiment == Experiment.basic_zero_plus_discr:
+        assert method == "convex"
+        indices[1] = 278 # perfect hardware
+        indices[2] = 281
+        indices[3] = 282
+    elif experiment == Experiment.bell_state_reach:
+        if method == "bellman":
+            indices[1] = 0 # perfect hardware
+            indices[2] = 2 # perfect hardware
+            indices[3] = 18
+        elif method == "convex":
+            indices[1] = 1 # perfect hardware
+            indices[2] = 2 # perfect hardware
+            indices[3] = 18
+        else:
+            raise Exception("Invalid method", method)
+    elif experiment == Experiment.bitflip_cxh:
+        assert method == "bellman"
+        indices[7] = 0
+    elif experiment == Experiment.bitflip_ipma:
+        assert method == "bellman"
+        for i in range(3, 8):
+            indices[i] = 22 + i - 3
+    elif experiment == Experiment.bitflip_ipma2:
+        assert method == "bellman"
+        for i in range(3, 9):
+            indices[i] = 34 + i - 3
+    elif experiment == Experiment.ghz3:
+        indices[3] = 8
+    elif experiment == Experiment.reset:
+        if method == "bellman":
+            for i in range(2, 10):
+                indices[i] = 151 + i - 2
+        else:
+            assert method == "convex"
+            indices[1] = 135
+            indices[2] = 151
+            indices[3] = 152
+    else:
+        raise Exception("invalid experiment", experiment)
+    assert indices[horizon] != -1
+    return indices[horizon]
 def get_improvements_per_horizon(experiment: Experiment, method: str, horizon: int) -> int:
-    f = open(get_stats_path(experiment))
+    f = open(get_stats_path(experiment)) # read files where optimal algorithms performance is
     lines = f.readlines()
     f.close()
 
     hard_to_prob: Dict[Tuple[str, int], float] = dict()
-    perfect_alg_index = -1
+    perfect_alg_index = get_baseline_index(experiment, method, horizon)
+
     for line in lines[1:]:
         stats_line = StatsFileLine(line, is_verification=False)
-        if stats_line.method == method and stats_line.horizon == horizon:
+        if stats_line.method == method and stats_line.horizon == horizon and stats_line.algorithm_index != perfect_alg_index:
             hardware_scenario = (stats_line.hardware, stats_line.embedding_index)
             assert hardware_scenario not in hard_to_prob.keys()
             hard_to_prob[hardware_scenario] = stats_line.probability # optimal algorithm
-            if stats_line.hardware == "perfect_hardware":
-                assert perfect_alg_index == -1
-                perfect_alg_index = stats_line.algorithm_index
 
-    assert perfect_alg_index != -1
-    f = open(get_verification_path(experiment))
+    f = open(get_verification_path(experiment)) # read file where all algorithms is executed in all hardware specs
     lines = f.readlines()
     f.close()
     hardware_scenarios: Set[Tuple[str, int]] = set()
     for line in lines[1:]:
         stats_line = StatsFileLine(line, is_verification=True)
-        if stats_line.method == method and stats_line.algorithm_index == perfect_alg_index:
+        if stats_line.algorithm_index == perfect_alg_index:
             hardware_scenario = (stats_line.hardware, stats_line.embedding_index)
             assert hardware_scenario not in hardware_scenarios
-            if stats_line.probability < hard_to_prob[hardware_scenario]:
-                hardware_scenarios.add(hardware_scenario)
+            if hardware_scenario in hard_to_prob.keys():
+                if stats_line.probability < hard_to_prob[hardware_scenario]:
+                    hardware_scenarios.add(hardware_scenario)
     return len(hardware_scenarios)
 
 def dump_stats_summary(experiment: Experiment):
@@ -474,30 +504,32 @@ def dump_stats_summary(experiment: Experiment):
             for horizon in horizon_to_algorithms_count.keys():
                 print(f"--> horizon {horizon}: {get_improvements_per_horizon(experiment, method, horizon)} ", file=f)
 
-            print("--- ALGORITHMS ---", file=f)
             perfect_hard_algos = get_perfect_hardware_algorithms(experiment, method)
-            print("perfect hardware algorithm: ", perfect_hard_algos, file=f)
-            improvements = get_algorithms_stat(experiment, method)
 
-            for (algorithm_index, max_, avg_, std_) in improvements:
-                print(f"Algorithm {algorithm_index}", file=f)
-                print(f"\t max: {max_}", file=f)
-                print(f"\t avg: {avg_}", file=f)
-                print(f"\t std: {std_}", file=f)
+            # print("--- ALGORITHMS ---", file=f)
+            # print("perfect hardware algorithm: ", perfect_hard_algos, file=f)
+            # improvements = get_algorithms_stat(experiment, method)
+            #
+            # for (algorithm_index, max_, avg_, std_) in improvements:
+            #     print(f"Algorithm {algorithm_index}", file=f)
+            #     print(f"\t max: {max_}", file=f)
+            #     print(f"\t avg: {avg_}", file=f)
+            #     print(f"\t std: {std_}", file=f)
 
             print(file=f)
             print(file=f)
             print("Improvements with respect to perfect algorithms per horizon", file=f)
-            for (horizon, algorithm_index) in perfect_hard_algos:
+            for (horizon, _) in perfect_hard_algos:
+                algorithm_index = get_baseline_index(experiment, method, horizon)
                 stats = get_improvements(experiment, method, horizon, algorithm_index)
                 print(f"Horizon = {horizon}", file=f)
                 for (algorithm_index , max_val, avg_val, stdev_val) in stats:
-                    print("-> Algorithm:", algorithm_index, file=f)
-                    print("--> Max:", max_val, file=f)
-                    print("--> Avg:", avg_val, file=f)
-                    print("--> Std:", stdev_val, file=f)
+                    if max_val != 0 or avg_val != 0 or stdev_val != 0:
+                        print("-> Algorithm:", algorithm_index, file=f)
+                        print("--> Max:", max_val, file=f)
+                        print("--> Avg:", avg_val, file=f)
+                        print("--> Std:", stdev_val, file=f)
                 print(file=f)
-
 
             print(file=f)
             print(file=f)
@@ -786,7 +818,6 @@ def get_algorithms_classes(experiment: Experiment, method: str) -> Dict[int, Set
         all_stats.append(stat_line)
 
     all_algorithms = get_algorithms(experiment, method)
-    print(all_algorithms)
 
     result = dict()
     for algorithm1 in all_algorithms:

@@ -211,11 +211,23 @@ class BellStateReach : public IPMABitflip {
 
     shared_ptr<Algorithm> get_textbook_algorithm(MethodType &method, const int &horizon) override {
         auto hardware_spec = HardwareSpecification(QuantumHardware::PerfectHardware, false, false);
-        auto action_mappings = this->get_actions_dictionary(hardware_spec, 3);
+        map<string, shared_ptr<POMDPAction>> action_mappings;
+        unordered_map<int, int> embedding;
+        embedding[0] = 0;
+        embedding[1] = 1;
+        embedding[3] = 3;
+
+        auto actions = this->get_actions(hardware_spec, embedding);
+
+        for (auto action : actions) {
+            action_mappings[action->name] = action;
+        }
         assert(horizon > 0 && horizon < 4);
 
-        auto on0_algorithm = make_shared<Algorithm>(action_mappings["CX01"], 0, 10, 1);
-        auto on1_algorithm = make_shared<Algorithm>(action_mappings["PrepareBell"], 0, 10, 1);
+        auto on0_algorithm = make_shared<Algorithm>(action_mappings["PrepareBell"], 0, 10, 1);
+        on0_algorithm = normalize_algorithm(on0_algorithm);
+        auto on1_algorithm = make_shared<Algorithm>(action_mappings["CX01"], 0, 10, 1);
+        on1_algorithm = normalize_algorithm(on1_algorithm);
         auto meas_action = action_mappings["MEASData"];
         if (horizon == 1) {
             if (method == MethodType::SingleDistBellman) {
@@ -229,6 +241,6 @@ class BellStateReach : public IPMABitflip {
             return new_head;
         }
 
-        return this->build_meas_sequence(horizon-1, 3, meas_action, make_shared<ClassicalState>(), on0_algorithm, on1_algorithm);
+        return normalize_algorithm(this->build_meas_sequence(horizon-1, 3, meas_action, make_shared<ClassicalState>(), on0_algorithm, on1_algorithm));
     }
 };

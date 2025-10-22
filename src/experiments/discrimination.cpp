@@ -210,8 +210,43 @@ public:
         return result;
     }
 
-    shared_ptr<Algorithm> get_textbook_algorithm(MethodType &method,
-        const int &horizon) override {
-        assert(false && "Not implemented");
+    shared_ptr<Algorithm> get_textbook_algorithm(MethodType &method, const int &horizon) override {
+        auto hardware_spec = HardwareSpecification(QuantumHardware::PerfectHardware, false, false);
+        auto action_mappings = this->get_actions_dictionary(hardware_spec, 1);
+        assert(horizon > 0 && horizon < 4);
+        if (horizon == 1 || horizon == 2) {
+            auto new_head = make_shared<Algorithm>(make_shared<POMDPAction>(random_branch), 0, 5, -1); // we are not going to use precision
+            new_head->children.push_back(make_shared<Algorithm>(action_mappings["P0"], 0, 10, -1));
+            new_head->children.push_back(normalize_algorithm(make_shared<Algorithm>(action_mappings["IsPlus"], 0, 10, -1)));
+            new_head->children_probs.insert({0, 2.0/3.0});
+            new_head->children_probs.insert({1, 1.0/3.0});
+            auto meas_node = new_head->children.at(0);
+            if (horizon == 2) {
+                meas_node->children.push_back(make_shared<Algorithm>(action_mappings["P0"], 8, 10, -1));
+                meas_node->children.push_back(make_shared<Algorithm>(action_mappings["P0"], 9, 10, -1));
+            }
+            new_head->children[0] = normalize_algorithm(meas_node);
+            return new_head;
+        }
+
+        assert (horizon == 3);
+        auto new_head = make_shared<Algorithm>(make_shared<POMDPAction>(random_branch), 0, 5, -1); // we are not going to use precision
+        new_head->children.push_back(make_shared<Algorithm>(action_mappings["P0"], 0, 10, -1));
+        auto meas_node = new_head->children.at(0);
+        meas_node->children.push_back(make_shared<Algorithm>(action_mappings["P0"], 8, 10, -1));
+        meas_node->children.push_back(make_shared<Algorithm>(action_mappings["P0"], 9, 10, -1));
+        new_head->children[0] = normalize_algorithm(meas_node);
+
+        auto h0_node = make_shared<Algorithm>(action_mappings["H0"], 0, 10, -1);
+        new_head->children_probs.insert({0, 0.5});
+        new_head->children_probs.insert({1, 0.5});
+
+        auto other_meas_node = make_shared<Algorithm>(action_mappings["P0"], 4, 10, -1);
+        h0_node->children.push_back(other_meas_node);
+
+        other_meas_node->children.push_back(make_shared<Algorithm>(action_mappings["IsPlus"], 12, 10, -1));
+        other_meas_node->children.push_back(make_shared<Algorithm>(action_mappings["Is0"], 13, 10, -1));
+        new_head->children.push_back(normalize_algorithm(h0_node));
+        return new_head;
     }
 };

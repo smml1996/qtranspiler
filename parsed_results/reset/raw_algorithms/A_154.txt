@@ -29,6 +29,7 @@ if c = 0:
 				HALT
 			if c = 1:
 				X([q0]); 
+				HALT
 if c = 1:
 	x0 := measure(q0); 
 	if c = 0:
@@ -45,6 +46,7 @@ if c = 1:
 				HALT
 			if c = 1:
 				X([q0]); 
+				HALT
 	if c = 1:
 		x0 := measure(q0); 
 		if c = 0:
@@ -53,9 +55,12 @@ if c = 1:
 				HALT
 			if c = 1:
 				X([q0]); 
+				HALT
 		if c = 1:
 			x0 := measure(q0); 
 			if c = 0:
 				X([q0]); 
+				HALT
 			if c = 1:
 				X([q0]); 
+				HALT

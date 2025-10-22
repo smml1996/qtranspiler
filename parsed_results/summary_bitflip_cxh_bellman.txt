@@ -31,57 +31,27 @@ num. algorithms per horizon (method=bellman)
 
 
 number of improvements per horizon:
---> horizon 7: 41 
---- ALGORITHMS ---
-perfect hardware algorithm:  [(7, 0)]
-Algorithm 4
-	 max: 1.0
-	 avg: 0.9362049261083739
-	 std: 0.08235359961575894
-Algorithm 5
-	 max: 1.0
-	 avg: 0.9535160591133014
-	 std: 0.0778010845977776
-Algorithm 3
-	 max: 1.0
-	 avg: 0.9535160591133014
-	 std: 0.0778010845977776
-Algorithm 0
-	 max: 1.0
-	 avg: 0.9535160591133014
-	 std: 0.0778010845977776
-Algorithm 6
-	 max: 1.0
-	 avg: 0.9436888669950737
-	 std: 0.07667481438250198
-Algorithm 2
-	 max: 1.0
-	 avg: 0.9436888669950737
-	 std: 0.07667481438250198
-Algorithm 1
-	 max: 0.72217
-	 avg: 0.5173110344827587
-	 std: 0.03146820420133982
+--> horizon 7: 23 
 
 
 Improvements with respect to perfect algorithms per horizon
 Horizon = 7
 -> Algorithm: 2
 --> Max: (0.031940000000000024, ('cambridge', 3))
---> Avg: -0.009827192118226606
---> Std: 0.0089363212300294
+--> Avg: -0.009827142857142862
+--> Std: 0.008936332653906353
 -> Algorithm: 6
 --> Max: (0.031940000000000024, ('cambridge', 3))
---> Avg: -0.009827192118226606
---> Std: 0.0089363212300294
+--> Avg: -0.009827142857142862
+--> Std: 0.008936332653906353
 -> Algorithm: 1
 --> Max: (0.026060000000000028, ('cambridge', 3))
---> Avg: -0.43620502463054184
---> Std: 0.08235381184932031
+--> Avg: -0.43620497536945807
+--> Std: 0.08235378857976106
 -> Algorithm: 4
 --> Max: (0.015699999999999936, ('kolkata', 0))
---> Avg: -0.0173111330049261
---> Std: 0.031468613535058323
+--> Avg: -0.01731108374384236
+--> Std: 0.03146862982679927
 -> Algorithm: 3
 --> Max: (0.0, ('algiers', 0))
 --> Avg: 0.0

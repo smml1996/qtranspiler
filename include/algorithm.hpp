@@ -70,5 +70,6 @@ inline json to_json(const Algorithm &a) {
     };
 }
 
+shared_ptr<Algorithm> normalize_algorithm(const shared_ptr<Algorithm> &algorithm);
 
 #endif

@@ -31,57 +31,7 @@ num. algorithms per horizon (method=bellman)
 
 
 number of improvements per horizon:
---> horizon 3: 1161 
---- ALGORITHMS ---
-perfect hardware algorithm:  [(3, 8)]
-Algorithm 5
-	 max: 1.0
-	 avg: 0.6924269153394804
-	 std: 0.42474659742826226
-Algorithm 1
-	 max: 1.0
-	 avg: 0.6917598826487845
-	 std: 0.4245782955107081
-Algorithm 4
-	 max: 1.0
-	 avg: 0.6930694803017609
-	 std: 0.4242352444779665
-Algorithm 0
-	 max: 1.0
-	 avg: 0.6929373428331933
-	 std: 0.42418670282188636
-Algorithm 2
-	 max: 1.0
-	 avg: 0.11352086336965632
-	 std: 0.30923085481965124
-Algorithm 6
-	 max: 1.0
-	 avg: 0.11335610226320202
-	 std: 0.30910822381871694
-Algorithm 7
-	 max: 1.0
-	 avg: 0.11178798826487847
-	 std: 0.30729712021744704
-Algorithm 10
-	 max: 1.0
-	 avg: 0.11138764459346188
-	 std: 0.30664666052473855
-Algorithm 9
-	 max: 1.0
-	 avg: 0.10323689857502096
-	 std: 0.2964138373237387
-Algorithm 11
-	 max: 1.0
-	 avg: 0.10322409891031015
-	 std: 0.29637555264832083
-Algorithm 3
-	 max: 1.0
-	 avg: 0.10322363788767817
-	 std: 0.29637496791743967
-Algorithm 8
-	 max: 1.0
-	 avg: 0.10321751047778707
-	 std: 0.29635830787873446
+--> horizon 3: 1160 
 
 
 Improvements with respect to perfect algorithms per horizon

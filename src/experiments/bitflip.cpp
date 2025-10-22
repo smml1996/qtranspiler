@@ -266,7 +266,7 @@ class IPMABitflip : public Experiment {
             shared_ptr<Algorithm> on0 = make_shared<Algorithm>(make_shared<POMDPAction>(HALT_ACTION), 0, 10, 1);
             first_cx->children.push_back(second_cx);
             second_cx->children.push_back(this->build_meas_sequence(horizon-3, 2, action_mappings["P2"], make_shared<ClassicalState>(), on0, on1));
-            return first_cx;
+            return normalize_algorithm(first_cx);
     }
 };
 
@@ -320,7 +320,7 @@ public:
         shared_ptr<Algorithm> on1 = make_shared<Algorithm>(action_mappings["X0"], 0, 10, 1);
         shared_ptr<Algorithm> on0 = make_shared<Algorithm>(make_shared<POMDPAction>(HALT_ACTION), 0, 10, 1);
         cx->children.push_back(this->build_meas_sequence(horizon-2, 2, action_mappings["P2"], make_shared<ClassicalState>(), on0, on1));
-        return cx;
+        return normalize_algorithm(cx);
     }
 };
 

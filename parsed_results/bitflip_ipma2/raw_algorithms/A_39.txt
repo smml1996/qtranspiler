@@ -64,6 +64,7 @@ if c = 0:
 						HALT
 					if c = 4:
 						X([q0]); 
+						HALT
 	if c = 4:
 		x2 := measure(q2); 
 		if c = 0:
@@ -96,6 +97,7 @@ if c = 0:
 						HALT
 					if c = 4:
 						X([q0]); 
+						HALT
 		if c = 4:
 			x2 := measure(q2); 
 			if c = 0:
@@ -112,6 +114,7 @@ if c = 0:
 						HALT
 					if c = 4:
 						X([q0]); 
+						HALT
 			if c = 4:
 				x2 := measure(q2); 
 				if c = 0:
@@ -120,12 +123,10 @@ if c = 0:
 						HALT
 					if c = 4:
 						X([q0]); 
+						HALT
 				if c = 4:
-					x2 := measure(q2); 
-					if c = 0:
-						X([q0]); 
-					if c = 4:
-						X([q0]); 
+                    X([q0]);
+                    HALT
 if c = 4:
 	x2 := measure(q2); 
 	if c = 0:
@@ -133,49 +134,31 @@ if c = 4:
 		if c = 0:
 			x2 := measure(q2); 
 			if c = 0:
-				x2 := measure(q2); 
-				if c = 0:
-					x2 := measure(q2); 
-					if c = 0:
-						HALT
-					if c = 4:
-						HALT
-				if c = 4:
-					x2 := measure(q2); 
-					if c = 0:
-						HALT
-					if c = 4:
-						HALT
+                HALT
 			if c = 4:
 				x2 := measure(q2); 
 				if c = 0:
-					x2 := measure(q2); 
-					if c = 0:
-						HALT
-					if c = 4:
-						HALT
+                    HALT
 				if c = 4:
 					x2 := measure(q2); 
 					if c = 0:
 						HALT
 					if c = 4:
 						X([q0]); 
+						HALT
 		if c = 4:
 			x2 := measure(q2); 
 			if c = 0:
 				x2 := measure(q2); 
 				if c = 0:
-					x2 := measure(q2); 
-					if c = 0:
-						HALT
-					if c = 4:
-						HALT
+                    HALT
 				if c = 4:
 					x2 := measure(q2); 
 					if c = 0:
 						HALT
 					if c = 4:
 						X([q0]); 
+						HALT
 			if c = 4:
 				x2 := measure(q2); 
 				if c = 0:
@@ -184,12 +167,10 @@ if c = 4:
 						HALT
 					if c = 4:
 						X([q0]); 
+						HALT
 				if c = 4:
-					x2 := measure(q2); 
-					if c = 0:
-						X([q0]); 
-					if c = 4:
-						X([q0]); 
+                    X([q0]);
+                    HALT
 	if c = 4:
 		x2 := measure(q2); 
 		if c = 0:
@@ -197,17 +178,14 @@ if c = 4:
 			if c = 0:
 				x2 := measure(q2); 
 				if c = 0:
-					x2 := measure(q2); 
-					if c = 0:
-						HALT
-					if c = 4:
-						HALT
+                    HALT
 				if c = 4:
 					x2 := measure(q2); 
 					if c = 0:
 						HALT
 					if c = 4:
 						X([q0]); 
+						HALT
 			if c = 4:
 				x2 := measure(q2); 
 				if c = 0:
@@ -216,12 +194,10 @@ if c = 4:
 						HALT
 					if c = 4:
 						X([q0]); 
+						HALT
 				if c = 4:
-					x2 := measure(q2); 
-					if c = 0:
-						X([q0]); 
-					if c = 4:
-						X([q0]); 
+                    X([q0]);
+                    HALT
 		if c = 4:
 			x2 := measure(q2); 
 			if c = 0:
@@ -232,23 +208,10 @@ if c = 4:
 						HALT
 					if c = 4:
 						X([q0]); 
+						HALT
 				if c = 4:
-					x2 := measure(q2); 
-					if c = 0:
-						X([q0]); 
-					if c = 4:
-						X([q0]); 
+                    X([q0]);
+                    HALT
 			if c = 4:
-				x2 := measure(q2); 
-				if c = 0:
-					x2 := measure(q2); 
-					if c = 0:
-						X([q0]); 
-					if c = 4:
-						X([q0]); 
-				if c = 4:
-					x2 := measure(q2); 
-					if c = 0:
-						X([q0]); 
-					if c = 4:
-						X([q0]); 
+                X([q0]);
+                HALT

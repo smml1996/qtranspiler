@@ -1,0 +1,197 @@
+------ Experiment.bitflip_ipma2 ------
+%%%%%%%%%%%% bellman %%%%%%%%%%%%
+count hardware (bellman):  45
+count embeddings (bellman):  141
+total diff. algorithms (bellman):  34
+accuracy perfect hardware (bellman): 1.0, 1.0, 1.0, 1.0, 1.0, 1.0
+
+min. accuracy (bellman): 0.50043
+avg. accuracy (bellman): 0.93917
+max. accuracy (bellman): 1.0
+
+min. pomdp build time (bellman): 0.00483
+avg. pomdp build time (bellman): 0.53908
+max. pomdp build time (bellman): 3.20488
+
+min. method time (bellman): 0.0
+avg. method time (bellman): 399.96917
+max. method time (bellman): 2137.0
+
+min. total time (bellman): 0.00483
+avg. total time (bellman): 400.50713
+max. total time (bellman): 2137.68994
+
+min. total time (bellman): 0.00483
+avg. total time (bellman): 400.50713
+max. total time (bellman): 2137.68994
+
+num. algorithms per horizon (method=bellman)
+3 :  3
+4 :  6
+5 :  3
+6 :  6
+7 :  4
+8 :  12
+--
+
+
+number of improvements per horizon:
+--> horizon 3: 7 
+--> horizon 4: 12 
+--> horizon 5: 6 
+--> horizon 6: 7 
+--> horizon 7: 12 
+--> horizon 8: 30 
+
+
+Improvements with respect to perfect algorithms per horizon
+Horizon = 3
+-> Algorithm: 5
+--> Max: (0.03078000000000003, ('washington', 1))
+--> Avg: -0.8276814184397163
+--> Std: 0.2032245610950098
+-> Algorithm: 0
+--> Max: (0.0, ('algiers', 0))
+--> Avg: 0.0
+--> Std: 0.0
+-> Algorithm: 14
+--> Max: (0.0, ('algiers', 0))
+--> Avg: 0.0
+--> Std: 0.0
+
+Horizon = 4
+-> Algorithm: 6
+--> Max: (0.03078000000000003, ('washington', 1))
+--> Avg: -0.8276814184397163
+--> Std: 0.2032245610950098
+-> Algorithm: 19
+--> Max: (0.03078000000000003, ('washington', 1))
+--> Avg: -0.8276814184397163
+--> Std: 0.2032245610950098
+-> Algorithm: 1
+--> Max: (0.0, ('algiers', 0))
+--> Avg: 0.0
+--> Std: 0.0
+-> Algorithm: 10
+--> Max: (0.0, ('algiers', 0))
+--> Avg: 0.0
+--> Std: 0.0
+-> Algorithm: 12
+--> Max: (0.0, ('algiers', 0))
+--> Avg: 0.0
+--> Std: 0.0
+-> Algorithm: 15
+--> Max: (0.0, ('algiers', 0))
+--> Avg: 0.0
+--> Std: 0.0
+
+Horizon = 5
+-> Algorithm: 7
+--> Max: (0.04218000000000005, ('washington', 1))
+--> Avg: -0.89096085106383
+--> Std: 0.18756245655205614
+-> Algorithm: 16
+--> Max: (0.005699999999999983, ('washington', 1))
+--> Avg: -0.03163971631205674
+--> Std: 0.026051695885112254
+-> Algorithm: 2
+--> Max: (0.0, ('algiers', 0))
+--> Avg: 0.0
+--> Std: 0.0
+
+Horizon = 6
+-> Algorithm: 8
+--> Max: (0.04218000000000005, ('washington', 1))
+--> Avg: -0.89096085106383
+--> Std: 0.18756245655205614
+-> Algorithm: 20
+--> Max: (0.04218000000000005, ('washington', 1))
+--> Avg: -0.89096085106383
+--> Std: 0.18756245655205614
+-> Algorithm: 17
+--> Max: (0.005699999999999983, ('washington', 1))
+--> Avg: -0.03163971631205674
+--> Std: 0.026051695885112254
+-> Algorithm: 3
+--> Max: (0.0, ('algiers', 0))
+--> Avg: 0.0
+--> Std: 0.0
+-> Algorithm: 11
+--> Max: (0.0, ('algiers', 0))
+--> Avg: 0.0
+--> Std: 0.0
+-> Algorithm: 13
+--> Max: (0.0, ('algiers', 0))
+--> Avg: 0.0
+--> Std: 0.0
+
+Horizon = 7
+-> Algorithm: 9
+--> Max: (0.04849999999999999, ('washington', 1))
+--> Avg: -0.9068371631205675
+--> Std: 0.17949339835980535
+-> Algorithm: 21
+--> Max: (0.015270000000000006, ('washington', 1))
+--> Avg: -0.06954482269503544
+--> Std: 0.07559081996987688
+-> Algorithm: 18
+--> Max: (0.008859999999999979, ('washington', 1))
+--> Avg: -0.03957787234042553
+--> Std: 0.03866873310216464
+-> Algorithm: 4
+--> Max: (0.0, ('algiers', 0))
+--> Avg: 0.0
+--> Std: 0.0
+
+Horizon = 8
+-> Algorithm: 31
+--> Max: (0.04849999999999999, ('washington', 1))
+--> Avg: -0.9068371631205675
+--> Std: 0.17949339835980535
+-> Algorithm: 32
+--> Max: (0.04849999999999999, ('washington', 1))
+--> Avg: -0.9068371631205675
+--> Std: 0.17949339835980535
+-> Algorithm: 27
+--> Max: (0.008979999999999988, ('cambridge', 1))
+--> Avg: -0.03099475177304964
+--> Std: 0.03763224870054102
+-> Algorithm: 28
+--> Max: (0.008979999999999988, ('cambridge', 1))
+--> Avg: -0.03099475177304964
+--> Std: 0.03763224870054102
+-> Algorithm: 30
+--> Max: (0.008979999999999988, ('cambridge', 1))
+--> Avg: -0.03099475177304964
+--> Std: 0.03763224870054102
+-> Algorithm: 33
+--> Max: (0.008859999999999979, ('washington', 1))
+--> Avg: -0.03957787234042553
+--> Std: 0.03866873310216464
+-> Algorithm: 29
+--> Max: (0.0046000000000000485, ('cambridge', 1))
+--> Avg: -0.015488368794326248
+--> Std: 0.018815346267802378
+-> Algorithm: 22
+--> Max: (0.0044600000000000195, ('washington', 1))
+--> Avg: -0.003854113475177301
+--> Std: 0.007061578038018938
+-> Algorithm: 26
+--> Max: (0.0044600000000000195, ('washington', 1))
+--> Avg: -0.003854113475177301
+--> Std: 0.007061578038018938
+-> Algorithm: 23
+--> Max: (0.0, ('algiers', 0))
+--> Avg: 0.0
+--> Std: 0.0
+-> Algorithm: 24
+--> Max: (0.0, ('algiers', 0))
+--> Avg: 0.0
+--> Std: 0.0
+-> Algorithm: 25
+--> Max: (0.0, ('algiers', 0))
+--> Avg: 0.0
+--> Std: 0.0
+
+
+

@@ -329,3 +329,48 @@ shared_ptr<Algorithm> get_mixed_algorithm(const vector<double> &x, const unorder
     }
     return new_head;
 }
+
+unordered_set<cpp_int> get_possible_next_cstates(const shared_ptr<Algorithm> &node) {
+    assert (node->has_meas());
+
+    unordered_set<cpp_int> all_next_cstates;
+    node->get_successor_classical_states(node->classical_state, all_next_cstates);
+    for (const auto& child : node->children) {
+        assert(all_next_cstates.find(child->classical_state) != all_next_cstates.end());
+        all_next_cstates.erase(child->classical_state);
+    }
+    return all_next_cstates;
+}
+
+
+shared_ptr<Algorithm> normalize_algorithm(const shared_ptr<Algorithm> &algorithm) {
+    // normalize algorithm
+    if (algorithm == nullptr) {
+        return make_shared<Algorithm>(make_shared<POMDPAction>(HALT_ACTION), 0, -1, 0);
+    }
+    shared_ptr<Algorithm> current_algorithm = deep_copy_algorithm(algorithm);
+    if (*algorithm->action == HALT_ACTION) {
+        return current_algorithm;
+    }
+    vector<shared_ptr<Algorithm>> end_nodes;
+    get_algorithm_end_nodes(current_algorithm, end_nodes);
+    for (const auto& end_node : end_nodes) {
+
+        if (end_node->has_meas()) {
+            unordered_set<cpp_int> all_c_succs = get_possible_next_cstates(end_node);
+
+            for (const auto& c : all_c_succs) {
+                shared_ptr<Algorithm> halt_node = make_shared<Algorithm>(make_shared<POMDPAction>(HALT_ACTION), c, end_node->precision, end_node->depth+1);
+                end_node->children.push_back(halt_node);
+            }
+
+        } else {
+            assert(end_node->children.empty());
+            if (!(*end_node->action == HALT_ACTION)) {
+                shared_ptr<Algorithm> halt_node = make_shared<Algorithm>(make_shared<POMDPAction>(HALT_ACTION), end_node->classical_state, end_node->precision, end_node->depth+1);
+                end_node->children.push_back(halt_node);
+            }
+        }
+    }
+    return current_algorithm;
+}

@@ -99,4 +99,6 @@ std::string join(const std::vector<std::string>& parts, const std::string& delim
 
 double verify_algorithm(POMDP &pomdp, Experiment &experiment, const Algorithm &algorithm, HardwareSpecification &hardware_spec,
     unordered_map<int, int> &embedding, bool is_convex, int max_horizon);
+MyFloat precise_verify_algorithm(Experiment &experiment, const Algorithm &algorithm, HardwareSpecification &hardware_spec,
+    unordered_map<int, int> &embedding, bool is_convex,int max_horizon);
 #endif

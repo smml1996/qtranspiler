@@ -33,47 +33,9 @@ num. algorithms per horizon (method=bellman)
 
 
 number of improvements per horizon:
---> horizon 1: 27 
---> horizon 2: 289 
+--> horizon 1: 0 
+--> horizon 2: 268 
 --> horizon 3: 3316 
---- ALGORITHMS ---
-perfect hardware algorithm:  [(1, 0), (2, 2), (3, 17)]
-Algorithm 17
-	 max: 1.0
-	 avg: 0.862782333433828
-	 std: 0.16489213129610308
-Algorithm 2
-	 max: 1.0
-	 avg: 0.862782333433828
-	 std: 0.16489213129610308
-Algorithm 4
-	 max: 1.0
-	 avg: 0.877734127223393
-	 std: 0.15299643705454943
-Algorithm 8
-	 max: 0.7
-	 avg: 0.6274761953572506
-	 std: 0.0890419253370445
-Algorithm 12
-	 max: 0.6
-	 avg: 0.5795849472414846
-	 std: 0.06281973710161651
-Algorithm 11
-	 max: 0.6
-	 avg: 0.5795849472414846
-	 std: 0.06281973710161651
-Algorithm 0
-	 max: 0.6
-	 avg: 0.5795849472414846
-	 std: 0.06281973710161651
-Algorithm 5
-	 max: 0.5
-	 avg: 0.445685734097066
-	 std: 0.06818783957188955
-Algorithm 7
-	 max: 0.3
-	 avg: 0.29999999999998206
-	 std: 0.0
 
 
 Improvements with respect to perfect algorithms per horizon
@@ -91,21 +53,25 @@ Horizon = 2
 
 Horizon = 3
 -> Algorithm: 12
---> Max: (0.06345, ('lagos', 9))
---> Avg: -0.283197386192342
---> Std: 0.13502388390436526
+--> Max: (0.11292000000000002, ('lagos', 9))
+--> Avg: -0.26824574314139327
+--> Std: 0.15050256369810583
 -> Algorithm: 4
---> Max: (0.04945999999999995, ('lagos', 9))
---> Avg: 0.01495179378956867
---> Std: 0.0165109736622258
+--> Max: (0.09892999999999996, ('lagos', 9))
+--> Avg: 0.029903436840518185
+--> Std: 0.033021992322787394
 -> Algorithm: 8
---> Max: (0.03440000000000004, ('cambridge', 45))
---> Avg: -0.23530613807657558
---> Std: 0.07770899543243655
+--> Max: (0.05686000000000002, ('manhattan', 14))
+--> Avg: -0.2203544950256256
+--> Std: 0.08938502768883279
+-> Algorithm: 17
+--> Max: (0.049470000000000014, ('lagos', 9))
+--> Avg: 0.014951643050949431
+--> Std: 0.016511019410864327
 -> Algorithm: 5
---> Max: (0.03323999999999999, ('washington', 39))
---> Avg: -0.4170965993367501
---> Std: 0.11344321042782353
+--> Max: (0.04298000000000002, ('washington', 38))
+--> Avg: -0.40214495628579994
+--> Std: 0.12259920293176879
 
 
 
