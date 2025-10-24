@@ -77,6 +77,9 @@ def get_stats_path(experiment: Experiment) -> str:
 def get_verification_path(experiment: Experiment) -> str:
     return os.path.join(get_experiment_path(experiment), "verification.csv")
 
+def get_improvements_path(experiment: Experiment) -> str:
+    return os.path.join(get_experiment_path(experiment), "improvements.csv")
+
 def get_all_hardware(experiment: Experiment, method: str) -> Set[str]:
     f = open(get_stats_path(experiment))
     lines = f.readlines()

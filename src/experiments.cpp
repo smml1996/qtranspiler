@@ -358,7 +358,7 @@ void Experiment::run() {
                         method_time = chrono::duration<double>(end_method - start_method).count();
                         error = solver.get_error(horizon);
                     } else {
-                        ConvexDistributionSolver solver(pomdp, actual_reward_f_double, this->precision * (max_horizon + 1),
+                        ConvexDistributionSolver solver(pomdp, actual_reward_f, actual_reward_f_double, this->precision * (max_horizon + 1),
                                                         embedding, actual_guard);
                         auto start_method = chrono::high_resolution_clock::now();
                         auto result_temp = solver.solve(initial_states, horizon);
@@ -684,13 +684,19 @@ double verify_algorithm(POMDP &pomdp, Experiment &experiment, const Algorithm &a
             VertexDict current_distribution;
             assert(current_distribution.probs.empty());
             current_distribution.set_val(it.first, 1.0);
-            assert(*algorithm.action == random_branch);
             double value = 0;
 
-            for (int c_index = 0; c_index < algorithm.children.size(); c_index++) {
-                auto prob = algorithm.children_probs.at(c_index);
-                auto acc = get_algorithm_acc_double(pomdp, algorithm.children.at(c_index), current_distribution, postcondition, embedding);
-                value += prob * acc;
+            if (*algorithm.action == random_branch) {
+                for (int c_index = 0; c_index < algorithm.children.size(); c_index++) {
+                    double prob = algorithm.children_probs.at(c_index);
+
+                    auto acc = get_algorithm_acc_double(pomdp, algorithm.children.at(c_index), current_distribution, postcondition, embedding);
+                    value += prob * acc;
+                }
+
+            } else {
+                auto acc = get_algorithm_acc_double(pomdp, make_shared<Algorithm>(algorithm), current_distribution, postcondition, embedding);
+                value = acc;
             }
 
             if (is_first) {
@@ -740,14 +746,18 @@ MyFloat precise_verify_algorithm(POMDP &pomdp, Experiment &experiment, const Alg
             Belief current_distribution;
             assert(current_distribution.probs.size() == 0);
             current_distribution.set_val(it.first, MyFloat("1", precision));
-            assert(*algorithm.action == random_branch);
 
             MyFloat value("0", precision);
+            if (*algorithm.action == random_branch) {
+                for (int c_index = 0; c_index < algorithm.children.size(); c_index++) {
+                    auto    prob = MyFloat(to_string(algorithm.children_probs.at(c_index)), precision);
 
-            for (int c_index = 0; c_index < algorithm.children.size(); c_index++) {
-                auto prob = MyFloat(to_string(algorithm.children_probs.at(c_index)), precision);
-                auto acc = get_algorithm_acc(pomdp, algorithm.children.at(c_index), current_distribution, postcondition, embedding, precision);
-                value = value +  prob * acc;
+                    auto acc = get_algorithm_acc(pomdp, algorithm.children.at(c_index), current_distribution, postcondition, embedding, precision);
+                    value = value +  prob * acc;
+                }
+            } else {
+                auto acc = get_algorithm_acc(pomdp, make_shared<Algorithm>(algorithm), current_distribution, postcondition, embedding, precision);
+                value = value +  acc;
             }
             if (is_first) {
                 current_val = value ;

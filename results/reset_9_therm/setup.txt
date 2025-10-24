@@ -1,8 +1,0 @@
-name: reset_9_therm
-precision: 8
-thermalization: 1
-min. horizon: 2
-max. horizon: 5
-hidden index: 0
-methods: bellman
-quantum hardware: algiers, kolkata, kyoto, nairobi, quito

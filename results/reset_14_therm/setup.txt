@@ -1,8 +1,0 @@
-name: reset_14_therm
-precision: 8
-thermalization: 1
-min. horizon: 1
-max. horizon: 3
-hidden index: 0
-methods: convex
-quantum hardware: almaden, geneva, lima, makarresh, manhattan, valencia

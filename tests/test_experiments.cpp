@@ -64,21 +64,21 @@ set<QuantumHardware> get_hardware_list(bool with_cnot=false) {
 //
 // }
 
-// TEST(ExperimentsTests, ResetTest) {
-//     const int min_horizon = 2;
-//     const int max_horizon = 2;
-//     string custom_name = "test_reset_test";
-//
-//     set<MethodType> methods = {
-//         // SingleDistBellman
-//         ConvexDist
-//     };
-//
-//     auto hw_list = {Brisbane};
-//
-//     ResetProblem reset_problem = ResetProblem(custom_name, precision, false, min_horizon, max_horizon, methods, hw_list, true);
-//     reset_problem.run();
-// }
+TEST(ExperimentsTests, ResetTest) {
+    const int min_horizon = 1;
+    const int max_horizon = 3;
+    string custom_name = "test_reset_test";
+
+    set<MethodType> methods = {
+        // SingleDistBellman
+        ConvexDist
+    };
+
+    auto hw_list = {Kolkata};
+
+    ResetProblem reset_problem = ResetProblem(custom_name, precision, false, min_horizon, max_horizon, methods, hw_list, true);
+    reset_problem.run();
+}
 
 //
 // TEST(ExperimentsTests, BitflipTest) {
@@ -159,26 +159,26 @@ set<QuantumHardware> get_hardware_list(bool with_cnot=false) {
 //     }
 // }
 //
-TEST(ExperimentsTests, EmbeddingsConsistentBellReach) {
-    const int min_horizon = 4;
-    const int max_horizon = 5;
-    string custom_name = "test_bitflip_test";
-
-    set<MethodType> methods = {
-        SingleDistBellman
-    };
-
-    auto hw_list = get_hardware_list(true);
-
-    auto bell_reach = BellStateReach(custom_name, precision, true,min_horizon, max_horizon, methods, hw_list, true);
-    for (auto hw : hw_list) {
-        auto hs = HardwareSpecification(hw, false, true);
-        auto embedding1 = bell_reach.get_hardware_scenarios(hs);
-        auto embedding2 = bell_reach.get_hardware_scenarios(hs);
-        assert(embedding1.size() > 0);
-        EXPECT_EQ(embedding1, embedding2);
-    }
-}
+// TEST(ExperimentsTests, EmbeddingsConsistentBellReach) {
+//     const int min_horizon = 4;
+//     const int max_horizon = 5;
+//     string custom_name = "test_bitflip_test";
+//
+//     set<MethodType> methods = {
+//         SingleDistBellman
+//     };
+//
+//     auto hw_list = get_hardware_list(true);
+//
+//     auto bell_reach = BellStateReach(custom_name, precision, true,min_horizon, max_horizon, methods, hw_list, true);
+//     for (auto hw : hw_list) {
+//         auto hs = HardwareSpecification(hw, false, true);
+//         auto embedding1 = bell_reach.get_hardware_scenarios(hs);
+//         auto embedding2 = bell_reach.get_hardware_scenarios(hs);
+//         assert(embedding1.size() > 0);
+//         EXPECT_EQ(embedding1, embedding2);
+//     }
+// }
 //
 //
 // TEST(GHZTest, GHZNumEmbeddings) {
@@ -557,21 +557,21 @@ TEST(ExperimentsTests, EmbeddingsConsistentBellReach) {
 //
 // }
 
-TEST(BellStateReachTest, BellStateReach) {
-    const int min_horizon = 1;
-    const int max_horizon = 3;
-    string custom_name = "bell_state_reach_0";
-
-    set<MethodType> methods = {
-        SingleDistBellman,
-        ConvexDist
-    };
-
-    set<QuantumHardware> hw_list = get_hardware_list(true);
-
-    auto bell_state_reach = BellStateReach(custom_name, precision, false, min_horizon, max_horizon, methods, hw_list, true);
-    bell_state_reach.run();
-}
+// TEST(BellStateReachTest, BellStateReach) {
+//     const int min_horizon = 1;
+//     const int max_horizon = 3;
+//     string custom_name = "bell_state_reach_0";
+//
+//     set<MethodType> methods = {
+//         SingleDistBellman,
+//         ConvexDist
+//     };
+//
+//     set<QuantumHardware> hw_list = get_hardware_list(true);
+//
+//     auto bell_state_reach = BellStateReach(custom_name, precision, false, min_horizon, max_horizon, methods, hw_list, true);
+//     bell_state_reach.run();
+// }
 
 
 // TEST(BellStateReachTest, BellStateReach) {
@@ -589,3 +589,71 @@ TEST(BellStateReachTest, BellStateReach) {
 //     auto bell_state_reach = BellStateReach(custom_name, precision, false, min_horizon, max_horizon, methods, hw_list, true);
 //     bell_state_reach.run();
 // }
+
+
+// TEST(ExperimentsTests, VerificationTextbook2BellReach) {
+//     const int min_horizon = 2;
+//     const int max_horizon = 2;
+//     string custom_name = "test_reset_test";
+//
+//     set<MethodType> methods = {
+//         // SingleDistBellman
+//         ConvexDist
+//     };
+//
+//     auto hw_list = {Brisbane};
+//
+//     auto problem = BellStateReach(custom_name, precision, false, min_horizon, max_horizon, methods, hw_list, true);
+//     auto m = ConvexDist;
+//     auto textbook_alg = problem.get_textbook_algorithm(m, 2);
+//
+//
+//     QuantumHardware qw = Cambridge;
+//     auto spec = HardwareSpecification(qw, false, true);
+//     auto embeddings = problem.get_hardware_scenarios(spec);
+//     auto embedding = embeddings[1];
+//     POMDP pomdp(problem.precision);
+//     auto actions = problem.get_actions(spec, embedding);
+//     auto initial_distribution = problem.get_initial_distribution(embedding);
+//     auto qubits_used = problem.get_qubits_used(embedding);
+//     auto guard = [&problem](const shared_ptr<POMDPVertex>& v, const std::unordered_map<int,int>& m, const shared_ptr<POMDPAction>& a) {
+//         return problem.guard(v, m, a);
+//     };
+//     pomdp.build_pomdp(actions, spec, problem.max_horizon, embedding, nullptr, initial_distribution, qubits_used, guard, problem.set_hidden_index);
+//
+//     cout << "precision: " << precise_verify_algorithm(pomdp, problem, *textbook_alg, embedding, true, problem.max_horizon) << endl;
+// }
+
+// TEST(ExperimentsTests, VerificationTextbookReset) {
+//     const int min_horizon = 2;
+//     const int max_horizon = 2;
+//     string custom_name = "test_reset_test";
+//
+//     set<MethodType> methods = {
+//         // SingleDistBellman
+//         ConvexDist
+//     };
+//
+//     auto hw_list = {Kolkata};
+//
+//     auto problem = ResetProblem(custom_name, precision, false, min_horizon, max_horizon, methods, hw_list, true);
+//     auto m = ConvexDist;
+//     auto textbook_alg = problem.get_textbook_algorithm(m, 2);
+//
+//
+//     QuantumHardware qw = Kolkata;
+//     auto spec = HardwareSpecification(qw, false, true);
+//     auto embeddings = problem.get_hardware_scenarios(spec);
+//     auto embedding = embeddings[1];
+//     POMDP pomdp(problem.precision);
+//     auto actions = problem.get_actions(spec, embedding);
+//     auto initial_distribution = problem.get_initial_distribution(embedding);
+//     auto qubits_used = problem.get_qubits_used(embedding);
+//     auto guard = [&problem](const shared_ptr<POMDPVertex>& v, const std::unordered_map<int,int>& m, const shared_ptr<POMDPAction>& a) {
+//         return problem.guard(v, m, a);
+//     };
+//     pomdp.build_pomdp(actions, spec, problem.max_horizon, embedding, nullptr, initial_distribution, qubits_used, guard, problem.set_hidden_index);
+//     cout << to_string(textbook_alg) << endl;
+//     cout << "precision: " << precise_verify_algorithm(pomdp, problem, *textbook_alg, embedding, true, problem.max_horizon) << endl;
+// }
+

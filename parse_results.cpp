@@ -13,9 +13,9 @@
 #include "experiments.hpp"
 #include <nlohmann/json.hpp>
 #include "bitflip.cpp"
-#include "discrimination.cpp"
-#include "ghz.cpp"
 #include "bellstate_reach.cpp"
+#include "reset.cpp"
+#include "discrimination.cpp"
 
 using namespace std;
 namespace fs = std::filesystem;
@@ -58,16 +58,16 @@ public:
     }
 };
 
-int get_algorithm_index(const Algorithm &current_algorithm,const vector<Algorithm> &unique_algorithms) {
+int get_algorithm_index(const Algorithm &current_algorithm, const bool &is_convex, const vector<pair<Algorithm, bool>> &unique_algorithms) {
     for (int i = 0; i < unique_algorithms.size(); i++) {
-        if (unique_algorithms[i] == current_algorithm) {
+        if (unique_algorithms[i].first == current_algorithm && unique_algorithms[i].second == is_convex) {
             return i;
         }
     }
     return -1;
 }
 
-bool are_actions_valid(const HardwareSpecification &hardware_spec, vector<shared_ptr<POMDPAction>> &actions) {
+bool are_actions_valid(const HardwareSpecification &hardware_spec, const vector<shared_ptr<POMDPAction>> &actions) {
     for (auto action : actions) {
         for (auto instruction : action->instruction_sequence) {
             if (hardware_spec.instructions_to_channels.find(make_shared<Instruction>(instruction)) == hardware_spec.instructions_to_channels.end()) {
@@ -79,7 +79,7 @@ bool are_actions_valid(const HardwareSpecification &hardware_spec, vector<shared
     return true;
 }
 
-void generate_improvements_file(const Setup &setup, vector<Algorithm> unique_algorithms, const map<QuantumHardware, HardwareSpecification> &qw_to_spec) {
+void generate_improvements_file(const Setup &setup, vector<pair<Algorithm, bool>> unique_algorithms, const map<QuantumHardware, HardwareSpecification> &qw_to_spec, map<QuantumHardware, map<string, map<int, map<int, string>>>> embedding_to_opt_prob) {
     filesystem::path parsed_results_path = fs::path("..") /"parsed_results";
     string therm_str;
     if (setup.with_thermalization) {
@@ -137,14 +137,10 @@ void generate_improvements_file(const Setup &setup, vector<Algorithm> unique_alg
 
 
 
-                int algorithm_index = get_algorithm_index(alg_object, unique_algorithms);
+                int algorithm_index = get_algorithm_index(alg_object, is_convex, unique_algorithms);
                 auto baseline_algorithm = setup.experiment->get_textbook_algorithm(method, horizon);
 
-                bool is_baseline_convex = false;
-                if (*baseline_algorithm->action == POMDPAction(random_branch)) {
-                    is_baseline_convex = true;
-                }
-                int baseline_index = get_algorithm_index(*baseline_algorithm, unique_algorithms);
+                int baseline_index = get_algorithm_index(*baseline_algorithm, is_convex, unique_algorithms);
                 if (algorithm_index == -1 or baseline_index == -1) {
                     cout << "algorithms not found ("<< algorithm_index << ", " << baseline_index << ")" << endl;
                     cout << quantum_hardware << " " << embedding_index << " " << horizon << endl;
@@ -156,6 +152,8 @@ void generate_improvements_file(const Setup &setup, vector<Algorithm> unique_alg
                     }
                     assert(false);
                 }
+
+                assert(unique_algorithms[baseline_index].second == unique_algorithms[algorithm_index].second);
 
                 QuantumHardware qw = to_quantum_hardware(quantum_hardware);
                 auto spec = qw_to_spec.at(qw);
@@ -169,8 +167,8 @@ void generate_improvements_file(const Setup &setup, vector<Algorithm> unique_alg
                     return setup.experiment->guard(v, m, a);
                 };
                 pomdp.build_pomdp(actions, spec, setup.max_horizon, embedding, nullptr, initial_distribution, qubits_used, guard, setup.experiment->set_hidden_index);
-                auto algorithm_prob = to_double(precise_verify_algorithm(pomdp, *setup.experiment, alg_object, embedding, is_convex, setup.max_horizon));
-                auto baseline_prob = to_double(precise_verify_algorithm(pomdp, *setup.experiment, *baseline_algorithm, embedding, is_baseline_convex, setup.max_horizon));
+                double algorithm_prob = stod(embedding_to_opt_prob[qw][str_method][horizon][embedding_index]);
+                auto baseline_prob = to_double(precise_verify_algorithm(pomdp, *setup.experiment, *baseline_algorithm, embedding, is_convex, setup.max_horizon));
                 improvements_file << join(vector<string>({
                     quantum_hardware,
                         to_string(embedding_index),
@@ -215,18 +213,14 @@ int main(int argc, char* argv[]) {
     }
 
     vector<Setup> setups({
-        // Setup("basic_zero_plus_discr", 1, make_shared<BasicZeroPlusDiscrimination>(), false, 3),
-        // Setup("basic_zero_plus_discr", 1, make_shared<BasicZeroPlusDiscrimination>(), false, 3, true),
+        Setup("basic_zero_plus_discr", 1, make_shared<BasicZeroPlusDiscrimination>(), false, 3),
         // Setup("reset", 20, make_shared<ResetProblem>(), false, 5, true),
         // Setup("ghz3", 5, make_shared<GHZStatePreparation3>(), true, 3),
-        // Setup("bitflip_ipma2", 50, make_shared<IPMA2Bitflip>(), true, 8, false),
-        // Setup("bitflip_ipma", 20, make_shared<IPMABitflip>(), true, 7),
-        // Setup("bitflip_cxh", 20, make_shared<CXHBitflip>(), true, 7),
-
+        Setup("bitflip_ipma2", 50, make_shared<IPMA2Bitflip>(), true, 8, false),
+        Setup("bitflip_ipma", 20, make_shared<IPMABitflip>(), true, 7),
+        Setup("bitflip_cxh", 20, make_shared<CXHBitflip>(), true, 7),
         Setup("bell_state_reach", 1, make_shared<BellStateReach>(), true, 3),
         // Setup("reset", 22, make_shared<ResetProblem>(), false, 9, false),
-
-
     });
 
     for (auto setup : setups) {
@@ -241,8 +235,7 @@ int main(int argc, char* argv[]) {
         fs::path parsed_algorithms_path = exp_dir / "raw_algorithms";
         fs::create_directories(parsed_algorithms_path);
 
-        vector<Algorithm> unique_algorithms;
-        vector<int> is_algorithm_convex;
+        vector<pair<Algorithm, bool>> unique_algorithms;
 
         fs::path parsed_stats_path = exp_dir / "stats.csv";
         ofstream parsed_stats_file(parsed_stats_path);
@@ -256,6 +249,7 @@ int main(int argc, char* argv[]) {
         "algorithm_index"})
         , ",") << "\n";
 
+        map<QuantumHardware, map<string, map<int, map<int, string>>>> embedding_to_opt_prob;
         for (int batch = 0; batch < setup.num_batches; batch++) {
             fs::path raw_exp_path = fs::path("..") / "results" / (setup.name + "_" + to_string(batch) + therm_str);
             ifstream f(raw_exp_path / "stats.csv");
@@ -274,31 +268,44 @@ int main(int argc, char* argv[]) {
                 string method = tokens[5];
                 string method_time = tokens[6];
                 int algorithm_index = stoi(tokens[7]);
+                if (embedding_to_opt_prob.find(to_quantum_hardware(quantum_hardware)) == embedding_to_opt_prob.end()) {
+                    embedding_to_opt_prob[to_quantum_hardware(quantum_hardware)] = {};
+                }
 
+                if(embedding_to_opt_prob[to_quantum_hardware(quantum_hardware)].find(method) == embedding_to_opt_prob[to_quantum_hardware(quantum_hardware)].end()) {
+                    embedding_to_opt_prob[to_quantum_hardware(quantum_hardware)][method] = {};
+                }
+                if(embedding_to_opt_prob[to_quantum_hardware(quantum_hardware)][method].find(stoi(horizon)) == embedding_to_opt_prob[to_quantum_hardware(quantum_hardware)][method].end()) {
+                    embedding_to_opt_prob[to_quantum_hardware(quantum_hardware)][method][stoi(horizon)] = {};
+                }
+                assert(embedding_to_opt_prob[to_quantum_hardware(quantum_hardware)][method][stoi(horizon)].find(stoi(embedding_index)) == embedding_to_opt_prob[to_quantum_hardware(quantum_hardware)][method][stoi(horizon)].end());
+                embedding_to_opt_prob[to_quantum_hardware(quantum_hardware)][method][stoi(horizon)][stoi(embedding_index)] = probability;
                 std::ifstream curr_alg_file(raw_exp_path / "raw_algorithms" / ("R_" + to_string(algorithm_index+1) + ".txt"));
                 if (!curr_alg_file.is_open()) {
                     std::cerr << "Error opening file\n";
                     return 1;
                 }
 
+                bool is_current_convex = false;
+                if (method == "convex") {
+                    is_current_convex = true;
+                } else {
+                    assert(method == "bellman");
+                }
+
                 json current_algorithm;
                 curr_alg_file >> current_algorithm;
                 curr_alg_file.close();
                 Algorithm alg_object(current_algorithm);
-                int real_index = get_algorithm_index(alg_object, unique_algorithms);
+                int real_index = get_algorithm_index(alg_object, is_current_convex, unique_algorithms);
+
+
                 if (real_index == -1) {
                     real_index = unique_algorithms.size();
-                    unique_algorithms.push_back(alg_object);
+                    unique_algorithms.emplace_back(alg_object, is_current_convex);
                     // dump algorithm
                     dump_raw_algorithm(parsed_algorithms_path / ("R_" + to_string(real_index) + ".txt"), make_shared<Algorithm>(alg_object));
                     dump_to_file(parsed_algorithms_path / ("A_" + to_string(real_index) + ".txt"), make_shared<Algorithm>(alg_object));
-
-                    if (method == "convex") {
-                        is_algorithm_convex.push_back(true);
-                    } else {
-                        assert(method == "bellman");
-                        is_algorithm_convex.push_back(false);
-                    }
                 }
                 algorithm_index = real_index;
 
@@ -314,14 +321,14 @@ int main(int argc, char* argv[]) {
             }
 
         }
-        // parsed_stats_file.close();
+        parsed_stats_file.close();
         if (setup.name == "reset" || setup.name == "bitflip_ipma" || setup.name == "bitflip_ipma2" || setup.name == "basic_zero_plus_discr" || setup.name == "bell_state_reach") {
             int min_horizon;
 
             if (setup.name == "basic_zero_plus_discr" || setup.name == "bell_state_reach") {
                 min_horizon = 1;
             } else if (setup.name == "reset") {
-                min_horizon = 2;
+                min_horizon = 1;
             } else {
                 min_horizon = 3;
             }
@@ -333,30 +340,49 @@ int main(int argc, char* argv[]) {
                 methods.push_back(MethodType::ConvexDist);
             }
 
+
             for (auto m : methods) {
+                bool is_current_convex = false;
+                if (m == MethodType::ConvexDist) {
+                    is_current_convex = true;
+                } else {
+                    assert (m == MethodType::SingleDistBellman);
+                }
                 for (int h = min_horizon; h <= setup.max_horizon; h++) {
-                    auto textbook_alg = setup.experiment->get_textbook_algorithm(m, h);
-                    int real_index = get_algorithm_index(*textbook_alg, unique_algorithms);
-                    if (real_index == -1) {
-                        real_index = unique_algorithms.size();
-                        unique_algorithms.push_back(*textbook_alg);
-                        // dump algorithm
-                        dump_raw_algorithm(parsed_algorithms_path / ("R_" + to_string(real_index) + ".txt"), textbook_alg);
-                        dump_to_file(parsed_algorithms_path / ("A_" + to_string(real_index) + ".txt"), textbook_alg);
-                        if (m == MethodType::SingleDistBellman) {
-                            is_algorithm_convex.push_back(false);
-                        } else {
-                            is_algorithm_convex.push_back(true);
+
+                    if (setup.name == "reset" && h < 4) {
+                        auto m_ = ConvexDist;
+                        auto textbook_alg = setup.experiment->get_textbook_algorithm(m_, h);
+                        int real_index = get_algorithm_index(*textbook_alg, true, unique_algorithms);
+                        if (real_index == -1) {
+                            real_index = unique_algorithms.size();
+                            unique_algorithms.emplace_back(*textbook_alg, true);
+                            // dump algorithm
+                            dump_raw_algorithm(parsed_algorithms_path / ("R_" + to_string(real_index) + ".txt"), textbook_alg);
+                            dump_to_file(parsed_algorithms_path / ("A_" + to_string(real_index) + ".txt"), textbook_alg);
                         }
+                        cout <<"[convex] textbook alg at h=" << h << " is index " << real_index << endl;
 
                     }
-                    cout <<"[" <<get_method_string(m)<< "] textbook alg at h=" << h << " is index" << real_index << endl;
+                    if (setup.name != "reset" || h > 1) {
+                        auto textbook_alg = setup.experiment->get_textbook_algorithm(m, h);
+                        int real_index = get_algorithm_index(*textbook_alg, is_current_convex, unique_algorithms);
+                        if (real_index == -1) {
+                            real_index = unique_algorithms.size();
+                            unique_algorithms.emplace_back(*textbook_alg, is_current_convex);
+                            // dump algorithm
+                            dump_raw_algorithm(parsed_algorithms_path / ("R_" + to_string(real_index) + ".txt"), textbook_alg);
+                            dump_to_file(parsed_algorithms_path / ("A_" + to_string(real_index) + ".txt"), textbook_alg);
+                        }
+                        cout <<"[" <<get_method_string(m)<< "] textbook alg at h=" << h << " is index " << real_index << endl;
+                    }
+
                 }
             }
 
         }
 
-        generate_improvements_file(setup, unique_algorithms, qw_to_spec);
+        generate_improvements_file(setup, unique_algorithms, qw_to_spec, embedding_to_opt_prob);
         // test all algorithms in all hardware specifications
         fs::path verification_path = exp_dir / "verification.csv";
         ofstream verification_file(verification_path);
@@ -387,15 +413,17 @@ int main(int argc, char* argv[]) {
                     pomdp.build_pomdp(actions, hardware_spec, setup.max_horizon, embedding, nullptr, initial_distribution, qubits_used, guard, setup.experiment->set_hidden_index);
                     for (int algorithm_index = 0; algorithm_index < unique_algorithms.size(); ++algorithm_index) {
 
-                        auto unique_algorithm = unique_algorithms[algorithm_index];
+                        auto unique_algorithm_pair = unique_algorithms[algorithm_index];
+                        auto unique_algorithm = unique_algorithm_pair.first;
+                        string method = "bellman";
+                        if (unique_algorithm_pair.second) {
+                            method = "convex";
+                        }
 
                         double probability = 0.0;
 
-                        probability = verify_algorithm(pomdp, *setup.experiment, unique_algorithm, hardware_spec, embeddings[embedding_index], is_algorithm_convex[algorithm_index], setup.max_horizon);
-                        string method = "bellman";
-                        if (is_algorithm_convex[algorithm_index]) {
-                            method = "convex";
-                        }
+                        probability = verify_algorithm(pomdp, *setup.experiment, unique_algorithm, hardware_spec, embeddings[embedding_index], unique_algorithm_pair.second, setup.max_horizon);
+
                         verification_file << join(vector<string>({hardware_spec.get_hardware_name(),
                             to_string(embedding_index),
                             to_string(algorithm_index),

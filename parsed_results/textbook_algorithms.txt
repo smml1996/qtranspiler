@@ -1,12 +1,15 @@
 parsing experiment reset
-[bellman] textbook alg at h=2 is index151
-[bellman] textbook alg at h=3 is index152
-[bellman] textbook alg at h=4 is index153
-[bellman] textbook alg at h=5 is index154
-[bellman] textbook alg at h=6 is index155
-[bellman] textbook alg at h=7 is index156
-[bellman] textbook alg at h=8 is index157
-[bellman] textbook alg at h=9 is index158
+[convex] textbook alg at h=1 is index 135
+[convex] textbook alg at h=2 is index 151
+[bellman] textbook alg at h=2 is index 152
+[convex] textbook alg at h=3 is index 153
+[bellman] textbook alg at h=3 is index 154
+[bellman] textbook alg at h=4 is index 155
+[bellman] textbook alg at h=5 is index 156
+[bellman] textbook alg at h=6 is index 157
+[bellman] textbook alg at h=7 is index 158
+[bellman] textbook alg at h=8 is index 159
+[bellman] textbook alg at h=9 is index 160
 
 parsing experiment bitflip_ipma
 [bellman] textbook alg at h=3 is index22
@@ -24,15 +27,15 @@ parsing experiment bitflip_ipma2
 [bellman] textbook alg at h=8 is index39
 
 parsing experiment basic_zero_plus
-[convex] textbook alg at h=1 is index278
-[convex] textbook alg at h=2 is index281
-[convex] textbook alg at h=3 is index282
+[convex] textbook alg at h=1 is index 280
+[convex] textbook alg at h=2 is index 283
+[convex] textbook alg at h=3 is index 284
 
 parsing experiment BellStateReach
-[bellman] textbook alg at h=1 is index0
-[bellman] textbook alg at h=2 is index2
-[bellman] textbook alg at h=3 is index14
-[convex] textbook alg at h=1 is index1
-[convex] textbook alg at h=2 is index2
-[convex] textbook alg at h=3 is index14
+[bellman] textbook alg at h=1 is index 0
+[bellman] textbook alg at h=2 is index 2
+[bellman] textbook alg at h=3 is index 16
+[convex] textbook alg at h=1 is index 1
+[convex] textbook alg at h=2 is index 17
+[convex] textbook alg at h=3 is index 18
 

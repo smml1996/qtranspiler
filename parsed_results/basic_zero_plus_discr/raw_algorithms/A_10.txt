@@ -10,7 +10,7 @@
 		if c = 9:
 			HALT
 
-} ⊕_0.889833 {
+} ⊕_0.889832 {
 	x0 := measure(q0); 
 	if c = 8:
 		x0 := measure(q0); 

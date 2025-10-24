@@ -1,5 +1,0 @@
-x0 := measure(q0); 
-if c = 9:
-	HALT
-if c = 8:
-	HALT

@@ -6,7 +6,7 @@
 	if c = 0:
 		HALT
 
-} ⊕_0.000185 {
+} ⊕_0.000184 {
 	x0 := measure(q0); 
 	if c = 0:
 		x0 := measure(q0); 

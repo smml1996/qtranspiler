@@ -237,9 +237,10 @@ void SingleDistributionSolver::print_all_beliefs() const {
 }
 
 
-ConvexDistributionSolver::ConvexDistributionSolver(const POMDP &pomdp, const f_reward_type_double &get_reward, int precision, const unordered_map<int, int> &embedding, const guard_type &g) {
+ConvexDistributionSolver::ConvexDistributionSolver(const POMDP &pomdp, const f_reward_type &precise_get_reward, const f_reward_type_double &get_reward, int precision, const unordered_map<int, int> & embedding, const guard_type &g) {
     this->pomdp = pomdp;
     this->get_reward = get_reward;
+    this->precise_get_reward = precise_get_reward;
     this->precision = precision;
     this->embedding = embedding;
     this->initial_classical_state = -1;
@@ -364,6 +365,7 @@ void ConvexDistributionSolver::set_minimax_values(
     // }
 
     int current_alg_index = minimax_matrix.size();
+
     mapping_index_algorithm[current_alg_index] = algorithm;
     
     // the current algorithm index should not exist
@@ -373,10 +375,10 @@ void ConvexDistributionSolver::set_minimax_values(
     for (int index = 0; index < initial_states.size(); index++) {
         assert(minimax_matrix[current_alg_index].find(index) == minimax_matrix[current_alg_index].end());
 
-        VertexDict initial_belief;
-        initial_belief.set_val(initial_states[index], 1);
-        auto acc = get_algorithm_acc_double(pomdp,algorithm, initial_belief, this->get_reward, this->embedding);
-        minimax_matrix[current_alg_index][index] = acc;
+        Belief initial_belief;
+        initial_belief.set_val(initial_states[index], MyFloat("1", this->precision));
+        auto acc = get_algorithm_acc(pomdp, algorithm, initial_belief, this->precise_get_reward, this->embedding, this->precision);
+        minimax_matrix[current_alg_index][index] = to_double(acc);
 
     }
     // cout << current_alg_index << endl;
@@ -523,7 +525,8 @@ cpp_int get_classical_state(const vector<shared_ptr<POMDPVertex>> &states) {
 
 pair<vector<double>, double> ConvexDistributionSolver::solve_lp_maximin(const unordered_map<int, unordered_map<int, double>> &maximin_matrix, const int &n_algorithms, const int &n_initial_states) {
     operations_research::MPSolver solver("max_v", operations_research::MPSolver::GLOP_LINEAR_PROGRAMMING);
-
+    solver.SetSolverSpecificParametersAsString(
+    "primal_feasibility_tolerance:1e-9 dual_feasibility_tolerance:1e-9");
     // Variables: x_i >= 0
     std::vector<operations_research::MPVariable*> x(n_algorithms);
     for (int i = 0; i < n_algorithms; ++i) {
