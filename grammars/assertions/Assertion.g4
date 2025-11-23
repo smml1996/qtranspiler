@@ -14,7 +14,10 @@ dis_or_expr
 
 // AND has medium precedence
 dis_and_expr
-    : dis_not_expr ('and' dis_not_expr)*;
+    : dis_conv_expr ('and' dis_conv_expr)*;
+
+dis_conv_expr
+    : dis_not_expr ('+' dis_not_expr)*;
 
 // NOT has highest precedence
 dis_not_expr
@@ -24,12 +27,6 @@ dis_not_expr
 
 // probability term
 probability_term
-    : 'P' '(' states_assertion ')'
-    | REALNUM                   
-    | pfactor (MOP pfactor)*   
-    ;
-
-pfactor
     : 'P' '(' states_assertion ')'
     | REALNUM
     ;
@@ -51,50 +48,41 @@ states_not_expr
     : '!' states_not_expr               # not_expr
     | quantum_term '=' quantum_term           # QCompare
     | binary_term '=' binary_term           # BCompare
-    | real_term ROP real_term           # RCompare
     | '(' states_assertion ')'           # Parens
     ;
 
-// real term
-real_term : 'Tr(' quantum_term ')' | REALNUM | real_term ROP real_term;
-
 binary_term
-    : binary_factor (BOP binary_factor)* ;
-
-binary_factor
     : '[' BList ']'          
     | BINARYSTRING
     ;
 
 quantum_term
-    : quantum_factor (MOP quantum_factor)* ;
-
-quantum_factor
     : '[' QList ']'
-    | matrix
+    | Row
     ;
 
 // matrices
 matrix : '[' Row (',' Row)* ']';
 Row : '[' REALNUM (',' REALNUM)* ']';
 
+
 // binary strings
-BINARYSTRING: '0' | '1' ( '0' | '1' )*;
+
 
 // Binary list
-BList : ID (',' ID)* ;
+BList : CID (',' CID)* ;
 
 // Quantum list
-QList : ID (',' ID)* ;
+QList : QID (',' QID)* ;
 
 
 // Lexer rules (uppercase usually)
 
 RP : '=' | '>' | '>=' | '<=';
 ROP: MOP | '/';
-BOP: '>>' | '<<' | '&' | '|';
 MOP : '+' | '-' | '*';
 REALNUM : [0-9]+ ('.' [0-9]+)?;
-ID  : [a-zA-Z_][a-zA-Z_0-9]* ;
+CID  : 'x' [0-9]* ;
+QID : 'q' [0-9]* ;
 INT : [0-9]+ ;
-WS  : [ \t\r\n]+ -> skip ;
+

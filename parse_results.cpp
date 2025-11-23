@@ -216,10 +216,10 @@ int main(int argc, char* argv[]) {
         Setup("basic_zero_plus_discr", 1, make_shared<BasicZeroPlusDiscrimination>(), false, 3),
         // Setup("reset", 20, make_shared<ResetProblem>(), false, 5, true),
         // Setup("ghz3", 5, make_shared<GHZStatePreparation3>(), true, 3),
-        Setup("bitflip_ipma2", 50, make_shared<IPMA2Bitflip>(), true, 8, false),
-        Setup("bitflip_ipma", 20, make_shared<IPMABitflip>(), true, 7),
-        Setup("bitflip_cxh", 20, make_shared<CXHBitflip>(), true, 7),
-        Setup("bell_state_reach", 1, make_shared<BellStateReach>(), true, 3),
+        // Setup("bitflip_ipma2", 50, make_shared<IPMA2Bitflip>(), true, 8, false),
+        // Setup("bitflip_ipma", 20, make_shared<IPMABitflip>(), true, 7),
+        // Setup("bitflip_cxh", 20, make_shared<CXHBitflip>(), true, 7),
+        // Setup("bell_state_reach", 1, make_shared<BellStateReach>(), true, 3),
         // Setup("reset", 22, make_shared<ResetProblem>(), false, 9, false),
     });
 

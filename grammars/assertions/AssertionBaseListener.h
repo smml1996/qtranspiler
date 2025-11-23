@@ -1,5 +1,5 @@
 
-// Generated from grammars/assertions/Assertion.g4 by ANTLR 4.13.2
+// Generated from ./grammars/assertions/Assertion.g4 by ANTLR 4.13.2
 
 #pragma once
 
@@ -28,14 +28,14 @@ public:
   virtual void enterDis_and_expr(AssertionParser::Dis_and_exprContext * /*ctx*/) override { }
   virtual void exitDis_and_expr(AssertionParser::Dis_and_exprContext * /*ctx*/) override { }
 
+  virtual void enterDis_conv_expr(AssertionParser::Dis_conv_exprContext * /*ctx*/) override { }
+  virtual void exitDis_conv_expr(AssertionParser::Dis_conv_exprContext * /*ctx*/) override { }
+
   virtual void enterDis_not_expr(AssertionParser::Dis_not_exprContext * /*ctx*/) override { }
   virtual void exitDis_not_expr(AssertionParser::Dis_not_exprContext * /*ctx*/) override { }
 
   virtual void enterProbability_term(AssertionParser::Probability_termContext * /*ctx*/) override { }
   virtual void exitProbability_term(AssertionParser::Probability_termContext * /*ctx*/) override { }
-
-  virtual void enterPfactor(AssertionParser::PfactorContext * /*ctx*/) override { }
-  virtual void exitPfactor(AssertionParser::PfactorContext * /*ctx*/) override { }
 
   virtual void enterStates_assertion(AssertionParser::States_assertionContext * /*ctx*/) override { }
   virtual void exitStates_assertion(AssertionParser::States_assertionContext * /*ctx*/) override { }
@@ -55,26 +55,14 @@ public:
   virtual void enterBCompare(AssertionParser::BCompareContext * /*ctx*/) override { }
   virtual void exitBCompare(AssertionParser::BCompareContext * /*ctx*/) override { }
 
-  virtual void enterRCompare(AssertionParser::RCompareContext * /*ctx*/) override { }
-  virtual void exitRCompare(AssertionParser::RCompareContext * /*ctx*/) override { }
-
   virtual void enterParens(AssertionParser::ParensContext * /*ctx*/) override { }
   virtual void exitParens(AssertionParser::ParensContext * /*ctx*/) override { }
-
-  virtual void enterReal_term(AssertionParser::Real_termContext * /*ctx*/) override { }
-  virtual void exitReal_term(AssertionParser::Real_termContext * /*ctx*/) override { }
 
   virtual void enterBinary_term(AssertionParser::Binary_termContext * /*ctx*/) override { }
   virtual void exitBinary_term(AssertionParser::Binary_termContext * /*ctx*/) override { }
 
-  virtual void enterBinary_factor(AssertionParser::Binary_factorContext * /*ctx*/) override { }
-  virtual void exitBinary_factor(AssertionParser::Binary_factorContext * /*ctx*/) override { }
-
   virtual void enterQuantum_term(AssertionParser::Quantum_termContext * /*ctx*/) override { }
   virtual void exitQuantum_term(AssertionParser::Quantum_termContext * /*ctx*/) override { }
-
-  virtual void enterQuantum_factor(AssertionParser::Quantum_factorContext * /*ctx*/) override { }
-  virtual void exitQuantum_factor(AssertionParser::Quantum_factorContext * /*ctx*/) override { }
 
   virtual void enterMatrix(AssertionParser::MatrixContext * /*ctx*/) override { }
   virtual void exitMatrix(AssertionParser::MatrixContext * /*ctx*/) override { }

@@ -1,5 +1,5 @@
 
-// Generated from grammars/PL/ProgrammingLanguage.g4 by ANTLR 4.13.2
+// Generated from ../grammars/PL/ProgrammingLanguage.g4 by ANTLR 4.13.2
 
 #pragma once
 
@@ -19,11 +19,35 @@ public:
   virtual void enterLanguage(ProgrammingLanguageParser::LanguageContext * /*ctx*/) override { }
   virtual void exitLanguage(ProgrammingLanguageParser::LanguageContext * /*ctx*/) override { }
 
-  virtual void enterAlgorithm(ProgrammingLanguageParser::AlgorithmContext * /*ctx*/) override { }
-  virtual void exitAlgorithm(ProgrammingLanguageParser::AlgorithmContext * /*ctx*/) override { }
+  virtual void enterUnitary(ProgrammingLanguageParser::UnitaryContext * /*ctx*/) override { }
+  virtual void exitUnitary(ProgrammingLanguageParser::UnitaryContext * /*ctx*/) override { }
 
-  virtual void enterClassical_statement(ProgrammingLanguageParser::Classical_statementContext * /*ctx*/) override { }
-  virtual void exitClassical_statement(ProgrammingLanguageParser::Classical_statementContext * /*ctx*/) override { }
+  virtual void enterProb(ProgrammingLanguageParser::ProbContext * /*ctx*/) override { }
+  virtual void exitProb(ProgrammingLanguageParser::ProbContext * /*ctx*/) override { }
+
+  virtual void enterSkip(ProgrammingLanguageParser::SkipContext * /*ctx*/) override { }
+  virtual void exitSkip(ProgrammingLanguageParser::SkipContext * /*ctx*/) override { }
+
+  virtual void enterClassical(ProgrammingLanguageParser::ClassicalContext * /*ctx*/) override { }
+  virtual void exitClassical(ProgrammingLanguageParser::ClassicalContext * /*ctx*/) override { }
+
+  virtual void enterIf(ProgrammingLanguageParser::IfContext * /*ctx*/) override { }
+  virtual void exitIf(ProgrammingLanguageParser::IfContext * /*ctx*/) override { }
+
+  virtual void enterSeq(ProgrammingLanguageParser::SeqContext * /*ctx*/) override { }
+  virtual void exitSeq(ProgrammingLanguageParser::SeqContext * /*ctx*/) override { }
+
+  virtual void enterAssignZero(ProgrammingLanguageParser::AssignZeroContext * /*ctx*/) override { }
+  virtual void exitAssignZero(ProgrammingLanguageParser::AssignZeroContext * /*ctx*/) override { }
+
+  virtual void enterAssignOne(ProgrammingLanguageParser::AssignOneContext * /*ctx*/) override { }
+  virtual void exitAssignOne(ProgrammingLanguageParser::AssignOneContext * /*ctx*/) override { }
+
+  virtual void enterAssignCopy(ProgrammingLanguageParser::AssignCopyContext * /*ctx*/) override { }
+  virtual void exitAssignCopy(ProgrammingLanguageParser::AssignCopyContext * /*ctx*/) override { }
+
+  virtual void enterAssignMeasure(ProgrammingLanguageParser::AssignMeasureContext * /*ctx*/) override { }
+  virtual void exitAssignMeasure(ProgrammingLanguageParser::AssignMeasureContext * /*ctx*/) override { }
 
   virtual void enterQlist(ProgrammingLanguageParser::QlistContext * /*ctx*/) override { }
   virtual void exitQlist(ProgrammingLanguageParser::QlistContext * /*ctx*/) override { }

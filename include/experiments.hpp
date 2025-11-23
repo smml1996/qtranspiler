@@ -1,7 +1,7 @@
 #ifndef EXPERIMENTS_H
 #define EXPERIMENTS_H
 
-#include "beliefs.hpp"
+#include "Belief.hpp"
 #include "hardware_specification.hpp"
 #include <filesystem>
 

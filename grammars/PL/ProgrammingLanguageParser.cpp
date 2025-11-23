@@ -1,8 +1,9 @@
 
-// Generated from grammars/PL/ProgrammingLanguage.g4 by ANTLR 4.13.2
+// Generated from ../grammars/PL/ProgrammingLanguage.g4 by ANTLR 4.13.2
 
 
 #include "ProgrammingLanguageListener.h"
+#include "ProgrammingLanguageVisitor.h"
 
 #include "ProgrammingLanguageParser.h"
 
@@ -52,39 +53,41 @@ void programminglanguageParserInitialize() {
 #endif
   auto staticData = std::make_unique<ProgrammingLanguageParserStaticData>(
     std::vector<std::string>{
-      "language", "algorithm", "classical_statement", "qlist"
+      "language", "program", "classical_statement", "qlist"
     },
     std::vector<std::string>{
-      "", "'skip'", "'('", "')'", "';'", "'if'", "'{'", "'}'", "'else'", 
-      "'%'", "'='", "'0'", "'1'", "'measure'", "','"
+      "", "':='", "'0'", "'1'", "','", "'measure'", "'skip'", "';'", "'if'", 
+      "'else'", "'('", "')'", "'{'", "'}'", "'['", "']'", "'%'"
     },
     std::vector<std::string>{
-      "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "UNITARY", 
-      "REALNUM", "ID"
+      "", "", "", "", "", "MEASURE", "SKIPKW", "SEMICOLON", "IF", "ELSE", 
+      "LPAREN", "RPAREN", "LBRACE", "RBRACE", "LBRACKET", "RBRACKET", "PERCENT", 
+      "WS", "UNITARY", "REALNUM", "CID", "QID"
     }
   );
   static const int32_t serializedATNSegment[] = {
-  	4,1,17,71,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,1,0,1,0,1,0,1,1,1,1,1,1,1,1,
-  	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3,1,32,
-  	8,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,5,1,41,8,1,10,1,12,1,44,9,1,1,2,1,2,1,
-  	2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,3,2,61,8,2,1,3,1,3,
-  	1,3,5,3,66,8,3,10,3,12,3,69,9,3,1,3,0,1,2,4,0,2,4,6,0,0,75,0,8,1,0,0,
-  	0,2,31,1,0,0,0,4,60,1,0,0,0,6,62,1,0,0,0,8,9,3,2,1,0,9,10,5,0,0,1,10,
-  	1,1,0,0,0,11,12,6,1,-1,0,12,32,5,1,0,0,13,32,3,4,2,0,14,15,5,15,0,0,15,
-  	16,5,2,0,0,16,17,3,6,3,0,17,18,5,3,0,0,18,32,1,0,0,0,19,20,5,5,0,0,20,
-  	21,5,2,0,0,21,22,5,17,0,0,22,23,5,3,0,0,23,24,5,6,0,0,24,25,3,2,1,0,25,
-  	26,5,7,0,0,26,27,5,8,0,0,27,28,5,6,0,0,28,29,3,2,1,0,29,30,5,7,0,0,30,
-  	32,1,0,0,0,31,11,1,0,0,0,31,13,1,0,0,0,31,14,1,0,0,0,31,19,1,0,0,0,32,
-  	42,1,0,0,0,33,34,10,3,0,0,34,35,5,4,0,0,35,41,3,2,1,4,36,37,10,1,0,0,
-  	37,38,5,9,0,0,38,39,5,16,0,0,39,41,5,9,0,0,40,33,1,0,0,0,40,36,1,0,0,
-  	0,41,44,1,0,0,0,42,40,1,0,0,0,42,43,1,0,0,0,43,3,1,0,0,0,44,42,1,0,0,
-  	0,45,46,5,17,0,0,46,47,5,10,0,0,47,61,5,11,0,0,48,49,5,17,0,0,49,50,5,
-  	10,0,0,50,61,5,12,0,0,51,52,5,17,0,0,52,53,5,10,0,0,53,61,5,17,0,0,54,
-  	55,5,17,0,0,55,56,5,10,0,0,56,57,5,13,0,0,57,58,5,2,0,0,58,59,5,17,0,
-  	0,59,61,5,3,0,0,60,45,1,0,0,0,60,48,1,0,0,0,60,51,1,0,0,0,60,54,1,0,0,
-  	0,61,5,1,0,0,0,62,67,5,17,0,0,63,64,5,14,0,0,64,66,5,17,0,0,65,63,1,0,
-  	0,0,66,69,1,0,0,0,67,65,1,0,0,0,67,68,1,0,0,0,68,7,1,0,0,0,69,67,1,0,
-  	0,0,5,31,40,42,60,67
+  	4,1,21,74,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,1,0,1,0,1,0,1,1,1,1,1,1,1,1,
+  	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+  	1,3,1,34,8,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,5,1,44,8,1,10,1,12,1,47,
+  	9,1,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,3,2,64,
+  	8,2,1,3,1,3,1,3,5,3,69,8,3,10,3,12,3,72,9,3,1,3,0,1,2,4,0,2,4,6,0,0,78,
+  	0,8,1,0,0,0,2,33,1,0,0,0,4,63,1,0,0,0,6,65,1,0,0,0,8,9,3,2,1,0,9,10,5,
+  	0,0,1,10,1,1,0,0,0,11,12,6,1,-1,0,12,34,5,6,0,0,13,34,3,4,2,0,14,15,5,
+  	18,0,0,15,16,5,10,0,0,16,17,5,14,0,0,17,18,3,6,3,0,18,19,5,15,0,0,19,
+  	20,5,11,0,0,20,34,1,0,0,0,21,22,5,8,0,0,22,23,5,10,0,0,23,24,5,20,0,0,
+  	24,25,5,11,0,0,25,26,5,12,0,0,26,27,3,2,1,0,27,28,5,13,0,0,28,29,5,9,
+  	0,0,29,30,5,12,0,0,30,31,3,2,1,0,31,32,5,13,0,0,32,34,1,0,0,0,33,11,1,
+  	0,0,0,33,13,1,0,0,0,33,14,1,0,0,0,33,21,1,0,0,0,34,45,1,0,0,0,35,36,10,
+  	3,0,0,36,37,5,7,0,0,37,44,3,2,1,4,38,39,10,1,0,0,39,40,5,16,0,0,40,41,
+  	5,19,0,0,41,42,5,16,0,0,42,44,3,2,1,2,43,35,1,0,0,0,43,38,1,0,0,0,44,
+  	47,1,0,0,0,45,43,1,0,0,0,45,46,1,0,0,0,46,3,1,0,0,0,47,45,1,0,0,0,48,
+  	49,5,20,0,0,49,50,5,1,0,0,50,64,5,2,0,0,51,52,5,20,0,0,52,53,5,1,0,0,
+  	53,64,5,3,0,0,54,55,5,20,0,0,55,56,5,1,0,0,56,64,5,20,0,0,57,58,5,20,
+  	0,0,58,59,5,1,0,0,59,60,5,5,0,0,60,61,5,10,0,0,61,62,5,21,0,0,62,64,5,
+  	11,0,0,63,48,1,0,0,0,63,51,1,0,0,0,63,54,1,0,0,0,63,57,1,0,0,0,64,5,1,
+  	0,0,0,65,70,5,21,0,0,66,67,5,4,0,0,67,69,5,21,0,0,68,66,1,0,0,0,69,72,
+  	1,0,0,0,70,68,1,0,0,0,70,71,1,0,0,0,71,7,1,0,0,0,72,70,1,0,0,0,5,33,43,
+  	45,63,70
   };
   staticData->serializedATN = antlr4::atn::SerializedATNView(serializedATNSegment, sizeof(serializedATNSegment) / sizeof(serializedATNSegment[0]));
 
@@ -139,8 +142,8 @@ ProgrammingLanguageParser::LanguageContext::LanguageContext(ParserRuleContext *p
   : ParserRuleContext(parent, invokingState) {
 }
 
-ProgrammingLanguageParser::AlgorithmContext* ProgrammingLanguageParser::LanguageContext::algorithm() {
-  return getRuleContext<ProgrammingLanguageParser::AlgorithmContext>(0);
+ProgrammingLanguageParser::ProgramContext* ProgrammingLanguageParser::LanguageContext::program() {
+  return getRuleContext<ProgrammingLanguageParser::ProgramContext>(0);
 }
 
 tree::TerminalNode* ProgrammingLanguageParser::LanguageContext::EOF() {
@@ -164,6 +167,14 @@ void ProgrammingLanguageParser::LanguageContext::exitRule(tree::ParseTreeListene
     parserListener->exitLanguage(this);
 }
 
+
+std::any ProgrammingLanguageParser::LanguageContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<ProgrammingLanguageVisitor*>(visitor))
+    return parserVisitor->visitLanguage(this);
+  else
+    return visitor->visitChildren(this);
+}
+
 ProgrammingLanguageParser::LanguageContext* ProgrammingLanguageParser::language() {
   LanguageContext *_localctx = _tracker.createInstance<LanguageContext>(_ctx, getState());
   enterRule(_localctx, 0, ProgrammingLanguageParser::RuleLanguage);
@@ -178,7 +189,7 @@ ProgrammingLanguageParser::LanguageContext* ProgrammingLanguageParser::language(
   try {
     enterOuterAlt(_localctx, 1);
     setState(8);
-    algorithm(0);
+    program(0);
     setState(9);
     match(ProgrammingLanguageParser::EOF);
    
@@ -192,70 +203,268 @@ ProgrammingLanguageParser::LanguageContext* ProgrammingLanguageParser::language(
   return _localctx;
 }
 
-//----------------- AlgorithmContext ------------------------------------------------------------------
+//----------------- ProgramContext ------------------------------------------------------------------
 
-ProgrammingLanguageParser::AlgorithmContext::AlgorithmContext(ParserRuleContext *parent, size_t invokingState)
+ProgrammingLanguageParser::ProgramContext::ProgramContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-ProgrammingLanguageParser::Classical_statementContext* ProgrammingLanguageParser::AlgorithmContext::classical_statement() {
-  return getRuleContext<ProgrammingLanguageParser::Classical_statementContext>(0);
+
+size_t ProgrammingLanguageParser::ProgramContext::getRuleIndex() const {
+  return ProgrammingLanguageParser::RuleProgram;
 }
 
-tree::TerminalNode* ProgrammingLanguageParser::AlgorithmContext::UNITARY() {
+void ProgrammingLanguageParser::ProgramContext::copyFrom(ProgramContext *ctx) {
+  ParserRuleContext::copyFrom(ctx);
+}
+
+//----------------- UnitaryContext ------------------------------------------------------------------
+
+tree::TerminalNode* ProgrammingLanguageParser::UnitaryContext::UNITARY() {
   return getToken(ProgrammingLanguageParser::UNITARY, 0);
 }
 
-ProgrammingLanguageParser::QlistContext* ProgrammingLanguageParser::AlgorithmContext::qlist() {
+tree::TerminalNode* ProgrammingLanguageParser::UnitaryContext::LPAREN() {
+  return getToken(ProgrammingLanguageParser::LPAREN, 0);
+}
+
+tree::TerminalNode* ProgrammingLanguageParser::UnitaryContext::LBRACKET() {
+  return getToken(ProgrammingLanguageParser::LBRACKET, 0);
+}
+
+ProgrammingLanguageParser::QlistContext* ProgrammingLanguageParser::UnitaryContext::qlist() {
   return getRuleContext<ProgrammingLanguageParser::QlistContext>(0);
 }
 
-tree::TerminalNode* ProgrammingLanguageParser::AlgorithmContext::ID() {
-  return getToken(ProgrammingLanguageParser::ID, 0);
+tree::TerminalNode* ProgrammingLanguageParser::UnitaryContext::RBRACKET() {
+  return getToken(ProgrammingLanguageParser::RBRACKET, 0);
 }
 
-std::vector<ProgrammingLanguageParser::AlgorithmContext *> ProgrammingLanguageParser::AlgorithmContext::algorithm() {
-  return getRuleContexts<ProgrammingLanguageParser::AlgorithmContext>();
+tree::TerminalNode* ProgrammingLanguageParser::UnitaryContext::RPAREN() {
+  return getToken(ProgrammingLanguageParser::RPAREN, 0);
 }
 
-ProgrammingLanguageParser::AlgorithmContext* ProgrammingLanguageParser::AlgorithmContext::algorithm(size_t i) {
-  return getRuleContext<ProgrammingLanguageParser::AlgorithmContext>(i);
+ProgrammingLanguageParser::UnitaryContext::UnitaryContext(ProgramContext *ctx) { copyFrom(ctx); }
+
+void ProgrammingLanguageParser::UnitaryContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<ProgrammingLanguageListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterUnitary(this);
+}
+void ProgrammingLanguageParser::UnitaryContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<ProgrammingLanguageListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitUnitary(this);
 }
 
-tree::TerminalNode* ProgrammingLanguageParser::AlgorithmContext::REALNUM() {
+std::any ProgrammingLanguageParser::UnitaryContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<ProgrammingLanguageVisitor*>(visitor))
+    return parserVisitor->visitUnitary(this);
+  else
+    return visitor->visitChildren(this);
+}
+//----------------- ProbContext ------------------------------------------------------------------
+
+std::vector<ProgrammingLanguageParser::ProgramContext *> ProgrammingLanguageParser::ProbContext::program() {
+  return getRuleContexts<ProgrammingLanguageParser::ProgramContext>();
+}
+
+ProgrammingLanguageParser::ProgramContext* ProgrammingLanguageParser::ProbContext::program(size_t i) {
+  return getRuleContext<ProgrammingLanguageParser::ProgramContext>(i);
+}
+
+std::vector<tree::TerminalNode *> ProgrammingLanguageParser::ProbContext::PERCENT() {
+  return getTokens(ProgrammingLanguageParser::PERCENT);
+}
+
+tree::TerminalNode* ProgrammingLanguageParser::ProbContext::PERCENT(size_t i) {
+  return getToken(ProgrammingLanguageParser::PERCENT, i);
+}
+
+tree::TerminalNode* ProgrammingLanguageParser::ProbContext::REALNUM() {
   return getToken(ProgrammingLanguageParser::REALNUM, 0);
 }
 
+ProgrammingLanguageParser::ProbContext::ProbContext(ProgramContext *ctx) { copyFrom(ctx); }
 
-size_t ProgrammingLanguageParser::AlgorithmContext::getRuleIndex() const {
-  return ProgrammingLanguageParser::RuleAlgorithm;
-}
-
-void ProgrammingLanguageParser::AlgorithmContext::enterRule(tree::ParseTreeListener *listener) {
+void ProgrammingLanguageParser::ProbContext::enterRule(tree::ParseTreeListener *listener) {
   auto parserListener = dynamic_cast<ProgrammingLanguageListener *>(listener);
   if (parserListener != nullptr)
-    parserListener->enterAlgorithm(this);
+    parserListener->enterProb(this);
 }
-
-void ProgrammingLanguageParser::AlgorithmContext::exitRule(tree::ParseTreeListener *listener) {
+void ProgrammingLanguageParser::ProbContext::exitRule(tree::ParseTreeListener *listener) {
   auto parserListener = dynamic_cast<ProgrammingLanguageListener *>(listener);
   if (parserListener != nullptr)
-    parserListener->exitAlgorithm(this);
+    parserListener->exitProb(this);
 }
 
+std::any ProgrammingLanguageParser::ProbContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<ProgrammingLanguageVisitor*>(visitor))
+    return parserVisitor->visitProb(this);
+  else
+    return visitor->visitChildren(this);
+}
+//----------------- SkipContext ------------------------------------------------------------------
 
-ProgrammingLanguageParser::AlgorithmContext* ProgrammingLanguageParser::algorithm() {
-   return algorithm(0);
+tree::TerminalNode* ProgrammingLanguageParser::SkipContext::SKIPKW() {
+  return getToken(ProgrammingLanguageParser::SKIPKW, 0);
 }
 
-ProgrammingLanguageParser::AlgorithmContext* ProgrammingLanguageParser::algorithm(int precedence) {
+ProgrammingLanguageParser::SkipContext::SkipContext(ProgramContext *ctx) { copyFrom(ctx); }
+
+void ProgrammingLanguageParser::SkipContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<ProgrammingLanguageListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterSkip(this);
+}
+void ProgrammingLanguageParser::SkipContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<ProgrammingLanguageListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitSkip(this);
+}
+
+std::any ProgrammingLanguageParser::SkipContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<ProgrammingLanguageVisitor*>(visitor))
+    return parserVisitor->visitSkip(this);
+  else
+    return visitor->visitChildren(this);
+}
+//----------------- ClassicalContext ------------------------------------------------------------------
+
+ProgrammingLanguageParser::Classical_statementContext* ProgrammingLanguageParser::ClassicalContext::classical_statement() {
+  return getRuleContext<ProgrammingLanguageParser::Classical_statementContext>(0);
+}
+
+ProgrammingLanguageParser::ClassicalContext::ClassicalContext(ProgramContext *ctx) { copyFrom(ctx); }
+
+void ProgrammingLanguageParser::ClassicalContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<ProgrammingLanguageListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterClassical(this);
+}
+void ProgrammingLanguageParser::ClassicalContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<ProgrammingLanguageListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitClassical(this);
+}
+
+std::any ProgrammingLanguageParser::ClassicalContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<ProgrammingLanguageVisitor*>(visitor))
+    return parserVisitor->visitClassical(this);
+  else
+    return visitor->visitChildren(this);
+}
+//----------------- IfContext ------------------------------------------------------------------
+
+tree::TerminalNode* ProgrammingLanguageParser::IfContext::IF() {
+  return getToken(ProgrammingLanguageParser::IF, 0);
+}
+
+tree::TerminalNode* ProgrammingLanguageParser::IfContext::LPAREN() {
+  return getToken(ProgrammingLanguageParser::LPAREN, 0);
+}
+
+tree::TerminalNode* ProgrammingLanguageParser::IfContext::CID() {
+  return getToken(ProgrammingLanguageParser::CID, 0);
+}
+
+tree::TerminalNode* ProgrammingLanguageParser::IfContext::RPAREN() {
+  return getToken(ProgrammingLanguageParser::RPAREN, 0);
+}
+
+std::vector<tree::TerminalNode *> ProgrammingLanguageParser::IfContext::LBRACE() {
+  return getTokens(ProgrammingLanguageParser::LBRACE);
+}
+
+tree::TerminalNode* ProgrammingLanguageParser::IfContext::LBRACE(size_t i) {
+  return getToken(ProgrammingLanguageParser::LBRACE, i);
+}
+
+std::vector<ProgrammingLanguageParser::ProgramContext *> ProgrammingLanguageParser::IfContext::program() {
+  return getRuleContexts<ProgrammingLanguageParser::ProgramContext>();
+}
+
+ProgrammingLanguageParser::ProgramContext* ProgrammingLanguageParser::IfContext::program(size_t i) {
+  return getRuleContext<ProgrammingLanguageParser::ProgramContext>(i);
+}
+
+std::vector<tree::TerminalNode *> ProgrammingLanguageParser::IfContext::RBRACE() {
+  return getTokens(ProgrammingLanguageParser::RBRACE);
+}
+
+tree::TerminalNode* ProgrammingLanguageParser::IfContext::RBRACE(size_t i) {
+  return getToken(ProgrammingLanguageParser::RBRACE, i);
+}
+
+tree::TerminalNode* ProgrammingLanguageParser::IfContext::ELSE() {
+  return getToken(ProgrammingLanguageParser::ELSE, 0);
+}
+
+ProgrammingLanguageParser::IfContext::IfContext(ProgramContext *ctx) { copyFrom(ctx); }
+
+void ProgrammingLanguageParser::IfContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<ProgrammingLanguageListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterIf(this);
+}
+void ProgrammingLanguageParser::IfContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<ProgrammingLanguageListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitIf(this);
+}
+
+std::any ProgrammingLanguageParser::IfContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<ProgrammingLanguageVisitor*>(visitor))
+    return parserVisitor->visitIf(this);
+  else
+    return visitor->visitChildren(this);
+}
+//----------------- SeqContext ------------------------------------------------------------------
+
+std::vector<ProgrammingLanguageParser::ProgramContext *> ProgrammingLanguageParser::SeqContext::program() {
+  return getRuleContexts<ProgrammingLanguageParser::ProgramContext>();
+}
+
+ProgrammingLanguageParser::ProgramContext* ProgrammingLanguageParser::SeqContext::program(size_t i) {
+  return getRuleContext<ProgrammingLanguageParser::ProgramContext>(i);
+}
+
+tree::TerminalNode* ProgrammingLanguageParser::SeqContext::SEMICOLON() {
+  return getToken(ProgrammingLanguageParser::SEMICOLON, 0);
+}
+
+ProgrammingLanguageParser::SeqContext::SeqContext(ProgramContext *ctx) { copyFrom(ctx); }
+
+void ProgrammingLanguageParser::SeqContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<ProgrammingLanguageListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterSeq(this);
+}
+void ProgrammingLanguageParser::SeqContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<ProgrammingLanguageListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitSeq(this);
+}
+
+std::any ProgrammingLanguageParser::SeqContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<ProgrammingLanguageVisitor*>(visitor))
+    return parserVisitor->visitSeq(this);
+  else
+    return visitor->visitChildren(this);
+}
+
+ProgrammingLanguageParser::ProgramContext* ProgrammingLanguageParser::program() {
+   return program(0);
+}
+
+ProgrammingLanguageParser::ProgramContext* ProgrammingLanguageParser::program(int precedence) {
   ParserRuleContext *parentContext = _ctx;
   size_t parentState = getState();
-  ProgrammingLanguageParser::AlgorithmContext *_localctx = _tracker.createInstance<AlgorithmContext>(_ctx, parentState);
-  ProgrammingLanguageParser::AlgorithmContext *previousContext = _localctx;
+  ProgrammingLanguageParser::ProgramContext *_localctx = _tracker.createInstance<ProgramContext>(_ctx, parentState);
+  ProgrammingLanguageParser::ProgramContext *previousContext = _localctx;
   (void)previousContext; // Silence compiler, in case the context is not used by generated code.
   size_t startState = 2;
-  enterRecursionRule(_localctx, 2, ProgrammingLanguageParser::RuleAlgorithm, precedence);
+  enterRecursionRule(_localctx, 2, ProgrammingLanguageParser::RuleProgram, precedence);
 
     
 
@@ -269,56 +478,73 @@ ProgrammingLanguageParser::AlgorithmContext* ProgrammingLanguageParser::algorith
   try {
     size_t alt;
     enterOuterAlt(_localctx, 1);
-    setState(31);
+    setState(33);
     _errHandler->sync(this);
     switch (_input->LA(1)) {
-      case ProgrammingLanguageParser::T__0: {
+      case ProgrammingLanguageParser::SKIPKW: {
+        _localctx = _tracker.createInstance<SkipContext>(_localctx);
+        _ctx = _localctx;
+        previousContext = _localctx;
+
         setState(12);
-        match(ProgrammingLanguageParser::T__0);
+        match(ProgrammingLanguageParser::SKIPKW);
         break;
       }
 
-      case ProgrammingLanguageParser::ID: {
+      case ProgrammingLanguageParser::CID: {
+        _localctx = _tracker.createInstance<ClassicalContext>(_localctx);
+        _ctx = _localctx;
+        previousContext = _localctx;
         setState(13);
         classical_statement();
         break;
       }
 
       case ProgrammingLanguageParser::UNITARY: {
+        _localctx = _tracker.createInstance<UnitaryContext>(_localctx);
+        _ctx = _localctx;
+        previousContext = _localctx;
         setState(14);
         match(ProgrammingLanguageParser::UNITARY);
         setState(15);
-        match(ProgrammingLanguageParser::T__1);
+        match(ProgrammingLanguageParser::LPAREN);
         setState(16);
-        qlist();
+        match(ProgrammingLanguageParser::LBRACKET);
         setState(17);
-        match(ProgrammingLanguageParser::T__2);
+        qlist();
+        setState(18);
+        match(ProgrammingLanguageParser::RBRACKET);
+        setState(19);
+        match(ProgrammingLanguageParser::RPAREN);
         break;
       }
 
-      case ProgrammingLanguageParser::T__4: {
-        setState(19);
-        match(ProgrammingLanguageParser::T__4);
-        setState(20);
-        match(ProgrammingLanguageParser::T__1);
+      case ProgrammingLanguageParser::IF: {
+        _localctx = _tracker.createInstance<IfContext>(_localctx);
+        _ctx = _localctx;
+        previousContext = _localctx;
         setState(21);
-        match(ProgrammingLanguageParser::ID);
+        match(ProgrammingLanguageParser::IF);
         setState(22);
-        match(ProgrammingLanguageParser::T__2);
+        match(ProgrammingLanguageParser::LPAREN);
         setState(23);
-        match(ProgrammingLanguageParser::T__5);
+        match(ProgrammingLanguageParser::CID);
         setState(24);
-        algorithm(0);
+        match(ProgrammingLanguageParser::RPAREN);
         setState(25);
-        match(ProgrammingLanguageParser::T__6);
+        match(ProgrammingLanguageParser::LBRACE);
         setState(26);
-        match(ProgrammingLanguageParser::T__7);
+        program(0);
         setState(27);
-        match(ProgrammingLanguageParser::T__5);
+        match(ProgrammingLanguageParser::RBRACE);
         setState(28);
-        algorithm(0);
+        match(ProgrammingLanguageParser::ELSE);
         setState(29);
-        match(ProgrammingLanguageParser::T__6);
+        match(ProgrammingLanguageParser::LBRACE);
+        setState(30);
+        program(0);
+        setState(31);
+        match(ProgrammingLanguageParser::RBRACE);
         break;
       }
 
@@ -326,7 +552,7 @@ ProgrammingLanguageParser::AlgorithmContext* ProgrammingLanguageParser::algorith
       throw NoViableAltException(this);
     }
     _ctx->stop = _input->LT(-1);
-    setState(42);
+    setState(45);
     _errHandler->sync(this);
     alt = getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 2, _ctx);
     while (alt != 2 && alt != atn::ATN::INVALID_ALT_NUMBER) {
@@ -334,34 +560,38 @@ ProgrammingLanguageParser::AlgorithmContext* ProgrammingLanguageParser::algorith
         if (!_parseListeners.empty())
           triggerExitRuleEvent();
         previousContext = _localctx;
-        setState(40);
+        setState(43);
         _errHandler->sync(this);
         switch (getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 1, _ctx)) {
         case 1: {
-          _localctx = _tracker.createInstance<AlgorithmContext>(parentContext, parentState);
-          pushNewRecursionContext(_localctx, startState, RuleAlgorithm);
-          setState(33);
+          auto newContext = _tracker.createInstance<SeqContext>(_tracker.createInstance<ProgramContext>(parentContext, parentState));
+          _localctx = newContext;
+          pushNewRecursionContext(newContext, startState, RuleProgram);
+          setState(35);
 
           if (!(precpred(_ctx, 3))) throw FailedPredicateException(this, "precpred(_ctx, 3)");
-          setState(34);
-          match(ProgrammingLanguageParser::T__3);
-          setState(35);
-          algorithm(4);
+          setState(36);
+          match(ProgrammingLanguageParser::SEMICOLON);
+          setState(37);
+          program(4);
           break;
         }
 
         case 2: {
-          _localctx = _tracker.createInstance<AlgorithmContext>(parentContext, parentState);
-          pushNewRecursionContext(_localctx, startState, RuleAlgorithm);
-          setState(36);
+          auto newContext = _tracker.createInstance<ProbContext>(_tracker.createInstance<ProgramContext>(parentContext, parentState));
+          _localctx = newContext;
+          pushNewRecursionContext(newContext, startState, RuleProgram);
+          setState(38);
 
           if (!(precpred(_ctx, 1))) throw FailedPredicateException(this, "precpred(_ctx, 1)");
-          setState(37);
-          match(ProgrammingLanguageParser::T__8);
-          setState(38);
-          match(ProgrammingLanguageParser::REALNUM);
           setState(39);
-          match(ProgrammingLanguageParser::T__8);
+          match(ProgrammingLanguageParser::PERCENT);
+          setState(40);
+          match(ProgrammingLanguageParser::REALNUM);
+          setState(41);
+          match(ProgrammingLanguageParser::PERCENT);
+          setState(42);
+          program(2);
           break;
         }
 
@@ -369,7 +599,7 @@ ProgrammingLanguageParser::AlgorithmContext* ProgrammingLanguageParser::algorith
           break;
         } 
       }
-      setState(44);
+      setState(47);
       _errHandler->sync(this);
       alt = getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 2, _ctx);
     }
@@ -388,31 +618,135 @@ ProgrammingLanguageParser::Classical_statementContext::Classical_statementContex
   : ParserRuleContext(parent, invokingState) {
 }
 
-std::vector<tree::TerminalNode *> ProgrammingLanguageParser::Classical_statementContext::ID() {
-  return getTokens(ProgrammingLanguageParser::ID);
-}
-
-tree::TerminalNode* ProgrammingLanguageParser::Classical_statementContext::ID(size_t i) {
-  return getToken(ProgrammingLanguageParser::ID, i);
-}
-
 
 size_t ProgrammingLanguageParser::Classical_statementContext::getRuleIndex() const {
   return ProgrammingLanguageParser::RuleClassical_statement;
 }
 
-void ProgrammingLanguageParser::Classical_statementContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<ProgrammingLanguageListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterClassical_statement(this);
+void ProgrammingLanguageParser::Classical_statementContext::copyFrom(Classical_statementContext *ctx) {
+  ParserRuleContext::copyFrom(ctx);
 }
 
-void ProgrammingLanguageParser::Classical_statementContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<ProgrammingLanguageListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitClassical_statement(this);
+//----------------- AssignMeasureContext ------------------------------------------------------------------
+
+tree::TerminalNode* ProgrammingLanguageParser::AssignMeasureContext::CID() {
+  return getToken(ProgrammingLanguageParser::CID, 0);
 }
 
+tree::TerminalNode* ProgrammingLanguageParser::AssignMeasureContext::MEASURE() {
+  return getToken(ProgrammingLanguageParser::MEASURE, 0);
+}
+
+tree::TerminalNode* ProgrammingLanguageParser::AssignMeasureContext::LPAREN() {
+  return getToken(ProgrammingLanguageParser::LPAREN, 0);
+}
+
+tree::TerminalNode* ProgrammingLanguageParser::AssignMeasureContext::QID() {
+  return getToken(ProgrammingLanguageParser::QID, 0);
+}
+
+tree::TerminalNode* ProgrammingLanguageParser::AssignMeasureContext::RPAREN() {
+  return getToken(ProgrammingLanguageParser::RPAREN, 0);
+}
+
+ProgrammingLanguageParser::AssignMeasureContext::AssignMeasureContext(Classical_statementContext *ctx) { copyFrom(ctx); }
+
+void ProgrammingLanguageParser::AssignMeasureContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<ProgrammingLanguageListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterAssignMeasure(this);
+}
+void ProgrammingLanguageParser::AssignMeasureContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<ProgrammingLanguageListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitAssignMeasure(this);
+}
+
+std::any ProgrammingLanguageParser::AssignMeasureContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<ProgrammingLanguageVisitor*>(visitor))
+    return parserVisitor->visitAssignMeasure(this);
+  else
+    return visitor->visitChildren(this);
+}
+//----------------- AssignZeroContext ------------------------------------------------------------------
+
+tree::TerminalNode* ProgrammingLanguageParser::AssignZeroContext::CID() {
+  return getToken(ProgrammingLanguageParser::CID, 0);
+}
+
+ProgrammingLanguageParser::AssignZeroContext::AssignZeroContext(Classical_statementContext *ctx) { copyFrom(ctx); }
+
+void ProgrammingLanguageParser::AssignZeroContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<ProgrammingLanguageListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterAssignZero(this);
+}
+void ProgrammingLanguageParser::AssignZeroContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<ProgrammingLanguageListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitAssignZero(this);
+}
+
+std::any ProgrammingLanguageParser::AssignZeroContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<ProgrammingLanguageVisitor*>(visitor))
+    return parserVisitor->visitAssignZero(this);
+  else
+    return visitor->visitChildren(this);
+}
+//----------------- AssignOneContext ------------------------------------------------------------------
+
+tree::TerminalNode* ProgrammingLanguageParser::AssignOneContext::CID() {
+  return getToken(ProgrammingLanguageParser::CID, 0);
+}
+
+ProgrammingLanguageParser::AssignOneContext::AssignOneContext(Classical_statementContext *ctx) { copyFrom(ctx); }
+
+void ProgrammingLanguageParser::AssignOneContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<ProgrammingLanguageListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterAssignOne(this);
+}
+void ProgrammingLanguageParser::AssignOneContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<ProgrammingLanguageListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitAssignOne(this);
+}
+
+std::any ProgrammingLanguageParser::AssignOneContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<ProgrammingLanguageVisitor*>(visitor))
+    return parserVisitor->visitAssignOne(this);
+  else
+    return visitor->visitChildren(this);
+}
+//----------------- AssignCopyContext ------------------------------------------------------------------
+
+std::vector<tree::TerminalNode *> ProgrammingLanguageParser::AssignCopyContext::CID() {
+  return getTokens(ProgrammingLanguageParser::CID);
+}
+
+tree::TerminalNode* ProgrammingLanguageParser::AssignCopyContext::CID(size_t i) {
+  return getToken(ProgrammingLanguageParser::CID, i);
+}
+
+ProgrammingLanguageParser::AssignCopyContext::AssignCopyContext(Classical_statementContext *ctx) { copyFrom(ctx); }
+
+void ProgrammingLanguageParser::AssignCopyContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<ProgrammingLanguageListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterAssignCopy(this);
+}
+void ProgrammingLanguageParser::AssignCopyContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<ProgrammingLanguageListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitAssignCopy(this);
+}
+
+std::any ProgrammingLanguageParser::AssignCopyContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<ProgrammingLanguageVisitor*>(visitor))
+    return parserVisitor->visitAssignCopy(this);
+  else
+    return visitor->visitChildren(this);
+}
 ProgrammingLanguageParser::Classical_statementContext* ProgrammingLanguageParser::classical_statement() {
   Classical_statementContext *_localctx = _tracker.createInstance<Classical_statementContext>(_ctx, getState());
   enterRule(_localctx, 4, ProgrammingLanguageParser::RuleClassical_statement);
@@ -425,56 +759,60 @@ ProgrammingLanguageParser::Classical_statementContext* ProgrammingLanguageParser
     exitRule();
   });
   try {
-    setState(60);
+    setState(63);
     _errHandler->sync(this);
     switch (getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 3, _ctx)) {
     case 1: {
+      _localctx = _tracker.createInstance<ProgrammingLanguageParser::AssignZeroContext>(_localctx);
       enterOuterAlt(_localctx, 1);
-      setState(45);
-      match(ProgrammingLanguageParser::ID);
-      setState(46);
-      match(ProgrammingLanguageParser::T__9);
-      setState(47);
-      match(ProgrammingLanguageParser::T__10);
+      setState(48);
+      match(ProgrammingLanguageParser::CID);
+      setState(49);
+      match(ProgrammingLanguageParser::T__0);
+      setState(50);
+      match(ProgrammingLanguageParser::T__1);
       break;
     }
 
     case 2: {
+      _localctx = _tracker.createInstance<ProgrammingLanguageParser::AssignOneContext>(_localctx);
       enterOuterAlt(_localctx, 2);
-      setState(48);
-      match(ProgrammingLanguageParser::ID);
-      setState(49);
-      match(ProgrammingLanguageParser::T__9);
-      setState(50);
-      match(ProgrammingLanguageParser::T__11);
+      setState(51);
+      match(ProgrammingLanguageParser::CID);
+      setState(52);
+      match(ProgrammingLanguageParser::T__0);
+      setState(53);
+      match(ProgrammingLanguageParser::T__2);
       break;
     }
 
     case 3: {
+      _localctx = _tracker.createInstance<ProgrammingLanguageParser::AssignCopyContext>(_localctx);
       enterOuterAlt(_localctx, 3);
-      setState(51);
-      match(ProgrammingLanguageParser::ID);
-      setState(52);
-      match(ProgrammingLanguageParser::T__9);
-      setState(53);
-      match(ProgrammingLanguageParser::ID);
+      setState(54);
+      match(ProgrammingLanguageParser::CID);
+      setState(55);
+      match(ProgrammingLanguageParser::T__0);
+      setState(56);
+      match(ProgrammingLanguageParser::CID);
       break;
     }
 
     case 4: {
+      _localctx = _tracker.createInstance<ProgrammingLanguageParser::AssignMeasureContext>(_localctx);
       enterOuterAlt(_localctx, 4);
-      setState(54);
-      match(ProgrammingLanguageParser::ID);
-      setState(55);
-      match(ProgrammingLanguageParser::T__9);
-      setState(56);
-      match(ProgrammingLanguageParser::T__12);
       setState(57);
-      match(ProgrammingLanguageParser::T__1);
+      match(ProgrammingLanguageParser::CID);
       setState(58);
-      match(ProgrammingLanguageParser::ID);
+      match(ProgrammingLanguageParser::T__0);
       setState(59);
-      match(ProgrammingLanguageParser::T__2);
+      match(ProgrammingLanguageParser::MEASURE);
+      setState(60);
+      match(ProgrammingLanguageParser::LPAREN);
+      setState(61);
+      match(ProgrammingLanguageParser::QID);
+      setState(62);
+      match(ProgrammingLanguageParser::RPAREN);
       break;
     }
 
@@ -498,12 +836,12 @@ ProgrammingLanguageParser::QlistContext::QlistContext(ParserRuleContext *parent,
   : ParserRuleContext(parent, invokingState) {
 }
 
-std::vector<tree::TerminalNode *> ProgrammingLanguageParser::QlistContext::ID() {
-  return getTokens(ProgrammingLanguageParser::ID);
+std::vector<tree::TerminalNode *> ProgrammingLanguageParser::QlistContext::QID() {
+  return getTokens(ProgrammingLanguageParser::QID);
 }
 
-tree::TerminalNode* ProgrammingLanguageParser::QlistContext::ID(size_t i) {
-  return getToken(ProgrammingLanguageParser::ID, i);
+tree::TerminalNode* ProgrammingLanguageParser::QlistContext::QID(size_t i) {
+  return getToken(ProgrammingLanguageParser::QID, i);
 }
 
 
@@ -523,6 +861,14 @@ void ProgrammingLanguageParser::QlistContext::exitRule(tree::ParseTreeListener *
     parserListener->exitQlist(this);
 }
 
+
+std::any ProgrammingLanguageParser::QlistContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<ProgrammingLanguageVisitor*>(visitor))
+    return parserVisitor->visitQlist(this);
+  else
+    return visitor->visitChildren(this);
+}
+
 ProgrammingLanguageParser::QlistContext* ProgrammingLanguageParser::qlist() {
   QlistContext *_localctx = _tracker.createInstance<QlistContext>(_ctx, getState());
   enterRule(_localctx, 6, ProgrammingLanguageParser::RuleQlist);
@@ -537,17 +883,17 @@ ProgrammingLanguageParser::QlistContext* ProgrammingLanguageParser::qlist() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(62);
-    match(ProgrammingLanguageParser::ID);
-    setState(67);
+    setState(65);
+    match(ProgrammingLanguageParser::QID);
+    setState(70);
     _errHandler->sync(this);
     _la = _input->LA(1);
-    while (_la == ProgrammingLanguageParser::T__13) {
-      setState(63);
-      match(ProgrammingLanguageParser::T__13);
-      setState(64);
-      match(ProgrammingLanguageParser::ID);
-      setState(69);
+    while (_la == ProgrammingLanguageParser::T__3) {
+      setState(66);
+      match(ProgrammingLanguageParser::T__3);
+      setState(67);
+      match(ProgrammingLanguageParser::QID);
+      setState(72);
       _errHandler->sync(this);
       _la = _input->LA(1);
     }
@@ -564,7 +910,7 @@ ProgrammingLanguageParser::QlistContext* ProgrammingLanguageParser::qlist() {
 
 bool ProgrammingLanguageParser::sempred(RuleContext *context, size_t ruleIndex, size_t predicateIndex) {
   switch (ruleIndex) {
-    case 1: return algorithmSempred(antlrcpp::downCast<AlgorithmContext *>(context), predicateIndex);
+    case 1: return programSempred(antlrcpp::downCast<ProgramContext *>(context), predicateIndex);
 
   default:
     break;
@@ -572,7 +918,7 @@ bool ProgrammingLanguageParser::sempred(RuleContext *context, size_t ruleIndex, 
   return true;
 }
 
-bool ProgrammingLanguageParser::algorithmSempred(AlgorithmContext *_localctx, size_t predicateIndex) {
+bool ProgrammingLanguageParser::programSempred(ProgramContext *_localctx, size_t predicateIndex) {
   switch (predicateIndex) {
     case 0: return precpred(_ctx, 3);
     case 1: return precpred(_ctx, 1);

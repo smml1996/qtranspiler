@@ -5,26 +5,6 @@ count embeddings (convex):  109
 total diff. algorithms (convex):  116
 accuracy perfect hardware (convex): 0.5, 1.0, 1.0
 
-min. accuracy (convex): 0.5
-avg. accuracy (convex): 0.7733
-max. accuracy (convex): 1.0
-
-min. pomdp build time (convex): 0.00038
-avg. pomdp build time (convex): 0.00291
-max. pomdp build time (convex): 0.5
-
-min. method time (convex): 0.0
-avg. method time (convex): 0.00153
-max. method time (convex): 0.5
-
-min. total time (convex): 0.00038
-avg. total time (convex): 0.00291
-max. total time (convex): 0.5
-
-min. total time (convex): 0.00038
-avg. total time (convex): 0.00291
-max. total time (convex): 0.5
-
 num. algorithms per horizon (method=convex)
 1 :  19
 2 :  25
@@ -34,476 +14,312 @@ num. algorithms per horizon (method=convex)
 
 number of improvements per horizon:
 --> horizon 1: 108 
---> horizon 2: 3 
---> horizon 3: 3 
+--> horizon 2: 80 
+--> horizon 3: 108 
 
 
 Improvements with respect to perfect algorithms per horizon
 Horizon = 1
--> Algorithm: 46
---> Max: (0.07046000000000002, ('brisbane', 0))
---> Avg: -0.07888256880733943
---> Std: 0.015428851365258539
--> Algorithm: 106
---> Max: (0.02307999999999999, ('osaka', 0))
---> Avg: -0.022144770642201838
---> Std: 0.006616006487682436
--> Algorithm: 127
---> Max: (0.008689999999999976, ('torino', 1))
---> Avg: -0.007344403669724777
---> Std: 0.003367013027065807
--> Algorithm: 112
---> Max: (0.007319999999999993, ('poughkeepsie', 0))
---> Avg: -0.006006880733944956
---> Std: 0.0030258450601834317
--> Algorithm: 99
---> Max: (0.006230000000000013, ('makarresh', 1))
---> Avg: -0.004967798165137615
---> Std: 0.002687156475132859
--> Algorithm: 58
---> Max: (0.0035299999999999776, ('cairo', 1))
---> Avg: -0.0024653211009174314
---> Std: 0.0017377137858390476
--> Algorithm: 121
---> Max: (0.0031999999999999806, ('rochester', 1))
---> Avg: -0.0021600917431192665
---> Std: 0.001613772033680861
--> Algorithm: 29
---> Max: (0.0024799999999999822, ('brooklyn', 1))
---> Avg: -0.0015228440366972474
---> Std: 0.001317889089178655
--> Algorithm: 132
---> Max: (0.0016100000000000003, ('almaden', 1))
---> Avg: -0.0007982568807339478
---> Std: 0.0009141539744249028
--> Algorithm: 62
---> Max: (0.0013400000000000079, ('brooklyn', 1))
---> Avg: -0.000571834862385319
---> Std: 0.0007886993103247251
--> Algorithm: 117
---> Max: (0.0011599999999999944, ('brooklyn', 1))
---> Avg: -0.0004265137614678922
---> Std: 0.0007041666681746079
--> Algorithm: 71
---> Max: (0.0009300000000000419, ('johannesburg', 0))
---> Avg: -0.00024605504587156177
---> Std: 0.0005951875184570675
--> Algorithm: 41
---> Max: (0.0008200000000000429, ('johannesburg', 0))
---> Avg: -0.00016541284403669818
---> Std: 0.0005361790954765932
--> Algorithm: 54
---> Max: (0.0005900000000000349, ('almaden', 1))
---> Avg: -2.8990825688075907e-05
---> Std: 0.0003850154998181756
--> Algorithm: 25
---> Max: (0.00047000000000002595, ('algiers', 1))
---> Avg: 4.0917431192658695e-05
---> Std: 0.000302785039518639
--> Algorithm: 76
---> Max: (0.00035000000000001696, ('algiers', 1))
---> Avg: 9.220183486238434e-05
---> Std: 0.0002136211504568961
--> Algorithm: 35
---> Max: (0.00022000000000005349, ('algiers', 1))
---> Avg: 0.00012247706422017967
---> Std: 0.00010581391740799911
--> Algorithm: 22
---> Max: (0.00012000000000000899, ('belem', 0))
---> Avg: 0.0001012844036697237
---> Std: 3.2032995646018676e-05
-
-Horizon = 2
--> Algorithm: 128
---> Max: (0.12696999999999997, ('torino', 1))
---> Avg: -0.8126855045871564
---> Std: 0.27252582049428936
--> Algorithm: 68
---> Max: (0.11950999999999995, ('torino', 1))
---> Avg: -0.812314495412844
---> Std: 0.2731598825219746
--> Algorithm: 136
---> Max: (0.0, ('perfect_hardware', 0))
---> Avg: -0.001447614678899086
---> Std: 0.007129869083401833
--> Algorithm: 90
---> Max: (0.0, ('kyiv', 1))
---> Avg: -0.0014406422018348665
---> Std: 0.007126501307096944
--> Algorithm: 23
---> Max: (-1.0000000000010001e-05, ('cusco', 1))
---> Avg: -0.0014376146788990852
---> Std: 0.007120644984711791
--> Algorithm: 32
---> Max: (-6.0000000000060005e-05, ('lagos', 0))
---> Avg: -0.001477614678899092
---> Std: 0.00710618065607817
--> Algorithm: 52
---> Max: (-7.999999999996898e-05, ('kyoto', 1))
---> Avg: -0.0015993577981651512
---> Std: 0.0070742688766623546
--> Algorithm: 96
---> Max: (-8.999999999992347e-05, ('manhattan', 0))
---> Avg: -0.0016819266055045912
---> Std: 0.007054487470826275
--> Algorithm: 39
---> Max: (-0.0001100000000000545, ('washington', 0))
---> Avg: -0.0015343119266055137
---> Std: 0.007091267760940673
--> Algorithm: 26
---> Max: (-0.00014999999999998348, ('manhattan', 0))
---> Avg: -0.0017876146788990829
---> Std: 0.007030885553397081
--> Algorithm: 55
---> Max: (-0.00029999999999996696, ('manhattan', 0))
---> Avg: -0.0019580733944954145
---> Std: 0.006994402719458671
--> Algorithm: 63
---> Max: (-0.00029999999999996696, ('cambridge', 1))
---> Avg: -0.00310981651376148
---> Std: 0.00677803232422532
--> Algorithm: 100
---> Max: (-0.0003300000000000525, ('makarresh', 1))
---> Avg: -0.011535871559633032
---> Std: 0.0059491272641936785
--> Algorithm: 118
---> Max: (-0.00043999999999999595, ('cambridge', 1))
---> Avg: -0.0028170642201834945
---> Std: 0.006828727757267432
--> Algorithm: 113
---> Max: (-0.00043999999999999595, ('torino', 1))
---> Avg: -0.013482018348623847
---> Std: 0.0058939708333894435
--> Algorithm: 115
---> Max: (-0.00044999999999995044, ('manhattan', 0))
---> Avg: -0.0021388990825688117
---> Std: 0.006956603888798566
--> Algorithm: 42
---> Max: (-0.0004999999999999449, ('boeblingen', 1))
---> Avg: -0.0022753211009174388
---> Std: 0.006929814353882283
--> Algorithm: 72
---> Max: (-0.0006199999999999539, ('cambridge', 1))
---> Avg: -0.0024474311926605532
---> Std: 0.006897472752912201
--> Algorithm: 122
---> Max: (-0.0006300000000000194, ('rochester', 1))
---> Avg: -0.006217706422018354
---> Std: 0.006343480852057603
--> Algorithm: 133
---> Max: (-0.0006399999999999739, ('cambridge', 1))
---> Avg: -0.0035589908256880806
---> Std: 0.006702212313711289
--> Algorithm: 59
---> Max: (-0.0010299999999999754, ('rochester', 1))
---> Avg: -0.006801651376146795
---> Std: 0.006278387902568135
--> Algorithm: 50
---> Max: (-0.0011499999999999844, ('rochester', 1))
---> Avg: -0.00510972477064221
---> Std: 0.006477785180868029
--> Algorithm: 30
---> Max: (-0.0012099999999999334, ('rochester', 1))
---> Avg: -0.0049870642201834915
---> Std: 0.006493846703233525
--> Algorithm: 107
---> Max: (-0.002829999999999999, ('osaka', 0))
---> Avg: -0.04322128440366972
---> Std: 0.008323505438183889
--> Algorithm: 47
---> Max: (-0.03671000000000002, ('brisbane', 0))
---> Avg: -0.14685339449541285
---> Std: 0.02612777372198034
+hardware=brisbane-0, diff=0.07046, prob=0.5, baseline_prob=0.42954, algorithm=46, method=convex, horizon=1,
+hardware=osaka-0, diff=0.02308, prob=0.5, baseline_prob=0.47692, algorithm=106, method=convex, horizon=1,
+hardware=torino-1, diff=0.00869, prob=0.5, baseline_prob=0.49131, algorithm=127, method=convex, horizon=1,
+hardware=poughkeepsie-0, diff=0.00732, prob=0.5, baseline_prob=0.49268, algorithm=112, method=convex, horizon=1,
+hardware=makarresh-1, diff=0.00623, prob=0.5, baseline_prob=0.49377, algorithm=99, method=convex, horizon=1,
+hardware=cairo-1, diff=0.00353, prob=0.5, baseline_prob=0.49647, algorithm=58, method=convex, horizon=1,
+hardware=rochester-1, diff=0.0032, prob=0.5, baseline_prob=0.4968, algorithm=121, method=convex, horizon=1,
+hardware=brooklyn-1, diff=0.00255, prob=0.5, baseline_prob=0.49745, algorithm=29, method=convex, horizon=1,
+hardware=almaden-1, diff=0.00247, prob=0.5, baseline_prob=0.49753, algorithm=29, method=convex, horizon=1,
+hardware=yorktown-1, diff=0.00161, prob=0.5, baseline_prob=0.49839, algorithm=132, method=convex, horizon=1,
+hardware=cambridge-1, diff=0.00134, prob=0.5, baseline_prob=0.49866, algorithm=62, method=convex, horizon=1,
+hardware=quito-0, diff=0.00116, prob=0.5, baseline_prob=0.49884, algorithm=117, method=convex, horizon=1,
+hardware=johannesburg-0, diff=0.00097, prob=0.5, baseline_prob=0.49903, algorithm=71, method=convex, horizon=1,
+hardware=kolkata-0, diff=0.00095, prob=0.5, baseline_prob=0.49905, algorithm=71, method=convex, horizon=1,
+hardware=essex-1, diff=0.00093, prob=0.5, baseline_prob=0.49907, algorithm=71, method=convex, horizon=1,
+hardware=johannesburg-1, diff=0.00085, prob=0.5, baseline_prob=0.49915, algorithm=41, method=convex, horizon=1,
+hardware=melbourne-1, diff=0.00083, prob=0.5, baseline_prob=0.49917, algorithm=41, method=convex, horizon=1,
+hardware=boeblingen-1, diff=0.00082, prob=0.5, baseline_prob=0.49919, algorithm=41, method=convex, horizon=1,
+hardware=rochester-0, diff=0.00081, prob=0.5, baseline_prob=0.49919, algorithm=41, method=convex, horizon=1,
+hardware=quito-1, diff=0.0008, prob=0.5, baseline_prob=0.4992, algorithm=41, method=convex, horizon=1,
+hardware=essex-0, diff=0.00079, prob=0.5, baseline_prob=0.49921, algorithm=41, method=convex, horizon=1,
+hardware=poughkeepsie-1, diff=0.00072, prob=0.5, baseline_prob=0.49928, algorithm=41, method=convex, horizon=1,
+hardware=burlington-1, diff=0.00059, prob=0.5, baseline_prob=0.49941, algorithm=54, method=convex, horizon=1,
+hardware=toronto-0, diff=0.00056, prob=0.5, baseline_prob=0.49944, algorithm=25, method=convex, horizon=1,
+hardware=bogota-1, diff=0.00051, prob=0.5, baseline_prob=0.49949, algorithm=25, method=convex, horizon=1,
+hardware=algiers-1, diff=0.00047, prob=0.5, baseline_prob=0.49953, algorithm=25, method=convex, horizon=1,
+hardware=almaden-0, diff=0.00045, prob=0.5, baseline_prob=0.49955, algorithm=25, method=convex, horizon=1,
+hardware=cambridge-0, diff=0.00045, prob=0.5, baseline_prob=0.49955, algorithm=25, method=convex, horizon=1,
+hardware=casablanca-0, diff=0.00045, prob=0.5, baseline_prob=0.49955, algorithm=25, method=convex, horizon=1,
+hardware=singapore-0, diff=0.00044, prob=0.5, baseline_prob=0.49956, algorithm=25, method=convex, horizon=1,
+hardware=london-1, diff=0.00043, prob=0.5, baseline_prob=0.49958, algorithm=25, method=convex, horizon=1,
+hardware=manhattan-0, diff=0.00041, prob=0.5, baseline_prob=0.49959, algorithm=25, method=convex, horizon=1,
+hardware=prague-0, diff=0.00039, prob=0.5, baseline_prob=0.49961, algorithm=25, method=convex, horizon=1,
+hardware=london-0, diff=0.00038, prob=0.5, baseline_prob=0.49962, algorithm=25, method=convex, horizon=1,
+hardware=manila-0, diff=0.00037, prob=0.5, baseline_prob=0.49963, algorithm=25, method=convex, horizon=1,
+hardware=geneva-1, diff=0.00035, prob=0.5, baseline_prob=0.49965, algorithm=76, method=convex, horizon=1,
+hardware=kyoto-1, diff=0.00034, prob=0.5, baseline_prob=0.49966, algorithm=76, method=convex, horizon=1,
+hardware=lima-1, diff=0.00034, prob=0.5, baseline_prob=0.49966, algorithm=76, method=convex, horizon=1,
+hardware=singapore-1, diff=0.00033, prob=0.5, baseline_prob=0.49967, algorithm=76, method=convex, horizon=1,
+hardware=burlington-0, diff=0.00031, prob=0.5, baseline_prob=0.49969, algorithm=35, method=convex, horizon=1,
+hardware=valencia-1, diff=0.0003, prob=0.5, baseline_prob=0.4997, algorithm=35, method=convex, horizon=1,
+hardware=makarresh-0, diff=0.00029, prob=0.5, baseline_prob=0.49971, algorithm=35, method=convex, horizon=1,
+hardware=nairobi-1, diff=0.00027, prob=0.5, baseline_prob=0.49973, algorithm=35, method=convex, horizon=1,
+hardware=perth-0, diff=0.00027, prob=0.5, baseline_prob=0.49973, algorithm=35, method=convex, horizon=1,
+hardware=boeblingen-0, diff=0.00025, prob=0.5, baseline_prob=0.49975, algorithm=35, method=convex, horizon=1,
+hardware=casablanca-1, diff=0.00023, prob=0.5, baseline_prob=0.49977, algorithm=35, method=convex, horizon=1,
+hardware=torino-0, diff=0.00023, prob=0.5, baseline_prob=0.49977, algorithm=35, method=convex, horizon=1,
+hardware=washington-0, diff=0.00022, prob=0.5, baseline_prob=0.49978, algorithm=35, method=convex, horizon=1,
+hardware=auckland-1, diff=0.00021, prob=0.5, baseline_prob=0.49979, algorithm=35, method=convex, horizon=1,
+hardware=melbourne-0, diff=0.00021, prob=0.5, baseline_prob=0.49979, algorithm=22, method=convex, horizon=1,
+hardware=vigo-0, diff=0.00021, prob=0.5, baseline_prob=0.49979, algorithm=22, method=convex, horizon=1,
+hardware=guadalupe-0, diff=0.0002, prob=0.5, baseline_prob=0.4998, algorithm=22, method=convex, horizon=1,
+hardware=nairobi-0, diff=0.0002, prob=0.5, baseline_prob=0.4998, algorithm=22, method=convex, horizon=1,
+hardware=ourense-1, diff=0.0002, prob=0.5, baseline_prob=0.4998, algorithm=22, method=convex, horizon=1,
+hardware=paris-0, diff=0.0002, prob=0.5, baseline_prob=0.4998, algorithm=22, method=convex, horizon=1,
+hardware=perth-1, diff=0.0002, prob=0.5, baseline_prob=0.4998, algorithm=22, method=convex, horizon=1,
+hardware=vigo-1, diff=0.0002, prob=0.5, baseline_prob=0.4998, algorithm=22, method=convex, horizon=1,
+hardware=yorktown-0, diff=0.0002, prob=0.5, baseline_prob=0.4998, algorithm=22, method=convex, horizon=1,
+hardware=athens-0, diff=0.00019, prob=0.5, baseline_prob=0.49981, algorithm=22, method=convex, horizon=1,
+hardware=geneva-0, diff=0.00019, prob=0.5, baseline_prob=0.49981, algorithm=22, method=convex, horizon=1,
+hardware=sydney-1, diff=0.00019, prob=0.5, baseline_prob=0.49981, algorithm=22, method=convex, horizon=1,
+hardware=belem-1, diff=0.00017, prob=0.5, baseline_prob=0.49983, algorithm=22, method=convex, horizon=1,
+hardware=kawasaki-0, diff=0.00016, prob=0.5, baseline_prob=0.49984, algorithm=22, method=convex, horizon=1,
+hardware=manhattan-1, diff=0.00016, prob=0.5, baseline_prob=0.49984, algorithm=22, method=convex, horizon=1,
+hardware=paris-1, diff=0.00016, prob=0.5, baseline_prob=0.49984, algorithm=22, method=convex, horizon=1,
+hardware=rome-1, diff=0.00016, prob=0.5, baseline_prob=0.49984, algorithm=22, method=convex, horizon=1,
+hardware=valencia-0, diff=0.00016, prob=0.5, baseline_prob=0.49984, algorithm=22, method=convex, horizon=1,
+hardware=athens-1, diff=0.00015, prob=0.5, baseline_prob=0.49985, algorithm=22, method=convex, horizon=1,
+hardware=fez-1, diff=0.00015, prob=0.5, baseline_prob=0.49985, algorithm=22, method=convex, horizon=1,
+hardware=lagos-1, diff=0.00015, prob=0.5, baseline_prob=0.49985, algorithm=22, method=convex, horizon=1,
+hardware=ourense-0, diff=0.00015, prob=0.5, baseline_prob=0.49985, algorithm=22, method=convex, horizon=1,
+hardware=brooklyn-0, diff=0.00014, prob=0.5, baseline_prob=0.49986, algorithm=22, method=convex, horizon=1,
+hardware=jakarta-0, diff=0.00014, prob=0.5, baseline_prob=0.49986, algorithm=22, method=convex, horizon=1,
+hardware=jakarta-1, diff=0.00014, prob=0.5, baseline_prob=0.49986, algorithm=22, method=convex, horizon=1,
+hardware=lagos-0, diff=0.00014, prob=0.5, baseline_prob=0.49986, algorithm=22, method=convex, horizon=1,
+hardware=auckland-0, diff=0.00013, prob=0.5, baseline_prob=0.49987, algorithm=22, method=convex, horizon=1,
+hardware=cairo-0, diff=0.00013, prob=0.5, baseline_prob=0.49987, algorithm=22, method=convex, horizon=1,
+hardware=oslo-0, diff=0.00013, prob=0.5, baseline_prob=0.49987, algorithm=22, method=convex, horizon=1,
+hardware=oslo-1, diff=0.00013, prob=0.5, baseline_prob=0.49987, algorithm=22, method=convex, horizon=1,
+hardware=santiago-0, diff=0.00013, prob=0.5, baseline_prob=0.49987, algorithm=22, method=convex, horizon=1,
+hardware=toronto-1, diff=0.00013, prob=0.5, baseline_prob=0.49987, algorithm=22, method=convex, horizon=1,
+hardware=washington-1, diff=0.00013, prob=0.5, baseline_prob=0.49987, algorithm=22, method=convex, horizon=1,
+hardware=belem-0, diff=0.00012, prob=0.5, baseline_prob=0.49988, algorithm=22, method=convex, horizon=1,
+hardware=cusco-1, diff=0.00012, prob=0.5, baseline_prob=0.49988, algorithm=22, method=convex, horizon=1,
+hardware=guadalupe-1, diff=0.00012, prob=0.5, baseline_prob=0.49988, algorithm=22, method=convex, horizon=1,
+hardware=kawasaki-1, diff=0.00012, prob=0.5, baseline_prob=0.49988, algorithm=22, method=convex, horizon=1,
+hardware=kyiv-0, diff=0.00012, prob=0.5, baseline_prob=0.49988, algorithm=22, method=convex, horizon=1,
+hardware=algiers-0, diff=0.00011, prob=0.5, baseline_prob=0.49989, algorithm=22, method=convex, horizon=1,
+hardware=brisbane-1, diff=0.00011, prob=0.5, baseline_prob=0.49989, algorithm=22, method=convex, horizon=1,
+hardware=fez-0, diff=0.00011, prob=0.5, baseline_prob=0.49989, algorithm=22, method=convex, horizon=1,
+hardware=manila-1, diff=0.00011, prob=0.5, baseline_prob=0.49989, algorithm=22, method=convex, horizon=1,
+hardware=montreal-1, diff=0.00011, prob=0.5, baseline_prob=0.49989, algorithm=22, method=convex, horizon=1,
+hardware=mumbai-0, diff=0.00011, prob=0.5, baseline_prob=0.49989, algorithm=22, method=convex, horizon=1,
+hardware=rome-0, diff=0.00011, prob=0.5, baseline_prob=0.49989, algorithm=22, method=convex, horizon=1,
+hardware=bogota-0, diff=0.0001, prob=0.5, baseline_prob=0.4999, algorithm=22, method=convex, horizon=1,
+hardware=cusco-0, diff=0.0001, prob=0.5, baseline_prob=0.4999, algorithm=22, method=convex, horizon=1,
+hardware=hanoi-1, diff=0.0001, prob=0.5, baseline_prob=0.4999, algorithm=22, method=convex, horizon=1,
+hardware=sydney-0, diff=0.0001, prob=0.5, baseline_prob=0.4999, algorithm=22, method=convex, horizon=1,
+hardware=hanoi-0, diff=9e-05, prob=0.5, baseline_prob=0.49991, algorithm=22, method=convex, horizon=1,
+hardware=lima-0, diff=9e-05, prob=0.5, baseline_prob=0.49991, algorithm=22, method=convex, horizon=1,
+hardware=mumbai-1, diff=9e-05, prob=0.5, baseline_prob=0.49991, algorithm=22, method=convex, horizon=1,
+hardware=santiago-1, diff=9e-05, prob=0.5, baseline_prob=0.49991, algorithm=22, method=convex, horizon=1,
+hardware=montreal-0, diff=8e-05, prob=0.5, baseline_prob=0.49992, algorithm=22, method=convex, horizon=1,
+hardware=kolkata-1, diff=7e-05, prob=0.5, baseline_prob=0.49993, algorithm=22, method=convex, horizon=1,
+hardware=kyoto-0, diff=7e-05, prob=0.5, baseline_prob=0.49993, algorithm=22, method=convex, horizon=1,
+hardware=osaka-1, diff=7e-05, prob=0.5, baseline_prob=0.49993, algorithm=22, method=convex, horizon=1,
+hardware=kyiv-1, diff=5e-05, prob=0.5, baseline_prob=0.49995, algorithm=22, method=convex, horizon=1,
+hardware=prague-1, diff=4e-05, prob=0.5, baseline_prob=0.49996, algorithm=22, method=convex, horizon=1,
 
 Horizon = 3
--> Algorithm: 129
---> Max: (0.12810000000000005, ('torino', 1))
---> Avg: -0.8135171559633028
---> Std: 0.2721641196386629
--> Algorithm: 69
---> Max: (0.11952999999999997, ('torino', 1))
---> Avg: -0.8124852293577983
---> Std: 0.2732220080189719
--> Algorithm: 98
---> Max: (0.00020999999999993246, ('makarresh', 0))
---> Avg: -0.0023192660550458762
---> Std: 0.006595195600730325
--> Algorithm: 48
---> Max: (0.0, ('brisbane', 0))
---> Avg: -0.02821009174311927
---> Std: 0.03385016115436809
--> Algorithm: 108
---> Max: (0.0, ('osaka', 0))
---> Avg: -0.0060354128440367055
---> Std: 0.008399094586577645
--> Algorithm: 120
---> Max: (0.0, ('rochester', 0))
---> Avg: -0.005081284403669733
---> Std: 0.007640702059671084
--> Algorithm: 74
---> Max: (0.0, ('fez', 0))
---> Avg: -0.004532293577981659
---> Std: 0.007281508623832006
--> Algorithm: 89
---> Max: (0.0, ('fez', 0))
---> Avg: -0.00442201834862386
---> Std: 0.007217453098003646
--> Algorithm: 91
---> Max: (0.0, ('kyiv', 1))
---> Avg: -0.0014357798165137668
---> Std: 0.007126301348808743
--> Algorithm: 86
---> Max: (0.0, ('kawasaki', 1))
---> Avg: -0.001414128440366978
---> Std: 0.007119423121007973
--> Algorithm: 94
---> Max: (0.0, ('lagos', 0))
---> Avg: -0.0014123853211009212
---> Std: 0.007118448631845778
--> Algorithm: 104
---> Max: (0.0, ('mumbai', 1))
---> Avg: -0.0013930275229357871
---> Std: 0.007109700663671669
--> Algorithm: 81
---> Max: (0.0, ('hanoi', 1))
---> Avg: -0.0013815596330275363
---> Std: 0.007102876982878904
--> Algorithm: 93
---> Max: (0.0, ('kyoto', 1))
---> Avg: -0.0013763302752293684
---> Std: 0.007099502807389442
--> Algorithm: 75
---> Max: (0.0, ('fez', 1))
---> Avg: -0.0013705504587156016
---> Std: 0.007095011267036492
--> Algorithm: 125
---> Max: (0.0, ('sydney', 1))
---> Avg: -0.0013652293577981662
---> Std: 0.007090189047828341
--> Algorithm: 82
---> Max: (0.0, ('jakarta', 1))
---> Avg: -0.0013471559633027536
---> Std: 0.007068629849388955
--> Algorithm: 37
---> Max: (0.0, ('belem', 0))
---> Avg: -0.0013415596330275262
---> Std: 0.007061741755338846
--> Algorithm: 78
---> Max: (0.0, ('guadalupe', 0))
---> Avg: -0.0013336697247706452
---> Std: 0.007045148535688108
--> Algorithm: 44
---> Max: (0.0, ('bogota', 0))
---> Avg: -0.0013310091743119366
---> Std: 0.007038448501301316
--> Algorithm: 102
---> Max: (0.0, ('manila', 0))
---> Avg: -0.0013266055045871611
---> Std: 0.007025905269229841
--> Algorithm: 43
---> Max: (0.0, ('boeblingen', 1))
---> Avg: -0.001322201834862391
---> Std: 0.0070013681675901605
--> Algorithm: 64
---> Max: (0.0, ('cambridge', 1))
---> Avg: -0.0013224770642201902
---> Std: 0.006991500283540504
--> Algorithm: 84
---> Max: (0.0, ('johannesburg', 1))
---> Avg: -0.001324954128440374
---> Std: 0.006982972361905473
--> Algorithm: 95
---> Max: (0.0, ('athens', 1))
---> Avg: -0.001328073394495421
---> Std: 0.006974784010603016
--> Algorithm: 34
---> Max: (0.0, ('athens', 1))
---> Avg: -0.0013316513761467942
---> Std: 0.006967951969920137
--> Algorithm: 130
---> Max: (0.0, ('valencia', 0))
---> Avg: -0.0013368807339449583
---> Std: 0.006957800538118099
--> Algorithm: 66
---> Max: (0.0, ('casablanca', 1))
---> Avg: -0.0013425688073394548
---> Std: 0.006946699909771945
--> Algorithm: 134
---> Max: (0.0, ('yorktown', 1))
---> Avg: -0.001349908256880739
---> Std: 0.006934769548817688
--> Algorithm: 38
---> Max: (0.0, ('belem', 1))
---> Avg: -0.0013572477064220246
---> Std: 0.006924892280424354
--> Algorithm: 103
---> Max: (0.0, ('mumbai', 0))
---> Avg: -0.0013648623853211082
---> Std: 0.006915526226553276
--> Algorithm: 27
---> Max: (0.0, ('algiers', 1))
---> Avg: -0.0013732110091743137
---> Std: 0.006905956752545286
--> Algorithm: 123
---> Max: (0.0, ('jakarta', 0))
---> Avg: -0.0013833944954128581
---> Std: 0.006895956037200826
--> Algorithm: 45
---> Max: (0.0, ('bogota', 1))
---> Avg: -0.0013885321100917491
---> Std: 0.006890171855310916
--> Algorithm: 109
---> Max: (0.0, ('ourense', 0))
---> Avg: -0.001400458715596339
---> Std: 0.006878142027509661
--> Algorithm: 111
---> Max: (0.0, ('ourense', 0))
---> Avg: -0.0014088073394495487
---> Std: 0.006870331913483305
--> Algorithm: 36
---> Max: (0.0, ('auckland', 1))
---> Avg: -0.0014339449541284515
---> Std: 0.006848178592441863
--> Algorithm: 79
---> Max: (0.0, ('brooklyn', 0))
---> Avg: -0.001448440366972484
---> Std: 0.006836533962403476
--> Algorithm: 83
---> Max: (0.0, ('johannesburg', 0))
---> Avg: -0.0035850458715596402
---> Std: 0.006828649698940437
--> Algorithm: 56
---> Max: (0.0, ('burlington', 0))
---> Avg: -0.0014730275229357832
---> Std: 0.006816636172790687
--> Algorithm: 53
---> Max: (0.0, ('burlington', 0))
---> Avg: -0.001479816513761475
---> Std: 0.006811338719459365
--> Algorithm: 67
---> Max: (0.0, ('burlington', 0))
---> Avg: -0.0014866972477064289
---> Std: 0.006806230268827762
--> Algorithm: 88
---> Max: (0.0, ('cusco', 0))
---> Avg: -0.0015048623853211067
---> Std: 0.006794233068577064
--> Algorithm: 31
---> Max: (0.0, ('almaden', 1))
---> Avg: -0.0015137614678899143
---> Std: 0.0067889228662076015
--> Algorithm: 119
---> Max: (0.0, ('quito', 0))
---> Avg: -0.0034450458715596407
---> Std: 0.006781738363381315
--> Algorithm: 105
---> Max: (0.0, ('kolkata', 1))
---> Avg: -0.001535963302752305
---> Std: 0.006776162483193636
--> Algorithm: 92
---> Max: (0.0, ('kolkata', 1))
---> Avg: -0.0015572477064220275
---> Std: 0.006764709880116627
--> Algorithm: 114
---> Max: (0.0, ('poughkeepsie', 0))
---> Avg: -0.0033266972477064317
---> Std: 0.006745268170690424
--> Algorithm: 80
---> Max: (0.0, ('hanoi', 0))
---> Avg: -0.0016136697247706507
---> Std: 0.006736362720691568
--> Algorithm: 73
---> Max: (0.0, ('essex', 1))
---> Avg: -0.001638532110091748
---> Std: 0.0067245250177419445
--> Algorithm: 33
---> Max: (0.0, ('athens', 0))
---> Avg: -0.001686146788990835
---> Std: 0.00670504010376287
--> Algorithm: 40
---> Max: (0.0, ('boeblingen', 0))
---> Avg: -0.001697889908256891
---> Std: 0.00670005459809077
--> Algorithm: 124
---> Max: (0.0, ('brisbane', 1))
---> Avg: -0.0017238532110091837
---> Std: 0.006689853138544264
--> Algorithm: 49
---> Max: (0.0, ('brisbane', 1))
---> Avg: -0.0017482568807339531
---> Std: 0.006681236418624137
--> Algorithm: 87
---> Max: (0.0, ('auckland', 0))
---> Avg: -0.0017878899082568883
---> Std: 0.006668474903853447
--> Algorithm: 85
---> Max: (0.0, ('kawasaki', 0))
---> Avg: -0.003035596330275239
---> Std: 0.006665117935550816
--> Algorithm: 131
---> Max: (0.0, ('kawasaki', 0))
---> Avg: -0.0030008256880734016
---> Std: 0.006657746411128143
--> Algorithm: 126
---> Max: (0.0, ('kawasaki', 0))
---> Avg: -0.002957614678899095
---> Std: 0.006648711222803027
--> Algorithm: 24
---> Max: (0.0, ('algiers', 0))
---> Avg: -0.001859449541284409
---> Std: 0.006647858167312853
--> Algorithm: 110
---> Max: (0.0, ('algiers', 0))
---> Avg: -0.0018732110091743152
---> Std: 0.006644994061354257
--> Algorithm: 101
---> Max: (0.0, ('geneva', 1))
---> Avg: -0.0019366972477064298
---> Std: 0.006631818651053068
--> Algorithm: 77
---> Max: (0.0, ('geneva', 1))
---> Avg: -0.0019494495412844073
---> Std: 0.006629478058174663
--> Algorithm: 97
---> Max: (0.0, ('cairo', 0))
---> Avg: -0.0019661467889908308
---> Std: 0.006626281274878773
--> Algorithm: 57
---> Max: (0.0, ('cairo', 0))
---> Avg: -0.0019828440366972486
---> Std: 0.006623490476766814
--> Algorithm: 70
---> Max: (0.0, ('cairo', 0))
---> Avg: -0.001991834862385326
---> Std: 0.006622300451412141
--> Algorithm: 61
---> Max: (0.0, ('cambridge', 0))
---> Avg: -0.002014495412844039
---> Std: 0.006618193846460726
--> Algorithm: 60
---> Max: (0.0, ('cairo', 1))
---> Avg: -0.0020599082568807385
---> Std: 0.006611757414078081
--> Algorithm: 28
---> Max: (0.0, ('almaden', 0))
---> Avg: -0.002172293577981663
---> Std: 0.006600432033141853
--> Algorithm: 65
---> Max: (0.0, ('casablanca', 0))
---> Avg: -0.002234128440366976
---> Std: 0.006596688171742111
--> Algorithm: 51
---> Max: (0.0, ('brooklyn', 1))
---> Avg: -0.0022650458715596376
---> Std: 0.0065952782806890185
--> Algorithm: 116
---> Max: (0.0, ('poughkeepsie', 1))
---> Avg: -0.0024046788990825744
---> Std: 0.0065941626218176215
--> Algorithm: 137
---> Max: (0.0, ('perfect_hardware', 0))
---> Avg: -0.001238073394495416
---> Std: 0.005307594048828155
+hardware=torino-1, diff=0.37827, prob=0.56405, baseline_prob=0.18578, algorithm=129, method=convex, horizon=3,
+hardware=osaka-0, diff=0.25796, prob=0.55847, baseline_prob=0.30051, algorithm=108, method=convex, horizon=3,
+hardware=cusco-1, diff=0.25396, prob=0.50195, baseline_prob=0.24799, algorithm=69, method=convex, horizon=3,
+hardware=makarresh-1, diff=0.25244, prob=0.5258, baseline_prob=0.27336, algorithm=101, method=convex, horizon=3,
+hardware=kyiv-1, diff=0.25001, prob=0.50317, baseline_prob=0.25316, algorithm=91, method=convex, horizon=3,
+hardware=lagos-0, diff=0.24876, prob=0.53619, baseline_prob=0.28743, algorithm=94, method=convex, horizon=3,
+hardware=kyoto-1, diff=0.24386, prob=0.57945, baseline_prob=0.33559, algorithm=93, method=convex, horizon=3,
+hardware=rochester-1, diff=0.24216, prob=0.59688, baseline_prob=0.35472, algorithm=67, method=convex, horizon=3,
+hardware=manhattan-0, diff=0.24094, prob=0.59622, baseline_prob=0.35528, algorithm=75, method=convex, horizon=3,
+hardware=cambridge-1, diff=0.23861, prob=0.60971, baseline_prob=0.3711, algorithm=64, method=convex, horizon=3,
+hardware=brisbane-0, diff=0.22693, prob=0.72379, baseline_prob=0.49686, algorithm=48, method=convex, horizon=3,
+hardware=kawasaki-1, diff=0.22028, prob=0.67257, baseline_prob=0.45229, algorithm=86, method=convex, horizon=3,
+hardware=washington-0, diff=0.21872, prob=0.67712, baseline_prob=0.4584, algorithm=104, method=convex, horizon=3,
+hardware=yorktown-1, diff=0.20781, prob=0.70703, baseline_prob=0.49922, algorithm=134, method=convex, horizon=3,
+hardware=toronto-0, diff=0.19949, prob=0.72525, baseline_prob=0.52576, algorithm=37, method=convex, horizon=3,
+hardware=almaden-1, diff=0.17689, prob=0.77198, baseline_prob=0.59509, algorithm=31, method=convex, horizon=3,
+hardware=paris-0, diff=0.16667, prob=0.78878, baseline_prob=0.62211, algorithm=81, method=convex, horizon=3,
+hardware=boeblingen-1, diff=0.15613, prob=0.8068, baseline_prob=0.65067, algorithm=43, method=convex, horizon=3,
+hardware=melbourne-1, diff=0.15236, prob=0.81288, baseline_prob=0.66052, algorithm=64, method=convex, horizon=3,
+hardware=poughkeepsie-0, diff=0.1483, prob=0.82221, baseline_prob=0.67391, algorithm=114, method=convex, horizon=3,
+hardware=johannesburg-1, diff=0.14348, prob=0.82674, baseline_prob=0.68326, algorithm=84, method=convex, horizon=3,
+hardware=london-0, diff=0.13805, prob=0.83474, baseline_prob=0.69669, algorithm=37, method=convex, horizon=3,
+hardware=cairo-1, diff=0.12958, prob=0.84832, baseline_prob=0.71874, algorithm=60, method=convex, horizon=3,
+hardware=geneva-0, diff=0.12155, prob=0.85847, baseline_prob=0.73692, algorithm=75, method=convex, horizon=3,
+hardware=sydney-1, diff=0.10453, prob=0.88146, baseline_prob=0.77693, algorithm=125, method=convex, horizon=3,
+hardware=quito-1, diff=0.0994, prob=0.88828, baseline_prob=0.78888, algorithm=38, method=convex, horizon=3,
+hardware=fez-1, diff=0.09486, prob=0.89393, baseline_prob=0.79907, algorithm=75, method=convex, horizon=3,
+hardware=prague-0, diff=0.09264, prob=0.89679, baseline_prob=0.80415, algorithm=102, method=convex, horizon=3,
+hardware=mumbai-1, diff=0.09103, prob=0.89873, baseline_prob=0.8077, algorithm=104, method=convex, horizon=3,
+hardware=montreal-1, diff=0.08745, prob=0.90321, baseline_prob=0.81576, algorithm=81, method=convex, horizon=3,
+hardware=manila-0, diff=0.08742, prob=0.9033, baseline_prob=0.81588, algorithm=102, method=convex, horizon=3,
+hardware=brooklyn-1, diff=0.08141, prob=0.9111, baseline_prob=0.82969, algorithm=51, method=convex, horizon=3,
+hardware=singapore-0, diff=0.08063, prob=0.91164, baseline_prob=0.83101, algorithm=64, method=convex, horizon=3,
+hardware=hanoi-1, diff=0.07728, prob=0.91562, baseline_prob=0.83834, algorithm=81, method=convex, horizon=3,
+hardware=vigo-0, diff=0.06963, prob=0.92472, baseline_prob=0.85509, algorithm=37, method=convex, horizon=3,
+hardware=guadalupe-0, diff=0.05701, prob=0.93932, baseline_prob=0.88231, algorithm=78, method=convex, horizon=3,
+hardware=nairobi-0, diff=0.05481, prob=0.94182, baseline_prob=0.88701, algorithm=44, method=convex, horizon=3,
+hardware=lima-1, diff=0.0545, prob=0.9422, baseline_prob=0.8877, algorithm=95, method=convex, horizon=3,
+hardware=bogota-1, diff=0.05386, prob=0.94295, baseline_prob=0.88909, algorithm=45, method=convex, horizon=3,
+hardware=essex-1, diff=0.05352, prob=0.94338, baseline_prob=0.88986, algorithm=73, method=convex, horizon=3,
+hardware=algiers-1, diff=0.05275, prob=0.94418, baseline_prob=0.89143, algorithm=27, method=convex, horizon=3,
+hardware=jakarta-1, diff=0.05255, prob=0.94438, baseline_prob=0.89183, algorithm=82, method=convex, horizon=3,
+hardware=ourense-1, diff=0.05179, prob=0.94522, baseline_prob=0.89343, algorithm=44, method=convex, horizon=3,
+hardware=valencia-1, diff=0.05153, prob=0.94553, baseline_prob=0.894, algorithm=64, method=convex, horizon=3,
+hardware=burlington-1, diff=0.04669, prob=0.95097, baseline_prob=0.90428, algorithm=56, method=convex, horizon=3,
+hardware=kolkata-0, diff=0.04502, prob=0.95284, baseline_prob=0.90782, algorithm=87, method=convex, horizon=3,
+hardware=perth-0, diff=0.04149, prob=0.95666, baseline_prob=0.91517, algorithm=34, method=convex, horizon=3,
+hardware=belem-0, diff=0.03979, prob=0.95849, baseline_prob=0.9187, algorithm=37, method=convex, horizon=3,
+hardware=casablanca-1, diff=0.03175, prob=0.96718, baseline_prob=0.93543, algorithm=66, method=convex, horizon=3,
+hardware=essex-0, diff=0.0305, prob=0.96856, baseline_prob=0.93806, algorithm=70, method=convex, horizon=3,
+hardware=rome-0, diff=0.02939, prob=0.96969, baseline_prob=0.9403, algorithm=44, method=convex, horizon=3,
+hardware=oslo-1, diff=0.02865, prob=0.97048, baseline_prob=0.94183, algorithm=102, method=convex, horizon=3,
+hardware=yorktown-0, diff=0.02712, prob=0.97211, baseline_prob=0.94499, algorithm=66, method=convex, horizon=3,
+hardware=bogota-0, diff=0.02646, prob=0.9728, baseline_prob=0.94634, algorithm=44, method=convex, horizon=3,
+hardware=melbourne-0, diff=0.02599, prob=0.9733, baseline_prob=0.94731, algorithm=38, method=convex, horizon=3,
+hardware=burlington-0, diff=0.0242, prob=0.9752, baseline_prob=0.951, algorithm=53, method=convex, horizon=3,
+hardware=athens-1, diff=0.02385, prob=0.97555, baseline_prob=0.9517, algorithm=34, method=convex, horizon=3,
+hardware=valencia-0, diff=0.023, prob=0.97645, baseline_prob=0.95345, algorithm=130, method=convex, horizon=3,
+hardware=quito-0, diff=0.02262, prob=0.97689, baseline_prob=0.95427, algorithm=119, method=convex, horizon=3,
+hardware=poughkeepsie-1, diff=0.02125, prob=0.97831, baseline_prob=0.95706, algorithm=116, method=convex, horizon=3,
+hardware=rome-1, diff=0.02109, prob=0.97845, baseline_prob=0.95736, algorithm=66, method=convex, horizon=3,
+hardware=belem-1, diff=0.02033, prob=0.97924, baseline_prob=0.95891, algorithm=38, method=convex, horizon=3,
+hardware=perth-1, diff=0.01931, prob=0.98031, baseline_prob=0.961, algorithm=111, method=convex, horizon=3,
+hardware=auckland-1, diff=0.01903, prob=0.98059, baseline_prob=0.96156, algorithm=36, method=convex, horizon=3,
+hardware=nairobi-1, diff=0.01822, prob=0.98144, baseline_prob=0.96322, algorithm=105, method=convex, horizon=3,
+hardware=johannesburg-0, diff=0.01813, prob=0.98157, baseline_prob=0.96344, algorithm=83, method=convex, horizon=3,
+hardware=santiago-0, diff=0.0178, prob=0.98188, baseline_prob=0.96408, algorithm=66, method=convex, horizon=3,
+hardware=cambridge-0, diff=0.01714, prob=0.98256, baseline_prob=0.96542, algorithm=61, method=convex, horizon=3,
+hardware=singapore-1, diff=0.01703, prob=0.98268, baseline_prob=0.96565, algorithm=124, method=convex, horizon=3,
+hardware=london-1, diff=0.0168, prob=0.98292, baseline_prob=0.96612, algorithm=97, method=convex, horizon=3,
+hardware=lagos-1, diff=0.01657, prob=0.98316, baseline_prob=0.96659, algorithm=27, method=convex, horizon=3,
+hardware=lima-0, diff=0.01641, prob=0.98331, baseline_prob=0.9669, algorithm=64, method=convex, horizon=3,
+hardware=jakarta-0, diff=0.01588, prob=0.98386, baseline_prob=0.96798, algorithm=27, method=convex, horizon=3,
+hardware=almaden-0, diff=0.01521, prob=0.98456, baseline_prob=0.96935, algorithm=28, method=convex, horizon=3,
+hardware=ourense-0, diff=0.01511, prob=0.98465, baseline_prob=0.96954, algorithm=109, method=convex, horizon=3,
+hardware=casablanca-0, diff=0.01462, prob=0.98516, baseline_prob=0.97054, algorithm=65, method=convex, horizon=3,
+hardware=vigo-1, diff=0.01459, prob=0.98521, baseline_prob=0.97062, algorithm=88, method=convex, horizon=3,
+hardware=manila-1, diff=0.0143, prob=0.9855, baseline_prob=0.9712, algorithm=66, method=convex, horizon=3,
+hardware=geneva-1, diff=0.01395, prob=0.98586, baseline_prob=0.97191, algorithm=77, method=convex, horizon=3,
+hardware=boeblingen-0, diff=0.01327, prob=0.98656, baseline_prob=0.97329, algorithm=40, method=convex, horizon=3,
+hardware=mumbai-0, diff=0.01294, prob=0.98689, baseline_prob=0.97395, algorithm=103, method=convex, horizon=3,
+hardware=brooklyn-0, diff=0.01248, prob=0.98736, baseline_prob=0.97488, algorithm=36, method=convex, horizon=3,
+hardware=rochester-0, diff=0.0107, prob=0.98921, baseline_prob=0.97851, algorithm=120, method=convex, horizon=3,
+hardware=guadalupe-1, diff=0.01061, prob=0.98928, baseline_prob=0.97867, algorithm=79, method=convex, horizon=3,
+hardware=athens-0, diff=0.01018, prob=0.98971, baseline_prob=0.97953, algorithm=33, method=convex, horizon=3,
+hardware=santiago-1, diff=0.00959, prob=0.99031, baseline_prob=0.98072, algorithm=123, method=convex, horizon=3,
+hardware=sydney-0, diff=0.0093, prob=0.9906, baseline_prob=0.9813, algorithm=111, method=convex, horizon=3,
+hardware=toronto-1, diff=0.00787, prob=0.99207, baseline_prob=0.9842, algorithm=80, method=convex, horizon=3,
+hardware=oslo-0, diff=0.00777, prob=0.99217, baseline_prob=0.9844, algorithm=80, method=convex, horizon=3,
+hardware=cusco-0, diff=0.00737, prob=0.99258, baseline_prob=0.98521, algorithm=67, method=convex, horizon=3,
+hardware=prague-1, diff=0.00728, prob=0.99266, baseline_prob=0.98538, algorithm=43, method=convex, horizon=3,
+hardware=montreal-0, diff=0.00713, prob=0.99282, baseline_prob=0.98569, algorithm=36, method=convex, horizon=3,
+hardware=paris-1, diff=0.00701, prob=0.99294, baseline_prob=0.98593, algorithm=110, method=convex, horizon=3,
+hardware=manhattan-1, diff=0.00643, prob=0.99354, baseline_prob=0.98711, algorithm=57, method=convex, horizon=3,
+hardware=brisbane-1, diff=0.00569, prob=0.99427, baseline_prob=0.98858, algorithm=49, method=convex, horizon=3,
+hardware=auckland-0, diff=0.00559, prob=0.99437, baseline_prob=0.98878, algorithm=24, method=convex, horizon=3,
+hardware=hanoi-0, diff=0.00556, prob=0.99441, baseline_prob=0.98885, algorithm=80, method=convex, horizon=3,
+hardware=torino-0, diff=0.00532, prob=0.99464, baseline_prob=0.98932, algorithm=126, method=convex, horizon=3,
+hardware=cairo-0, diff=0.00521, prob=0.99477, baseline_prob=0.98956, algorithm=57, method=convex, horizon=3,
+hardware=kolkata-1, diff=0.00494, prob=0.99503, baseline_prob=0.99009, algorithm=88, method=convex, horizon=3,
+hardware=algiers-0, diff=0.00489, prob=0.99509, baseline_prob=0.9902, algorithm=24, method=convex, horizon=3,
+hardware=kyoto-0, diff=0.00434, prob=0.99563, baseline_prob=0.99129, algorithm=92, method=convex, horizon=3,
+hardware=osaka-1, diff=0.00365, prob=0.99633, baseline_prob=0.99268, algorithm=33, method=convex, horizon=3,
+hardware=kawasaki-0, diff=0.00356, prob=0.99642, baseline_prob=0.99286, algorithm=85, method=convex, horizon=3,
+hardware=makarresh-0, diff=0.00296, prob=0.99702, baseline_prob=0.99406, algorithm=98, method=convex, horizon=3,
+hardware=washington-1, diff=0.00292, prob=0.99707, baseline_prob=0.99415, algorithm=131, method=convex, horizon=3,
+hardware=kyiv-0, diff=0.00183, prob=0.99817, baseline_prob=0.99634, algorithm=89, method=convex, horizon=3,
+hardware=fez-0, diff=0.00157, prob=0.99843, baseline_prob=0.99686, algorithm=74, method=convex, horizon=3,
+
+Horizon = 2
+hardware=torino-1, diff=0.13566, prob=0.56292, baseline_prob=0.42726, algorithm=128, method=convex, horizon=2,
+hardware=brisbane-0, diff=0.03375, prob=0.68708, baseline_prob=0.65333, algorithm=47, method=convex, horizon=2,
+hardware=osaka-0, diff=0.02025, prob=0.55564, baseline_prob=0.53539, algorithm=107, method=convex, horizon=2,
+hardware=makarresh-1, diff=0.00591, prob=0.52547, baseline_prob=0.51956, algorithm=100, method=convex, horizon=2,
+hardware=cusco-1, diff=0.00402, prob=0.50195, baseline_prob=0.49793, algorithm=68, method=convex, horizon=2,
+hardware=rochester-1, diff=0.00257, prob=0.59625, baseline_prob=0.59368, algorithm=122, method=convex, horizon=2,
+hardware=poughkeepsie-0, diff=0.00253, prob=0.81742, baseline_prob=0.81489, algorithm=113, method=convex, horizon=2,
+hardware=almaden-1, diff=0.00112, prob=0.77063, baseline_prob=0.76951, algorithm=30, method=convex, horizon=2,
+hardware=cairo-1, diff=0.00105, prob=0.84584, baseline_prob=0.84479, algorithm=59, method=convex, horizon=2,
+hardware=cambridge-1, diff=0.00104, prob=0.60941, baseline_prob=0.60837, algorithm=63, method=convex, horizon=2,
+hardware=yorktown-1, diff=0.00094, prob=0.70636, baseline_prob=0.70542, algorithm=133, method=convex, horizon=2,
+hardware=brooklyn-1, diff=0.00044, prob=0.90899, baseline_prob=0.90855, algorithm=50, method=convex, horizon=2,
+hardware=boeblingen-1, diff=0.00032, prob=0.8063, baseline_prob=0.80598, algorithm=42, method=convex, horizon=2,
+hardware=manhattan-0, diff=0.00032, prob=0.59614, baseline_prob=0.59582, algorithm=96, method=convex, horizon=2,
+hardware=melbourne-1, diff=0.00031, prob=0.81236, baseline_prob=0.81205, algorithm=42, method=convex, horizon=2,
+hardware=johannesburg-1, diff=0.0003, prob=0.82619, baseline_prob=0.82589, algorithm=42, method=convex, horizon=2,
+hardware=toronto-0, diff=0.0003, prob=0.72499, baseline_prob=0.72469, algorithm=55, method=convex, horizon=2,
+hardware=kyoto-1, diff=0.00029, prob=0.57939, baseline_prob=0.5791, algorithm=52, method=convex, horizon=2,
+hardware=quito-1, diff=0.00018, prob=0.88766, baseline_prob=0.88748, algorithm=42, method=convex, horizon=2,
+hardware=washington-0, diff=0.00014, prob=0.67704, baseline_prob=0.6769, algorithm=32, method=convex, horizon=2,
+hardware=lagos-0, diff=0.00013, prob=0.53618, baseline_prob=0.53605, algorithm=23, method=convex, horizon=2,
+hardware=london-0, diff=0.00012, prob=0.83448, baseline_prob=0.83436, algorithm=96, method=convex, horizon=2,
+hardware=essex-1, diff=0.0001, prob=0.94255, baseline_prob=0.94245, algorithm=72, method=convex, horizon=2,
+hardware=kolkata-0, diff=9e-05, prob=0.95198, baseline_prob=0.95189, algorithm=72, method=convex, horizon=2,
+hardware=paris-0, diff=8e-05, prob=0.78866, baseline_prob=0.78858, algorithm=32, method=convex, horizon=2,
+hardware=prague-0, diff=8e-05, prob=0.89647, baseline_prob=0.89639, algorithm=96, method=convex, horizon=2,
+hardware=kawasaki-1, diff=7e-05, prob=0.67252, baseline_prob=0.67245, algorithm=23, method=convex, horizon=2,
+hardware=manila-0, diff=7e-05, prob=0.903, baseline_prob=0.90293, algorithm=96, method=convex, horizon=2,
+hardware=singapore-0, diff=7e-05, prob=0.91127, baseline_prob=0.9112, algorithm=26, method=convex, horizon=2,
+hardware=burlington-1, diff=6e-05, prob=0.95043, baseline_prob=0.95037, algorithm=55, method=convex, horizon=2,
+hardware=algiers-1, diff=5e-05, prob=0.94377, baseline_prob=0.94372, algorithm=26, method=convex, horizon=2,
+hardware=bogota-1, diff=5e-05, prob=0.94249, baseline_prob=0.94244, algorithm=26, method=convex, horizon=2,
+hardware=essex-0, diff=5e-05, prob=0.96782, baseline_prob=0.96777, algorithm=42, method=convex, horizon=2,
+hardware=geneva-0, diff=5e-05, prob=0.85833, baseline_prob=0.85828, algorithm=32, method=convex, horizon=2,
+hardware=quito-0, diff=5e-05, prob=0.97578, baseline_prob=0.97573, algorithm=118, method=convex, horizon=2,
+hardware=sydney-1, diff=5e-05, prob=0.88132, baseline_prob=0.88127, algorithm=32, method=convex, horizon=2,
+hardware=kyiv-1, diff=4e-05, prob=0.50317, baseline_prob=0.50313, algorithm=90, method=convex, horizon=2,
+hardware=lima-1, diff=4e-05, prob=0.9419, baseline_prob=0.94186, algorithm=52, method=convex, horizon=2,
+hardware=fez-1, diff=3e-05, prob=0.89381, baseline_prob=0.89378, algorithm=23, method=convex, horizon=2,
+hardware=guadalupe-0, diff=3e-05, prob=0.93915, baseline_prob=0.93912, algorithm=32, method=convex, horizon=2,
+hardware=johannesburg-0, diff=3e-05, prob=0.98063, baseline_prob=0.9806, algorithm=72, method=convex, horizon=2,
+hardware=montreal-1, diff=3e-05, prob=0.90312, baseline_prob=0.90309, algorithm=23, method=convex, horizon=2,
+hardware=poughkeepsie-1, diff=3e-05, prob=0.97762, baseline_prob=0.97759, algorithm=115, method=convex, horizon=2,
+hardware=valencia-1, diff=3e-05, prob=0.94527, baseline_prob=0.94524, algorithm=39, method=convex, horizon=2,
+hardware=vigo-0, diff=3e-05, prob=0.92455, baseline_prob=0.92452, algorithm=32, method=convex, horizon=2,
+hardware=cambridge-0, diff=2e-05, prob=0.98213, baseline_prob=0.98211, algorithm=26, method=convex, horizon=2,
+hardware=casablanca-0, diff=2e-05, prob=0.98473, baseline_prob=0.98471, algorithm=26, method=convex, horizon=2,
+hardware=casablanca-1, diff=2e-05, prob=0.96697, baseline_prob=0.96695, algorithm=32, method=convex, horizon=2,
+hardware=hanoi-1, diff=2e-05, prob=0.91554, baseline_prob=0.91552, algorithm=23, method=convex, horizon=2,
+hardware=jakarta-1, diff=2e-05, prob=0.94426, baseline_prob=0.94424, algorithm=23, method=convex, horizon=2,
+hardware=mumbai-1, diff=2e-05, prob=0.89866, baseline_prob=0.89864, algorithm=23, method=convex, horizon=2,
+hardware=nairobi-0, diff=2e-05, prob=0.94165, baseline_prob=0.94163, algorithm=32, method=convex, horizon=2,
+hardware=ourense-1, diff=2e-05, prob=0.94505, baseline_prob=0.94503, algorithm=32, method=convex, horizon=2,
+hardware=perth-0, diff=2e-05, prob=0.95641, baseline_prob=0.95639, algorithm=39, method=convex, horizon=2,
+hardware=yorktown-0, diff=2e-05, prob=0.97193, baseline_prob=0.97191, algorithm=32, method=convex, horizon=2,
+hardware=almaden-0, diff=1e-05, prob=0.98413, baseline_prob=0.98412, algorithm=26, method=convex, horizon=2,
+hardware=athens-1, diff=1e-05, prob=0.97541, baseline_prob=0.9754, algorithm=23, method=convex, horizon=2,
+hardware=auckland-1, diff=1e-05, prob=0.98039, baseline_prob=0.98038, algorithm=32, method=convex, horizon=2,
+hardware=belem-0, diff=1e-05, prob=0.95839, baseline_prob=0.95838, algorithm=23, method=convex, horizon=2,
+hardware=bogota-0, diff=1e-05, prob=0.97271, baseline_prob=0.9727, algorithm=23, method=convex, horizon=2,
+hardware=brooklyn-0, diff=1e-05, prob=0.98723, baseline_prob=0.98722, algorithm=23, method=convex, horizon=2,
+hardware=burlington-0, diff=1e-05, prob=0.9749, baseline_prob=0.97489, algorithm=52, method=convex, horizon=2,
+hardware=cairo-0, diff=1e-05, prob=0.99464, baseline_prob=0.99463, algorithm=23, method=convex, horizon=2,
+hardware=geneva-1, diff=1e-05, prob=0.98552, baseline_prob=0.98551, algorithm=52, method=convex, horizon=2,
+hardware=guadalupe-1, diff=1e-05, prob=0.98916, baseline_prob=0.98915, algorithm=23, method=convex, horizon=2,
+hardware=kolkata-1, diff=1e-05, prob=0.99497, baseline_prob=0.99496, algorithm=23, method=convex, horizon=2,
+hardware=lima-0, diff=1e-05, prob=0.98323, baseline_prob=0.98322, algorithm=23, method=convex, horizon=2,
+hardware=london-1, diff=1e-05, prob=0.98251, baseline_prob=0.9825, algorithm=26, method=convex, horizon=2,
+hardware=melbourne-0, diff=1e-05, prob=0.9731, baseline_prob=0.97309, algorithm=32, method=convex, horizon=2,
+hardware=manhattan-1, diff=1e-05, prob=0.99338, baseline_prob=0.99337, algorithm=32, method=convex, horizon=2,
+hardware=mumbai-0, diff=1e-05, prob=0.98679, baseline_prob=0.98678, algorithm=23, method=convex, horizon=2,
+hardware=nairobi-1, diff=1e-05, prob=0.98119, baseline_prob=0.98118, algorithm=39, method=convex, horizon=2,
+hardware=ourense-0, diff=1e-05, prob=0.98451, baseline_prob=0.9845, algorithm=23, method=convex, horizon=2,
+hardware=perth-1, diff=1e-05, prob=0.98012, baseline_prob=0.98011, algorithm=32, method=convex, horizon=2,
+hardware=rochester-0, diff=1e-05, prob=0.98841, baseline_prob=0.9884, algorithm=42, method=convex, horizon=2,
+hardware=rome-1, diff=1e-05, prob=0.9783, baseline_prob=0.97829, algorithm=23, method=convex, horizon=2,
+hardware=santiago-1, diff=1e-05, prob=0.99023, baseline_prob=0.99022, algorithm=23, method=convex, horizon=2,
+hardware=singapore-1, diff=1e-05, prob=0.98236, baseline_prob=0.98235, algorithm=52, method=convex, horizon=2,
+hardware=torino-0, diff=1e-05, prob=0.99442, baseline_prob=0.99441, algorithm=32, method=convex, horizon=2,
+hardware=valencia-0, diff=1e-05, prob=0.9763, baseline_prob=0.97629, algorithm=23, method=convex, horizon=2,
 
 
 

@@ -221,22 +221,19 @@ public:
             new_head->children_probs.insert({0, 2.0/3.0});
             new_head->children_probs.insert({1, 1.0/3.0});
             auto meas_node = new_head->children.at(0);
-            if (horizon == 2) {
-                meas_node->children.push_back(make_shared<Algorithm>(action_mappings["P0"], 8, 10, -1));
-                meas_node->children.push_back(make_shared<Algorithm>(action_mappings["P0"], 9, 10, -1));
-            }
             new_head->children[0] = normalize_algorithm(meas_node);
             return new_head;
         }
-
         assert (horizon == 3);
         auto new_head = make_shared<Algorithm>(make_shared<POMDPAction>(random_branch), 0, 5, -1); // we are not going to use precision
         new_head->children.push_back(make_shared<Algorithm>(action_mappings["P0"], 0, 10, -1));
         auto meas_node = new_head->children.at(0);
         meas_node->children.push_back(make_shared<Algorithm>(action_mappings["P0"], 8, 10, -1));
         meas_node->children.push_back(make_shared<Algorithm>(action_mappings["P0"], 9, 10, -1));
+        auto true_branch_meas = meas_node->children.at(0);
+        true_branch_meas->children.push_back(make_shared<Algorithm>(action_mappings["Is0"], 9, 10, -1));
         new_head->children[0] = normalize_algorithm(meas_node);
-
+        // -------------
         auto h0_node = make_shared<Algorithm>(action_mappings["H0"], 0, 10, -1);
         new_head->children_probs.insert({0, 0.5});
         new_head->children_probs.insert({1, 0.5});

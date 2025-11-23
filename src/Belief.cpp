@@ -1,4 +1,4 @@
-#include "beliefs.hpp"
+#include "Belief.hpp"
 
 #include <iostream>
 

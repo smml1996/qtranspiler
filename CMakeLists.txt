@@ -10,6 +10,10 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/src/experiments
 )
+
+include_directories(/opt/homebrew/Cellar/antlr4-cpp-runtime/4.13.2/include/antlr4-runtime)
+link_directories(/opt/homebrew/Cellar/antlr4-cpp-runtime/4.13.2/lib)
+
 # Add Boost headers (header-only for multiprecision)
 find_package(Boost REQUIRED)
 
@@ -23,7 +27,7 @@ find_package(nlohmann_json REQUIRED)
 set(SOURCES
     main.cpp
         src/algorithm.cpp
-        src/beliefs.cpp
+        src/Belief.cpp
         src/channels.cpp
         src/experiments.cpp
         src/floats.cpp
@@ -51,7 +55,7 @@ target_link_libraries(main PRIVATE
 )
 
 add_executable(parse_results parse_results.cpp src/algorithm.cpp
-        src/beliefs.cpp
+        src/Belief.cpp
         src/channels.cpp
         src/experiments.cpp
         src/floats.cpp
@@ -136,7 +140,7 @@ gtest_discover_tests(test_specs)
 # test POMDPs
 add_executable(test_pomdp tests/test_pomdp.cpp
         src/pomdp.cpp
-        src/beliefs.cpp
+        src/Belief.cpp
         src/hardware_specification.cpp
         src/channels.cpp
         src/states.cpp
@@ -151,7 +155,7 @@ gtest_discover_tests(test_pomdp)
 # test beliefs
 add_executable(test_beliefs tests/test_beliefs.cpp
         src/pomdp.cpp
-        src/beliefs.cpp
+        src/Belief.cpp
         src/hardware_specification.cpp
         src/channels.cpp
         src/states.cpp
@@ -168,7 +172,7 @@ gtest_discover_tests(test_beliefs)
 add_executable(test_algorithms tests/test_algorithms.cpp
         src/algorithm.cpp
         src/pomdp.cpp
-        src/beliefs.cpp
+        src/Belief.cpp
         src/hardware_specification.cpp
         src/channels.cpp
         src/states.cpp
@@ -192,7 +196,7 @@ add_executable(test_experiments tests/test_experiments.cpp
         src/experiments/bellstate_reach.cpp
         src/algorithm.cpp
         src/pomdp.cpp
-        src/beliefs.cpp
+        src/Belief.cpp
         src/hardware_specification.cpp
         src/channels.cpp
         src/states.cpp
@@ -205,4 +209,29 @@ target_link_libraries(test_experiments GTest::gtest_main ortools::ortools nlohma
 gtest_discover_tests(test_experiments)
 
 # all tests in one file
+
+# Your executable and source files
+add_executable(verifier
+        src/floats.cpp
+        src/utils.cpp
+        src/hardware_specification.cpp
+        src/instruction.cpp
+        src/channels.cpp
+        src/pomdp.cpp
+        src/quantum_gates.cpp
+        src/states.cpp
+        src/verification_utils.cpp
+        grammars/PL/ProgrammingLanguageLexer.cpp
+        grammars/PL/ProgrammingLanguageParser.cpp
+        grammars/PL/ProgrammingLanguageBaseVisitor.cpp
+        grammars/assertions/PreconditionAssertionLexer.cpp
+        grammars/assertions/PreconditionAssertionParser.cpp
+        grammars/assertions/AssertionParser.cpp
+        grammars/assertions/AssertionLexer.cpp
+        verifier.cpp
+)
+
+# Link against the ANTLR C++ runtime
+target_include_directories(verifier PRIVATE /opt/homebrew/Cellar/antlr4-cpp-runtime/4.13.2/include/antlr4-runtime)
+target_link_libraries(verifier PRIVATE antlr4-runtime nlohmann_json::nlohmann_json ortools::ortools c++)
 

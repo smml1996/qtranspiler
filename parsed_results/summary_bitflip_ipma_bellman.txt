@@ -5,26 +5,6 @@ count embeddings (bellman):  141
 total diff. algorithms (bellman):  22
 accuracy perfect hardware (bellman): 0.5, 1.0, 1.0, 1.0, 1.0
 
-min. accuracy (bellman): 0.5
-avg. accuracy (bellman): 0.84523
-max. accuracy (bellman): 1.0
-
-min. pomdp build time (bellman): 0.01051
-avg. pomdp build time (bellman): 0.16098
-max. pomdp build time (bellman): 0.91668
-
-min. method time (bellman): 0.0
-avg. method time (bellman): 242.07173
-max. method time (bellman): 989.0
-
-min. total time (bellman): 0.01051
-avg. total time (bellman): 242.232
-max. total time (bellman): 989.10351
-
-min. total time (bellman): 0.01051
-avg. total time (bellman): 242.232
-max. total time (bellman): 989.10351
-
 num. algorithms per horizon (method=bellman)
 3 :  6
 4 :  3
@@ -36,110 +16,34 @@ num. algorithms per horizon (method=bellman)
 
 number of improvements per horizon:
 --> horizon 3: 0 
---> horizon 4: 13 
---> horizon 5: 15 
---> horizon 6: 7 
---> horizon 7: 10 
+--> horizon 4: 2 
+--> horizon 5: 4 
+--> horizon 6: 2 
+--> horizon 7: 6 
 
 
 Improvements with respect to perfect algorithms per horizon
-Horizon = 3
--> Algorithm: 0
---> Max: (0.0, ('algiers', 0))
---> Avg: 0.0
---> Std: 0.0
--> Algorithm: 5
---> Max: (0.0, ('algiers', 0))
---> Avg: 0.0
---> Std: 0.0
--> Algorithm: 8
---> Max: (0.0, ('algiers', 0))
---> Avg: 0.0
---> Std: 0.0
--> Algorithm: 13
---> Max: (0.0, ('algiers', 0))
---> Avg: 0.0
---> Std: 0.0
--> Algorithm: 18
---> Max: (0.0, ('algiers', 0))
---> Avg: 0.0
---> Std: 0.0
--> Algorithm: 19
---> Max: (0.0, ('algiers', 0))
---> Avg: 0.0
---> Std: 0.0
-
 Horizon = 4
--> Algorithm: 9
---> Max: (0.03078000000000003, ('washington', 1))
---> Avg: -0.8276812765957449
---> Std: 0.2032244767346516
--> Algorithm: 1
---> Max: (0.0, ('algiers', 0))
---> Avg: 0.0
---> Std: 0.0
--> Algorithm: 14
---> Max: (0.0, ('algiers', 0))
---> Avg: 0.0
---> Std: 0.0
+hardware=washington-1, diff=0.03078, prob=0.51539, baseline_prob=0.48461, algorithm=9, method=bellman, horizon=4,
+hardware=cambridge-2, diff=0.01392, prob=0.50696, baseline_prob=0.49304, algorithm=9, method=bellman, horizon=4,
 
 Horizon = 5
--> Algorithm: 10
---> Max: (0.03078000000000003, ('washington', 1))
---> Avg: -0.8276812765957449
---> Std: 0.2032244767346516
--> Algorithm: 20
---> Max: (0.03078000000000003, ('washington', 1))
---> Avg: -0.8276812765957449
---> Std: 0.2032244767346516
--> Algorithm: 2
---> Max: (0.0, ('algiers', 0))
---> Avg: 0.0
---> Std: 0.0
--> Algorithm: 6
---> Max: (0.0, ('algiers', 0))
---> Avg: 0.0
---> Std: 0.0
--> Algorithm: 15
---> Max: (0.0, ('algiers', 0))
---> Avg: 0.0
---> Std: 0.0
+hardware=washington-1, diff=0.03078, prob=0.51539, baseline_prob=0.48461, algorithm=20, method=bellman, horizon=5,
+hardware=cambridge-2, diff=0.01392, prob=0.50696, baseline_prob=0.49304, algorithm=10, method=bellman, horizon=5,
+hardware=perth-0, diff=1e-05, prob=0.96705, baseline_prob=0.96704, algorithm=2, method=bellman, horizon=5,
+hardware=casablanca-3, diff=1e-05, prob=0.96876, baseline_prob=0.96875, algorithm=2, method=bellman, horizon=5,
 
 Horizon = 6
--> Algorithm: 11
---> Max: (0.04218000000000005, ('washington', 1))
---> Avg: -0.8909609929078017
---> Std: 0.18756268477995358
--> Algorithm: 16
---> Max: (0.005699999999999983, ('washington', 1))
---> Avg: -0.03163985815602837
---> Std: 0.026051609903250988
--> Algorithm: 3
---> Max: (0.0, ('algiers', 0))
---> Avg: 0.0
---> Std: 0.0
+hardware=washington-1, diff=0.04217, prob=0.52108, baseline_prob=0.47891, algorithm=11, method=bellman, horizon=6,
+hardware=cambridge-2, diff=0.02054, prob=0.51027, baseline_prob=0.48973, algorithm=11, method=bellman, horizon=6,
 
 Horizon = 7
--> Algorithm: 12
---> Max: (0.04218000000000005, ('washington', 1))
---> Avg: -0.8909609929078017
---> Std: 0.18756268477995358
--> Algorithm: 21
---> Max: (0.04218000000000005, ('washington', 1))
---> Avg: -0.8909609929078017
---> Std: 0.18756268477995358
--> Algorithm: 17
---> Max: (0.005699999999999983, ('washington', 1))
---> Avg: -0.03163985815602837
---> Std: 0.026051609903250988
--> Algorithm: 4
---> Max: (0.0, ('algiers', 0))
---> Avg: 0.0
---> Std: 0.0
--> Algorithm: 7
---> Max: (0.0, ('algiers', 0))
---> Avg: 0.0
---> Std: 0.0
+hardware=washington-1, diff=0.04217, prob=0.52108, baseline_prob=0.47891, algorithm=21, method=bellman, horizon=7,
+hardware=cambridge-2, diff=0.02054, prob=0.51027, baseline_prob=0.48973, algorithm=12, method=bellman, horizon=7,
+hardware=jakarta-0, diff=1e-05, prob=0.98662, baseline_prob=0.98661, algorithm=4, method=bellman, horizon=7,
+hardware=poughkeepsie-1, diff=1e-05, prob=0.83988, baseline_prob=0.83987, algorithm=4, method=bellman, horizon=7,
+hardware=kolkata-1, diff=1e-05, prob=0.99172, baseline_prob=0.99171, algorithm=4, method=bellman, horizon=7,
+hardware=paris-1, diff=1e-05, prob=0.9825, baseline_prob=0.98249, algorithm=4, method=bellman, horizon=7,
 
 
 

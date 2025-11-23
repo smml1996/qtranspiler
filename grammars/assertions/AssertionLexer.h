@@ -1,5 +1,5 @@
 
-// Generated from grammars/assertions/Assertion.g4 by ANTLR 4.13.2
+// Generated from ./grammars/assertions/Assertion.g4 by ANTLR 4.13.2
 
 #pragma once
 
@@ -15,7 +15,7 @@ public:
     T__0 = 1, T__1 = 2, T__2 = 3, T__3 = 4, T__4 = 5, T__5 = 6, T__6 = 7, 
     T__7 = 8, T__8 = 9, T__9 = 10, T__10 = 11, Row = 12, BINARYSTRING = 13, 
     BList = 14, QList = 15, RP = 16, ROP = 17, BOP = 18, MOP = 19, REALNUM = 20, 
-    ID = 21, INT = 22, WS = 23
+    CID = 21, QID = 22, INT = 23, WS = 24
   };
 
   explicit AssertionLexer(antlr4::CharStream *input);

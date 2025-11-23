@@ -2,7 +2,7 @@
 #define SOLVERS_H
 
 #include "pomdp.hpp"
-#include "beliefs.hpp"
+#include "Belief.hpp"
 #include "algorithm.hpp"
 #include <functional>
 
