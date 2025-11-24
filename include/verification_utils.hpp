@@ -23,7 +23,7 @@ inline int max_depth;
 
 template <typename FloatT>
 class Ensemble {
-    int does_hybrid_state_exists(shared_ptr<HybridState> &state);
+    int does_hybrid_state_exists(shared_ptr<HybridState> &state) const;
 public:
     vector<pair<shared_ptr<HybridState>, FloatT>> probs;
     int precision;
@@ -35,7 +35,18 @@ public:
     void add_prob(shared_ptr<HybridState> &hs, FloatT value);
     FloatT get_weight();
     void normalize();
+    bool operator==(const Ensemble<FloatT> &other) const;
 };
+
+template <typename FloatT>
+bool is_new_ensemble(const vector<shared_ptr<Ensemble<FloatT>>> &all_ensembles, const shared_ptr<Ensemble<FloatT>> &new_ensemble) {
+    for (auto e : all_ensembles) {
+        if (*e == *new_ensemble ) {
+            return false;
+        }
+    }
+    return true;
+}
 
 shared_ptr<Ensemble<MyFloat>> to_myfloat(const shared_ptr<Ensemble<double>> &ensemble);
 

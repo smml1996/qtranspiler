@@ -121,7 +121,9 @@ int main(int argc, char* argv[]) {
     vector<shared_ptr<Ensemble<MyFloat>>> final_ensembles;
     for (auto initial_ensemble : initial_ensembles) {
         auto final_ensemble = mc.get_final_ensemble(make_shared<Configuration>(program, initial_ensemble));
-        final_ensembles.push_back(final_ensemble);
+        if (is_new_ensemble(final_ensembles, final_ensemble)) {
+            final_ensembles.push_back(final_ensemble);
+        }
     }
 
     cout << "final ensembles:" << endl;

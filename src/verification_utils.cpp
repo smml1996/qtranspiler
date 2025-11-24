@@ -4,7 +4,7 @@
 #include "verification_utils.hpp"
 
 template <typename FloatT>
-int Ensemble<FloatT>::does_hybrid_state_exists(shared_ptr<HybridState> &state) {
+int Ensemble<FloatT>::does_hybrid_state_exists(shared_ptr<HybridState> &state) const{
     for (int i = 0; i < this->probs.size(); i++) {
         auto hs = this->probs[i];
         if (*hs.first == *state) {
@@ -32,6 +32,28 @@ void Ensemble<FloatT>::add_prob(shared_ptr<HybridState> &hs, FloatT value) {
     }
     auto temp = this->probs[index];
     this->probs[index] = make_pair(hs, value + temp.second) ;
+}
+
+template <>
+bool Ensemble<MyFloat>::operator==(const Ensemble<MyFloat> &other) const {
+    if (other.probs.size() != this->probs.size()) return false;
+    for (auto e : other.probs) {
+        auto index = this->does_hybrid_state_exists(e.first);
+        if (index == -1) return false;
+        if (e.second != other.probs[index].second) return false;
+    }
+    return true;
+}
+
+template <>
+bool Ensemble<double>::operator==(const Ensemble<double> &other) const {
+    if (other.probs.size() != this->probs.size()) return false;
+    for (auto e : other.probs) {
+        auto index = this->does_hybrid_state_exists(e.first);
+        if (index == -1) return false;
+        if (!is_close(e.second,other.probs[index].second, this->precision)) return false;
+    }
+    return true;
 }
 
 template <>
@@ -67,6 +89,8 @@ template<>
 void Ensemble<MyFloat>::normalize() {
     throw runtime_error("normalize not implemented for Ensemble<MyFloat>");
 }
+
+
 
 shared_ptr<Ensemble<MyFloat>> to_myfloat(const shared_ptr<Ensemble<double>> &ensemble) {
     shared_ptr<Ensemble<MyFloat>> result = make_shared<Ensemble<MyFloat>>(mc_precision * (max_depth + 1));
