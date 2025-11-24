@@ -34,6 +34,40 @@ void Ensemble<FloatT>::add_prob(shared_ptr<HybridState> &hs, FloatT value) {
     this->probs[index] = make_pair(hs, value + temp.second) ;
 }
 
+template <>
+double Ensemble<double>::get_weight() {
+    double result = 0;
+
+    for (auto e : this->probs) {
+        result += e.second;
+    }
+    return result;
+}
+
+template <>
+MyFloat Ensemble<MyFloat>::get_weight() {
+    MyFloat result("0", this->precision);
+
+    for (auto e : this->probs) {
+        result = result + e.second;
+    }
+
+    return result;
+}
+
+template<>
+void Ensemble<double>::normalize() {
+    auto w = get_weight();
+    for (int i = 0; i < this->probs.size(); i++) {
+        this->probs[i].second = round_to(this->probs[i].second/w, this->precision);
+    }
+}
+
+template<>
+void Ensemble<MyFloat>::normalize() {
+    throw runtime_error("normalize not implemented for Ensemble<MyFloat>");
+}
+
 shared_ptr<Ensemble<MyFloat>> to_myfloat(const shared_ptr<Ensemble<double>> &ensemble) {
     shared_ptr<Ensemble<MyFloat>> result = make_shared<Ensemble<MyFloat>>(mc_precision * (max_depth + 1));
 
@@ -58,7 +92,8 @@ shared_ptr<Ensemble<double>> to_double(const shared_ptr<Ensemble<MyFloat>> &ense
     if (dynamic_cast<ProgrammingLanguageParser::SkipContext*>(program)) {
         return true;
     }
-    if (dynamic_cast<ProgrammingLanguageParser::Classical_statementContext*>(program)) {
+
+    if (program->children.size() == 1  && dynamic_cast<ProgrammingLanguageParser::Classical_statementContext*>(program->children[0])) {
         return true;
     }
 
@@ -71,14 +106,14 @@ shared_ptr<Ensemble<double>> to_double(const shared_ptr<Ensemble<MyFloat>> &ense
 
 shared_ptr<Configuration> Configuration::get_atomic_program_ensemble(HardwareSpecification &spec, const unordered_map<int, int> &embedding) {
         assert(!this->ensemble->probs.empty());
-        shared_ptr<Ensemble<double>> result_ensemble = make_shared<Ensemble<double>>();
+        shared_ptr<Ensemble<double>> result_ensemble = make_shared<Ensemble<double>>(mc_precision);
         assert(is_atomic_program());
 
         if (dynamic_cast<ProgrammingLanguageParser::SkipContext*>(program)) {
-            make_shared<Configuration>(nullptr, ensemble);
+            return make_shared<Configuration>(nullptr, ensemble);
         }
-        if (auto *c = dynamic_cast<ProgrammingLanguageParser::Classical_statementContext*>(program)) {
-
+        auto *c = dynamic_cast<ProgrammingLanguageParser::Classical_statementContext*>(program->children[0]);
+        if (program->children.size() == 1  && c) {
             if (auto a = dynamic_cast<ProgrammingLanguageParser::AssignZeroContext*>(c)) {
                 string cid = a->CID()->toString();
                 int index = std::stoi(cid.substr(1));
@@ -88,7 +123,7 @@ shared_ptr<Configuration> Configuration::get_atomic_program_ensemble(HardwareSpe
                     result_ensemble->add_prob( temp,this->ensemble->probs[i].second);
                 }
             }
-            else if (auto a = dynamic_cast<ProgrammingLanguageParser::AssignOneContext*>(program)) {
+            else if (auto a = dynamic_cast<ProgrammingLanguageParser::AssignOneContext*>(c)) {
                 string cid = a->CID()->toString();
                 int index = std::stoi(cid.substr(1));
                 Instruction W1 = Instruction(GateName::Write1, index);
@@ -97,7 +132,7 @@ shared_ptr<Configuration> Configuration::get_atomic_program_ensemble(HardwareSpe
                     result_ensemble->add_prob( temp,this->ensemble->probs[i].second);
                 }
             }
-            else if (auto a = dynamic_cast<ProgrammingLanguageParser::AssignCopyContext*>(program)) {
+            else if (auto a = dynamic_cast<ProgrammingLanguageParser::AssignCopyContext*>(c)) {
                 string write_cid = a->CID()[0]->toString();
                 string read_cid = a->CID()[1]->toString();
                 int w_index = std::stoi(write_cid.substr(1));
@@ -114,7 +149,7 @@ shared_ptr<Configuration> Configuration::get_atomic_program_ensemble(HardwareSpe
                     auto temp = this->ensemble->probs[i].first->apply_instruction(instruction);
                     result_ensemble->add_prob( temp,this->ensemble->probs[i].second);
                 }
-            } else if (auto a = dynamic_cast<ProgrammingLanguageParser::AssignMeasureContext*>(program)) {
+            } else if (auto a = dynamic_cast<ProgrammingLanguageParser::AssignMeasureContext*>(c)) {
                 string cid = a->CID()->toString();
                 string qid = a->QID()->toString();
                 int c_index = std::stoi(cid.substr(1));
@@ -125,9 +160,11 @@ shared_ptr<Configuration> Configuration::get_atomic_program_ensemble(HardwareSpe
                     shared_ptr<POMDPVertex> current_vertex = make_shared<POMDPVertex>(this->ensemble->probs[i].first);
                     auto succs = action.get_successor_states(spec, current_vertex);
                     for (auto t : succs) {
-                        result_ensemble->add_prob( t.first->hybrid_state,t.second);
+                        result_ensemble->add_prob( t.first->hybrid_state,this->ensemble->probs[i].second * t.second);
                     }
                 }
+            } else {
+                throw runtime_error("Classical statement does not matches anything");
             }
         }
 
@@ -156,7 +193,7 @@ shared_ptr<Configuration> Configuration::get_atomic_program_ensemble(HardwareSpe
                 shared_ptr<POMDPVertex> current_vertex = make_shared<POMDPVertex>(this->ensemble->probs[i].first);
                 auto succs = action.get_successor_states(spec, current_vertex);
                 for (auto t : succs) {
-                    result_ensemble->add_prob( t.first->hybrid_state,t.second);
+                    result_ensemble->add_prob( t.first->hybrid_state,this->ensemble->probs[i].second * t.second);
                 }
             }
         }
@@ -180,8 +217,8 @@ shared_ptr<Ensemble<MyFloat>> MarkovChain::get_final_ensemble (const shared_ptr<
             ProgrammingLanguageParser::ProgramContext* program_left = dynamic_cast<ProgrammingLanguageParser::ProgramContext*>(s->program()[0]);
             ProgrammingLanguageParser::ProgramContext* program_right = dynamic_cast<ProgrammingLanguageParser::ProgramContext*>(s->program()[1]);
 
-            shared_ptr<Ensemble<double>> ensemble_true = make_shared<Ensemble<double>>();
-            shared_ptr<Ensemble<double>> ensemble_false = make_shared<Ensemble<double>>();
+            shared_ptr<Ensemble<double>> ensemble_true = make_shared<Ensemble<double>>(mc_precision);
+            shared_ptr<Ensemble<double>> ensemble_false = make_shared<Ensemble<double>>(mc_precision);
 
             for (auto p : config->ensemble->probs) {
                 if (p.first->classical_state->read(c_index)) {
@@ -190,14 +227,20 @@ shared_ptr<Ensemble<MyFloat>> MarkovChain::get_final_ensemble (const shared_ptr<
                     ensemble_false->add_prob(p.first, p.second);
                 }
             }
+            // auto w_true = MyFloat(to_string(ensemble_true->get_weight()), mc_precision*(max_depth+1));
+            // cout << "w_true" << w_true << endl;
+            // ensemble_true->normalize();
+            // auto w_false = MyFloat(to_string(ensemble_false->get_weight()), mc_precision*(max_depth+1));
+            // ensemble_false->normalize();
+            // cout << "w_false" << w_false << endl;
 
-            shared_ptr<Ensemble<MyFloat>> final_ensemble = make_shared<Ensemble<MyFloat>>();
+            shared_ptr<Ensemble<MyFloat>> final_ensemble = make_shared<Ensemble<MyFloat>>(mc_precision*(max_depth+1));
 
             if (!ensemble_true->probs.empty()) {
                 auto config_left = make_shared<Configuration>(program_left, ensemble_true);
                 auto temp_ensemble = get_final_ensemble(config_left);
                 for (auto p : temp_ensemble->probs) {
-                    final_ensemble->add_prob(p.first, p.second);
+                    final_ensemble->add_prob(p.first,  p.second);
                 }
             }
 
@@ -226,7 +269,7 @@ shared_ptr<Ensemble<MyFloat>> MarkovChain::get_final_ensemble (const shared_ptr<
             auto final_ensemble_left = get_final_ensemble(config_left);
             auto final_ensemble_right = get_final_ensemble(config_right);
 
-            shared_ptr<Ensemble<MyFloat>> final_ensemble = make_shared<Ensemble<MyFloat>>();
+            shared_ptr<Ensemble<MyFloat>> final_ensemble = make_shared<Ensemble<MyFloat>>(mc_precision*(max_depth+1));
             for (auto p : final_ensemble_left->probs) {
                 auto prob = prob_left * p.second;
                 final_ensemble->add_prob(p.first, prob);

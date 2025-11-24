@@ -33,7 +33,8 @@ public:
     bool insert_prob(shared_ptr<HybridState> &hs, FloatT &value);
 
     void add_prob(shared_ptr<HybridState> &hs, FloatT value);
-
+    FloatT get_weight();
+    void normalize();
 };
 
 shared_ptr<Ensemble<MyFloat>> to_myfloat(const shared_ptr<Ensemble<double>> &ensemble);

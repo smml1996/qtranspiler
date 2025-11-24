@@ -1,5 +1,5 @@
 
-// Generated from ./grammars/assertions/Assertion.g4 by ANTLR 4.13.2
+// Generated from grammars/assertions/Assertion.g4 by ANTLR 4.13.2
 
 #pragma once
 
@@ -64,8 +64,14 @@ public:
   virtual void enterQuantum_term(AssertionParser::Quantum_termContext * /*ctx*/) override { }
   virtual void exitQuantum_term(AssertionParser::Quantum_termContext * /*ctx*/) override { }
 
-  virtual void enterMatrix(AssertionParser::MatrixContext * /*ctx*/) override { }
-  virtual void exitMatrix(AssertionParser::MatrixContext * /*ctx*/) override { }
+  virtual void enterRow(AssertionParser::RowContext * /*ctx*/) override { }
+  virtual void exitRow(AssertionParser::RowContext * /*ctx*/) override { }
+
+  virtual void enterBList(AssertionParser::BListContext * /*ctx*/) override { }
+  virtual void exitBList(AssertionParser::BListContext * /*ctx*/) override { }
+
+  virtual void enterQList(AssertionParser::QListContext * /*ctx*/) override { }
+  virtual void exitQList(AssertionParser::QListContext * /*ctx*/) override { }
 
 
   virtual void enterEveryRule(antlr4::ParserRuleContext * /*ctx*/) override { }

@@ -88,9 +88,8 @@ int main(int argc, char* argv[]) {
     ProgrammingLanguageLexer lexer(&input);
     antlr4::CommonTokenStream tokens(&lexer);
     ProgrammingLanguageParser parser(&tokens);
-    antlr4::tree::ParseTree *raw = parser.program();
-    std::shared_ptr<antlr4::tree::ParseTree> tree(raw, [](auto*){ /* do nothing */ });
-    auto *program = dynamic_cast<ProgrammingLanguageParser::ProgramContext*>(tree.get());
+    antlr4::tree::ParseTree *tree = parser.program();
+    auto *program = dynamic_cast<ProgrammingLanguageParser::ProgramContext*>(tree);
 
     // postcondition parsing
     // antlr4::ANTLRInputStream post_input(raw_postcondition);
@@ -114,14 +113,25 @@ int main(int argc, char* argv[]) {
     }
 
 
-    // MarkovChain mc(hardware_specification, embedding);
-    // max_depth = mc.get_depth(make_shared<Configuration>(program, initial_ensembles[0]));
+    MarkovChain mc(hardware_specification, embedding);
+    max_depth = mc.get_depth(make_shared<Configuration>(program, initial_ensembles[0]));
+    cout << "max depth: " << max_depth << endl;
     // the depth is independent of the initial ensemble (FIX this!)
     //
-    // vector<shared_ptr<Ensemble<MyFloat>>> final_ensembles;
-    // for (auto initial_ensemble : initial_ensembles) {
-    //     auto final_ensemble = mc.get_final_ensemble(make_shared<Configuration>(program, initial_ensemble));
-    // }
+    vector<shared_ptr<Ensemble<MyFloat>>> final_ensembles;
+    for (auto initial_ensemble : initial_ensembles) {
+        auto final_ensemble = mc.get_final_ensemble(make_shared<Configuration>(program, initial_ensemble));
+        final_ensembles.push_back(final_ensemble);
+    }
+
+    cout << "final ensembles:" << endl;
+    for (auto ensemble : final_ensembles) {
+        cout << "****** ensemble ******" << endl;
+        for (auto e : ensemble->probs) {
+            cout << *e.first << " " << e.second << endl;
+        }
+        cout << endl;
+    }
     //
     // // TODO: build FOL formula
     // cout << is_sat(final_ensembles, postcondition) << endl;

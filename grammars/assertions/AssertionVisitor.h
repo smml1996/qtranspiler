@@ -1,5 +1,5 @@
 
-// Generated from ./grammars/assertions/Assertion.g4 by ANTLR 4.13.2
+// Generated from grammars/assertions/Assertion.g4 by ANTLR 4.13.2
 
 #pragma once
 
@@ -51,7 +51,11 @@ public:
 
     virtual std::any visitQuantum_term(AssertionParser::Quantum_termContext *context) = 0;
 
-    virtual std::any visitMatrix(AssertionParser::MatrixContext *context) = 0;
+    virtual std::any visitRow(AssertionParser::RowContext *context) = 0;
+
+    virtual std::any visitBList(AssertionParser::BListContext *context) = 0;
+
+    virtual std::any visitQList(AssertionParser::QListContext *context) = 0;
 
 
 };

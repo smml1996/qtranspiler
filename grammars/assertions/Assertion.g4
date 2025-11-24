@@ -23,7 +23,7 @@ dis_conv_expr
 dis_not_expr
     : '!' dis_not_expr
     | '(' distribution_assertion ')'
-    | probability_term RP REALNUM;
+    | probability_term '>=' REALNUM;
 
 // probability term
 probability_term

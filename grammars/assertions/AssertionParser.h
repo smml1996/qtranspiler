@@ -1,5 +1,5 @@
 
-// Generated from ./grammars/assertions/Assertion.g4 by ANTLR 4.13.2
+// Generated from grammars/assertions/Assertion.g4 by ANTLR 4.13.2
 
 #pragma once
 
@@ -13,9 +13,8 @@ class  AssertionParser : public antlr4::Parser {
 public:
   enum {
     T__0 = 1, T__1 = 2, T__2 = 3, T__3 = 4, T__4 = 5, T__5 = 6, T__6 = 7, 
-    T__7 = 8, T__8 = 9, T__9 = 10, T__10 = 11, Row = 12, BINARYSTRING = 13, 
-    BList = 14, QList = 15, RP = 16, ROP = 17, BOP = 18, MOP = 19, REALNUM = 20, 
-    CID = 21, QID = 22, INT = 23, WS = 24
+    T__7 = 8, T__8 = 9, T__9 = 10, T__10 = 11, T__11 = 12, BINARYSTRING = 13, 
+    REALNUM = 14, CID = 15, QID = 16, WS = 17
   };
 
   enum {
@@ -23,7 +22,7 @@ public:
     RuleDis_and_expr = 3, RuleDis_conv_expr = 4, RuleDis_not_expr = 5, RuleProbability_term = 6, 
     RuleStates_assertion = 7, RuleStates_or_expr = 8, RuleStates_and_expr = 9, 
     RuleStates_not_expr = 10, RuleBinary_term = 11, RuleQuantum_term = 12, 
-    RuleMatrix = 13
+    RuleRow = 13, RuleBList = 14, RuleQList = 15
   };
 
   explicit AssertionParser(antlr4::TokenStream *input);
@@ -56,7 +55,9 @@ public:
   class States_not_exprContext;
   class Binary_termContext;
   class Quantum_termContext;
-  class MatrixContext; 
+  class RowContext;
+  class BListContext;
+  class QListContext; 
 
   class  AssertionContext : public antlr4::ParserRuleContext {
   public:
@@ -144,7 +145,6 @@ public:
     Dis_not_exprContext *dis_not_expr();
     Distribution_assertionContext *distribution_assertion();
     Probability_termContext *probability_term();
-    antlr4::tree::TerminalNode *RP();
     antlr4::tree::TerminalNode *REALNUM();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -306,7 +306,7 @@ public:
   public:
     Binary_termContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *BList();
+    BListContext *bList();
     antlr4::tree::TerminalNode *BINARYSTRING();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -322,8 +322,8 @@ public:
   public:
     Quantum_termContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *QList();
-    antlr4::tree::TerminalNode *Row();
+    QListContext *qList();
+    RowContext *row();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -334,12 +334,12 @@ public:
 
   Quantum_termContext* quantum_term();
 
-  class  MatrixContext : public antlr4::ParserRuleContext {
+  class  RowContext : public antlr4::ParserRuleContext {
   public:
-    MatrixContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    RowContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    std::vector<antlr4::tree::TerminalNode *> Row();
-    antlr4::tree::TerminalNode* Row(size_t i);
+    std::vector<antlr4::tree::TerminalNode *> REALNUM();
+    antlr4::tree::TerminalNode* REALNUM(size_t i);
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -348,7 +348,39 @@ public:
    
   };
 
-  MatrixContext* matrix();
+  RowContext* row();
+
+  class  BListContext : public antlr4::ParserRuleContext {
+  public:
+    BListContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    std::vector<antlr4::tree::TerminalNode *> CID();
+    antlr4::tree::TerminalNode* CID(size_t i);
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  BListContext* bList();
+
+  class  QListContext : public antlr4::ParserRuleContext {
+  public:
+    QListContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    std::vector<antlr4::tree::TerminalNode *> QID();
+    antlr4::tree::TerminalNode* QID(size_t i);
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  QListContext* qList();
 
 
   // By default the static state used to implement the parser is lazily initialized during the first

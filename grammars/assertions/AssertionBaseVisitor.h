@@ -1,5 +1,5 @@
 
-// Generated from ./grammars/assertions/Assertion.g4 by ANTLR 4.13.2
+// Generated from grammars/assertions/Assertion.g4 by ANTLR 4.13.2
 
 #pragma once
 
@@ -79,7 +79,15 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual std::any visitMatrix(AssertionParser::MatrixContext *ctx) override {
+  virtual std::any visitRow(AssertionParser::RowContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitBList(AssertionParser::BListContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitQList(AssertionParser::QListContext *ctx) override {
     return visitChildren(ctx);
   }
 

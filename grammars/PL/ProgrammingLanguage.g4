@@ -40,5 +40,5 @@ qlist : QID (',' QID)* ;
 WS : [ \t\r\n]+ -> skip ;
 UNITARY: 'X' | 'CX' | 'H';
 REALNUM : [0-9]+ ('.' [0-9]+)?;
-CID  : 'x' [0-9]* ;
-QID : 'q' [0-9]* ;
+CID  : 'x' [0-9]+ ;
+QID : 'q' [0-9]+ ;
