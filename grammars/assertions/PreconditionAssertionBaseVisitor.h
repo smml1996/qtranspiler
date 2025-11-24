@@ -46,7 +46,5 @@ public:
   virtual std::any visitQList(PreconditionAssertionParser::QListContext *ctx) override {
     return visitChildren(ctx);
   }
-
-
 };
 

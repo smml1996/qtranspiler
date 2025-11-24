@@ -41,10 +41,11 @@ class PreconVisitor : public PreconditionAssertionBaseVisitor {
         }
     }
 public:
-    std::vector<Ensemble<double>> ensembles;
+    std::vector<shared_ptr<Ensemble<double>>> ensembles;
     int num_qvars;
     int num_cvars;
-    PreconVisitor(int _num_qvars, int _num_cvars) : num_qvars(_num_qvars), num_cvars(_num_cvars) {};
+    int precision;
+    PreconVisitor(int _num_qvars, int _num_cvars, int _precision) : num_qvars(_num_qvars), num_cvars(_num_cvars), precision(_precision) {};
     // Visit the top-level assertion
     antlrcpp::Any visitPrecon_assertion(
         PreconditionAssertionParser::Precon_assertionContext *ctx
@@ -62,8 +63,9 @@ public:
     ) override
     {
         for (auto sd : ctx->single_distribution()) {
+            auto temp_e = std::any_cast<Ensemble<double>>(visitSingle_distribution(sd));
             ensembles.push_back(
-                std::any_cast<Ensemble<double>>(visitSingle_distribution(sd))
+                make_shared<Ensemble<double>>(temp_e)
             );
         }
         return nullptr;
@@ -74,8 +76,8 @@ public:
         PreconditionAssertionParser::Single_distributionContext *ctx
     ) override
     {
-        Ensemble<double> ensemble;
 
+        Ensemble<double> ensemble(this->precision);
 
         for (auto clause : ctx->canon_clause()) {
             auto entry =
@@ -84,14 +86,22 @@ public:
             this->check_bitstring(entry.first.bitstring);
             this->check_cvars(entry.first.cvars);
             this->check_row(entry.first.row);
-            shared_ptr<QuantumState> qs = make_shared<QuantumState>(entry.first.qvars, -1);
+            shared_ptr<QuantumState> qs = make_shared<QuantumState>(entry.first.qvars, this->precision);
+            qs->sparse_vector.clear();
             for (int i = 0; i < entry.first.row.size(); i++) {
-                qs->insert_amplitude(i, complex<double>(entry.first.row[i]));
+                if (entry.first.row[i] > 0) {
+                    qs->insert_amplitude(i, complex<double>(entry.first.row[i], 0));
+                }
             }
 
             shared_ptr<ClassicalState> cs = make_shared<ClassicalState>();
-            for (int i = 0; i < entry.first.cvars.size(); i++) {
-                cs->write(i, static_cast<int>(entry.first.bitstring.at(i) - '0'));
+            for (int i = 0; i < entry.first.bitstring.size(); i++) {
+                if (entry.first.bitstring.at(i) == '1') {
+                    cs = cs->write(i, true);
+                } else {
+                    assert(entry.first.bitstring.at(i) == '0');
+                }
+
             }
 
             shared_ptr<HybridState> hybrid_state = make_shared<HybridState>(qs, cs);
@@ -120,15 +130,13 @@ public:
     ) override
     {
         CanonState st;
-
-        // Quantums
+        // Quantum
         st.qvars = parseQList(ctx->qList());
         st.row = parseRow(ctx->row());
 
         // Classics
         st.cvars = parseBList(ctx->bList());
         st.bitstring = ctx->BINARYSTRING()->getText();
-
         return st;
     }
 
@@ -140,6 +148,7 @@ private:
         std::vector<int> out;
         for (auto id : q->QID()) {
             string s_id = id->getText();
+            assert(s_id.size() > 1);
             out.push_back(std::stoi(s_id.substr(1)));
         }
         return out;
@@ -152,6 +161,7 @@ private:
         std::vector<int> out;
         for (auto id : b->CID()) {
             string s_id = id->getText();
+            assert(s_id.size() > 1);
             out.push_back(std::stoi(s_id.substr(1)));
         }
         return out;

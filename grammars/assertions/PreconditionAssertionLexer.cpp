@@ -8,9 +8,6 @@
 using namespace antlr4;
 
 
-
-using namespace antlr4;
-
 namespace {
 
 struct PreconditionAssertionLexerStaticData final {

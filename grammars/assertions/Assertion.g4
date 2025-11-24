@@ -52,37 +52,29 @@ states_not_expr
     ;
 
 binary_term
-    : '[' BList ']'          
+    : '[' bList ']'
     | BINARYSTRING
     ;
 
 quantum_term
-    : '[' QList ']'
-    | Row
+    : '[' qList ']'
+    | row
     ;
 
 // matrices
-matrix : '[' Row (',' Row)* ']';
-Row : '[' REALNUM (',' REALNUM)* ']';
-
-
-// binary strings
-
+row : '[' REALNUM (',' REALNUM)* ']';
 
 // Binary list
-BList : CID (',' CID)* ;
+bList : CID (',' CID)* ;
 
 // Quantum list
-QList : QID (',' QID)* ;
+qList : QID (',' QID)* ;
 
 
 // Lexer rules (uppercase usually)
-
-RP : '=' | '>' | '>=' | '<=';
-ROP: MOP | '/';
-MOP : '+' | '-' | '*';
+BINARYSTRING: ( '0' | '1' )+;
 REALNUM : [0-9]+ ('.' [0-9]+)?;
 CID  : 'x' [0-9]* ;
 QID : 'q' [0-9]* ;
-INT : [0-9]+ ;
+WS : [ \t\r\n]+ -> skip ;
 

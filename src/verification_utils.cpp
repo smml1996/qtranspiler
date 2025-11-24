@@ -28,6 +28,7 @@ void Ensemble<FloatT>::add_prob(shared_ptr<HybridState> &hs, FloatT value) {
     int index = this->does_hybrid_state_exists(hs);
     if (index == -1) {
         this->probs.push_back(make_pair(hs, value));
+        return;
     }
     auto temp = this->probs[index];
     this->probs[index] = make_pair(hs, value + temp.second) ;

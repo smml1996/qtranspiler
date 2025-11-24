@@ -226,6 +226,7 @@ add_executable(verifier
         grammars/PL/ProgrammingLanguageBaseVisitor.cpp
         grammars/assertions/PreconditionAssertionLexer.cpp
         grammars/assertions/PreconditionAssertionParser.cpp
+        grammars/assertions/PreconditionAssertionBaseVisitor.cpp
         grammars/assertions/AssertionParser.cpp
         grammars/assertions/AssertionLexer.cpp
         verifier.cpp
