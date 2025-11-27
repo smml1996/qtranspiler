@@ -26,14 +26,26 @@ public:
   virtual void enterDis_and_expr(AssertionParser::Dis_and_exprContext *ctx) = 0;
   virtual void exitDis_and_expr(AssertionParser::Dis_and_exprContext *ctx) = 0;
 
-  virtual void enterDis_conv_expr(AssertionParser::Dis_conv_exprContext *ctx) = 0;
-  virtual void exitDis_conv_expr(AssertionParser::Dis_conv_exprContext *ctx) = 0;
+  virtual void enterConv_simple_case(AssertionParser::Conv_simple_caseContext *ctx) = 0;
+  virtual void exitConv_simple_case(AssertionParser::Conv_simple_caseContext *ctx) = 0;
 
-  virtual void enterDis_not_expr(AssertionParser::Dis_not_exprContext *ctx) = 0;
-  virtual void exitDis_not_expr(AssertionParser::Dis_not_exprContext *ctx) = 0;
+  virtual void enterConv_complex_case(AssertionParser::Conv_complex_caseContext *ctx) = 0;
+  virtual void exitConv_complex_case(AssertionParser::Conv_complex_caseContext *ctx) = 0;
 
-  virtual void enterProbability_term(AssertionParser::Probability_termContext *ctx) = 0;
-  virtual void exitProbability_term(AssertionParser::Probability_termContext *ctx) = 0;
+  virtual void enterDis_not(AssertionParser::Dis_notContext *ctx) = 0;
+  virtual void exitDis_not(AssertionParser::Dis_notContext *ctx) = 0;
+
+  virtual void enterDis_assertion(AssertionParser::Dis_assertionContext *ctx) = 0;
+  virtual void exitDis_assertion(AssertionParser::Dis_assertionContext *ctx) = 0;
+
+  virtual void enterDis_prob_assertion(AssertionParser::Dis_prob_assertionContext *ctx) = 0;
+  virtual void exitDis_prob_assertion(AssertionParser::Dis_prob_assertionContext *ctx) = 0;
+
+  virtual void enterSymbolic_prob(AssertionParser::Symbolic_probContext *ctx) = 0;
+  virtual void exitSymbolic_prob(AssertionParser::Symbolic_probContext *ctx) = 0;
+
+  virtual void enterConcrete_prob(AssertionParser::Concrete_probContext *ctx) = 0;
+  virtual void exitConcrete_prob(AssertionParser::Concrete_probContext *ctx) = 0;
 
   virtual void enterStates_assertion(AssertionParser::States_assertionContext *ctx) = 0;
   virtual void exitStates_assertion(AssertionParser::States_assertionContext *ctx) = 0;
@@ -56,11 +68,17 @@ public:
   virtual void enterParens(AssertionParser::ParensContext *ctx) = 0;
   virtual void exitParens(AssertionParser::ParensContext *ctx) = 0;
 
-  virtual void enterBinary_term(AssertionParser::Binary_termContext *ctx) = 0;
-  virtual void exitBinary_term(AssertionParser::Binary_termContext *ctx) = 0;
+  virtual void enterList_b_vars(AssertionParser::List_b_varsContext *ctx) = 0;
+  virtual void exitList_b_vars(AssertionParser::List_b_varsContext *ctx) = 0;
 
-  virtual void enterQuantum_term(AssertionParser::Quantum_termContext *ctx) = 0;
-  virtual void exitQuantum_term(AssertionParser::Quantum_termContext *ctx) = 0;
+  virtual void enterBin_str(AssertionParser::Bin_strContext *ctx) = 0;
+  virtual void exitBin_str(AssertionParser::Bin_strContext *ctx) = 0;
+
+  virtual void enterList_q_vars(AssertionParser::List_q_varsContext *ctx) = 0;
+  virtual void exitList_q_vars(AssertionParser::List_q_varsContext *ctx) = 0;
+
+  virtual void enterQuantum_state(AssertionParser::Quantum_stateContext *ctx) = 0;
+  virtual void exitQuantum_state(AssertionParser::Quantum_stateContext *ctx) = 0;
 
   virtual void enterRow(AssertionParser::RowContext *ctx) = 0;
   virtual void exitRow(AssertionParser::RowContext *ctx) = 0;

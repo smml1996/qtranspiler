@@ -483,19 +483,19 @@ MyFloat min(MyFloat const &a, MyFloat const &b) {
 }
 
 MyFloat abs(const MyFloat &f) {
-    auto result = MyFloat(gate_to_string(f), f.precision);
+    auto result = MyFloat(to_string(f), f.precision);
     result.is_negative = false;
     return result;
 }
 
-std::string gate_to_string(const MyFloat& myfloat) {
+std::string to_string(const MyFloat& myfloat) {
     std::ostringstream oss;
     oss << myfloat;  // uses your operator<<
     return oss.str();
 }
 
 double to_double(const MyFloat &myfloat) {
-    return stod(gate_to_string(myfloat));
+    return stod(to_string(myfloat));
 }
 
 

@@ -87,7 +87,7 @@ std::size_t BeliefHash::operator()(const Belief &belief) const {
         std::hash<std::string> float_hasher;
         POMDPVertexHash vertex_hasher;
         std::size_t h1 = vertex_hasher(kv.first);
-        std::size_t h2 = float_hasher(gate_to_string(kv.second) + gate_to_string(kv.second));
+        std::size_t h2 = float_hasher(to_string(kv.second) + to_string(kv.second));
 
         // combine (boost::hash_combine style)
         seed ^= h1 + 0x9e3779b9 + (seed << 6) + (seed >> 2);

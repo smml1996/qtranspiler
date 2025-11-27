@@ -71,14 +71,14 @@ TEST(MyFloatTest, Addition) {
     MyFloat a("123", 10);
     MyFloat b("77", 10);
     MyFloat c = a + b;
-    EXPECT_EQ(gate_to_string(c), "200.0000000000");  // assuming decimal-style addition
+    EXPECT_EQ(to_string(c), "200.0000000000");  // assuming decimal-style addition
 }
 
 TEST(MyFloatTest, Multiplication) {
     MyFloat a("12", 10);
     MyFloat b("10", 10);
     MyFloat c = a * b;
-    EXPECT_EQ(gate_to_string(c), "120.0000000000");
+    EXPECT_EQ(to_string(c), "120.0000000000");
 }
 
 // ---------- Static Algorithms ----------
@@ -107,8 +107,8 @@ TEST(MyFloatTest, AbsValue) {
 TEST(MyFloatTest, MinMax) {
     MyFloat a("10", 10);
     MyFloat b("20", 10);
-    EXPECT_EQ(gate_to_string(min(a,b)), "10.0000000000");
-    EXPECT_EQ(gate_to_string(max(a,b)), "20.0000000000");
+    EXPECT_EQ(to_string(min(a,b)), "10.0000000000");
+    EXPECT_EQ(to_string(max(a,b)), "20.0000000000");
 }
 
 // ---------- To double ----------

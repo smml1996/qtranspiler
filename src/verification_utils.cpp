@@ -15,14 +15,6 @@ int Ensemble<FloatT>::does_hybrid_state_exists(shared_ptr<HybridState> &state) c
 }
 
 template <typename FloatT>
-bool Ensemble<FloatT>::insert_prob(shared_ptr<HybridState> &hs, FloatT &value) {
-    assert(this->precision != -1);
-    if (this->does_hybrid_state_exists(hs) == -1) return false;
-    this->probs.push_back(make_pair(hs, value));
-    return true;
-}
-
-template <typename FloatT>
 void Ensemble<FloatT>::add_prob(shared_ptr<HybridState> &hs, FloatT value) {
     assert(this->precision != -1);
     int index = this->does_hybrid_state_exists(hs);
@@ -57,6 +49,17 @@ bool Ensemble<double>::operator==(const Ensemble<double> &other) const {
 }
 
 template <>
+bool Ensemble<z3::expr>::operator==(const Ensemble<z3::expr> &other) const {
+    if (other.probs.size() != this->probs.size()) return false;
+    for (auto e : other.probs) {
+        auto index = this->does_hybrid_state_exists(e.first);
+        if (index == -1) return false;
+        if (!is_close(e.second,other.probs[index].second, this->precision)) return false;
+    }
+    return true;
+}
+
+template <>
 double Ensemble<double>::get_weight() {
     double result = 0;
 
@@ -64,6 +67,11 @@ double Ensemble<double>::get_weight() {
         result += e.second;
     }
     return result;
+}
+
+template <>
+z3::expr Ensemble<z3::expr>::get_weight() {
+    throw runtime_error("get_weight not implemented for Ensemble<MyFloat>");
 }
 
 template <>
@@ -88,6 +96,23 @@ void Ensemble<double>::normalize() {
 template<>
 void Ensemble<MyFloat>::normalize() {
     throw runtime_error("normalize not implemented for Ensemble<MyFloat>");
+}
+
+template<>
+void Ensemble<z3::expr>::normalize() {
+    throw runtime_error("normalize not implemented for Ensemble<z3::expr>");
+}
+
+Ensemble<z3::expr> get_symbolic_ensemble(const std::vector<shared_ptr<Ensemble<MyFloat>>> &ensembles, const z3::expr_vector &weights, z3::context &ctx) {
+    Ensemble<z3::expr> result;
+
+    assert( weights.size() == ensembles.size());
+    for (int i = 0; i <ensembles.size(); i++) {
+        for (auto e : ensembles[i]->probs) {
+            result.add_prob(e.first, weights[i] * ctx.real_val(to_string(e.second).c_str()));
+        }
+    }
+    return result;
 }
 
 

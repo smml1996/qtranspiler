@@ -68,8 +68,6 @@ public:
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-
-    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
    
   };
 
@@ -83,8 +81,6 @@ public:
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-
-    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
    
   };
 
@@ -99,8 +95,6 @@ public:
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-
-    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
    
   };
 
@@ -115,8 +109,6 @@ public:
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-
-    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
    
   };
 
@@ -125,15 +117,33 @@ public:
   class  Dis_conv_exprContext : public antlr4::ParserRuleContext {
   public:
     Dis_conv_exprContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    std::vector<Dis_not_exprContext *> dis_not_expr();
-    Dis_not_exprContext* dis_not_expr(size_t i);
+   
+    Dis_conv_exprContext() = default;
+    void copyFrom(Dis_conv_exprContext *context);
+    using antlr4::ParserRuleContext::copyFrom;
 
+    virtual size_t getRuleIndex() const override;
+
+   
+  };
+
+  class  Conv_simple_caseContext : public Dis_conv_exprContext {
+  public:
+    Conv_simple_caseContext(Dis_conv_exprContext *ctx);
+
+    Dis_not_exprContext *dis_not_expr();
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+  };
 
-    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-   
+  class  Conv_complex_caseContext : public Dis_conv_exprContext {
+  public:
+    Conv_complex_caseContext(Dis_conv_exprContext *ctx);
+
+    std::vector<Dis_not_exprContext *> dis_not_expr();
+    Dis_not_exprContext* dis_not_expr(size_t i);
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
   };
 
   Dis_conv_exprContext* dis_conv_expr();
@@ -141,17 +151,42 @@ public:
   class  Dis_not_exprContext : public antlr4::ParserRuleContext {
   public:
     Dis_not_exprContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    Dis_not_exprContext *dis_not_expr();
-    Distribution_assertionContext *distribution_assertion();
-    Probability_termContext *probability_term();
-    antlr4::tree::TerminalNode *REALNUM();
+   
+    Dis_not_exprContext() = default;
+    void copyFrom(Dis_not_exprContext *context);
+    using antlr4::ParserRuleContext::copyFrom;
 
+    virtual size_t getRuleIndex() const override;
+
+   
+  };
+
+  class  Dis_assertionContext : public Dis_not_exprContext {
+  public:
+    Dis_assertionContext(Dis_not_exprContext *ctx);
+
+    Distribution_assertionContext *distribution_assertion();
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+  };
 
-    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-   
+  class  Dis_prob_assertionContext : public Dis_not_exprContext {
+  public:
+    Dis_prob_assertionContext(Dis_not_exprContext *ctx);
+
+    Probability_termContext *probability_term();
+    antlr4::tree::TerminalNode *REALNUM();
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+  };
+
+  class  Dis_notContext : public Dis_not_exprContext {
+  public:
+    Dis_notContext(Dis_not_exprContext *ctx);
+
+    Dis_not_exprContext *dis_not_expr();
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
   };
 
   Dis_not_exprContext* dis_not_expr();
@@ -159,15 +194,32 @@ public:
   class  Probability_termContext : public antlr4::ParserRuleContext {
   public:
     Probability_termContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    States_assertionContext *states_assertion();
-    antlr4::tree::TerminalNode *REALNUM();
+   
+    Probability_termContext() = default;
+    void copyFrom(Probability_termContext *context);
+    using antlr4::ParserRuleContext::copyFrom;
 
+    virtual size_t getRuleIndex() const override;
+
+   
+  };
+
+  class  Concrete_probContext : public Probability_termContext {
+  public:
+    Concrete_probContext(Probability_termContext *ctx);
+
+    antlr4::tree::TerminalNode *REALNUM();
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+  };
 
-    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-   
+  class  Symbolic_probContext : public Probability_termContext {
+  public:
+    Symbolic_probContext(Probability_termContext *ctx);
+
+    States_assertionContext *states_assertion();
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
   };
 
   Probability_termContext* probability_term();
@@ -180,8 +232,6 @@ public:
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-
-    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
    
   };
 
@@ -208,8 +258,6 @@ public:
     States_and_exprContext* states_and_expr(size_t i);
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-
-    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
   };
 
   States_or_exprContext* states_or_expr();
@@ -235,8 +283,6 @@ public:
     States_not_exprContext* states_not_expr(size_t i);
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-
-    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
   };
 
   States_and_exprContext* states_and_expr();
@@ -261,8 +307,6 @@ public:
     States_not_exprContext *states_not_expr();
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-
-    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
   };
 
   class  ParensContext : public States_not_exprContext {
@@ -272,8 +316,6 @@ public:
     States_assertionContext *states_assertion();
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-
-    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
   };
 
   class  QCompareContext : public States_not_exprContext {
@@ -284,8 +326,6 @@ public:
     Quantum_termContext* quantum_term(size_t i);
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-
-    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
   };
 
   class  BCompareContext : public States_not_exprContext {
@@ -296,8 +336,6 @@ public:
     Binary_termContext* binary_term(size_t i);
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-
-    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
   };
 
   States_not_exprContext* states_not_expr();
@@ -305,15 +343,32 @@ public:
   class  Binary_termContext : public antlr4::ParserRuleContext {
   public:
     Binary_termContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    BListContext *bList();
-    antlr4::tree::TerminalNode *BINARYSTRING();
+   
+    Binary_termContext() = default;
+    void copyFrom(Binary_termContext *context);
+    using antlr4::ParserRuleContext::copyFrom;
 
+    virtual size_t getRuleIndex() const override;
+
+   
+  };
+
+  class  Bin_strContext : public Binary_termContext {
+  public:
+    Bin_strContext(Binary_termContext *ctx);
+
+    antlr4::tree::TerminalNode *BINARYSTRING();
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+  };
 
-    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-   
+  class  List_b_varsContext : public Binary_termContext {
+  public:
+    List_b_varsContext(Binary_termContext *ctx);
+
+    BListContext *bList();
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
   };
 
   Binary_termContext* binary_term();
@@ -321,15 +376,32 @@ public:
   class  Quantum_termContext : public antlr4::ParserRuleContext {
   public:
     Quantum_termContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    QListContext *qList();
-    RowContext *row();
+   
+    Quantum_termContext() = default;
+    void copyFrom(Quantum_termContext *context);
+    using antlr4::ParserRuleContext::copyFrom;
 
+    virtual size_t getRuleIndex() const override;
+
+   
+  };
+
+  class  Quantum_stateContext : public Quantum_termContext {
+  public:
+    Quantum_stateContext(Quantum_termContext *ctx);
+
+    RowContext *row();
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+  };
 
-    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-   
+  class  List_q_varsContext : public Quantum_termContext {
+  public:
+    List_q_varsContext(Quantum_termContext *ctx);
+
+    QListContext *qList();
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
   };
 
   Quantum_termContext* quantum_term();
@@ -343,8 +415,6 @@ public:
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-
-    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
    
   };
 
@@ -359,8 +429,6 @@ public:
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-
-    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
    
   };
 
@@ -375,8 +443,6 @@ public:
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-
-    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
    
   };
 

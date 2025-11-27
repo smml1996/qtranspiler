@@ -3,7 +3,6 @@
 
 
 #include "AssertionListener.h"
-#include "AssertionVisitor.h"
 
 #include "AssertionParser.h"
 
@@ -68,53 +67,53 @@ void assertionParserInitialize() {
     }
   );
   static const int32_t serializedATNSegment[] = {
-  	4,1,17,157,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,6,2,
+  	4,1,17,156,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,6,2,
   	7,7,7,2,8,7,8,2,9,7,9,2,10,7,10,2,11,7,11,2,12,7,12,2,13,7,13,2,14,7,
   	14,2,15,7,15,1,0,1,0,1,0,1,1,1,1,1,2,1,2,1,2,5,2,41,8,2,10,2,12,2,44,
-  	9,2,1,3,1,3,1,3,5,3,49,8,3,10,3,12,3,52,9,3,1,4,1,4,1,4,5,4,57,8,4,10,
-  	4,12,4,60,9,4,1,5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,3,5,72,8,5,1,6,
-  	1,6,1,6,1,6,1,6,1,6,3,6,80,8,6,1,7,1,7,1,8,1,8,1,8,5,8,87,8,8,10,8,12,
-  	8,90,9,8,1,9,1,9,1,9,5,9,95,8,9,10,9,12,9,98,9,9,1,10,1,10,1,10,1,10,
-  	1,10,1,10,1,10,1,10,1,10,1,10,1,10,1,10,1,10,1,10,3,10,114,8,10,1,11,
-  	1,11,1,11,1,11,1,11,3,11,121,8,11,1,12,1,12,1,12,1,12,1,12,3,12,128,8,
-  	12,1,13,1,13,1,13,1,13,5,13,134,8,13,10,13,12,13,137,9,13,1,13,1,13,1,
-  	14,1,14,1,14,5,14,144,8,14,10,14,12,14,147,9,14,1,15,1,15,1,15,5,15,152,
-  	8,15,10,15,12,15,155,9,15,1,15,0,0,16,0,2,4,6,8,10,12,14,16,18,20,22,
-  	24,26,28,30,0,0,156,0,32,1,0,0,0,2,35,1,0,0,0,4,37,1,0,0,0,6,45,1,0,0,
-  	0,8,53,1,0,0,0,10,71,1,0,0,0,12,79,1,0,0,0,14,81,1,0,0,0,16,83,1,0,0,
-  	0,18,91,1,0,0,0,20,113,1,0,0,0,22,120,1,0,0,0,24,127,1,0,0,0,26,129,1,
-  	0,0,0,28,140,1,0,0,0,30,148,1,0,0,0,32,33,3,2,1,0,33,34,5,0,0,1,34,1,
-  	1,0,0,0,35,36,3,4,2,0,36,3,1,0,0,0,37,42,3,6,3,0,38,39,5,1,0,0,39,41,
-  	3,6,3,0,40,38,1,0,0,0,41,44,1,0,0,0,42,40,1,0,0,0,42,43,1,0,0,0,43,5,
-  	1,0,0,0,44,42,1,0,0,0,45,50,3,8,4,0,46,47,5,2,0,0,47,49,3,8,4,0,48,46,
-  	1,0,0,0,49,52,1,0,0,0,50,48,1,0,0,0,50,51,1,0,0,0,51,7,1,0,0,0,52,50,
-  	1,0,0,0,53,58,3,10,5,0,54,55,5,3,0,0,55,57,3,10,5,0,56,54,1,0,0,0,57,
-  	60,1,0,0,0,58,56,1,0,0,0,58,59,1,0,0,0,59,9,1,0,0,0,60,58,1,0,0,0,61,
-  	62,5,4,0,0,62,72,3,10,5,0,63,64,5,5,0,0,64,65,3,2,1,0,65,66,5,6,0,0,66,
-  	72,1,0,0,0,67,68,3,12,6,0,68,69,5,7,0,0,69,70,5,14,0,0,70,72,1,0,0,0,
-  	71,61,1,0,0,0,71,63,1,0,0,0,71,67,1,0,0,0,72,11,1,0,0,0,73,74,5,8,0,0,
-  	74,75,5,5,0,0,75,76,3,14,7,0,76,77,5,6,0,0,77,80,1,0,0,0,78,80,5,14,0,
-  	0,79,73,1,0,0,0,79,78,1,0,0,0,80,13,1,0,0,0,81,82,3,16,8,0,82,15,1,0,
-  	0,0,83,88,3,18,9,0,84,85,5,1,0,0,85,87,3,18,9,0,86,84,1,0,0,0,87,90,1,
-  	0,0,0,88,86,1,0,0,0,88,89,1,0,0,0,89,17,1,0,0,0,90,88,1,0,0,0,91,96,3,
-  	20,10,0,92,93,5,2,0,0,93,95,3,20,10,0,94,92,1,0,0,0,95,98,1,0,0,0,96,
-  	94,1,0,0,0,96,97,1,0,0,0,97,19,1,0,0,0,98,96,1,0,0,0,99,100,5,4,0,0,100,
-  	114,3,20,10,0,101,102,3,24,12,0,102,103,5,9,0,0,103,104,3,24,12,0,104,
-  	114,1,0,0,0,105,106,3,22,11,0,106,107,5,9,0,0,107,108,3,22,11,0,108,114,
-  	1,0,0,0,109,110,5,5,0,0,110,111,3,14,7,0,111,112,5,6,0,0,112,114,1,0,
-  	0,0,113,99,1,0,0,0,113,101,1,0,0,0,113,105,1,0,0,0,113,109,1,0,0,0,114,
-  	21,1,0,0,0,115,116,5,10,0,0,116,117,3,28,14,0,117,118,5,11,0,0,118,121,
-  	1,0,0,0,119,121,5,13,0,0,120,115,1,0,0,0,120,119,1,0,0,0,121,23,1,0,0,
-  	0,122,123,5,10,0,0,123,124,3,30,15,0,124,125,5,11,0,0,125,128,1,0,0,0,
-  	126,128,3,26,13,0,127,122,1,0,0,0,127,126,1,0,0,0,128,25,1,0,0,0,129,
-  	130,5,10,0,0,130,135,5,14,0,0,131,132,5,12,0,0,132,134,5,14,0,0,133,131,
-  	1,0,0,0,134,137,1,0,0,0,135,133,1,0,0,0,135,136,1,0,0,0,136,138,1,0,0,
-  	0,137,135,1,0,0,0,138,139,5,11,0,0,139,27,1,0,0,0,140,145,5,15,0,0,141,
-  	142,5,12,0,0,142,144,5,15,0,0,143,141,1,0,0,0,144,147,1,0,0,0,145,143,
-  	1,0,0,0,145,146,1,0,0,0,146,29,1,0,0,0,147,145,1,0,0,0,148,153,5,16,0,
-  	0,149,150,5,12,0,0,150,152,5,16,0,0,151,149,1,0,0,0,152,155,1,0,0,0,153,
-  	151,1,0,0,0,153,154,1,0,0,0,154,31,1,0,0,0,155,153,1,0,0,0,13,42,50,58,
-  	71,79,88,96,113,120,127,135,145,153
+  	9,2,1,3,1,3,1,3,5,3,49,8,3,10,3,12,3,52,9,3,1,4,1,4,1,4,1,4,1,4,3,4,59,
+  	8,4,1,5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,3,5,71,8,5,1,6,1,6,1,6,1,
+  	6,1,6,1,6,3,6,79,8,6,1,7,1,7,1,8,1,8,1,8,5,8,86,8,8,10,8,12,8,89,9,8,
+  	1,9,1,9,1,9,5,9,94,8,9,10,9,12,9,97,9,9,1,10,1,10,1,10,1,10,1,10,1,10,
+  	1,10,1,10,1,10,1,10,1,10,1,10,1,10,1,10,3,10,113,8,10,1,11,1,11,1,11,
+  	1,11,1,11,3,11,120,8,11,1,12,1,12,1,12,1,12,1,12,3,12,127,8,12,1,13,1,
+  	13,1,13,1,13,5,13,133,8,13,10,13,12,13,136,9,13,1,13,1,13,1,14,1,14,1,
+  	14,5,14,143,8,14,10,14,12,14,146,9,14,1,15,1,15,1,15,5,15,151,8,15,10,
+  	15,12,15,154,9,15,1,15,0,0,16,0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,
+  	30,0,0,155,0,32,1,0,0,0,2,35,1,0,0,0,4,37,1,0,0,0,6,45,1,0,0,0,8,58,1,
+  	0,0,0,10,70,1,0,0,0,12,78,1,0,0,0,14,80,1,0,0,0,16,82,1,0,0,0,18,90,1,
+  	0,0,0,20,112,1,0,0,0,22,119,1,0,0,0,24,126,1,0,0,0,26,128,1,0,0,0,28,
+  	139,1,0,0,0,30,147,1,0,0,0,32,33,3,2,1,0,33,34,5,0,0,1,34,1,1,0,0,0,35,
+  	36,3,4,2,0,36,3,1,0,0,0,37,42,3,6,3,0,38,39,5,1,0,0,39,41,3,6,3,0,40,
+  	38,1,0,0,0,41,44,1,0,0,0,42,40,1,0,0,0,42,43,1,0,0,0,43,5,1,0,0,0,44,
+  	42,1,0,0,0,45,50,3,8,4,0,46,47,5,2,0,0,47,49,3,8,4,0,48,46,1,0,0,0,49,
+  	52,1,0,0,0,50,48,1,0,0,0,50,51,1,0,0,0,51,7,1,0,0,0,52,50,1,0,0,0,53,
+  	59,3,10,5,0,54,55,3,10,5,0,55,56,5,3,0,0,56,57,3,10,5,0,57,59,1,0,0,0,
+  	58,53,1,0,0,0,58,54,1,0,0,0,59,9,1,0,0,0,60,61,5,4,0,0,61,71,3,10,5,0,
+  	62,63,5,5,0,0,63,64,3,2,1,0,64,65,5,6,0,0,65,71,1,0,0,0,66,67,3,12,6,
+  	0,67,68,5,7,0,0,68,69,5,14,0,0,69,71,1,0,0,0,70,60,1,0,0,0,70,62,1,0,
+  	0,0,70,66,1,0,0,0,71,11,1,0,0,0,72,73,5,8,0,0,73,74,5,5,0,0,74,75,3,14,
+  	7,0,75,76,5,6,0,0,76,79,1,0,0,0,77,79,5,14,0,0,78,72,1,0,0,0,78,77,1,
+  	0,0,0,79,13,1,0,0,0,80,81,3,16,8,0,81,15,1,0,0,0,82,87,3,18,9,0,83,84,
+  	5,1,0,0,84,86,3,18,9,0,85,83,1,0,0,0,86,89,1,0,0,0,87,85,1,0,0,0,87,88,
+  	1,0,0,0,88,17,1,0,0,0,89,87,1,0,0,0,90,95,3,20,10,0,91,92,5,2,0,0,92,
+  	94,3,20,10,0,93,91,1,0,0,0,94,97,1,0,0,0,95,93,1,0,0,0,95,96,1,0,0,0,
+  	96,19,1,0,0,0,97,95,1,0,0,0,98,99,5,4,0,0,99,113,3,20,10,0,100,101,3,
+  	24,12,0,101,102,5,9,0,0,102,103,3,24,12,0,103,113,1,0,0,0,104,105,3,22,
+  	11,0,105,106,5,9,0,0,106,107,3,22,11,0,107,113,1,0,0,0,108,109,5,5,0,
+  	0,109,110,3,14,7,0,110,111,5,6,0,0,111,113,1,0,0,0,112,98,1,0,0,0,112,
+  	100,1,0,0,0,112,104,1,0,0,0,112,108,1,0,0,0,113,21,1,0,0,0,114,115,5,
+  	10,0,0,115,116,3,28,14,0,116,117,5,11,0,0,117,120,1,0,0,0,118,120,5,13,
+  	0,0,119,114,1,0,0,0,119,118,1,0,0,0,120,23,1,0,0,0,121,122,5,10,0,0,122,
+  	123,3,30,15,0,123,124,5,11,0,0,124,127,1,0,0,0,125,127,3,26,13,0,126,
+  	121,1,0,0,0,126,125,1,0,0,0,127,25,1,0,0,0,128,129,5,10,0,0,129,134,5,
+  	14,0,0,130,131,5,12,0,0,131,133,5,14,0,0,132,130,1,0,0,0,133,136,1,0,
+  	0,0,134,132,1,0,0,0,134,135,1,0,0,0,135,137,1,0,0,0,136,134,1,0,0,0,137,
+  	138,5,11,0,0,138,27,1,0,0,0,139,144,5,15,0,0,140,141,5,12,0,0,141,143,
+  	5,15,0,0,142,140,1,0,0,0,143,146,1,0,0,0,144,142,1,0,0,0,144,145,1,0,
+  	0,0,145,29,1,0,0,0,146,144,1,0,0,0,147,152,5,16,0,0,148,149,5,12,0,0,
+  	149,151,5,16,0,0,150,148,1,0,0,0,151,154,1,0,0,0,152,150,1,0,0,0,152,
+  	153,1,0,0,0,153,31,1,0,0,0,154,152,1,0,0,0,13,42,50,58,70,78,87,95,112,
+  	119,126,134,144,152
   };
   staticData->serializedATN = antlr4::atn::SerializedATNView(serializedATNSegment, sizeof(serializedATNSegment) / sizeof(serializedATNSegment[0]));
 
@@ -194,14 +193,6 @@ void AssertionParser::AssertionContext::exitRule(tree::ParseTreeListener *listen
     parserListener->exitAssertion(this);
 }
 
-
-std::any AssertionParser::AssertionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<AssertionVisitor*>(visitor))
-    return parserVisitor->visitAssertion(this);
-  else
-    return visitor->visitChildren(this);
-}
-
 AssertionParser::AssertionContext* AssertionParser::assertion() {
   AssertionContext *_localctx = _tracker.createInstance<AssertionContext>(_ctx, getState());
   enterRule(_localctx, 0, AssertionParser::RuleAssertion);
@@ -255,14 +246,6 @@ void AssertionParser::Distribution_assertionContext::exitRule(tree::ParseTreeLis
   auto parserListener = dynamic_cast<AssertionListener *>(listener);
   if (parserListener != nullptr)
     parserListener->exitDistribution_assertion(this);
-}
-
-
-std::any AssertionParser::Distribution_assertionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<AssertionVisitor*>(visitor))
-    return parserVisitor->visitDistribution_assertion(this);
-  else
-    return visitor->visitChildren(this);
 }
 
 AssertionParser::Distribution_assertionContext* AssertionParser::distribution_assertion() {
@@ -320,14 +303,6 @@ void AssertionParser::Dis_or_exprContext::exitRule(tree::ParseTreeListener *list
   auto parserListener = dynamic_cast<AssertionListener *>(listener);
   if (parserListener != nullptr)
     parserListener->exitDis_or_expr(this);
-}
-
-
-std::any AssertionParser::Dis_or_exprContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<AssertionVisitor*>(visitor))
-    return parserVisitor->visitDis_or_expr(this);
-  else
-    return visitor->visitChildren(this);
 }
 
 AssertionParser::Dis_or_exprContext* AssertionParser::dis_or_expr() {
@@ -400,14 +375,6 @@ void AssertionParser::Dis_and_exprContext::exitRule(tree::ParseTreeListener *lis
     parserListener->exitDis_and_expr(this);
 }
 
-
-std::any AssertionParser::Dis_and_exprContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<AssertionVisitor*>(visitor))
-    return parserVisitor->visitDis_and_expr(this);
-  else
-    return visitor->visitChildren(this);
-}
-
 AssertionParser::Dis_and_exprContext* AssertionParser::dis_and_expr() {
   Dis_and_exprContext *_localctx = _tracker.createInstance<Dis_and_exprContext>(_ctx, getState());
   enterRule(_localctx, 6, AssertionParser::RuleDis_and_expr);
@@ -453,43 +420,58 @@ AssertionParser::Dis_conv_exprContext::Dis_conv_exprContext(ParserRuleContext *p
   : ParserRuleContext(parent, invokingState) {
 }
 
-std::vector<AssertionParser::Dis_not_exprContext *> AssertionParser::Dis_conv_exprContext::dis_not_expr() {
-  return getRuleContexts<AssertionParser::Dis_not_exprContext>();
-}
-
-AssertionParser::Dis_not_exprContext* AssertionParser::Dis_conv_exprContext::dis_not_expr(size_t i) {
-  return getRuleContext<AssertionParser::Dis_not_exprContext>(i);
-}
-
 
 size_t AssertionParser::Dis_conv_exprContext::getRuleIndex() const {
   return AssertionParser::RuleDis_conv_expr;
 }
 
-void AssertionParser::Dis_conv_exprContext::enterRule(tree::ParseTreeListener *listener) {
+void AssertionParser::Dis_conv_exprContext::copyFrom(Dis_conv_exprContext *ctx) {
+  ParserRuleContext::copyFrom(ctx);
+}
+
+//----------------- Conv_simple_caseContext ------------------------------------------------------------------
+
+AssertionParser::Dis_not_exprContext* AssertionParser::Conv_simple_caseContext::dis_not_expr() {
+  return getRuleContext<AssertionParser::Dis_not_exprContext>(0);
+}
+
+AssertionParser::Conv_simple_caseContext::Conv_simple_caseContext(Dis_conv_exprContext *ctx) { copyFrom(ctx); }
+
+void AssertionParser::Conv_simple_caseContext::enterRule(tree::ParseTreeListener *listener) {
   auto parserListener = dynamic_cast<AssertionListener *>(listener);
   if (parserListener != nullptr)
-    parserListener->enterDis_conv_expr(this);
+    parserListener->enterConv_simple_case(this);
 }
-
-void AssertionParser::Dis_conv_exprContext::exitRule(tree::ParseTreeListener *listener) {
+void AssertionParser::Conv_simple_caseContext::exitRule(tree::ParseTreeListener *listener) {
   auto parserListener = dynamic_cast<AssertionListener *>(listener);
   if (parserListener != nullptr)
-    parserListener->exitDis_conv_expr(this);
+    parserListener->exitConv_simple_case(this);
+}
+//----------------- Conv_complex_caseContext ------------------------------------------------------------------
+
+std::vector<AssertionParser::Dis_not_exprContext *> AssertionParser::Conv_complex_caseContext::dis_not_expr() {
+  return getRuleContexts<AssertionParser::Dis_not_exprContext>();
 }
 
-
-std::any AssertionParser::Dis_conv_exprContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<AssertionVisitor*>(visitor))
-    return parserVisitor->visitDis_conv_expr(this);
-  else
-    return visitor->visitChildren(this);
+AssertionParser::Dis_not_exprContext* AssertionParser::Conv_complex_caseContext::dis_not_expr(size_t i) {
+  return getRuleContext<AssertionParser::Dis_not_exprContext>(i);
 }
 
+AssertionParser::Conv_complex_caseContext::Conv_complex_caseContext(Dis_conv_exprContext *ctx) { copyFrom(ctx); }
+
+void AssertionParser::Conv_complex_caseContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<AssertionListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterConv_complex_case(this);
+}
+void AssertionParser::Conv_complex_caseContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<AssertionListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitConv_complex_case(this);
+}
 AssertionParser::Dis_conv_exprContext* AssertionParser::dis_conv_expr() {
   Dis_conv_exprContext *_localctx = _tracker.createInstance<Dis_conv_exprContext>(_ctx, getState());
   enterRule(_localctx, 8, AssertionParser::RuleDis_conv_expr);
-  size_t _la = 0;
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -499,20 +481,31 @@ AssertionParser::Dis_conv_exprContext* AssertionParser::dis_conv_expr() {
     exitRule();
   });
   try {
-    enterOuterAlt(_localctx, 1);
-    setState(53);
-    dis_not_expr();
     setState(58);
     _errHandler->sync(this);
-    _la = _input->LA(1);
-    while (_la == AssertionParser::T__2) {
-      setState(54);
-      match(AssertionParser::T__2);
-      setState(55);
+    switch (getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 2, _ctx)) {
+    case 1: {
+      _localctx = _tracker.createInstance<AssertionParser::Conv_simple_caseContext>(_localctx);
+      enterOuterAlt(_localctx, 1);
+      setState(53);
       dis_not_expr();
-      setState(60);
-      _errHandler->sync(this);
-      _la = _input->LA(1);
+      break;
+    }
+
+    case 2: {
+      _localctx = _tracker.createInstance<AssertionParser::Conv_complex_caseContext>(_localctx);
+      enterOuterAlt(_localctx, 2);
+      setState(54);
+      dis_not_expr();
+      setState(55);
+      match(AssertionParser::T__2);
+      setState(56);
+      dis_not_expr();
+      break;
+    }
+
+    default:
+      break;
     }
    
   }
@@ -531,47 +524,73 @@ AssertionParser::Dis_not_exprContext::Dis_not_exprContext(ParserRuleContext *par
   : ParserRuleContext(parent, invokingState) {
 }
 
-AssertionParser::Dis_not_exprContext* AssertionParser::Dis_not_exprContext::dis_not_expr() {
-  return getRuleContext<AssertionParser::Dis_not_exprContext>(0);
-}
-
-AssertionParser::Distribution_assertionContext* AssertionParser::Dis_not_exprContext::distribution_assertion() {
-  return getRuleContext<AssertionParser::Distribution_assertionContext>(0);
-}
-
-AssertionParser::Probability_termContext* AssertionParser::Dis_not_exprContext::probability_term() {
-  return getRuleContext<AssertionParser::Probability_termContext>(0);
-}
-
-tree::TerminalNode* AssertionParser::Dis_not_exprContext::REALNUM() {
-  return getToken(AssertionParser::REALNUM, 0);
-}
-
 
 size_t AssertionParser::Dis_not_exprContext::getRuleIndex() const {
   return AssertionParser::RuleDis_not_expr;
 }
 
-void AssertionParser::Dis_not_exprContext::enterRule(tree::ParseTreeListener *listener) {
+void AssertionParser::Dis_not_exprContext::copyFrom(Dis_not_exprContext *ctx) {
+  ParserRuleContext::copyFrom(ctx);
+}
+
+//----------------- Dis_assertionContext ------------------------------------------------------------------
+
+AssertionParser::Distribution_assertionContext* AssertionParser::Dis_assertionContext::distribution_assertion() {
+  return getRuleContext<AssertionParser::Distribution_assertionContext>(0);
+}
+
+AssertionParser::Dis_assertionContext::Dis_assertionContext(Dis_not_exprContext *ctx) { copyFrom(ctx); }
+
+void AssertionParser::Dis_assertionContext::enterRule(tree::ParseTreeListener *listener) {
   auto parserListener = dynamic_cast<AssertionListener *>(listener);
   if (parserListener != nullptr)
-    parserListener->enterDis_not_expr(this);
+    parserListener->enterDis_assertion(this);
 }
-
-void AssertionParser::Dis_not_exprContext::exitRule(tree::ParseTreeListener *listener) {
+void AssertionParser::Dis_assertionContext::exitRule(tree::ParseTreeListener *listener) {
   auto parserListener = dynamic_cast<AssertionListener *>(listener);
   if (parserListener != nullptr)
-    parserListener->exitDis_not_expr(this);
+    parserListener->exitDis_assertion(this);
+}
+//----------------- Dis_prob_assertionContext ------------------------------------------------------------------
+
+AssertionParser::Probability_termContext* AssertionParser::Dis_prob_assertionContext::probability_term() {
+  return getRuleContext<AssertionParser::Probability_termContext>(0);
 }
 
-
-std::any AssertionParser::Dis_not_exprContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<AssertionVisitor*>(visitor))
-    return parserVisitor->visitDis_not_expr(this);
-  else
-    return visitor->visitChildren(this);
+tree::TerminalNode* AssertionParser::Dis_prob_assertionContext::REALNUM() {
+  return getToken(AssertionParser::REALNUM, 0);
 }
 
+AssertionParser::Dis_prob_assertionContext::Dis_prob_assertionContext(Dis_not_exprContext *ctx) { copyFrom(ctx); }
+
+void AssertionParser::Dis_prob_assertionContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<AssertionListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterDis_prob_assertion(this);
+}
+void AssertionParser::Dis_prob_assertionContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<AssertionListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitDis_prob_assertion(this);
+}
+//----------------- Dis_notContext ------------------------------------------------------------------
+
+AssertionParser::Dis_not_exprContext* AssertionParser::Dis_notContext::dis_not_expr() {
+  return getRuleContext<AssertionParser::Dis_not_exprContext>(0);
+}
+
+AssertionParser::Dis_notContext::Dis_notContext(Dis_not_exprContext *ctx) { copyFrom(ctx); }
+
+void AssertionParser::Dis_notContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<AssertionListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterDis_not(this);
+}
+void AssertionParser::Dis_notContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<AssertionListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitDis_not(this);
+}
 AssertionParser::Dis_not_exprContext* AssertionParser::dis_not_expr() {
   Dis_not_exprContext *_localctx = _tracker.createInstance<Dis_not_exprContext>(_ctx, getState());
   enterRule(_localctx, 10, AssertionParser::RuleDis_not_expr);
@@ -584,37 +603,40 @@ AssertionParser::Dis_not_exprContext* AssertionParser::dis_not_expr() {
     exitRule();
   });
   try {
-    setState(71);
+    setState(70);
     _errHandler->sync(this);
     switch (_input->LA(1)) {
       case AssertionParser::T__3: {
+        _localctx = _tracker.createInstance<AssertionParser::Dis_notContext>(_localctx);
         enterOuterAlt(_localctx, 1);
-        setState(61);
+        setState(60);
         match(AssertionParser::T__3);
-        setState(62);
+        setState(61);
         dis_not_expr();
         break;
       }
 
       case AssertionParser::T__4: {
+        _localctx = _tracker.createInstance<AssertionParser::Dis_assertionContext>(_localctx);
         enterOuterAlt(_localctx, 2);
-        setState(63);
+        setState(62);
         match(AssertionParser::T__4);
-        setState(64);
+        setState(63);
         distribution_assertion();
-        setState(65);
+        setState(64);
         match(AssertionParser::T__5);
         break;
       }
 
       case AssertionParser::T__7:
       case AssertionParser::REALNUM: {
+        _localctx = _tracker.createInstance<AssertionParser::Dis_prob_assertionContext>(_localctx);
         enterOuterAlt(_localctx, 3);
-        setState(67);
+        setState(66);
         probability_term();
-        setState(68);
+        setState(67);
         match(AssertionParser::T__6);
-        setState(69);
+        setState(68);
         match(AssertionParser::REALNUM);
         break;
       }
@@ -639,39 +661,51 @@ AssertionParser::Probability_termContext::Probability_termContext(ParserRuleCont
   : ParserRuleContext(parent, invokingState) {
 }
 
-AssertionParser::States_assertionContext* AssertionParser::Probability_termContext::states_assertion() {
-  return getRuleContext<AssertionParser::States_assertionContext>(0);
-}
-
-tree::TerminalNode* AssertionParser::Probability_termContext::REALNUM() {
-  return getToken(AssertionParser::REALNUM, 0);
-}
-
 
 size_t AssertionParser::Probability_termContext::getRuleIndex() const {
   return AssertionParser::RuleProbability_term;
 }
 
-void AssertionParser::Probability_termContext::enterRule(tree::ParseTreeListener *listener) {
+void AssertionParser::Probability_termContext::copyFrom(Probability_termContext *ctx) {
+  ParserRuleContext::copyFrom(ctx);
+}
+
+//----------------- Concrete_probContext ------------------------------------------------------------------
+
+tree::TerminalNode* AssertionParser::Concrete_probContext::REALNUM() {
+  return getToken(AssertionParser::REALNUM, 0);
+}
+
+AssertionParser::Concrete_probContext::Concrete_probContext(Probability_termContext *ctx) { copyFrom(ctx); }
+
+void AssertionParser::Concrete_probContext::enterRule(tree::ParseTreeListener *listener) {
   auto parserListener = dynamic_cast<AssertionListener *>(listener);
   if (parserListener != nullptr)
-    parserListener->enterProbability_term(this);
+    parserListener->enterConcrete_prob(this);
 }
-
-void AssertionParser::Probability_termContext::exitRule(tree::ParseTreeListener *listener) {
+void AssertionParser::Concrete_probContext::exitRule(tree::ParseTreeListener *listener) {
   auto parserListener = dynamic_cast<AssertionListener *>(listener);
   if (parserListener != nullptr)
-    parserListener->exitProbability_term(this);
+    parserListener->exitConcrete_prob(this);
+}
+//----------------- Symbolic_probContext ------------------------------------------------------------------
+
+AssertionParser::States_assertionContext* AssertionParser::Symbolic_probContext::states_assertion() {
+  return getRuleContext<AssertionParser::States_assertionContext>(0);
 }
 
+AssertionParser::Symbolic_probContext::Symbolic_probContext(Probability_termContext *ctx) { copyFrom(ctx); }
 
-std::any AssertionParser::Probability_termContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<AssertionVisitor*>(visitor))
-    return parserVisitor->visitProbability_term(this);
-  else
-    return visitor->visitChildren(this);
+void AssertionParser::Symbolic_probContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<AssertionListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterSymbolic_prob(this);
 }
-
+void AssertionParser::Symbolic_probContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<AssertionListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitSymbolic_prob(this);
+}
 AssertionParser::Probability_termContext* AssertionParser::probability_term() {
   Probability_termContext *_localctx = _tracker.createInstance<Probability_termContext>(_ctx, getState());
   enterRule(_localctx, 12, AssertionParser::RuleProbability_term);
@@ -684,25 +718,27 @@ AssertionParser::Probability_termContext* AssertionParser::probability_term() {
     exitRule();
   });
   try {
-    setState(79);
+    setState(78);
     _errHandler->sync(this);
     switch (_input->LA(1)) {
       case AssertionParser::T__7: {
+        _localctx = _tracker.createInstance<AssertionParser::Symbolic_probContext>(_localctx);
         enterOuterAlt(_localctx, 1);
-        setState(73);
+        setState(72);
         match(AssertionParser::T__7);
-        setState(74);
+        setState(73);
         match(AssertionParser::T__4);
-        setState(75);
+        setState(74);
         states_assertion();
-        setState(76);
+        setState(75);
         match(AssertionParser::T__5);
         break;
       }
 
       case AssertionParser::REALNUM: {
+        _localctx = _tracker.createInstance<AssertionParser::Concrete_probContext>(_localctx);
         enterOuterAlt(_localctx, 2);
-        setState(78);
+        setState(77);
         match(AssertionParser::REALNUM);
         break;
       }
@@ -748,14 +784,6 @@ void AssertionParser::States_assertionContext::exitRule(tree::ParseTreeListener 
     parserListener->exitStates_assertion(this);
 }
 
-
-std::any AssertionParser::States_assertionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<AssertionVisitor*>(visitor))
-    return parserVisitor->visitStates_assertion(this);
-  else
-    return visitor->visitChildren(this);
-}
-
 AssertionParser::States_assertionContext* AssertionParser::states_assertion() {
   States_assertionContext *_localctx = _tracker.createInstance<States_assertionContext>(_ctx, getState());
   enterRule(_localctx, 14, AssertionParser::RuleStates_assertion);
@@ -769,7 +797,7 @@ AssertionParser::States_assertionContext* AssertionParser::states_assertion() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(81);
+    setState(80);
     states_or_expr();
    
   }
@@ -819,13 +847,6 @@ void AssertionParser::Or_exprContext::exitRule(tree::ParseTreeListener *listener
   if (parserListener != nullptr)
     parserListener->exitOr_expr(this);
 }
-
-std::any AssertionParser::Or_exprContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<AssertionVisitor*>(visitor))
-    return parserVisitor->visitOr_expr(this);
-  else
-    return visitor->visitChildren(this);
-}
 AssertionParser::States_or_exprContext* AssertionParser::states_or_expr() {
   States_or_exprContext *_localctx = _tracker.createInstance<States_or_exprContext>(_ctx, getState());
   enterRule(_localctx, 16, AssertionParser::RuleStates_or_expr);
@@ -841,17 +862,17 @@ AssertionParser::States_or_exprContext* AssertionParser::states_or_expr() {
   try {
     _localctx = _tracker.createInstance<AssertionParser::Or_exprContext>(_localctx);
     enterOuterAlt(_localctx, 1);
-    setState(83);
+    setState(82);
     states_and_expr();
-    setState(88);
+    setState(87);
     _errHandler->sync(this);
     _la = _input->LA(1);
     while (_la == AssertionParser::T__0) {
-      setState(84);
+      setState(83);
       match(AssertionParser::T__0);
-      setState(85);
+      setState(84);
       states_and_expr();
-      setState(90);
+      setState(89);
       _errHandler->sync(this);
       _la = _input->LA(1);
     }
@@ -903,13 +924,6 @@ void AssertionParser::And_exprContext::exitRule(tree::ParseTreeListener *listene
   if (parserListener != nullptr)
     parserListener->exitAnd_expr(this);
 }
-
-std::any AssertionParser::And_exprContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<AssertionVisitor*>(visitor))
-    return parserVisitor->visitAnd_expr(this);
-  else
-    return visitor->visitChildren(this);
-}
 AssertionParser::States_and_exprContext* AssertionParser::states_and_expr() {
   States_and_exprContext *_localctx = _tracker.createInstance<States_and_exprContext>(_ctx, getState());
   enterRule(_localctx, 18, AssertionParser::RuleStates_and_expr);
@@ -925,17 +939,17 @@ AssertionParser::States_and_exprContext* AssertionParser::states_and_expr() {
   try {
     _localctx = _tracker.createInstance<AssertionParser::And_exprContext>(_localctx);
     enterOuterAlt(_localctx, 1);
-    setState(91);
+    setState(90);
     states_not_expr();
-    setState(96);
+    setState(95);
     _errHandler->sync(this);
     _la = _input->LA(1);
     while (_la == AssertionParser::T__1) {
-      setState(92);
+      setState(91);
       match(AssertionParser::T__1);
-      setState(93);
+      setState(92);
       states_not_expr();
-      setState(98);
+      setState(97);
       _errHandler->sync(this);
       _la = _input->LA(1);
     }
@@ -983,13 +997,6 @@ void AssertionParser::Not_exprContext::exitRule(tree::ParseTreeListener *listene
   if (parserListener != nullptr)
     parserListener->exitNot_expr(this);
 }
-
-std::any AssertionParser::Not_exprContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<AssertionVisitor*>(visitor))
-    return parserVisitor->visitNot_expr(this);
-  else
-    return visitor->visitChildren(this);
-}
 //----------------- ParensContext ------------------------------------------------------------------
 
 AssertionParser::States_assertionContext* AssertionParser::ParensContext::states_assertion() {
@@ -1007,13 +1014,6 @@ void AssertionParser::ParensContext::exitRule(tree::ParseTreeListener *listener)
   auto parserListener = dynamic_cast<AssertionListener *>(listener);
   if (parserListener != nullptr)
     parserListener->exitParens(this);
-}
-
-std::any AssertionParser::ParensContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<AssertionVisitor*>(visitor))
-    return parserVisitor->visitParens(this);
-  else
-    return visitor->visitChildren(this);
 }
 //----------------- QCompareContext ------------------------------------------------------------------
 
@@ -1037,13 +1037,6 @@ void AssertionParser::QCompareContext::exitRule(tree::ParseTreeListener *listene
   if (parserListener != nullptr)
     parserListener->exitQCompare(this);
 }
-
-std::any AssertionParser::QCompareContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<AssertionVisitor*>(visitor))
-    return parserVisitor->visitQCompare(this);
-  else
-    return visitor->visitChildren(this);
-}
 //----------------- BCompareContext ------------------------------------------------------------------
 
 std::vector<AssertionParser::Binary_termContext *> AssertionParser::BCompareContext::binary_term() {
@@ -1066,13 +1059,6 @@ void AssertionParser::BCompareContext::exitRule(tree::ParseTreeListener *listene
   if (parserListener != nullptr)
     parserListener->exitBCompare(this);
 }
-
-std::any AssertionParser::BCompareContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<AssertionVisitor*>(visitor))
-    return parserVisitor->visitBCompare(this);
-  else
-    return visitor->visitChildren(this);
-}
 AssertionParser::States_not_exprContext* AssertionParser::states_not_expr() {
   States_not_exprContext *_localctx = _tracker.createInstance<States_not_exprContext>(_ctx, getState());
   enterRule(_localctx, 20, AssertionParser::RuleStates_not_expr);
@@ -1085,15 +1071,15 @@ AssertionParser::States_not_exprContext* AssertionParser::states_not_expr() {
     exitRule();
   });
   try {
-    setState(113);
+    setState(112);
     _errHandler->sync(this);
     switch (getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 7, _ctx)) {
     case 1: {
       _localctx = _tracker.createInstance<AssertionParser::Not_exprContext>(_localctx);
       enterOuterAlt(_localctx, 1);
-      setState(99);
+      setState(98);
       match(AssertionParser::T__3);
-      setState(100);
+      setState(99);
       states_not_expr();
       break;
     }
@@ -1101,11 +1087,11 @@ AssertionParser::States_not_exprContext* AssertionParser::states_not_expr() {
     case 2: {
       _localctx = _tracker.createInstance<AssertionParser::QCompareContext>(_localctx);
       enterOuterAlt(_localctx, 2);
-      setState(101);
+      setState(100);
       quantum_term();
-      setState(102);
+      setState(101);
       match(AssertionParser::T__8);
-      setState(103);
+      setState(102);
       quantum_term();
       break;
     }
@@ -1113,11 +1099,11 @@ AssertionParser::States_not_exprContext* AssertionParser::states_not_expr() {
     case 3: {
       _localctx = _tracker.createInstance<AssertionParser::BCompareContext>(_localctx);
       enterOuterAlt(_localctx, 3);
-      setState(105);
+      setState(104);
       binary_term();
-      setState(106);
+      setState(105);
       match(AssertionParser::T__8);
-      setState(107);
+      setState(106);
       binary_term();
       break;
     }
@@ -1125,11 +1111,11 @@ AssertionParser::States_not_exprContext* AssertionParser::states_not_expr() {
     case 4: {
       _localctx = _tracker.createInstance<AssertionParser::ParensContext>(_localctx);
       enterOuterAlt(_localctx, 4);
-      setState(109);
+      setState(108);
       match(AssertionParser::T__4);
-      setState(110);
+      setState(109);
       states_assertion();
-      setState(111);
+      setState(110);
       match(AssertionParser::T__5);
       break;
     }
@@ -1154,39 +1140,51 @@ AssertionParser::Binary_termContext::Binary_termContext(ParserRuleContext *paren
   : ParserRuleContext(parent, invokingState) {
 }
 
-AssertionParser::BListContext* AssertionParser::Binary_termContext::bList() {
-  return getRuleContext<AssertionParser::BListContext>(0);
-}
-
-tree::TerminalNode* AssertionParser::Binary_termContext::BINARYSTRING() {
-  return getToken(AssertionParser::BINARYSTRING, 0);
-}
-
 
 size_t AssertionParser::Binary_termContext::getRuleIndex() const {
   return AssertionParser::RuleBinary_term;
 }
 
-void AssertionParser::Binary_termContext::enterRule(tree::ParseTreeListener *listener) {
+void AssertionParser::Binary_termContext::copyFrom(Binary_termContext *ctx) {
+  ParserRuleContext::copyFrom(ctx);
+}
+
+//----------------- Bin_strContext ------------------------------------------------------------------
+
+tree::TerminalNode* AssertionParser::Bin_strContext::BINARYSTRING() {
+  return getToken(AssertionParser::BINARYSTRING, 0);
+}
+
+AssertionParser::Bin_strContext::Bin_strContext(Binary_termContext *ctx) { copyFrom(ctx); }
+
+void AssertionParser::Bin_strContext::enterRule(tree::ParseTreeListener *listener) {
   auto parserListener = dynamic_cast<AssertionListener *>(listener);
   if (parserListener != nullptr)
-    parserListener->enterBinary_term(this);
+    parserListener->enterBin_str(this);
 }
-
-void AssertionParser::Binary_termContext::exitRule(tree::ParseTreeListener *listener) {
+void AssertionParser::Bin_strContext::exitRule(tree::ParseTreeListener *listener) {
   auto parserListener = dynamic_cast<AssertionListener *>(listener);
   if (parserListener != nullptr)
-    parserListener->exitBinary_term(this);
+    parserListener->exitBin_str(this);
+}
+//----------------- List_b_varsContext ------------------------------------------------------------------
+
+AssertionParser::BListContext* AssertionParser::List_b_varsContext::bList() {
+  return getRuleContext<AssertionParser::BListContext>(0);
 }
 
+AssertionParser::List_b_varsContext::List_b_varsContext(Binary_termContext *ctx) { copyFrom(ctx); }
 
-std::any AssertionParser::Binary_termContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<AssertionVisitor*>(visitor))
-    return parserVisitor->visitBinary_term(this);
-  else
-    return visitor->visitChildren(this);
+void AssertionParser::List_b_varsContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<AssertionListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterList_b_vars(this);
 }
-
+void AssertionParser::List_b_varsContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<AssertionListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitList_b_vars(this);
+}
 AssertionParser::Binary_termContext* AssertionParser::binary_term() {
   Binary_termContext *_localctx = _tracker.createInstance<Binary_termContext>(_ctx, getState());
   enterRule(_localctx, 22, AssertionParser::RuleBinary_term);
@@ -1199,23 +1197,25 @@ AssertionParser::Binary_termContext* AssertionParser::binary_term() {
     exitRule();
   });
   try {
-    setState(120);
+    setState(119);
     _errHandler->sync(this);
     switch (_input->LA(1)) {
       case AssertionParser::T__9: {
+        _localctx = _tracker.createInstance<AssertionParser::List_b_varsContext>(_localctx);
         enterOuterAlt(_localctx, 1);
-        setState(115);
+        setState(114);
         match(AssertionParser::T__9);
-        setState(116);
+        setState(115);
         bList();
-        setState(117);
+        setState(116);
         match(AssertionParser::T__10);
         break;
       }
 
       case AssertionParser::BINARYSTRING: {
+        _localctx = _tracker.createInstance<AssertionParser::Bin_strContext>(_localctx);
         enterOuterAlt(_localctx, 2);
-        setState(119);
+        setState(118);
         match(AssertionParser::BINARYSTRING);
         break;
       }
@@ -1240,39 +1240,51 @@ AssertionParser::Quantum_termContext::Quantum_termContext(ParserRuleContext *par
   : ParserRuleContext(parent, invokingState) {
 }
 
-AssertionParser::QListContext* AssertionParser::Quantum_termContext::qList() {
-  return getRuleContext<AssertionParser::QListContext>(0);
-}
-
-AssertionParser::RowContext* AssertionParser::Quantum_termContext::row() {
-  return getRuleContext<AssertionParser::RowContext>(0);
-}
-
 
 size_t AssertionParser::Quantum_termContext::getRuleIndex() const {
   return AssertionParser::RuleQuantum_term;
 }
 
-void AssertionParser::Quantum_termContext::enterRule(tree::ParseTreeListener *listener) {
+void AssertionParser::Quantum_termContext::copyFrom(Quantum_termContext *ctx) {
+  ParserRuleContext::copyFrom(ctx);
+}
+
+//----------------- Quantum_stateContext ------------------------------------------------------------------
+
+AssertionParser::RowContext* AssertionParser::Quantum_stateContext::row() {
+  return getRuleContext<AssertionParser::RowContext>(0);
+}
+
+AssertionParser::Quantum_stateContext::Quantum_stateContext(Quantum_termContext *ctx) { copyFrom(ctx); }
+
+void AssertionParser::Quantum_stateContext::enterRule(tree::ParseTreeListener *listener) {
   auto parserListener = dynamic_cast<AssertionListener *>(listener);
   if (parserListener != nullptr)
-    parserListener->enterQuantum_term(this);
+    parserListener->enterQuantum_state(this);
 }
-
-void AssertionParser::Quantum_termContext::exitRule(tree::ParseTreeListener *listener) {
+void AssertionParser::Quantum_stateContext::exitRule(tree::ParseTreeListener *listener) {
   auto parserListener = dynamic_cast<AssertionListener *>(listener);
   if (parserListener != nullptr)
-    parserListener->exitQuantum_term(this);
+    parserListener->exitQuantum_state(this);
+}
+//----------------- List_q_varsContext ------------------------------------------------------------------
+
+AssertionParser::QListContext* AssertionParser::List_q_varsContext::qList() {
+  return getRuleContext<AssertionParser::QListContext>(0);
 }
 
+AssertionParser::List_q_varsContext::List_q_varsContext(Quantum_termContext *ctx) { copyFrom(ctx); }
 
-std::any AssertionParser::Quantum_termContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<AssertionVisitor*>(visitor))
-    return parserVisitor->visitQuantum_term(this);
-  else
-    return visitor->visitChildren(this);
+void AssertionParser::List_q_varsContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<AssertionListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterList_q_vars(this);
 }
-
+void AssertionParser::List_q_varsContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<AssertionListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitList_q_vars(this);
+}
 AssertionParser::Quantum_termContext* AssertionParser::quantum_term() {
   Quantum_termContext *_localctx = _tracker.createInstance<Quantum_termContext>(_ctx, getState());
   enterRule(_localctx, 24, AssertionParser::RuleQuantum_term);
@@ -1285,23 +1297,25 @@ AssertionParser::Quantum_termContext* AssertionParser::quantum_term() {
     exitRule();
   });
   try {
-    setState(127);
+    setState(126);
     _errHandler->sync(this);
     switch (getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 9, _ctx)) {
     case 1: {
+      _localctx = _tracker.createInstance<AssertionParser::List_q_varsContext>(_localctx);
       enterOuterAlt(_localctx, 1);
-      setState(122);
+      setState(121);
       match(AssertionParser::T__9);
-      setState(123);
+      setState(122);
       qList();
-      setState(124);
+      setState(123);
       match(AssertionParser::T__10);
       break;
     }
 
     case 2: {
+      _localctx = _tracker.createInstance<AssertionParser::Quantum_stateContext>(_localctx);
       enterOuterAlt(_localctx, 2);
-      setState(126);
+      setState(125);
       row();
       break;
     }
@@ -1351,14 +1365,6 @@ void AssertionParser::RowContext::exitRule(tree::ParseTreeListener *listener) {
     parserListener->exitRow(this);
 }
 
-
-std::any AssertionParser::RowContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<AssertionVisitor*>(visitor))
-    return parserVisitor->visitRow(this);
-  else
-    return visitor->visitChildren(this);
-}
-
 AssertionParser::RowContext* AssertionParser::row() {
   RowContext *_localctx = _tracker.createInstance<RowContext>(_ctx, getState());
   enterRule(_localctx, 26, AssertionParser::RuleRow);
@@ -1373,23 +1379,23 @@ AssertionParser::RowContext* AssertionParser::row() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(129);
+    setState(128);
     match(AssertionParser::T__9);
-    setState(130);
+    setState(129);
     match(AssertionParser::REALNUM);
-    setState(135);
+    setState(134);
     _errHandler->sync(this);
     _la = _input->LA(1);
     while (_la == AssertionParser::T__11) {
-      setState(131);
+      setState(130);
       match(AssertionParser::T__11);
-      setState(132);
+      setState(131);
       match(AssertionParser::REALNUM);
-      setState(137);
+      setState(136);
       _errHandler->sync(this);
       _la = _input->LA(1);
     }
-    setState(138);
+    setState(137);
     match(AssertionParser::T__10);
    
   }
@@ -1433,14 +1439,6 @@ void AssertionParser::BListContext::exitRule(tree::ParseTreeListener *listener) 
     parserListener->exitBList(this);
 }
 
-
-std::any AssertionParser::BListContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<AssertionVisitor*>(visitor))
-    return parserVisitor->visitBList(this);
-  else
-    return visitor->visitChildren(this);
-}
-
 AssertionParser::BListContext* AssertionParser::bList() {
   BListContext *_localctx = _tracker.createInstance<BListContext>(_ctx, getState());
   enterRule(_localctx, 28, AssertionParser::RuleBList);
@@ -1455,17 +1453,17 @@ AssertionParser::BListContext* AssertionParser::bList() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(140);
+    setState(139);
     match(AssertionParser::CID);
-    setState(145);
+    setState(144);
     _errHandler->sync(this);
     _la = _input->LA(1);
     while (_la == AssertionParser::T__11) {
-      setState(141);
+      setState(140);
       match(AssertionParser::T__11);
-      setState(142);
+      setState(141);
       match(AssertionParser::CID);
-      setState(147);
+      setState(146);
       _errHandler->sync(this);
       _la = _input->LA(1);
     }
@@ -1511,14 +1509,6 @@ void AssertionParser::QListContext::exitRule(tree::ParseTreeListener *listener) 
     parserListener->exitQList(this);
 }
 
-
-std::any AssertionParser::QListContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<AssertionVisitor*>(visitor))
-    return parserVisitor->visitQList(this);
-  else
-    return visitor->visitChildren(this);
-}
-
 AssertionParser::QListContext* AssertionParser::qList() {
   QListContext *_localctx = _tracker.createInstance<QListContext>(_ctx, getState());
   enterRule(_localctx, 30, AssertionParser::RuleQList);
@@ -1533,17 +1523,17 @@ AssertionParser::QListContext* AssertionParser::qList() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(148);
+    setState(147);
     match(AssertionParser::QID);
-    setState(153);
+    setState(152);
     _errHandler->sync(this);
     _la = _input->LA(1);
     while (_la == AssertionParser::T__11) {
-      setState(149);
+      setState(148);
       match(AssertionParser::T__11);
-      setState(150);
+      setState(149);
       match(AssertionParser::QID);
-      setState(155);
+      setState(154);
       _errHandler->sync(this);
       _la = _input->LA(1);
     }

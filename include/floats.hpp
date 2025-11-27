@@ -56,7 +56,7 @@ MyFloat max(MyFloat const &a, MyFloat const &b);
 MyFloat min(MyFloat const &a, MyFloat const &b);
 MyFloat abs(const MyFloat &f);
 
-std::string gate_to_string(const MyFloat& myfloat);
+std::string to_string(const MyFloat& myfloat);
 
 double to_double(const MyFloat &myfloat);
 #endif

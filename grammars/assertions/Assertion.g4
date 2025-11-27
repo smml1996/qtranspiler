@@ -17,18 +17,21 @@ dis_and_expr
     : dis_conv_expr ('and' dis_conv_expr)*;
 
 dis_conv_expr
-    : dis_not_expr ('+' dis_not_expr)*;
+    : dis_not_expr # conv_simple_case
+    | dis_not_expr '+' dis_not_expr # conv_complex_case
+    ;
 
 // NOT has highest precedence
 dis_not_expr
-    : '!' dis_not_expr
-    | '(' distribution_assertion ')'
-    | probability_term '>=' REALNUM;
+    : '!' dis_not_expr # dis_not
+    | '(' distribution_assertion ')' # dis_assertion
+    | probability_term '>=' REALNUM # dis_prob_assertion
+    ;
 
 // probability term
 probability_term
-    : 'P' '(' states_assertion ')'
-    | REALNUM
+    : 'P' '(' states_assertion ')' # symbolic_prob
+    | REALNUM # concrete_prob
     ;
 
 // states assertion
@@ -52,13 +55,13 @@ states_not_expr
     ;
 
 binary_term
-    : '[' bList ']'
-    | BINARYSTRING
+    : '[' bList ']' # list_b_vars
+    | BINARYSTRING # bin_str
     ;
 
 quantum_term
-    : '[' qList ']'
-    | row
+    : '[' qList ']' # list_q_vars
+    | row # quantum_state
     ;
 
 // matrices

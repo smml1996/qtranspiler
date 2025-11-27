@@ -24,6 +24,7 @@
 #include "pomdp.hpp"
 #include "cxxopts.hpp"
 #include "grammars/assertions/PreconditionAssertionBaseVisitor.cpp"
+#include "grammars/assertions/AssertionBaseVisitor.cpp"
 
 
 using namespace std;
@@ -91,15 +92,6 @@ int main(int argc, char* argv[]) {
     antlr4::tree::ParseTree *tree = parser.program();
     auto *program = dynamic_cast<ProgrammingLanguageParser::ProgramContext*>(tree);
 
-    // postcondition parsing
-    // antlr4::ANTLRInputStream post_input(raw_postcondition);
-    // AssertionLexer post_lexer(&post_input);
-    // antlr4::CommonTokenStream post_tokens(&post_lexer);
-    // AssertionParser post_parser(&prec_tokens);
-    // antlr4::tree::ParseTree *raw_post = prec_parser.precon_assertion();
-    // std::shared_ptr<antlr4::tree::ParseTree> post_tree(raw_post, [](auto*){ /* do nothing */ });
-    // auto *postcondition = dynamic_cast<AssertionParser::AssertionContext*>(post_tree.get());
-
     // initial ensembles
     PreconVisitor visitor(nqvars, ncvars, mc_precision);
     visitor.visit(raw_prec);
@@ -134,8 +126,45 @@ int main(int argc, char* argv[]) {
         }
         cout << endl;
     }
-    //
-    // // TODO: build FOL formula
-    // cout << is_sat(final_ensembles, postcondition) << endl;
+
+    // Determine if there exists a convex combination of final ensembles
+
+    z3::context ctx;
+    z3::solver solver(ctx);
+
+    // create bounded variables
+    z3::expr body = ctx.bool_val(true);
+    z3::expr sum = ctx.real_val("0");
+    z3::sort R = ctx.real_sort();
+
+    z3::expr_vector bound_vars(ctx);
+    for (int i = 0; i < final_ensembles.size(); i++) {
+        Z3_ast b = Z3_mk_bound(ctx, i, R);  // raw AST for bound variable
+        bound_vars.push_back(z3::expr(ctx, b));
+    }
+
+    for (int i = 0; i < final_ensembles.size(); i++) {
+        body = body && (bound_vars[i] >= 0);
+        sum = sum + bound_vars[i];
+    }
+
+
+    body = body && (sum == 1);
+
+    // postcondition parsing
+    antlr4::ANTLRInputStream post_input(raw_postcondition);
+    AssertionLexer post_lexer(&post_input);
+    antlr4::CommonTokenStream post_tokens(&post_lexer);
+    AssertionParser post_parser(&prec_tokens);
+    antlr4::tree::ParseTree *raw_post = prec_parser.precon_assertion();
+    Z3AssertionVisitor post_visitor(ctx, solver);
+    post_visitor.ensemble_stack.push_back(get_symbolic_ensemble(final_ensembles, bound_vars, ctx));
+    body = body && std::any_cast<z3::expr>(post_visitor.visit(raw_post));
+
+    z3::expr forall_weights = z3::forall(bound_vars, body);
+    solver.add(forall_weights);
+
+    cout << solver.check() << endl;
+
     return 0;
 }

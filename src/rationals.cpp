@@ -127,8 +127,8 @@ Rational min(Rational const &rational1, Rational const &rational2) {
 }
 
 double to_double(const Rational &rational) {
-    double numerator = stod(gate_to_string(rational.numerator));
-    double denominator = stod(gate_to_string(rational.denominator));
+    double numerator = stod(to_string(rational.numerator));
+    double denominator = stod(to_string(rational.denominator));
     return numerator / denominator;
 }
 

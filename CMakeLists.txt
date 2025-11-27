@@ -23,6 +23,7 @@ find_package(ortools REQUIRED)
 # json files
 find_package(nlohmann_json REQUIRED)
 
+
 # Source files (your code + generated code)
 set(SOURCES
     main.cpp
@@ -229,10 +230,13 @@ add_executable(verifier
         grammars/assertions/PreconditionAssertionBaseVisitor.cpp
         grammars/assertions/AssertionParser.cpp
         grammars/assertions/AssertionLexer.cpp
+        grammars/assertions/AssertionBaseVisitor.h
+        grammars/assertions/AssertionBaseVisitor.cpp
         verifier.cpp
 )
 
 # Link against the ANTLR C++ runtime
 target_include_directories(verifier PRIVATE /opt/homebrew/Cellar/antlr4-cpp-runtime/4.13.2/include/antlr4-runtime)
-target_link_libraries(verifier PRIVATE antlr4-runtime nlohmann_json::nlohmann_json ortools::ortools c++)
+target_link_directories(verifier PRIVATE /opt/homebrew/lib)
+target_link_libraries(verifier PRIVATE antlr4-runtime nlohmann_json::nlohmann_json ortools::ortools c++ z3)
 
