@@ -30,6 +30,26 @@
 using namespace std;
 
 
+// Helper: check if expr 'var' appears in expr 'e'
+bool expr_contains_var(const z3::expr &e, const z3::expr &var) {
+    if (e.is_const() && e.hash() == var.hash()) return true;
+    for (unsigned i = 0; i < e.num_args(); ++i) {
+        if (expr_contains_var(e.arg(i), var)) return true;
+    }
+    return false;
+}
+
+// Filter bound_vars to keep only the ones that appear in 'body'
+z3::expr_vector filter_used_vars(const z3::expr_vector &bound_vars, const z3::expr &body) {
+    z3::expr_vector used_vars(body.ctx());
+    for (unsigned i = 0; i < bound_vars.size(); ++i) {
+        if (expr_contains_var(body, bound_vars[i])) {
+            used_vars.push_back(bound_vars[i]);
+        }
+    }
+    return used_vars;
+}
+
 int main(int argc, char* argv[]) {
     HardwareSpecification hardware_specification(QuantumHardware::PerfectHardware, false, true);
     unordered_map<int, int> embedding{
@@ -74,7 +94,9 @@ int main(int argc, char* argv[]) {
         throw runtime_error("couldn't get precondition line");
     }
     input_file.close();
-
+    cout << "raw precondition line: " << raw_precondition << endl;
+    cout << "raw program: " << raw_program << endl;
+    cout << "raw postcondition line: " << raw_postcondition << endl;
     // parse precondition
     antlr4::ANTLRInputStream prec_input(raw_precondition);
     PreconditionAssertionLexer prec_lexer(&prec_input);
@@ -140,31 +162,48 @@ int main(int argc, char* argv[]) {
     z3::expr_vector bound_vars(ctx);
     for (int i = 0; i < final_ensembles.size(); i++) {
         Z3_ast b = Z3_mk_bound(ctx, i, R);  // raw AST for bound variable
-        bound_vars.push_back(z3::expr(ctx, b));
+        bound_vars.push_back(ctx.real_const(("w" + std::to_string(i)).c_str()));
     }
+
+
+    for (auto v : bound_vars) assert(&v.ctx() == &ctx);
 
     for (int i = 0; i < final_ensembles.size(); i++) {
         body = body && (bound_vars[i] >= 0);
         sum = sum + bound_vars[i];
     }
 
+    cout << "num bounded vars:" << bound_vars.size() << endl;
+    cout << "sum expr" << sum << endl;
+
 
     body = body && (sum == 1);
+    cout << " body with sum" << body << endl;
 
     // postcondition parsing
     antlr4::ANTLRInputStream post_input(raw_postcondition);
     AssertionLexer post_lexer(&post_input);
     antlr4::CommonTokenStream post_tokens(&post_lexer);
-    AssertionParser post_parser(&prec_tokens);
-    antlr4::tree::ParseTree *raw_post = prec_parser.precon_assertion();
+    AssertionParser post_parser(&post_tokens);
+    antlr4::tree::ParseTree *raw_post = post_parser.assertion();
+
+
+
     Z3AssertionVisitor post_visitor(ctx, solver);
     post_visitor.ensemble_stack.push_back(get_symbolic_ensemble(final_ensembles, bound_vars, ctx));
-    body = body && std::any_cast<z3::expr>(post_visitor.visit(raw_post));
+    auto post_expr = std::any_cast<z3::expr>(post_visitor.visit(raw_post));
+    body = z3::implies(body, post_expr);
+    body = body.simplify();
 
-    z3::expr forall_weights = z3::forall(bound_vars, body);
-    solver.add(forall_weights);
+    // Only wrap in forall if body is non-constant
+    if (!body.is_true() && !body.is_false() && !body.is_quantifier()) {
+        z3::expr forall_weights = z3::forall(bound_vars, body);
+        solver.add(forall_weights);
+    } else {
+        // If body is trivial, just add it directly
+        solver.add(body);
+    }
 
     cout << solver.check() << endl;
-
     return 0;
 }

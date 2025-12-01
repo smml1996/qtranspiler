@@ -29,9 +29,13 @@ public:
 
     virtual std::any visitDis_conv_expr(AssertionParser::Dis_conv_exprContext *context) = 0;
 
-    virtual std::any visitDis_not_expr(AssertionParser::Dis_not_exprContext *context) = 0;
+    virtual std::any visitDis_not(AssertionParser::Dis_notContext *context) = 0;
 
-    virtual std::any visitProbability_term(AssertionParser::Probability_termContext *context) = 0;
+    virtual std::any visitDis_not_atom(AssertionParser::Dis_not_atomContext *context) = 0;
+
+    virtual std::any visitDis_assertion(AssertionParser::Dis_assertionContext *context) = 0;
+
+    virtual std::any visitSymbolic_prob(AssertionParser::Symbolic_probContext *context) = 0;
 
     virtual std::any visitStates_assertion(AssertionParser::States_assertionContext *context) = 0;
 
@@ -41,15 +45,11 @@ public:
 
     virtual std::any visitNot_expr(AssertionParser::Not_exprContext *context) = 0;
 
-    virtual std::any visitQCompare(AssertionParser::QCompareContext *context) = 0;
+    virtual std::any visitStates_atom_rule(AssertionParser::States_atom_ruleContext *context) = 0;
 
-    virtual std::any visitBCompare(AssertionParser::BCompareContext *context) = 0;
+    virtual std::any visitQterm(AssertionParser::QtermContext *context) = 0;
 
-    virtual std::any visitParens(AssertionParser::ParensContext *context) = 0;
-
-    virtual std::any visitBinary_term(AssertionParser::Binary_termContext *context) = 0;
-
-    virtual std::any visitQuantum_term(AssertionParser::Quantum_termContext *context) = 0;
+    virtual std::any visitBterm(AssertionParser::BtermContext *context) = 0;
 
     virtual std::any visitRow(AssertionParser::RowContext *context) = 0;
 

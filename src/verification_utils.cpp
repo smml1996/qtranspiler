@@ -104,7 +104,7 @@ void Ensemble<z3::expr>::normalize() {
 }
 
 Ensemble<z3::expr> get_symbolic_ensemble(const std::vector<shared_ptr<Ensemble<MyFloat>>> &ensembles, const z3::expr_vector &weights, z3::context &ctx) {
-    Ensemble<z3::expr> result;
+    Ensemble<z3::expr> result(mc_precision);
 
     assert( weights.size() == ensembles.size());
     for (int i = 0; i <ensembles.size(); i++) {

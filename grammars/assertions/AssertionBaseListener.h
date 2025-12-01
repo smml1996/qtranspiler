@@ -28,26 +28,20 @@ public:
   virtual void enterDis_and_expr(AssertionParser::Dis_and_exprContext * /*ctx*/) override { }
   virtual void exitDis_and_expr(AssertionParser::Dis_and_exprContext * /*ctx*/) override { }
 
-  virtual void enterConv_simple_case(AssertionParser::Conv_simple_caseContext * /*ctx*/) override { }
-  virtual void exitConv_simple_case(AssertionParser::Conv_simple_caseContext * /*ctx*/) override { }
-
-  virtual void enterConv_complex_case(AssertionParser::Conv_complex_caseContext * /*ctx*/) override { }
-  virtual void exitConv_complex_case(AssertionParser::Conv_complex_caseContext * /*ctx*/) override { }
+  virtual void enterDis_conv_expr(AssertionParser::Dis_conv_exprContext * /*ctx*/) override { }
+  virtual void exitDis_conv_expr(AssertionParser::Dis_conv_exprContext * /*ctx*/) override { }
 
   virtual void enterDis_not(AssertionParser::Dis_notContext * /*ctx*/) override { }
   virtual void exitDis_not(AssertionParser::Dis_notContext * /*ctx*/) override { }
 
+  virtual void enterDis_not_atom(AssertionParser::Dis_not_atomContext * /*ctx*/) override { }
+  virtual void exitDis_not_atom(AssertionParser::Dis_not_atomContext * /*ctx*/) override { }
+
   virtual void enterDis_assertion(AssertionParser::Dis_assertionContext * /*ctx*/) override { }
   virtual void exitDis_assertion(AssertionParser::Dis_assertionContext * /*ctx*/) override { }
 
-  virtual void enterDis_prob_assertion(AssertionParser::Dis_prob_assertionContext * /*ctx*/) override { }
-  virtual void exitDis_prob_assertion(AssertionParser::Dis_prob_assertionContext * /*ctx*/) override { }
-
   virtual void enterSymbolic_prob(AssertionParser::Symbolic_probContext * /*ctx*/) override { }
   virtual void exitSymbolic_prob(AssertionParser::Symbolic_probContext * /*ctx*/) override { }
-
-  virtual void enterConcrete_prob(AssertionParser::Concrete_probContext * /*ctx*/) override { }
-  virtual void exitConcrete_prob(AssertionParser::Concrete_probContext * /*ctx*/) override { }
 
   virtual void enterStates_assertion(AssertionParser::States_assertionContext * /*ctx*/) override { }
   virtual void exitStates_assertion(AssertionParser::States_assertionContext * /*ctx*/) override { }
@@ -61,26 +55,14 @@ public:
   virtual void enterNot_expr(AssertionParser::Not_exprContext * /*ctx*/) override { }
   virtual void exitNot_expr(AssertionParser::Not_exprContext * /*ctx*/) override { }
 
-  virtual void enterQCompare(AssertionParser::QCompareContext * /*ctx*/) override { }
-  virtual void exitQCompare(AssertionParser::QCompareContext * /*ctx*/) override { }
+  virtual void enterStates_atom_rule(AssertionParser::States_atom_ruleContext * /*ctx*/) override { }
+  virtual void exitStates_atom_rule(AssertionParser::States_atom_ruleContext * /*ctx*/) override { }
 
-  virtual void enterBCompare(AssertionParser::BCompareContext * /*ctx*/) override { }
-  virtual void exitBCompare(AssertionParser::BCompareContext * /*ctx*/) override { }
+  virtual void enterQterm(AssertionParser::QtermContext * /*ctx*/) override { }
+  virtual void exitQterm(AssertionParser::QtermContext * /*ctx*/) override { }
 
-  virtual void enterParens(AssertionParser::ParensContext * /*ctx*/) override { }
-  virtual void exitParens(AssertionParser::ParensContext * /*ctx*/) override { }
-
-  virtual void enterList_b_vars(AssertionParser::List_b_varsContext * /*ctx*/) override { }
-  virtual void exitList_b_vars(AssertionParser::List_b_varsContext * /*ctx*/) override { }
-
-  virtual void enterBin_str(AssertionParser::Bin_strContext * /*ctx*/) override { }
-  virtual void exitBin_str(AssertionParser::Bin_strContext * /*ctx*/) override { }
-
-  virtual void enterList_q_vars(AssertionParser::List_q_varsContext * /*ctx*/) override { }
-  virtual void exitList_q_vars(AssertionParser::List_q_varsContext * /*ctx*/) override { }
-
-  virtual void enterQuantum_state(AssertionParser::Quantum_stateContext * /*ctx*/) override { }
-  virtual void exitQuantum_state(AssertionParser::Quantum_stateContext * /*ctx*/) override { }
+  virtual void enterBterm(AssertionParser::BtermContext * /*ctx*/) override { }
+  virtual void exitBterm(AssertionParser::BtermContext * /*ctx*/) override { }
 
   virtual void enterRow(AssertionParser::RowContext * /*ctx*/) override { }
   virtual void exitRow(AssertionParser::RowContext * /*ctx*/) override { }

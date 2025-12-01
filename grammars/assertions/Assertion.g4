@@ -8,30 +8,27 @@ distribution_assertion
     : dis_or_expr
     ;
 
-// OR has lowest precedence
+//// OR has lowest precedence
 dis_or_expr
     : dis_and_expr ('or' dis_and_expr)*;
-
-// AND has medium precedence
+//
+//// AND has medium precedence
 dis_and_expr
     : dis_conv_expr ('and' dis_conv_expr)*;
 
 dis_conv_expr
-    : dis_not_expr # conv_simple_case
-    | dis_not_expr '+' dis_not_expr # conv_complex_case
+    : dis_not_expr ('+' dis_not_expr)*
     ;
 
-// NOT has highest precedence
+//// NOT has highest precedence
 dis_not_expr
     : '!' dis_not_expr # dis_not
-    | '(' distribution_assertion ')' # dis_assertion
-    | probability_term '>=' REALNUM # dis_prob_assertion
+    | dis_atom # dis_not_atom
     ;
 
-// probability term
-probability_term
-    : 'P' '(' states_assertion ')' # symbolic_prob
-    | REALNUM # concrete_prob
+dis_atom
+    : '(' distribution_assertion ')' # dis_assertion
+    | 'P' '(' states_assertion ')' '>=' REALNUM  # symbolic_prob
     ;
 
 // states assertion
@@ -49,19 +46,12 @@ states_and_expr
 
 states_not_expr
     : '!' states_not_expr               # not_expr
-    | quantum_term '=' quantum_term           # QCompare
-    | binary_term '=' binary_term           # BCompare
-    | '(' states_assertion ')'           # Parens
+    | states_atom # states_atom_rule
     ;
 
-binary_term
-    : '[' bList ']' # list_b_vars
-    | BINARYSTRING # bin_str
-    ;
-
-quantum_term
-    : '[' qList ']' # list_q_vars
-    | row # quantum_state
+states_atom
+    :  qList  '=' row # qterm
+    |  bList  '=' BINARYSTRING # bterm
     ;
 
 // matrices
@@ -77,7 +67,7 @@ qList : QID (',' QID)* ;
 // Lexer rules (uppercase usually)
 BINARYSTRING: ( '0' | '1' )+;
 REALNUM : [0-9]+ ('.' [0-9]+)?;
-CID  : 'x' [0-9]* ;
-QID : 'q' [0-9]* ;
+CID  : 'x' [0-9]+ ;
+QID : 'q' [0-9]+ ;
 WS : [ \t\r\n]+ -> skip ;
 

@@ -35,11 +35,19 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual std::any visitDis_not_expr(AssertionParser::Dis_not_exprContext *ctx) override {
+  virtual std::any visitDis_not(AssertionParser::Dis_notContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual std::any visitProbability_term(AssertionParser::Probability_termContext *ctx) override {
+  virtual std::any visitDis_not_atom(AssertionParser::Dis_not_atomContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitDis_assertion(AssertionParser::Dis_assertionContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitSymbolic_prob(AssertionParser::Symbolic_probContext *ctx) override {
     return visitChildren(ctx);
   }
 
@@ -59,23 +67,15 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual std::any visitQCompare(AssertionParser::QCompareContext *ctx) override {
+  virtual std::any visitStates_atom_rule(AssertionParser::States_atom_ruleContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual std::any visitBCompare(AssertionParser::BCompareContext *ctx) override {
+  virtual std::any visitQterm(AssertionParser::QtermContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual std::any visitParens(AssertionParser::ParensContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual std::any visitBinary_term(AssertionParser::Binary_termContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual std::any visitQuantum_term(AssertionParser::Quantum_termContext *ctx) override {
+  virtual std::any visitBterm(AssertionParser::BtermContext *ctx) override {
     return visitChildren(ctx);
   }
 
