@@ -51,7 +51,23 @@ public:
 
     virtual std::any visitBterm(AssertionParser::BtermContext *context) = 0;
 
+    virtual std::any visitVectorTerm(AssertionParser::VectorTermContext *context) = 0;
+
+    virtual std::any visitMatrixVectorTerm(AssertionParser::MatrixVectorTermContext *context) = 0;
+
+    virtual std::any visitQVarVector(AssertionParser::QVarVectorContext *context) = 0;
+
+    virtual std::any visitNumericVector(AssertionParser::NumericVectorContext *context) = 0;
+
     virtual std::any visitRow(AssertionParser::RowContext *context) = 0;
+
+    virtual std::any visitComplexRealImag(AssertionParser::ComplexRealImagContext *context) = 0;
+
+    virtual std::any visitRealPart(AssertionParser::RealPartContext *context) = 0;
+
+    virtual std::any visitImagPart(AssertionParser::ImagPartContext *context) = 0;
+
+    virtual std::any visitMatrix(AssertionParser::MatrixContext *context) = 0;
 
     virtual std::any visitBList(AssertionParser::BListContext *context) = 0;
 

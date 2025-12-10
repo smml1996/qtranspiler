@@ -62,8 +62,32 @@ public:
   virtual void enterBterm(AssertionParser::BtermContext *ctx) = 0;
   virtual void exitBterm(AssertionParser::BtermContext *ctx) = 0;
 
+  virtual void enterVectorTerm(AssertionParser::VectorTermContext *ctx) = 0;
+  virtual void exitVectorTerm(AssertionParser::VectorTermContext *ctx) = 0;
+
+  virtual void enterMatrixVectorTerm(AssertionParser::MatrixVectorTermContext *ctx) = 0;
+  virtual void exitMatrixVectorTerm(AssertionParser::MatrixVectorTermContext *ctx) = 0;
+
+  virtual void enterQVarVector(AssertionParser::QVarVectorContext *ctx) = 0;
+  virtual void exitQVarVector(AssertionParser::QVarVectorContext *ctx) = 0;
+
+  virtual void enterNumericVector(AssertionParser::NumericVectorContext *ctx) = 0;
+  virtual void exitNumericVector(AssertionParser::NumericVectorContext *ctx) = 0;
+
   virtual void enterRow(AssertionParser::RowContext *ctx) = 0;
   virtual void exitRow(AssertionParser::RowContext *ctx) = 0;
+
+  virtual void enterComplexRealImag(AssertionParser::ComplexRealImagContext *ctx) = 0;
+  virtual void exitComplexRealImag(AssertionParser::ComplexRealImagContext *ctx) = 0;
+
+  virtual void enterRealPart(AssertionParser::RealPartContext *ctx) = 0;
+  virtual void exitRealPart(AssertionParser::RealPartContext *ctx) = 0;
+
+  virtual void enterImagPart(AssertionParser::ImagPartContext *ctx) = 0;
+  virtual void exitImagPart(AssertionParser::ImagPartContext *ctx) = 0;
+
+  virtual void enterMatrix(AssertionParser::MatrixContext *ctx) = 0;
+  virtual void exitMatrix(AssertionParser::MatrixContext *ctx) = 0;
 
   virtual void enterBList(AssertionParser::BListContext *ctx) = 0;
   virtual void exitBList(AssertionParser::BListContext *ctx) = 0;

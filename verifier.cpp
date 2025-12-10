@@ -114,6 +114,7 @@ int main(int argc, char* argv[]) {
     antlr4::tree::ParseTree *tree = parser.program();
     auto *program = dynamic_cast<ProgrammingLanguageParser::ProgramContext*>(tree);
 
+
     // initial ensembles
     PreconVisitor visitor(nqvars, ncvars, mc_precision);
     visitor.visit(raw_prec);
@@ -207,3 +208,4 @@ int main(int argc, char* argv[]) {
     cout << solver.check() << endl;
     return 0;
 }
+

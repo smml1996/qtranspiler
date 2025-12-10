@@ -79,7 +79,39 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual std::any visitVectorTerm(AssertionParser::VectorTermContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitMatrixVectorTerm(AssertionParser::MatrixVectorTermContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitQVarVector(AssertionParser::QVarVectorContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitNumericVector(AssertionParser::NumericVectorContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual std::any visitRow(AssertionParser::RowContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitComplexRealImag(AssertionParser::ComplexRealImagContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitRealPart(AssertionParser::RealPartContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitImagPart(AssertionParser::ImagPartContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitMatrix(AssertionParser::MatrixContext *ctx) override {
     return visitChildren(ctx);
   }
 

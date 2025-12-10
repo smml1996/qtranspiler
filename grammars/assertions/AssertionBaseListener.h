@@ -64,8 +64,32 @@ public:
   virtual void enterBterm(AssertionParser::BtermContext * /*ctx*/) override { }
   virtual void exitBterm(AssertionParser::BtermContext * /*ctx*/) override { }
 
+  virtual void enterVectorTerm(AssertionParser::VectorTermContext * /*ctx*/) override { }
+  virtual void exitVectorTerm(AssertionParser::VectorTermContext * /*ctx*/) override { }
+
+  virtual void enterMatrixVectorTerm(AssertionParser::MatrixVectorTermContext * /*ctx*/) override { }
+  virtual void exitMatrixVectorTerm(AssertionParser::MatrixVectorTermContext * /*ctx*/) override { }
+
+  virtual void enterQVarVector(AssertionParser::QVarVectorContext * /*ctx*/) override { }
+  virtual void exitQVarVector(AssertionParser::QVarVectorContext * /*ctx*/) override { }
+
+  virtual void enterNumericVector(AssertionParser::NumericVectorContext * /*ctx*/) override { }
+  virtual void exitNumericVector(AssertionParser::NumericVectorContext * /*ctx*/) override { }
+
   virtual void enterRow(AssertionParser::RowContext * /*ctx*/) override { }
   virtual void exitRow(AssertionParser::RowContext * /*ctx*/) override { }
+
+  virtual void enterComplexRealImag(AssertionParser::ComplexRealImagContext * /*ctx*/) override { }
+  virtual void exitComplexRealImag(AssertionParser::ComplexRealImagContext * /*ctx*/) override { }
+
+  virtual void enterRealPart(AssertionParser::RealPartContext * /*ctx*/) override { }
+  virtual void exitRealPart(AssertionParser::RealPartContext * /*ctx*/) override { }
+
+  virtual void enterImagPart(AssertionParser::ImagPartContext * /*ctx*/) override { }
+  virtual void exitImagPart(AssertionParser::ImagPartContext * /*ctx*/) override { }
+
+  virtual void enterMatrix(AssertionParser::MatrixContext * /*ctx*/) override { }
+  virtual void exitMatrix(AssertionParser::MatrixContext * /*ctx*/) override { }
 
   virtual void enterBList(AssertionParser::BListContext * /*ctx*/) override { }
   virtual void exitBList(AssertionParser::BListContext * /*ctx*/) override { }

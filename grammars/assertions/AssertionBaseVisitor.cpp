@@ -3,6 +3,11 @@
 
 
 #include "AssertionBaseVisitor.h"
+
+
+
+// Generated from grammars/assertions/Assertion.g4 by ANTLR 4.13.2
+
 #include "verification_utils.hpp"
 #include <z3++.h>
 
@@ -124,7 +129,7 @@ public:
 
   antlrcpp::Any visitSymbolic_prob(AssertionParser::Symbolic_probContext *ctx) override {
     z3::expr result = this->context.real_val("0");
-    for (auto e : this->ensemble_stack.back().probs) {
+    for (const auto& e : this->ensemble_stack.back().probs) {
       this->current_hs = e.first;
       if (std::any_cast<bool>(visit(ctx->states_assertion()))) {
         result = result + e.second;
@@ -186,31 +191,11 @@ public:
     }
 
   antlrcpp::Any visitQterm(AssertionParser::QtermContext *ctx) override {
-
-        vector<double> state = get_row(ctx->row());
-
-        vector<vector<complex<double>>> result;
-        for (int i = 0; i < state.size(); i++) {
-          vector<complex<double>> current_row;
-          for (int j = 0; j < state.size(); j++) {
-            current_row.push_back(complex<double>(state[i] * state[j], 0));
-          }
-          result.push_back(current_row);
-        }
-
-
-        auto vars = get_qvars_list(ctx->qList());
-
-        vector<int> remove_indices;
-
-        for (auto q : this->current_hs->quantum_state->qubits_used) {
-          if (vars.find(q) == vars.end()) {
-            remove_indices.push_back(q);
-          }
-        }
-        auto pt = current_hs->quantum_state->multi_partial_trace(remove_indices);
+        auto result = std::any_cast<vector<vector<complex<double>>>>(visit(ctx->qTerm2()));
+        auto pt = get_density_matrix(ctx->qList());
         return pt == result; // FIX ME: this might cause trouble
   }
+
 
   static vector<int> get_cvars_list(AssertionParser::BListContext *ctx) {
         vector<int> result;
@@ -230,16 +215,134 @@ public:
       }
 
       return result;
-    }
+  }
 
-  vector<double> get_row(AssertionParser::RowContext *ctx) {
-      vector<double> result;
+  vector<vector<complex<double>>> get_density_matrix(AssertionParser::QListContext *ctx) const {
+    auto vars = get_qvars_list(ctx);
 
-      for (auto e : ctx->REALNUM()) {
-        result.push_back(stod(e->getText()));
+    vector<int> remove_indices;
+
+    for (auto q : this->current_hs->quantum_state->qubits_used) {
+      if (vars.find(q) == vars.end()) {
+        remove_indices.push_back(q);
       }
-
-      return result;
+    }
+    return current_hs->quantum_state->multi_partial_trace(remove_indices);
 
   }
+
+  antlrcpp::Any visitRow(AssertionParser::RowContext *ctx) override {
+    std::vector<complex<double>> values;
+    for (auto *c : ctx->complexNumber()) {
+      auto val = std::any_cast<complex<double>>(visit(c));
+      values.push_back(val);
+    }
+    return values;
+  }
+
+  antlrcpp::Any visitMatrix(AssertionParser::MatrixContext *ctx) override {
+    std::vector<std::vector<complex<double>>> M;
+    for (auto *rowCtx : ctx->row()) {
+      auto row = std::any_cast<vector<complex<double>>>(visit(rowCtx));
+      M.push_back(row);
+    }
+    return M;
+  }
+
+  antlrcpp::Any visitQVarVector(AssertionParser::QVarVectorContext *ctx) override {
+    return get_density_matrix(ctx->qList());
+  }
+
+  antlrcpp::Any visitNumericVector(AssertionParser::NumericVectorContext *ctx) override {
+    auto state = std::any_cast<vector<complex<double>>>(visit(ctx->row()));
+    vector<vector<complex<double>>> result; // returns a density matrix
+    for (int i = 0; i < state.size(); i++) {
+      vector<complex<double>> current_row;
+      current_row.reserve(state.size());
+      for (int j = 0; j < state.size(); j++) {
+        current_row.push_back(state[i] * conj(state[j]));
+      }
+      result.push_back(current_row);
+    }
+    return result;
+  }
+
+  antlrcpp::Any visitVectorTerm(AssertionParser::VectorTermContext *ctx) override {
+    return visit(ctx->vector());
+  }
+
+  antlrcpp::Any visitMatrixVectorTerm(AssertionParser::MatrixVectorTermContext *ctx) override {
+    // TODO: fix this (should handle multiplication with and without normalization)
+      auto A = std::any_cast<std::vector<std::vector<std::complex<double>>>>(visit(ctx->matrix()));
+      auto B = std::any_cast<std::vector<std::vector<std::complex<double>>>>(visit(ctx->vector()));
+
+      // Dimensions
+      size_t A_rows = A.size();
+      size_t A_cols = A[0].size();
+      size_t B_rows = B.size();
+      size_t B_cols = B[0].size();
+
+      // Check compatibility: A_cols must match B_rows
+      if (A_cols != B_rows)
+        throw std::runtime_error("Dimension mismatch: A columns != B rows");
+
+      // Result matrix: A_rows × B_cols
+      std::vector<std::vector<std::complex<double>>> C(
+          A_rows,
+          std::vector<std::complex<double>>(B_cols, {0.0, 0.0})
+      );
+
+      // Standard triple-loop matmul
+      for (size_t i = 0; i < A_rows; ++i) {
+        for (size_t k = 0; k < A_cols; ++k) {
+          for (size_t j = 0; j < B_cols; ++j) {
+            C[i][j] += A[i][k] * B[k][j];
+          }
+        }
+      }
+
+      return C;
+  }
+
+
+
+  antlrcpp::Any visitComplexRealImag(AssertionParser::ComplexRealImagContext *ctx) override {
+    auto real = std::any_cast<double>(visitRealPart(ctx->realPart()));
+    double imag = 0.0;
+
+    if (ctx->imagPart() != nullptr) {
+      imag = std::any_cast<double>(visitImagPart(ctx->imagPart()));
+    }
+    return complex<double>(real, imag);
+  }
+
+  antlrcpp::Any visitRealPart(AssertionParser::RealPartContext* ctx) override
+  {
+    std::string sign;
+    if (ctx->SIGN())
+      sign = ctx->SIGN()->getText();
+
+    std::string num = ctx->REALNUM()->getText();
+    return std::stod(sign + num);
+  }
+
+  antlrcpp::Any visitImagPart(AssertionParser::ImagPartContext* ctx) override
+  {
+    // sign
+    std::string sign;
+    if (ctx->SIGN())
+      sign = ctx->SIGN()->getText();
+
+    // number (might be null if the user wrote "i" or "-i")
+    double magnitude = 1.0;
+    if (ctx->REALNUM())
+      magnitude = std::stod(ctx->REALNUM()->getText());
+
+    // apply sign
+    if (sign == "-")
+      magnitude = -magnitude;
+
+    return magnitude;
+  }
+
 };

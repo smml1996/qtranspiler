@@ -13,16 +13,18 @@ class  AssertionParser : public antlr4::Parser {
 public:
   enum {
     T__0 = 1, T__1 = 2, T__2 = 3, T__3 = 4, T__4 = 5, T__5 = 6, T__6 = 7, 
-    T__7 = 8, T__8 = 9, T__9 = 10, T__10 = 11, T__11 = 12, BINARYSTRING = 13, 
-    REALNUM = 14, CID = 15, QID = 16, WS = 17
+    T__7 = 8, T__8 = 9, T__9 = 10, T__10 = 11, T__11 = 12, T__12 = 13, T__13 = 14, 
+    T__14 = 15, T__15 = 16, MUL = 17, SIGN = 18, BINARYSTRING = 19, REALNUM = 20, 
+    CID = 21, QID = 22, WS = 23
   };
 
   enum {
     RuleAssertion = 0, RuleDistribution_assertion = 1, RuleDis_or_expr = 2, 
     RuleDis_and_expr = 3, RuleDis_conv_expr = 4, RuleDis_not_expr = 5, RuleDis_atom = 6, 
     RuleStates_assertion = 7, RuleStates_or_expr = 8, RuleStates_and_expr = 9, 
-    RuleStates_not_expr = 10, RuleStates_atom = 11, RuleRow = 12, RuleBList = 13, 
-    RuleQList = 14
+    RuleStates_not_expr = 10, RuleStates_atom = 11, RuleQTerm2 = 12, RuleVector = 13, 
+    RuleRow = 14, RuleComplexNumber = 15, RuleRealPart = 16, RuleImagPart = 17, 
+    RuleMatrix = 18, RuleBList = 19, RuleQList = 20
   };
 
   explicit AssertionParser(antlr4::TokenStream *input);
@@ -54,7 +56,13 @@ public:
   class States_and_exprContext;
   class States_not_exprContext;
   class States_atomContext;
+  class QTerm2Context;
+  class VectorContext;
   class RowContext;
+  class ComplexNumberContext;
+  class RealPartContext;
+  class ImagPartContext;
+  class MatrixContext;
   class BListContext;
   class QListContext; 
 
@@ -336,7 +344,7 @@ public:
     QtermContext(States_atomContext *ctx);
 
     QListContext *qList();
-    RowContext *row();
+    QTerm2Context *qTerm2();
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
 
@@ -357,12 +365,88 @@ public:
 
   States_atomContext* states_atom();
 
+  class  QTerm2Context : public antlr4::ParserRuleContext {
+  public:
+    QTerm2Context(antlr4::ParserRuleContext *parent, size_t invokingState);
+   
+    QTerm2Context() = default;
+    void copyFrom(QTerm2Context *context);
+    using antlr4::ParserRuleContext::copyFrom;
+
+    virtual size_t getRuleIndex() const override;
+
+   
+  };
+
+  class  MatrixVectorTermContext : public QTerm2Context {
+  public:
+    MatrixVectorTermContext(QTerm2Context *ctx);
+
+    MatrixContext *matrix();
+    antlr4::tree::TerminalNode *MUL();
+    VectorContext *vector();
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  VectorTermContext : public QTerm2Context {
+  public:
+    VectorTermContext(QTerm2Context *ctx);
+
+    VectorContext *vector();
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  QTerm2Context* qTerm2();
+
+  class  VectorContext : public antlr4::ParserRuleContext {
+  public:
+    VectorContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+   
+    VectorContext() = default;
+    void copyFrom(VectorContext *context);
+    using antlr4::ParserRuleContext::copyFrom;
+
+    virtual size_t getRuleIndex() const override;
+
+   
+  };
+
+  class  NumericVectorContext : public VectorContext {
+  public:
+    NumericVectorContext(VectorContext *ctx);
+
+    RowContext *row();
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  QVarVectorContext : public VectorContext {
+  public:
+    QVarVectorContext(VectorContext *ctx);
+
+    QListContext *qList();
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  VectorContext* vector();
+
   class  RowContext : public antlr4::ParserRuleContext {
   public:
     RowContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    std::vector<antlr4::tree::TerminalNode *> REALNUM();
-    antlr4::tree::TerminalNode* REALNUM(size_t i);
+    std::vector<ComplexNumberContext *> complexNumber();
+    ComplexNumberContext* complexNumber(size_t i);
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -372,6 +456,81 @@ public:
   };
 
   RowContext* row();
+
+  class  ComplexNumberContext : public antlr4::ParserRuleContext {
+  public:
+    ComplexNumberContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+   
+    ComplexNumberContext() = default;
+    void copyFrom(ComplexNumberContext *context);
+    using antlr4::ParserRuleContext::copyFrom;
+
+    virtual size_t getRuleIndex() const override;
+
+   
+  };
+
+  class  ComplexRealImagContext : public ComplexNumberContext {
+  public:
+    ComplexRealImagContext(ComplexNumberContext *ctx);
+
+    RealPartContext *realPart();
+    ImagPartContext *imagPart();
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  ComplexNumberContext* complexNumber();
+
+  class  RealPartContext : public antlr4::ParserRuleContext {
+  public:
+    RealPartContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *REALNUM();
+    antlr4::tree::TerminalNode *SIGN();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  RealPartContext* realPart();
+
+  class  ImagPartContext : public antlr4::ParserRuleContext {
+  public:
+    ImagPartContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *SIGN();
+    antlr4::tree::TerminalNode *REALNUM();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  ImagPartContext* imagPart();
+
+  class  MatrixContext : public antlr4::ParserRuleContext {
+  public:
+    MatrixContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    std::vector<RowContext *> row();
+    RowContext* row(size_t i);
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  MatrixContext* matrix();
 
   class  BListContext : public antlr4::ParserRuleContext {
   public:

@@ -50,12 +50,37 @@ states_not_expr
     ;
 
 states_atom
-    :  qList  '=' row # qterm
+    :  qList  '=' qTerm2 # qterm
     |  bList  '=' BINARYSTRING # bterm
     ;
 
+qTerm2
+    : vector                          # vectorTerm
+    | matrix MUL vector               # matrixVectorTerm
+    ;
+
+// A vector can be a qList, a numeric row, or a ket row
+vector
+    : qList                           # qVarVector
+    | row                             # numericVector
+    ;
+
 // matrices
-row : '[' REALNUM (',' REALNUM)* ']';
+row : '[' complexNumber (',' complexNumber)* ']';
+
+complexNumber
+    : realPart imagPart?              # complexRealImag;
+
+realPart
+    : SIGN? REALNUM
+    ;
+
+imagPart
+    : SIGN? REALNUM? 'i'
+    ;
+
+matrix
+    : '[[' row ';' row (';' row)* ']]';
 
 // Binary list
 bList : CID (',' CID)* ;
@@ -65,6 +90,8 @@ qList : QID (',' QID)* ;
 
 
 // Lexer rules (uppercase usually)
+MUL : '*' | '·';
+SIGN : [+-];
 BINARYSTRING: ( '0' | '1' )+;
 REALNUM : [0-9]+ ('.' [0-9]+)?;
 CID  : 'x' [0-9]+ ;
