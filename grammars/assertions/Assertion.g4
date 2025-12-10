@@ -28,7 +28,7 @@ dis_not_expr
 
 dis_atom
     : '(' distribution_assertion ')' # dis_assertion
-    | 'P' '(' states_assertion ')' '>=' REALNUM  # symbolic_prob
+    | 'P' '(' states_assertion ')' RELOP REALNUM  # symbolic_prob
     ;
 
 // states assertion
@@ -91,6 +91,7 @@ qList : QID (',' QID)* ;
 
 // Lexer rules (uppercase usually)
 MUL : '*' | '·';
+RELOP: '>=' | '<=' | '=' | '<' | '>' ;
 SIGN : [+-];
 BINARYSTRING: ( '0' | '1' )+;
 REALNUM : [0-9]+ ('.' [0-9]+)?;

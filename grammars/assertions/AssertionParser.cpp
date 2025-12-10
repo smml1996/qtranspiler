@@ -60,12 +60,12 @@ void assertionParserInitialize() {
       "qList"
     },
     std::vector<std::string>{
-      "", "'or'", "'and'", "'+'", "'!'", "'('", "')'", "'P'", "'>='", "'='", 
-      "'['", "','", "']'", "'i'", "'[['", "';'", "']]'"
+      "", "'or'", "'and'", "'+'", "'!'", "'('", "')'", "'P'", "'='", "'['", 
+      "','", "']'", "'i'", "'[['", "';'", "']]'"
     },
     std::vector<std::string>{
-      "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", 
-      "MUL", "SIGN", "BINARYSTRING", "REALNUM", "CID", "QID", "WS"
+      "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "MUL", 
+      "RELOP", "SIGN", "BINARYSTRING", "REALNUM", "CID", "QID", "WS"
     }
   );
   static const int32_t serializedATNSegment[] = {
@@ -98,33 +98,33 @@ void assertionParserInitialize() {
   	0,0,0,71,72,5,4,0,0,72,75,3,10,5,0,73,75,3,12,6,0,74,71,1,0,0,0,74,73,
   	1,0,0,0,75,11,1,0,0,0,76,77,5,5,0,0,77,78,3,2,1,0,78,79,5,6,0,0,79,88,
   	1,0,0,0,80,81,5,7,0,0,81,82,5,5,0,0,82,83,3,14,7,0,83,84,5,6,0,0,84,85,
-  	5,8,0,0,85,86,5,20,0,0,86,88,1,0,0,0,87,76,1,0,0,0,87,80,1,0,0,0,88,13,
-  	1,0,0,0,89,90,3,16,8,0,90,15,1,0,0,0,91,96,3,18,9,0,92,93,5,1,0,0,93,
-  	95,3,18,9,0,94,92,1,0,0,0,95,98,1,0,0,0,96,94,1,0,0,0,96,97,1,0,0,0,97,
-  	17,1,0,0,0,98,96,1,0,0,0,99,104,3,20,10,0,100,101,5,2,0,0,101,103,3,20,
-  	10,0,102,100,1,0,0,0,103,106,1,0,0,0,104,102,1,0,0,0,104,105,1,0,0,0,
-  	105,19,1,0,0,0,106,104,1,0,0,0,107,108,5,4,0,0,108,111,3,20,10,0,109,
-  	111,3,22,11,0,110,107,1,0,0,0,110,109,1,0,0,0,111,21,1,0,0,0,112,113,
-  	3,40,20,0,113,114,5,9,0,0,114,115,3,24,12,0,115,121,1,0,0,0,116,117,3,
-  	38,19,0,117,118,5,9,0,0,118,119,5,19,0,0,119,121,1,0,0,0,120,112,1,0,
-  	0,0,120,116,1,0,0,0,121,23,1,0,0,0,122,128,3,26,13,0,123,124,3,36,18,
-  	0,124,125,5,17,0,0,125,126,3,26,13,0,126,128,1,0,0,0,127,122,1,0,0,0,
+  	5,17,0,0,85,86,5,20,0,0,86,88,1,0,0,0,87,76,1,0,0,0,87,80,1,0,0,0,88,
+  	13,1,0,0,0,89,90,3,16,8,0,90,15,1,0,0,0,91,96,3,18,9,0,92,93,5,1,0,0,
+  	93,95,3,18,9,0,94,92,1,0,0,0,95,98,1,0,0,0,96,94,1,0,0,0,96,97,1,0,0,
+  	0,97,17,1,0,0,0,98,96,1,0,0,0,99,104,3,20,10,0,100,101,5,2,0,0,101,103,
+  	3,20,10,0,102,100,1,0,0,0,103,106,1,0,0,0,104,102,1,0,0,0,104,105,1,0,
+  	0,0,105,19,1,0,0,0,106,104,1,0,0,0,107,108,5,4,0,0,108,111,3,20,10,0,
+  	109,111,3,22,11,0,110,107,1,0,0,0,110,109,1,0,0,0,111,21,1,0,0,0,112,
+  	113,3,40,20,0,113,114,5,8,0,0,114,115,3,24,12,0,115,121,1,0,0,0,116,117,
+  	3,38,19,0,117,118,5,8,0,0,118,119,5,19,0,0,119,121,1,0,0,0,120,112,1,
+  	0,0,0,120,116,1,0,0,0,121,23,1,0,0,0,122,128,3,26,13,0,123,124,3,36,18,
+  	0,124,125,5,16,0,0,125,126,3,26,13,0,126,128,1,0,0,0,127,122,1,0,0,0,
   	127,123,1,0,0,0,128,25,1,0,0,0,129,132,3,40,20,0,130,132,3,28,14,0,131,
-  	129,1,0,0,0,131,130,1,0,0,0,132,27,1,0,0,0,133,134,5,10,0,0,134,139,3,
-  	30,15,0,135,136,5,11,0,0,136,138,3,30,15,0,137,135,1,0,0,0,138,141,1,
+  	129,1,0,0,0,131,130,1,0,0,0,132,27,1,0,0,0,133,134,5,9,0,0,134,139,3,
+  	30,15,0,135,136,5,10,0,0,136,138,3,30,15,0,137,135,1,0,0,0,138,141,1,
   	0,0,0,139,137,1,0,0,0,139,140,1,0,0,0,140,142,1,0,0,0,141,139,1,0,0,0,
-  	142,143,5,12,0,0,143,29,1,0,0,0,144,146,3,32,16,0,145,147,3,34,17,0,146,
+  	142,143,5,11,0,0,143,29,1,0,0,0,144,146,3,32,16,0,145,147,3,34,17,0,146,
   	145,1,0,0,0,146,147,1,0,0,0,147,31,1,0,0,0,148,150,5,18,0,0,149,148,1,
   	0,0,0,149,150,1,0,0,0,150,151,1,0,0,0,151,152,5,20,0,0,152,33,1,0,0,0,
   	153,155,5,18,0,0,154,153,1,0,0,0,154,155,1,0,0,0,155,157,1,0,0,0,156,
   	158,5,20,0,0,157,156,1,0,0,0,157,158,1,0,0,0,158,159,1,0,0,0,159,160,
-  	5,13,0,0,160,35,1,0,0,0,161,162,5,14,0,0,162,163,3,28,14,0,163,164,5,
-  	15,0,0,164,169,3,28,14,0,165,166,5,15,0,0,166,168,3,28,14,0,167,165,1,
+  	5,12,0,0,160,35,1,0,0,0,161,162,5,13,0,0,162,163,3,28,14,0,163,164,5,
+  	14,0,0,164,169,3,28,14,0,165,166,5,14,0,0,166,168,3,28,14,0,167,165,1,
   	0,0,0,168,171,1,0,0,0,169,167,1,0,0,0,169,170,1,0,0,0,170,172,1,0,0,0,
-  	171,169,1,0,0,0,172,173,5,16,0,0,173,37,1,0,0,0,174,179,5,21,0,0,175,
-  	176,5,11,0,0,176,178,5,21,0,0,177,175,1,0,0,0,178,181,1,0,0,0,179,177,
+  	171,169,1,0,0,0,172,173,5,15,0,0,173,37,1,0,0,0,174,179,5,21,0,0,175,
+  	176,5,10,0,0,176,178,5,21,0,0,177,175,1,0,0,0,178,181,1,0,0,0,179,177,
   	1,0,0,0,179,180,1,0,0,0,180,39,1,0,0,0,181,179,1,0,0,0,182,187,5,22,0,
-  	0,183,184,5,11,0,0,184,186,5,22,0,0,185,183,1,0,0,0,186,189,1,0,0,0,187,
+  	0,183,184,5,10,0,0,184,186,5,22,0,0,185,183,1,0,0,0,186,189,1,0,0,0,187,
   	185,1,0,0,0,187,188,1,0,0,0,188,41,1,0,0,0,189,187,1,0,0,0,19,52,60,68,
   	74,87,96,104,110,120,127,131,139,146,149,154,157,169,179,187
   };
@@ -696,6 +696,10 @@ AssertionParser::States_assertionContext* AssertionParser::Symbolic_probContext:
   return getRuleContext<AssertionParser::States_assertionContext>(0);
 }
 
+tree::TerminalNode* AssertionParser::Symbolic_probContext::RELOP() {
+  return getToken(AssertionParser::RELOP, 0);
+}
+
 tree::TerminalNode* AssertionParser::Symbolic_probContext::REALNUM() {
   return getToken(AssertionParser::REALNUM, 0);
 }
@@ -758,7 +762,7 @@ AssertionParser::Dis_atomContext* AssertionParser::dis_atom() {
         setState(83);
         match(AssertionParser::T__5);
         setState(84);
-        match(AssertionParser::T__7);
+        match(AssertionParser::RELOP);
         setState(85);
         match(AssertionParser::REALNUM);
         break;
@@ -1214,7 +1218,7 @@ AssertionParser::States_atomContext* AssertionParser::states_atom() {
         setState(112);
         qList();
         setState(113);
-        match(AssertionParser::T__8);
+        match(AssertionParser::T__7);
         setState(114);
         qTerm2();
         break;
@@ -1226,7 +1230,7 @@ AssertionParser::States_atomContext* AssertionParser::states_atom() {
         setState(116);
         bList();
         setState(117);
-        match(AssertionParser::T__8);
+        match(AssertionParser::T__7);
         setState(118);
         match(AssertionParser::BINARYSTRING);
         break;
@@ -1334,7 +1338,7 @@ AssertionParser::QTerm2Context* AssertionParser::qTerm2() {
     setState(127);
     _errHandler->sync(this);
     switch (_input->LA(1)) {
-      case AssertionParser::T__9:
+      case AssertionParser::T__8:
       case AssertionParser::QID: {
         _localctx = _tracker.createInstance<AssertionParser::VectorTermContext>(_localctx);
         enterOuterAlt(_localctx, 1);
@@ -1343,7 +1347,7 @@ AssertionParser::QTerm2Context* AssertionParser::qTerm2() {
         break;
       }
 
-      case AssertionParser::T__13: {
+      case AssertionParser::T__12: {
         _localctx = _tracker.createInstance<AssertionParser::MatrixVectorTermContext>(_localctx);
         enterOuterAlt(_localctx, 2);
         setState(123);
@@ -1457,7 +1461,7 @@ AssertionParser::VectorContext* AssertionParser::vector() {
         break;
       }
 
-      case AssertionParser::T__9: {
+      case AssertionParser::T__8: {
         _localctx = _tracker.createInstance<AssertionParser::NumericVectorContext>(_localctx);
         enterOuterAlt(_localctx, 2);
         setState(130);
@@ -1533,15 +1537,15 @@ AssertionParser::RowContext* AssertionParser::row() {
   try {
     enterOuterAlt(_localctx, 1);
     setState(133);
-    match(AssertionParser::T__9);
+    match(AssertionParser::T__8);
     setState(134);
     complexNumber();
     setState(139);
     _errHandler->sync(this);
     _la = _input->LA(1);
-    while (_la == AssertionParser::T__10) {
+    while (_la == AssertionParser::T__9) {
       setState(135);
-      match(AssertionParser::T__10);
+      match(AssertionParser::T__9);
       setState(136);
       complexNumber();
       setState(141);
@@ -1549,7 +1553,7 @@ AssertionParser::RowContext* AssertionParser::row() {
       _la = _input->LA(1);
     }
     setState(142);
-    match(AssertionParser::T__11);
+    match(AssertionParser::T__10);
    
   }
   catch (RecognitionException &e) {
@@ -1627,7 +1631,7 @@ AssertionParser::ComplexNumberContext* AssertionParser::complexNumber() {
 
     _la = _input->LA(1);
     if ((((_la & ~ 0x3fULL) == 0) &&
-      ((1ULL << _la) & 1318912) != 0)) {
+      ((1ULL << _la) & 1314816) != 0)) {
       setState(145);
       imagPart();
     }
@@ -1786,7 +1790,7 @@ AssertionParser::ImagPartContext* AssertionParser::imagPart() {
       match(AssertionParser::REALNUM);
     }
     setState(159);
-    match(AssertionParser::T__12);
+    match(AssertionParser::T__11);
    
   }
   catch (RecognitionException &e) {
@@ -1852,19 +1856,19 @@ AssertionParser::MatrixContext* AssertionParser::matrix() {
   try {
     enterOuterAlt(_localctx, 1);
     setState(161);
-    match(AssertionParser::T__13);
+    match(AssertionParser::T__12);
     setState(162);
     row();
     setState(163);
-    match(AssertionParser::T__14);
+    match(AssertionParser::T__13);
     setState(164);
     row();
     setState(169);
     _errHandler->sync(this);
     _la = _input->LA(1);
-    while (_la == AssertionParser::T__14) {
+    while (_la == AssertionParser::T__13) {
       setState(165);
-      match(AssertionParser::T__14);
+      match(AssertionParser::T__13);
       setState(166);
       row();
       setState(171);
@@ -1872,7 +1876,7 @@ AssertionParser::MatrixContext* AssertionParser::matrix() {
       _la = _input->LA(1);
     }
     setState(172);
-    match(AssertionParser::T__15);
+    match(AssertionParser::T__14);
    
   }
   catch (RecognitionException &e) {
@@ -1942,9 +1946,9 @@ AssertionParser::BListContext* AssertionParser::bList() {
     setState(179);
     _errHandler->sync(this);
     _la = _input->LA(1);
-    while (_la == AssertionParser::T__10) {
+    while (_la == AssertionParser::T__9) {
       setState(175);
-      match(AssertionParser::T__10);
+      match(AssertionParser::T__9);
       setState(176);
       match(AssertionParser::CID);
       setState(181);
@@ -2020,9 +2024,9 @@ AssertionParser::QListContext* AssertionParser::qList() {
     setState(187);
     _errHandler->sync(this);
     _la = _input->LA(1);
-    while (_la == AssertionParser::T__10) {
+    while (_la == AssertionParser::T__9) {
       setState(183);
-      match(AssertionParser::T__10);
+      match(AssertionParser::T__9);
       setState(184);
       match(AssertionParser::QID);
       setState(189);

@@ -137,7 +137,17 @@ public:
     }
 
     z3::expr const_ = this->context.real_val(ctx->REALNUM()->getText().c_str());
-    return result >= const_;
+
+    string relop = ctx->RELOP()->getText();
+
+    if (relop == ">=")
+      return result >= const_;
+    if (relop == ">") return result > const_;
+    if (relop == "<")  return result < const_;
+    if (relop == "<=") return result <= const_;
+    if (relop == "=") return result == const_;
+
+    throw runtime_error("relational op. not recognized in symbolic prob. term: " + relop);
   }
 
   antlrcpp::Any visitStates_assertion(AssertionParser::States_assertionContext *ctx) override {
