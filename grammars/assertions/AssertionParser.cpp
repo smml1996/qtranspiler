@@ -54,79 +54,83 @@ void assertionParserInitialize() {
   auto staticData = std::make_unique<AssertionParserStaticData>(
     std::vector<std::string>{
       "assertion", "distribution_assertion", "dis_or_expr", "dis_and_expr", 
-      "dis_conv_expr", "dis_not_expr", "dis_atom", "states_assertion", "states_or_expr", 
-      "states_and_expr", "states_not_expr", "states_atom", "qTerm2", "vector", 
-      "row", "complexNumber", "realPart", "imagPart", "matrix", "bList", 
-      "qList"
+      "dis_conv_expr", "dis_not_expr", "dis_atom", "prob_term", "states_assertion", 
+      "states_or_expr", "states_and_expr", "states_not_expr", "states_atom", 
+      "qTerm2", "vector", "row", "complexNumber", "realPart", "imagPart", 
+      "matrix", "bList", "qList"
     },
     std::vector<std::string>{
-      "", "'or'", "'and'", "'+'", "'!'", "'('", "')'", "'P'", "'='", "'['", 
-      "','", "']'", "'i'", "'[['", "';'", "']]'"
+      "", "'or'", "'and'", "'+'", "'!'", "'('", "')'", "'Tr'", "'P'", "'='", 
+      "'['", "','", "']'", "'i'", "'[['", "';'", "']]'"
     },
     std::vector<std::string>{
-      "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "MUL", 
-      "RELOP", "SIGN", "BINARYSTRING", "REALNUM", "CID", "QID", "WS"
+      "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", 
+      "MUL", "RELOP", "SIGN", "BINARYSTRING", "REALNUM", "CID", "QID", "WS"
     }
   );
   static const int32_t serializedATNSegment[] = {
-  	4,1,23,191,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,6,2,
+  	4,1,24,203,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,6,2,
   	7,7,7,2,8,7,8,2,9,7,9,2,10,7,10,2,11,7,11,2,12,7,12,2,13,7,13,2,14,7,
-  	14,2,15,7,15,2,16,7,16,2,17,7,17,2,18,7,18,2,19,7,19,2,20,7,20,1,0,1,
-  	0,1,0,1,1,1,1,1,2,1,2,1,2,5,2,51,8,2,10,2,12,2,54,9,2,1,3,1,3,1,3,5,3,
-  	59,8,3,10,3,12,3,62,9,3,1,4,1,4,1,4,5,4,67,8,4,10,4,12,4,70,9,4,1,5,1,
-  	5,1,5,3,5,75,8,5,1,6,1,6,1,6,1,6,1,6,1,6,1,6,1,6,1,6,1,6,1,6,3,6,88,8,
-  	6,1,7,1,7,1,8,1,8,1,8,5,8,95,8,8,10,8,12,8,98,9,8,1,9,1,9,1,9,5,9,103,
-  	8,9,10,9,12,9,106,9,9,1,10,1,10,1,10,3,10,111,8,10,1,11,1,11,1,11,1,11,
-  	1,11,1,11,1,11,1,11,3,11,121,8,11,1,12,1,12,1,12,1,12,1,12,3,12,128,8,
-  	12,1,13,1,13,3,13,132,8,13,1,14,1,14,1,14,1,14,5,14,138,8,14,10,14,12,
-  	14,141,9,14,1,14,1,14,1,15,1,15,3,15,147,8,15,1,16,3,16,150,8,16,1,16,
-  	1,16,1,17,3,17,155,8,17,1,17,3,17,158,8,17,1,17,1,17,1,18,1,18,1,18,1,
-  	18,1,18,1,18,5,18,168,8,18,10,18,12,18,171,9,18,1,18,1,18,1,19,1,19,1,
-  	19,5,19,178,8,19,10,19,12,19,181,9,19,1,20,1,20,1,20,5,20,186,8,20,10,
-  	20,12,20,189,9,20,1,20,0,0,21,0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,
-  	30,32,34,36,38,40,0,0,188,0,42,1,0,0,0,2,45,1,0,0,0,4,47,1,0,0,0,6,55,
-  	1,0,0,0,8,63,1,0,0,0,10,74,1,0,0,0,12,87,1,0,0,0,14,89,1,0,0,0,16,91,
-  	1,0,0,0,18,99,1,0,0,0,20,110,1,0,0,0,22,120,1,0,0,0,24,127,1,0,0,0,26,
-  	131,1,0,0,0,28,133,1,0,0,0,30,144,1,0,0,0,32,149,1,0,0,0,34,154,1,0,0,
-  	0,36,161,1,0,0,0,38,174,1,0,0,0,40,182,1,0,0,0,42,43,3,2,1,0,43,44,5,
-  	0,0,1,44,1,1,0,0,0,45,46,3,4,2,0,46,3,1,0,0,0,47,52,3,6,3,0,48,49,5,1,
-  	0,0,49,51,3,6,3,0,50,48,1,0,0,0,51,54,1,0,0,0,52,50,1,0,0,0,52,53,1,0,
-  	0,0,53,5,1,0,0,0,54,52,1,0,0,0,55,60,3,8,4,0,56,57,5,2,0,0,57,59,3,8,
-  	4,0,58,56,1,0,0,0,59,62,1,0,0,0,60,58,1,0,0,0,60,61,1,0,0,0,61,7,1,0,
-  	0,0,62,60,1,0,0,0,63,68,3,10,5,0,64,65,5,3,0,0,65,67,3,10,5,0,66,64,1,
-  	0,0,0,67,70,1,0,0,0,68,66,1,0,0,0,68,69,1,0,0,0,69,9,1,0,0,0,70,68,1,
-  	0,0,0,71,72,5,4,0,0,72,75,3,10,5,0,73,75,3,12,6,0,74,71,1,0,0,0,74,73,
-  	1,0,0,0,75,11,1,0,0,0,76,77,5,5,0,0,77,78,3,2,1,0,78,79,5,6,0,0,79,88,
-  	1,0,0,0,80,81,5,7,0,0,81,82,5,5,0,0,82,83,3,14,7,0,83,84,5,6,0,0,84,85,
-  	5,17,0,0,85,86,5,20,0,0,86,88,1,0,0,0,87,76,1,0,0,0,87,80,1,0,0,0,88,
-  	13,1,0,0,0,89,90,3,16,8,0,90,15,1,0,0,0,91,96,3,18,9,0,92,93,5,1,0,0,
-  	93,95,3,18,9,0,94,92,1,0,0,0,95,98,1,0,0,0,96,94,1,0,0,0,96,97,1,0,0,
-  	0,97,17,1,0,0,0,98,96,1,0,0,0,99,104,3,20,10,0,100,101,5,2,0,0,101,103,
-  	3,20,10,0,102,100,1,0,0,0,103,106,1,0,0,0,104,102,1,0,0,0,104,105,1,0,
-  	0,0,105,19,1,0,0,0,106,104,1,0,0,0,107,108,5,4,0,0,108,111,3,20,10,0,
-  	109,111,3,22,11,0,110,107,1,0,0,0,110,109,1,0,0,0,111,21,1,0,0,0,112,
-  	113,3,40,20,0,113,114,5,8,0,0,114,115,3,24,12,0,115,121,1,0,0,0,116,117,
-  	3,38,19,0,117,118,5,8,0,0,118,119,5,19,0,0,119,121,1,0,0,0,120,112,1,
-  	0,0,0,120,116,1,0,0,0,121,23,1,0,0,0,122,128,3,26,13,0,123,124,3,36,18,
-  	0,124,125,5,16,0,0,125,126,3,26,13,0,126,128,1,0,0,0,127,122,1,0,0,0,
-  	127,123,1,0,0,0,128,25,1,0,0,0,129,132,3,40,20,0,130,132,3,28,14,0,131,
-  	129,1,0,0,0,131,130,1,0,0,0,132,27,1,0,0,0,133,134,5,9,0,0,134,139,3,
-  	30,15,0,135,136,5,10,0,0,136,138,3,30,15,0,137,135,1,0,0,0,138,141,1,
-  	0,0,0,139,137,1,0,0,0,139,140,1,0,0,0,140,142,1,0,0,0,141,139,1,0,0,0,
-  	142,143,5,11,0,0,143,29,1,0,0,0,144,146,3,32,16,0,145,147,3,34,17,0,146,
-  	145,1,0,0,0,146,147,1,0,0,0,147,31,1,0,0,0,148,150,5,18,0,0,149,148,1,
-  	0,0,0,149,150,1,0,0,0,150,151,1,0,0,0,151,152,5,20,0,0,152,33,1,0,0,0,
-  	153,155,5,18,0,0,154,153,1,0,0,0,154,155,1,0,0,0,155,157,1,0,0,0,156,
-  	158,5,20,0,0,157,156,1,0,0,0,157,158,1,0,0,0,158,159,1,0,0,0,159,160,
-  	5,12,0,0,160,35,1,0,0,0,161,162,5,13,0,0,162,163,3,28,14,0,163,164,5,
-  	14,0,0,164,169,3,28,14,0,165,166,5,14,0,0,166,168,3,28,14,0,167,165,1,
-  	0,0,0,168,171,1,0,0,0,169,167,1,0,0,0,169,170,1,0,0,0,170,172,1,0,0,0,
-  	171,169,1,0,0,0,172,173,5,15,0,0,173,37,1,0,0,0,174,179,5,21,0,0,175,
-  	176,5,10,0,0,176,178,5,21,0,0,177,175,1,0,0,0,178,181,1,0,0,0,179,177,
-  	1,0,0,0,179,180,1,0,0,0,180,39,1,0,0,0,181,179,1,0,0,0,182,187,5,22,0,
-  	0,183,184,5,10,0,0,184,186,5,22,0,0,185,183,1,0,0,0,186,189,1,0,0,0,187,
-  	185,1,0,0,0,187,188,1,0,0,0,188,41,1,0,0,0,189,187,1,0,0,0,19,52,60,68,
-  	74,87,96,104,110,120,127,131,139,146,149,154,157,169,179,187
+  	14,2,15,7,15,2,16,7,16,2,17,7,17,2,18,7,18,2,19,7,19,2,20,7,20,2,21,7,
+  	21,1,0,1,0,1,0,1,1,1,1,1,2,1,2,1,2,5,2,53,8,2,10,2,12,2,56,9,2,1,3,1,
+  	3,1,3,5,3,61,8,3,10,3,12,3,64,9,3,1,4,1,4,1,4,5,4,69,8,4,10,4,12,4,72,
+  	9,4,1,5,1,5,1,5,3,5,77,8,5,1,6,1,6,1,6,1,6,1,6,1,6,1,6,1,6,3,6,87,8,6,
+  	1,7,1,7,1,7,1,7,1,7,1,7,1,7,1,7,1,7,1,7,1,7,3,7,100,8,7,1,8,1,8,1,9,1,
+  	9,1,9,5,9,107,8,9,10,9,12,9,110,9,9,1,10,1,10,1,10,5,10,115,8,10,10,10,
+  	12,10,118,9,10,1,11,1,11,1,11,3,11,123,8,11,1,12,1,12,1,12,1,12,1,12,
+  	1,12,1,12,1,12,3,12,133,8,12,1,13,1,13,1,13,1,13,1,13,3,13,140,8,13,1,
+  	14,1,14,3,14,144,8,14,1,15,1,15,1,15,1,15,5,15,150,8,15,10,15,12,15,153,
+  	9,15,1,15,1,15,1,16,1,16,3,16,159,8,16,1,17,3,17,162,8,17,1,17,1,17,1,
+  	18,3,18,167,8,18,1,18,3,18,170,8,18,1,18,1,18,1,19,1,19,1,19,1,19,1,19,
+  	1,19,5,19,180,8,19,10,19,12,19,183,9,19,1,19,1,19,1,20,1,20,1,20,5,20,
+  	190,8,20,10,20,12,20,193,9,20,1,21,1,21,1,21,5,21,198,8,21,10,21,12,21,
+  	201,9,21,1,21,0,0,22,0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,
+  	36,38,40,42,0,0,201,0,44,1,0,0,0,2,47,1,0,0,0,4,49,1,0,0,0,6,57,1,0,0,
+  	0,8,65,1,0,0,0,10,76,1,0,0,0,12,86,1,0,0,0,14,99,1,0,0,0,16,101,1,0,0,
+  	0,18,103,1,0,0,0,20,111,1,0,0,0,22,122,1,0,0,0,24,132,1,0,0,0,26,139,
+  	1,0,0,0,28,143,1,0,0,0,30,145,1,0,0,0,32,156,1,0,0,0,34,161,1,0,0,0,36,
+  	166,1,0,0,0,38,173,1,0,0,0,40,186,1,0,0,0,42,194,1,0,0,0,44,45,3,2,1,
+  	0,45,46,5,0,0,1,46,1,1,0,0,0,47,48,3,4,2,0,48,3,1,0,0,0,49,54,3,6,3,0,
+  	50,51,5,1,0,0,51,53,3,6,3,0,52,50,1,0,0,0,53,56,1,0,0,0,54,52,1,0,0,0,
+  	54,55,1,0,0,0,55,5,1,0,0,0,56,54,1,0,0,0,57,62,3,8,4,0,58,59,5,2,0,0,
+  	59,61,3,8,4,0,60,58,1,0,0,0,61,64,1,0,0,0,62,60,1,0,0,0,62,63,1,0,0,0,
+  	63,7,1,0,0,0,64,62,1,0,0,0,65,70,3,10,5,0,66,67,5,3,0,0,67,69,3,10,5,
+  	0,68,66,1,0,0,0,69,72,1,0,0,0,70,68,1,0,0,0,70,71,1,0,0,0,71,9,1,0,0,
+  	0,72,70,1,0,0,0,73,74,5,4,0,0,74,77,3,10,5,0,75,77,3,12,6,0,76,73,1,0,
+  	0,0,76,75,1,0,0,0,77,11,1,0,0,0,78,79,5,5,0,0,79,80,3,2,1,0,80,81,5,6,
+  	0,0,81,87,1,0,0,0,82,83,3,14,7,0,83,84,5,18,0,0,84,85,3,14,7,0,85,87,
+  	1,0,0,0,86,78,1,0,0,0,86,82,1,0,0,0,87,13,1,0,0,0,88,89,5,7,0,0,89,90,
+  	5,5,0,0,90,91,3,26,13,0,91,92,5,6,0,0,92,100,1,0,0,0,93,94,5,8,0,0,94,
+  	95,5,5,0,0,95,96,3,16,8,0,96,97,5,6,0,0,97,100,1,0,0,0,98,100,5,21,0,
+  	0,99,88,1,0,0,0,99,93,1,0,0,0,99,98,1,0,0,0,100,15,1,0,0,0,101,102,3,
+  	18,9,0,102,17,1,0,0,0,103,108,3,20,10,0,104,105,5,1,0,0,105,107,3,20,
+  	10,0,106,104,1,0,0,0,107,110,1,0,0,0,108,106,1,0,0,0,108,109,1,0,0,0,
+  	109,19,1,0,0,0,110,108,1,0,0,0,111,116,3,22,11,0,112,113,5,2,0,0,113,
+  	115,3,22,11,0,114,112,1,0,0,0,115,118,1,0,0,0,116,114,1,0,0,0,116,117,
+  	1,0,0,0,117,21,1,0,0,0,118,116,1,0,0,0,119,120,5,4,0,0,120,123,3,22,11,
+  	0,121,123,3,24,12,0,122,119,1,0,0,0,122,121,1,0,0,0,123,23,1,0,0,0,124,
+  	125,3,42,21,0,125,126,5,9,0,0,126,127,3,26,13,0,127,133,1,0,0,0,128,129,
+  	3,40,20,0,129,130,5,9,0,0,130,131,5,20,0,0,131,133,1,0,0,0,132,124,1,
+  	0,0,0,132,128,1,0,0,0,133,25,1,0,0,0,134,140,3,28,14,0,135,136,3,38,19,
+  	0,136,137,5,17,0,0,137,138,3,28,14,0,138,140,1,0,0,0,139,134,1,0,0,0,
+  	139,135,1,0,0,0,140,27,1,0,0,0,141,144,3,42,21,0,142,144,3,30,15,0,143,
+  	141,1,0,0,0,143,142,1,0,0,0,144,29,1,0,0,0,145,146,5,10,0,0,146,151,3,
+  	32,16,0,147,148,5,11,0,0,148,150,3,32,16,0,149,147,1,0,0,0,150,153,1,
+  	0,0,0,151,149,1,0,0,0,151,152,1,0,0,0,152,154,1,0,0,0,153,151,1,0,0,0,
+  	154,155,5,12,0,0,155,31,1,0,0,0,156,158,3,34,17,0,157,159,3,36,18,0,158,
+  	157,1,0,0,0,158,159,1,0,0,0,159,33,1,0,0,0,160,162,5,19,0,0,161,160,1,
+  	0,0,0,161,162,1,0,0,0,162,163,1,0,0,0,163,164,5,21,0,0,164,35,1,0,0,0,
+  	165,167,5,19,0,0,166,165,1,0,0,0,166,167,1,0,0,0,167,169,1,0,0,0,168,
+  	170,5,21,0,0,169,168,1,0,0,0,169,170,1,0,0,0,170,171,1,0,0,0,171,172,
+  	5,13,0,0,172,37,1,0,0,0,173,174,5,14,0,0,174,175,3,30,15,0,175,176,5,
+  	15,0,0,176,181,3,30,15,0,177,178,5,15,0,0,178,180,3,30,15,0,179,177,1,
+  	0,0,0,180,183,1,0,0,0,181,179,1,0,0,0,181,182,1,0,0,0,182,184,1,0,0,0,
+  	183,181,1,0,0,0,184,185,5,16,0,0,185,39,1,0,0,0,186,191,5,22,0,0,187,
+  	188,5,11,0,0,188,190,5,22,0,0,189,187,1,0,0,0,190,193,1,0,0,0,191,189,
+  	1,0,0,0,191,192,1,0,0,0,192,41,1,0,0,0,193,191,1,0,0,0,194,199,5,23,0,
+  	0,195,196,5,11,0,0,196,198,5,23,0,0,197,195,1,0,0,0,198,201,1,0,0,0,199,
+  	197,1,0,0,0,199,200,1,0,0,0,200,43,1,0,0,0,201,199,1,0,0,0,20,54,62,70,
+  	76,86,99,108,116,122,132,139,143,151,158,161,166,169,181,191,199
   };
   staticData->serializedATN = antlr4::atn::SerializedATNView(serializedATNSegment, sizeof(serializedATNSegment) / sizeof(serializedATNSegment[0]));
 
@@ -227,9 +231,9 @@ AssertionParser::AssertionContext* AssertionParser::assertion() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(42);
+    setState(44);
     distribution_assertion();
-    setState(43);
+    setState(45);
     match(AssertionParser::EOF);
    
   }
@@ -290,7 +294,7 @@ AssertionParser::Distribution_assertionContext* AssertionParser::distribution_as
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(45);
+    setState(47);
     dis_or_expr();
    
   }
@@ -356,17 +360,17 @@ AssertionParser::Dis_or_exprContext* AssertionParser::dis_or_expr() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(47);
+    setState(49);
     dis_and_expr();
-    setState(52);
+    setState(54);
     _errHandler->sync(this);
     _la = _input->LA(1);
     while (_la == AssertionParser::T__0) {
-      setState(48);
+      setState(50);
       match(AssertionParser::T__0);
-      setState(49);
+      setState(51);
       dis_and_expr();
-      setState(54);
+      setState(56);
       _errHandler->sync(this);
       _la = _input->LA(1);
     }
@@ -434,17 +438,17 @@ AssertionParser::Dis_and_exprContext* AssertionParser::dis_and_expr() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(55);
+    setState(57);
     dis_conv_expr();
-    setState(60);
+    setState(62);
     _errHandler->sync(this);
     _la = _input->LA(1);
     while (_la == AssertionParser::T__1) {
-      setState(56);
+      setState(58);
       match(AssertionParser::T__1);
-      setState(57);
+      setState(59);
       dis_conv_expr();
-      setState(62);
+      setState(64);
       _errHandler->sync(this);
       _la = _input->LA(1);
     }
@@ -512,17 +516,17 @@ AssertionParser::Dis_conv_exprContext* AssertionParser::dis_conv_expr() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(63);
+    setState(65);
     dis_not_expr();
-    setState(68);
+    setState(70);
     _errHandler->sync(this);
     _la = _input->LA(1);
     while (_la == AssertionParser::T__2) {
-      setState(64);
+      setState(66);
       match(AssertionParser::T__2);
-      setState(65);
+      setState(67);
       dis_not_expr();
-      setState(70);
+      setState(72);
       _errHandler->sync(this);
       _la = _input->LA(1);
     }
@@ -614,24 +618,26 @@ AssertionParser::Dis_not_exprContext* AssertionParser::dis_not_expr() {
     exitRule();
   });
   try {
-    setState(74);
+    setState(76);
     _errHandler->sync(this);
     switch (_input->LA(1)) {
       case AssertionParser::T__3: {
         _localctx = _tracker.createInstance<AssertionParser::Dis_notContext>(_localctx);
         enterOuterAlt(_localctx, 1);
-        setState(71);
+        setState(73);
         match(AssertionParser::T__3);
-        setState(72);
+        setState(74);
         dis_not_expr();
         break;
       }
 
       case AssertionParser::T__4:
-      case AssertionParser::T__6: {
+      case AssertionParser::T__6:
+      case AssertionParser::T__7:
+      case AssertionParser::REALNUM: {
         _localctx = _tracker.createInstance<AssertionParser::Dis_not_atomContext>(_localctx);
         enterOuterAlt(_localctx, 2);
-        setState(73);
+        setState(75);
         dis_atom();
         break;
       }
@@ -690,21 +696,141 @@ std::any AssertionParser::Dis_assertionContext::accept(tree::ParseTreeVisitor *v
   else
     return visitor->visitChildren(this);
 }
+//----------------- Atom_terminalContext ------------------------------------------------------------------
+
+std::vector<AssertionParser::Prob_termContext *> AssertionParser::Atom_terminalContext::prob_term() {
+  return getRuleContexts<AssertionParser::Prob_termContext>();
+}
+
+AssertionParser::Prob_termContext* AssertionParser::Atom_terminalContext::prob_term(size_t i) {
+  return getRuleContext<AssertionParser::Prob_termContext>(i);
+}
+
+tree::TerminalNode* AssertionParser::Atom_terminalContext::RELOP() {
+  return getToken(AssertionParser::RELOP, 0);
+}
+
+AssertionParser::Atom_terminalContext::Atom_terminalContext(Dis_atomContext *ctx) { copyFrom(ctx); }
+
+void AssertionParser::Atom_terminalContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<AssertionListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterAtom_terminal(this);
+}
+void AssertionParser::Atom_terminalContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<AssertionListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitAtom_terminal(this);
+}
+
+std::any AssertionParser::Atom_terminalContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<AssertionVisitor*>(visitor))
+    return parserVisitor->visitAtom_terminal(this);
+  else
+    return visitor->visitChildren(this);
+}
+AssertionParser::Dis_atomContext* AssertionParser::dis_atom() {
+  Dis_atomContext *_localctx = _tracker.createInstance<Dis_atomContext>(_ctx, getState());
+  enterRule(_localctx, 12, AssertionParser::RuleDis_atom);
+
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
+  auto onExit = finally([=] {
+#endif
+    exitRule();
+  });
+  try {
+    setState(86);
+    _errHandler->sync(this);
+    switch (_input->LA(1)) {
+      case AssertionParser::T__4: {
+        _localctx = _tracker.createInstance<AssertionParser::Dis_assertionContext>(_localctx);
+        enterOuterAlt(_localctx, 1);
+        setState(78);
+        match(AssertionParser::T__4);
+        setState(79);
+        distribution_assertion();
+        setState(80);
+        match(AssertionParser::T__5);
+        break;
+      }
+
+      case AssertionParser::T__6:
+      case AssertionParser::T__7:
+      case AssertionParser::REALNUM: {
+        _localctx = _tracker.createInstance<AssertionParser::Atom_terminalContext>(_localctx);
+        enterOuterAlt(_localctx, 2);
+        setState(82);
+        prob_term();
+        setState(83);
+        match(AssertionParser::RELOP);
+        setState(84);
+        prob_term();
+        break;
+      }
+
+    default:
+      throw NoViableAltException(this);
+    }
+   
+  }
+  catch (RecognitionException &e) {
+    _errHandler->reportError(this, e);
+    _localctx->exception = std::current_exception();
+    _errHandler->recover(this, _localctx->exception);
+  }
+
+  return _localctx;
+}
+
+//----------------- Prob_termContext ------------------------------------------------------------------
+
+AssertionParser::Prob_termContext::Prob_termContext(ParserRuleContext *parent, size_t invokingState)
+  : ParserRuleContext(parent, invokingState) {
+}
+
+
+size_t AssertionParser::Prob_termContext::getRuleIndex() const {
+  return AssertionParser::RuleProb_term;
+}
+
+void AssertionParser::Prob_termContext::copyFrom(Prob_termContext *ctx) {
+  ParserRuleContext::copyFrom(ctx);
+}
+
+//----------------- Const_probContext ------------------------------------------------------------------
+
+tree::TerminalNode* AssertionParser::Const_probContext::REALNUM() {
+  return getToken(AssertionParser::REALNUM, 0);
+}
+
+AssertionParser::Const_probContext::Const_probContext(Prob_termContext *ctx) { copyFrom(ctx); }
+
+void AssertionParser::Const_probContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<AssertionListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterConst_prob(this);
+}
+void AssertionParser::Const_probContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<AssertionListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitConst_prob(this);
+}
+
+std::any AssertionParser::Const_probContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<AssertionVisitor*>(visitor))
+    return parserVisitor->visitConst_prob(this);
+  else
+    return visitor->visitChildren(this);
+}
 //----------------- Symbolic_probContext ------------------------------------------------------------------
 
 AssertionParser::States_assertionContext* AssertionParser::Symbolic_probContext::states_assertion() {
   return getRuleContext<AssertionParser::States_assertionContext>(0);
 }
 
-tree::TerminalNode* AssertionParser::Symbolic_probContext::RELOP() {
-  return getToken(AssertionParser::RELOP, 0);
-}
-
-tree::TerminalNode* AssertionParser::Symbolic_probContext::REALNUM() {
-  return getToken(AssertionParser::REALNUM, 0);
-}
-
-AssertionParser::Symbolic_probContext::Symbolic_probContext(Dis_atomContext *ctx) { copyFrom(ctx); }
+AssertionParser::Symbolic_probContext::Symbolic_probContext(Prob_termContext *ctx) { copyFrom(ctx); }
 
 void AssertionParser::Symbolic_probContext::enterRule(tree::ParseTreeListener *listener) {
   auto parserListener = dynamic_cast<AssertionListener *>(listener);
@@ -723,9 +849,34 @@ std::any AssertionParser::Symbolic_probContext::accept(tree::ParseTreeVisitor *v
   else
     return visitor->visitChildren(this);
 }
-AssertionParser::Dis_atomContext* AssertionParser::dis_atom() {
-  Dis_atomContext *_localctx = _tracker.createInstance<Dis_atomContext>(_ctx, getState());
-  enterRule(_localctx, 12, AssertionParser::RuleDis_atom);
+//----------------- Trace_probContext ------------------------------------------------------------------
+
+AssertionParser::QTerm2Context* AssertionParser::Trace_probContext::qTerm2() {
+  return getRuleContext<AssertionParser::QTerm2Context>(0);
+}
+
+AssertionParser::Trace_probContext::Trace_probContext(Prob_termContext *ctx) { copyFrom(ctx); }
+
+void AssertionParser::Trace_probContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<AssertionListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterTrace_prob(this);
+}
+void AssertionParser::Trace_probContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<AssertionListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitTrace_prob(this);
+}
+
+std::any AssertionParser::Trace_probContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<AssertionVisitor*>(visitor))
+    return parserVisitor->visitTrace_prob(this);
+  else
+    return visitor->visitChildren(this);
+}
+AssertionParser::Prob_termContext* AssertionParser::prob_term() {
+  Prob_termContext *_localctx = _tracker.createInstance<Prob_termContext>(_ctx, getState());
+  enterRule(_localctx, 14, AssertionParser::RuleProb_term);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -735,35 +886,41 @@ AssertionParser::Dis_atomContext* AssertionParser::dis_atom() {
     exitRule();
   });
   try {
-    setState(87);
+    setState(99);
     _errHandler->sync(this);
     switch (_input->LA(1)) {
-      case AssertionParser::T__4: {
-        _localctx = _tracker.createInstance<AssertionParser::Dis_assertionContext>(_localctx);
+      case AssertionParser::T__6: {
+        _localctx = _tracker.createInstance<AssertionParser::Trace_probContext>(_localctx);
         enterOuterAlt(_localctx, 1);
-        setState(76);
+        setState(88);
+        match(AssertionParser::T__6);
+        setState(89);
         match(AssertionParser::T__4);
-        setState(77);
-        distribution_assertion();
-        setState(78);
+        setState(90);
+        qTerm2();
+        setState(91);
         match(AssertionParser::T__5);
         break;
       }
 
-      case AssertionParser::T__6: {
+      case AssertionParser::T__7: {
         _localctx = _tracker.createInstance<AssertionParser::Symbolic_probContext>(_localctx);
         enterOuterAlt(_localctx, 2);
-        setState(80);
-        match(AssertionParser::T__6);
-        setState(81);
+        setState(93);
+        match(AssertionParser::T__7);
+        setState(94);
         match(AssertionParser::T__4);
-        setState(82);
+        setState(95);
         states_assertion();
-        setState(83);
+        setState(96);
         match(AssertionParser::T__5);
-        setState(84);
-        match(AssertionParser::RELOP);
-        setState(85);
+        break;
+      }
+
+      case AssertionParser::REALNUM: {
+        _localctx = _tracker.createInstance<AssertionParser::Const_probContext>(_localctx);
+        enterOuterAlt(_localctx, 3);
+        setState(98);
         match(AssertionParser::REALNUM);
         break;
       }
@@ -819,7 +976,7 @@ std::any AssertionParser::States_assertionContext::accept(tree::ParseTreeVisitor
 
 AssertionParser::States_assertionContext* AssertionParser::states_assertion() {
   States_assertionContext *_localctx = _tracker.createInstance<States_assertionContext>(_ctx, getState());
-  enterRule(_localctx, 14, AssertionParser::RuleStates_assertion);
+  enterRule(_localctx, 16, AssertionParser::RuleStates_assertion);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -830,7 +987,7 @@ AssertionParser::States_assertionContext* AssertionParser::states_assertion() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(89);
+    setState(101);
     states_or_expr();
    
   }
@@ -889,7 +1046,7 @@ std::any AssertionParser::Or_exprContext::accept(tree::ParseTreeVisitor *visitor
 }
 AssertionParser::States_or_exprContext* AssertionParser::states_or_expr() {
   States_or_exprContext *_localctx = _tracker.createInstance<States_or_exprContext>(_ctx, getState());
-  enterRule(_localctx, 16, AssertionParser::RuleStates_or_expr);
+  enterRule(_localctx, 18, AssertionParser::RuleStates_or_expr);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -902,17 +1059,17 @@ AssertionParser::States_or_exprContext* AssertionParser::states_or_expr() {
   try {
     _localctx = _tracker.createInstance<AssertionParser::Or_exprContext>(_localctx);
     enterOuterAlt(_localctx, 1);
-    setState(91);
+    setState(103);
     states_and_expr();
-    setState(96);
+    setState(108);
     _errHandler->sync(this);
     _la = _input->LA(1);
     while (_la == AssertionParser::T__0) {
-      setState(92);
+      setState(104);
       match(AssertionParser::T__0);
-      setState(93);
+      setState(105);
       states_and_expr();
-      setState(98);
+      setState(110);
       _errHandler->sync(this);
       _la = _input->LA(1);
     }
@@ -973,7 +1130,7 @@ std::any AssertionParser::And_exprContext::accept(tree::ParseTreeVisitor *visito
 }
 AssertionParser::States_and_exprContext* AssertionParser::states_and_expr() {
   States_and_exprContext *_localctx = _tracker.createInstance<States_and_exprContext>(_ctx, getState());
-  enterRule(_localctx, 18, AssertionParser::RuleStates_and_expr);
+  enterRule(_localctx, 20, AssertionParser::RuleStates_and_expr);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -986,17 +1143,17 @@ AssertionParser::States_and_exprContext* AssertionParser::states_and_expr() {
   try {
     _localctx = _tracker.createInstance<AssertionParser::And_exprContext>(_localctx);
     enterOuterAlt(_localctx, 1);
-    setState(99);
+    setState(111);
     states_not_expr();
-    setState(104);
+    setState(116);
     _errHandler->sync(this);
     _la = _input->LA(1);
     while (_la == AssertionParser::T__1) {
-      setState(100);
+      setState(112);
       match(AssertionParser::T__1);
-      setState(101);
+      setState(113);
       states_not_expr();
-      setState(106);
+      setState(118);
       _errHandler->sync(this);
       _la = _input->LA(1);
     }
@@ -1078,7 +1235,7 @@ std::any AssertionParser::States_atom_ruleContext::accept(tree::ParseTreeVisitor
 }
 AssertionParser::States_not_exprContext* AssertionParser::states_not_expr() {
   States_not_exprContext *_localctx = _tracker.createInstance<States_not_exprContext>(_ctx, getState());
-  enterRule(_localctx, 20, AssertionParser::RuleStates_not_expr);
+  enterRule(_localctx, 22, AssertionParser::RuleStates_not_expr);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -1088,15 +1245,15 @@ AssertionParser::States_not_exprContext* AssertionParser::states_not_expr() {
     exitRule();
   });
   try {
-    setState(110);
+    setState(122);
     _errHandler->sync(this);
     switch (_input->LA(1)) {
       case AssertionParser::T__3: {
         _localctx = _tracker.createInstance<AssertionParser::Not_exprContext>(_localctx);
         enterOuterAlt(_localctx, 1);
-        setState(107);
+        setState(119);
         match(AssertionParser::T__3);
-        setState(108);
+        setState(120);
         states_not_expr();
         break;
       }
@@ -1105,7 +1262,7 @@ AssertionParser::States_not_exprContext* AssertionParser::states_not_expr() {
       case AssertionParser::QID: {
         _localctx = _tracker.createInstance<AssertionParser::States_atom_ruleContext>(_localctx);
         enterOuterAlt(_localctx, 2);
-        setState(109);
+        setState(121);
         states_atom();
         break;
       }
@@ -1199,7 +1356,7 @@ std::any AssertionParser::BtermContext::accept(tree::ParseTreeVisitor *visitor) 
 }
 AssertionParser::States_atomContext* AssertionParser::states_atom() {
   States_atomContext *_localctx = _tracker.createInstance<States_atomContext>(_ctx, getState());
-  enterRule(_localctx, 22, AssertionParser::RuleStates_atom);
+  enterRule(_localctx, 24, AssertionParser::RuleStates_atom);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -1209,17 +1366,17 @@ AssertionParser::States_atomContext* AssertionParser::states_atom() {
     exitRule();
   });
   try {
-    setState(120);
+    setState(132);
     _errHandler->sync(this);
     switch (_input->LA(1)) {
       case AssertionParser::QID: {
         _localctx = _tracker.createInstance<AssertionParser::QtermContext>(_localctx);
         enterOuterAlt(_localctx, 1);
-        setState(112);
+        setState(124);
         qList();
-        setState(113);
-        match(AssertionParser::T__7);
-        setState(114);
+        setState(125);
+        match(AssertionParser::T__8);
+        setState(126);
         qTerm2();
         break;
       }
@@ -1227,11 +1384,11 @@ AssertionParser::States_atomContext* AssertionParser::states_atom() {
       case AssertionParser::CID: {
         _localctx = _tracker.createInstance<AssertionParser::BtermContext>(_localctx);
         enterOuterAlt(_localctx, 2);
-        setState(116);
+        setState(128);
         bList();
-        setState(117);
-        match(AssertionParser::T__7);
-        setState(118);
+        setState(129);
+        match(AssertionParser::T__8);
+        setState(130);
         match(AssertionParser::BINARYSTRING);
         break;
       }
@@ -1325,7 +1482,7 @@ std::any AssertionParser::VectorTermContext::accept(tree::ParseTreeVisitor *visi
 }
 AssertionParser::QTerm2Context* AssertionParser::qTerm2() {
   QTerm2Context *_localctx = _tracker.createInstance<QTerm2Context>(_ctx, getState());
-  enterRule(_localctx, 24, AssertionParser::RuleQTerm2);
+  enterRule(_localctx, 26, AssertionParser::RuleQTerm2);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -1335,26 +1492,26 @@ AssertionParser::QTerm2Context* AssertionParser::qTerm2() {
     exitRule();
   });
   try {
-    setState(127);
+    setState(139);
     _errHandler->sync(this);
     switch (_input->LA(1)) {
-      case AssertionParser::T__8:
+      case AssertionParser::T__9:
       case AssertionParser::QID: {
         _localctx = _tracker.createInstance<AssertionParser::VectorTermContext>(_localctx);
         enterOuterAlt(_localctx, 1);
-        setState(122);
+        setState(134);
         vector();
         break;
       }
 
-      case AssertionParser::T__12: {
+      case AssertionParser::T__13: {
         _localctx = _tracker.createInstance<AssertionParser::MatrixVectorTermContext>(_localctx);
         enterOuterAlt(_localctx, 2);
-        setState(123);
+        setState(135);
         matrix();
-        setState(124);
+        setState(136);
         match(AssertionParser::MUL);
-        setState(125);
+        setState(137);
         vector();
         break;
       }
@@ -1440,7 +1597,7 @@ std::any AssertionParser::QVarVectorContext::accept(tree::ParseTreeVisitor *visi
 }
 AssertionParser::VectorContext* AssertionParser::vector() {
   VectorContext *_localctx = _tracker.createInstance<VectorContext>(_ctx, getState());
-  enterRule(_localctx, 26, AssertionParser::RuleVector);
+  enterRule(_localctx, 28, AssertionParser::RuleVector);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -1450,21 +1607,21 @@ AssertionParser::VectorContext* AssertionParser::vector() {
     exitRule();
   });
   try {
-    setState(131);
+    setState(143);
     _errHandler->sync(this);
     switch (_input->LA(1)) {
       case AssertionParser::QID: {
         _localctx = _tracker.createInstance<AssertionParser::QVarVectorContext>(_localctx);
         enterOuterAlt(_localctx, 1);
-        setState(129);
+        setState(141);
         qList();
         break;
       }
 
-      case AssertionParser::T__8: {
+      case AssertionParser::T__9: {
         _localctx = _tracker.createInstance<AssertionParser::NumericVectorContext>(_localctx);
         enterOuterAlt(_localctx, 2);
-        setState(130);
+        setState(142);
         row();
         break;
       }
@@ -1524,7 +1681,7 @@ std::any AssertionParser::RowContext::accept(tree::ParseTreeVisitor *visitor) {
 
 AssertionParser::RowContext* AssertionParser::row() {
   RowContext *_localctx = _tracker.createInstance<RowContext>(_ctx, getState());
-  enterRule(_localctx, 28, AssertionParser::RuleRow);
+  enterRule(_localctx, 30, AssertionParser::RuleRow);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -1536,24 +1693,24 @@ AssertionParser::RowContext* AssertionParser::row() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(133);
-    match(AssertionParser::T__8);
-    setState(134);
+    setState(145);
+    match(AssertionParser::T__9);
+    setState(146);
     complexNumber();
-    setState(139);
+    setState(151);
     _errHandler->sync(this);
     _la = _input->LA(1);
-    while (_la == AssertionParser::T__9) {
-      setState(135);
-      match(AssertionParser::T__9);
-      setState(136);
+    while (_la == AssertionParser::T__10) {
+      setState(147);
+      match(AssertionParser::T__10);
+      setState(148);
       complexNumber();
-      setState(141);
+      setState(153);
       _errHandler->sync(this);
       _la = _input->LA(1);
     }
-    setState(142);
-    match(AssertionParser::T__10);
+    setState(154);
+    match(AssertionParser::T__11);
    
   }
   catch (RecognitionException &e) {
@@ -1611,7 +1768,7 @@ std::any AssertionParser::ComplexRealImagContext::accept(tree::ParseTreeVisitor 
 }
 AssertionParser::ComplexNumberContext* AssertionParser::complexNumber() {
   ComplexNumberContext *_localctx = _tracker.createInstance<ComplexNumberContext>(_ctx, getState());
-  enterRule(_localctx, 30, AssertionParser::RuleComplexNumber);
+  enterRule(_localctx, 32, AssertionParser::RuleComplexNumber);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -1624,15 +1781,15 @@ AssertionParser::ComplexNumberContext* AssertionParser::complexNumber() {
   try {
     _localctx = _tracker.createInstance<AssertionParser::ComplexRealImagContext>(_localctx);
     enterOuterAlt(_localctx, 1);
-    setState(144);
+    setState(156);
     realPart();
-    setState(146);
+    setState(158);
     _errHandler->sync(this);
 
     _la = _input->LA(1);
     if ((((_la & ~ 0x3fULL) == 0) &&
-      ((1ULL << _la) & 1314816) != 0)) {
-      setState(145);
+      ((1ULL << _la) & 2629632) != 0)) {
+      setState(157);
       imagPart();
     }
    
@@ -1687,7 +1844,7 @@ std::any AssertionParser::RealPartContext::accept(tree::ParseTreeVisitor *visito
 
 AssertionParser::RealPartContext* AssertionParser::realPart() {
   RealPartContext *_localctx = _tracker.createInstance<RealPartContext>(_ctx, getState());
-  enterRule(_localctx, 32, AssertionParser::RuleRealPart);
+  enterRule(_localctx, 34, AssertionParser::RuleRealPart);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -1699,15 +1856,15 @@ AssertionParser::RealPartContext* AssertionParser::realPart() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(149);
+    setState(161);
     _errHandler->sync(this);
 
     _la = _input->LA(1);
     if (_la == AssertionParser::SIGN) {
-      setState(148);
+      setState(160);
       match(AssertionParser::SIGN);
     }
-    setState(151);
+    setState(163);
     match(AssertionParser::REALNUM);
    
   }
@@ -1761,7 +1918,7 @@ std::any AssertionParser::ImagPartContext::accept(tree::ParseTreeVisitor *visito
 
 AssertionParser::ImagPartContext* AssertionParser::imagPart() {
   ImagPartContext *_localctx = _tracker.createInstance<ImagPartContext>(_ctx, getState());
-  enterRule(_localctx, 34, AssertionParser::RuleImagPart);
+  enterRule(_localctx, 36, AssertionParser::RuleImagPart);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -1773,24 +1930,24 @@ AssertionParser::ImagPartContext* AssertionParser::imagPart() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(154);
+    setState(166);
     _errHandler->sync(this);
 
     _la = _input->LA(1);
     if (_la == AssertionParser::SIGN) {
-      setState(153);
+      setState(165);
       match(AssertionParser::SIGN);
     }
-    setState(157);
+    setState(169);
     _errHandler->sync(this);
 
     _la = _input->LA(1);
     if (_la == AssertionParser::REALNUM) {
-      setState(156);
+      setState(168);
       match(AssertionParser::REALNUM);
     }
-    setState(159);
-    match(AssertionParser::T__11);
+    setState(171);
+    match(AssertionParser::T__12);
    
   }
   catch (RecognitionException &e) {
@@ -1843,7 +2000,7 @@ std::any AssertionParser::MatrixContext::accept(tree::ParseTreeVisitor *visitor)
 
 AssertionParser::MatrixContext* AssertionParser::matrix() {
   MatrixContext *_localctx = _tracker.createInstance<MatrixContext>(_ctx, getState());
-  enterRule(_localctx, 36, AssertionParser::RuleMatrix);
+  enterRule(_localctx, 38, AssertionParser::RuleMatrix);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -1855,28 +2012,28 @@ AssertionParser::MatrixContext* AssertionParser::matrix() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(161);
-    match(AssertionParser::T__12);
-    setState(162);
-    row();
-    setState(163);
+    setState(173);
     match(AssertionParser::T__13);
-    setState(164);
+    setState(174);
     row();
-    setState(169);
+    setState(175);
+    match(AssertionParser::T__14);
+    setState(176);
+    row();
+    setState(181);
     _errHandler->sync(this);
     _la = _input->LA(1);
-    while (_la == AssertionParser::T__13) {
-      setState(165);
-      match(AssertionParser::T__13);
-      setState(166);
+    while (_la == AssertionParser::T__14) {
+      setState(177);
+      match(AssertionParser::T__14);
+      setState(178);
       row();
-      setState(171);
+      setState(183);
       _errHandler->sync(this);
       _la = _input->LA(1);
     }
-    setState(172);
-    match(AssertionParser::T__14);
+    setState(184);
+    match(AssertionParser::T__15);
    
   }
   catch (RecognitionException &e) {
@@ -1929,7 +2086,7 @@ std::any AssertionParser::BListContext::accept(tree::ParseTreeVisitor *visitor) 
 
 AssertionParser::BListContext* AssertionParser::bList() {
   BListContext *_localctx = _tracker.createInstance<BListContext>(_ctx, getState());
-  enterRule(_localctx, 38, AssertionParser::RuleBList);
+  enterRule(_localctx, 40, AssertionParser::RuleBList);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -1941,17 +2098,17 @@ AssertionParser::BListContext* AssertionParser::bList() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(174);
+    setState(186);
     match(AssertionParser::CID);
-    setState(179);
+    setState(191);
     _errHandler->sync(this);
     _la = _input->LA(1);
-    while (_la == AssertionParser::T__9) {
-      setState(175);
-      match(AssertionParser::T__9);
-      setState(176);
+    while (_la == AssertionParser::T__10) {
+      setState(187);
+      match(AssertionParser::T__10);
+      setState(188);
       match(AssertionParser::CID);
-      setState(181);
+      setState(193);
       _errHandler->sync(this);
       _la = _input->LA(1);
     }
@@ -2007,7 +2164,7 @@ std::any AssertionParser::QListContext::accept(tree::ParseTreeVisitor *visitor) 
 
 AssertionParser::QListContext* AssertionParser::qList() {
   QListContext *_localctx = _tracker.createInstance<QListContext>(_ctx, getState());
-  enterRule(_localctx, 40, AssertionParser::RuleQList);
+  enterRule(_localctx, 42, AssertionParser::RuleQList);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -2019,17 +2176,17 @@ AssertionParser::QListContext* AssertionParser::qList() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(182);
+    setState(194);
     match(AssertionParser::QID);
-    setState(187);
+    setState(199);
     _errHandler->sync(this);
     _la = _input->LA(1);
-    while (_la == AssertionParser::T__9) {
-      setState(183);
-      match(AssertionParser::T__9);
-      setState(184);
+    while (_la == AssertionParser::T__10) {
+      setState(195);
+      match(AssertionParser::T__10);
+      setState(196);
       match(AssertionParser::QID);
-      setState(189);
+      setState(201);
       _errHandler->sync(this);
       _la = _input->LA(1);
     }

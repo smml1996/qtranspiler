@@ -40,8 +40,17 @@ public:
   virtual void enterDis_assertion(AssertionParser::Dis_assertionContext * /*ctx*/) override { }
   virtual void exitDis_assertion(AssertionParser::Dis_assertionContext * /*ctx*/) override { }
 
+  virtual void enterAtom_terminal(AssertionParser::Atom_terminalContext * /*ctx*/) override { }
+  virtual void exitAtom_terminal(AssertionParser::Atom_terminalContext * /*ctx*/) override { }
+
+  virtual void enterTrace_prob(AssertionParser::Trace_probContext * /*ctx*/) override { }
+  virtual void exitTrace_prob(AssertionParser::Trace_probContext * /*ctx*/) override { }
+
   virtual void enterSymbolic_prob(AssertionParser::Symbolic_probContext * /*ctx*/) override { }
   virtual void exitSymbolic_prob(AssertionParser::Symbolic_probContext * /*ctx*/) override { }
+
+  virtual void enterConst_prob(AssertionParser::Const_probContext * /*ctx*/) override { }
+  virtual void exitConst_prob(AssertionParser::Const_probContext * /*ctx*/) override { }
 
   virtual void enterStates_assertion(AssertionParser::States_assertionContext * /*ctx*/) override { }
   virtual void exitStates_assertion(AssertionParser::States_assertionContext * /*ctx*/) override { }

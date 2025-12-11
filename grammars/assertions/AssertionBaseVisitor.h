@@ -47,7 +47,19 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual std::any visitAtom_terminal(AssertionParser::Atom_terminalContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitTrace_prob(AssertionParser::Trace_probContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual std::any visitSymbolic_prob(AssertionParser::Symbolic_probContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitConst_prob(AssertionParser::Const_probContext *ctx) override {
     return visitChildren(ctx);
   }
 

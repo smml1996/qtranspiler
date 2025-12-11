@@ -28,7 +28,13 @@ dis_not_expr
 
 dis_atom
     : '(' distribution_assertion ')' # dis_assertion
-    | 'P' '(' states_assertion ')' RELOP REALNUM  # symbolic_prob
+    | prob_term RELOP prob_term # atom_terminal
+    ;
+
+prob_term
+    : 'Tr' '(' qTerm2 ')'  # trace_prob
+    | 'P' '(' states_assertion ')'  # symbolic_prob
+    | REALNUM # const_prob
     ;
 
 // states assertion

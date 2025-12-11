@@ -126,6 +126,42 @@ public:
     return !std::any_cast<z3::expr>(visit(ctx->dis_not_expr()));
   }
 
+  antlrcpp::Any visitAtom_terminal(AssertionParser::Atom_terminalContext *ctx) override {
+    assert(ctx->prob_term().size() == 2);
+    z3::expr left_term = std::any_cast<z3::expr>(visit(ctx->prob_term(0)));
+    auto right_term= std::any_cast<z3::expr>(visit(ctx->prob_term(1)));
+    auto relop = ctx->RELOP()->getText();
+    if (relop == ">") return left_term > right_term;
+    if (relop == "<")  return left_term < right_term;
+    if (relop == "<=") return left_term <= right_term;
+    if (relop == ">=") return left_term >= right_term;
+    if (relop == "=") return left_term == right_term;
+
+    throw runtime_error("relational op. not recognized: " + relop);
+  }
+
+  antlrcpp::Any visitTrace_prob(AssertionParser::Trace_probContext *ctx) override {
+    z3::expr result = this->context.real_val("0");
+
+    for (const auto& e : this->ensemble_stack.back().probs) {
+      this->current_hs = e.first; // we compute the density matrix of this hybrid state
+      auto density_matrix = std::any_cast<vector<vector<complex<double>>>>(ctx->qTerm2());
+      assert(density_matrix.size() > 0);
+      assert(density_matrix.size() == density_matrix[0].size());
+
+      z3::expr trace = this->context.real_val("0");
+      for (int i = 0; i < density_matrix.size(); i++) {
+          assert(density_matrix[i][i].imag() == 0.0);
+          trace = trace + this->context.real_val(to_string(density_matrix[i][i].real()).c_str());
+      }
+
+      result = result + e.second * trace;
+    }
+
+    return result;
+
+  }
+
 
   antlrcpp::Any visitSymbolic_prob(AssertionParser::Symbolic_probContext *ctx) override {
     z3::expr result = this->context.real_val("0");
@@ -135,19 +171,11 @@ public:
         result = result + e.second;
       }
     }
+    return result;
+  }
 
-    z3::expr const_ = this->context.real_val(ctx->REALNUM()->getText().c_str());
-
-    string relop = ctx->RELOP()->getText();
-
-    if (relop == ">=")
-      return result >= const_;
-    if (relop == ">") return result > const_;
-    if (relop == "<")  return result < const_;
-    if (relop == "<=") return result <= const_;
-    if (relop == "=") return result == const_;
-
-    throw runtime_error("relational op. not recognized in symbolic prob. term: " + relop);
+  antlrcpp::Any visitConst_prob(AssertionParser::Const_probContext *ctx) override {
+    return this->context.real_val(ctx->REALNUM()->getText().c_str());
   }
 
   antlrcpp::Any visitStates_assertion(AssertionParser::States_assertionContext *ctx) override {
@@ -206,16 +234,15 @@ public:
         return pt == result; // FIX ME: this might cause trouble
   }
 
-
   static vector<int> get_cvars_list(AssertionParser::BListContext *ctx) {
-        vector<int> result;
+      vector<int> result;
       for (auto cid : ctx->CID()) {
         int index = std::stoi(cid->getText().substr(1));
         result.push_back(index);
       }
 
       return result;
-    }
+  }
 
   static set<int> get_qvars_list(AssertionParser::QListContext *ctx) {
       set<int> result;

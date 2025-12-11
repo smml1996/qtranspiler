@@ -35,7 +35,13 @@ public:
 
     virtual std::any visitDis_assertion(AssertionParser::Dis_assertionContext *context) = 0;
 
+    virtual std::any visitAtom_terminal(AssertionParser::Atom_terminalContext *context) = 0;
+
+    virtual std::any visitTrace_prob(AssertionParser::Trace_probContext *context) = 0;
+
     virtual std::any visitSymbolic_prob(AssertionParser::Symbolic_probContext *context) = 0;
+
+    virtual std::any visitConst_prob(AssertionParser::Const_probContext *context) = 0;
 
     virtual std::any visitStates_assertion(AssertionParser::States_assertionContext *context) = 0;
 

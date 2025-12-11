@@ -14,17 +14,18 @@ public:
   enum {
     T__0 = 1, T__1 = 2, T__2 = 3, T__3 = 4, T__4 = 5, T__5 = 6, T__6 = 7, 
     T__7 = 8, T__8 = 9, T__9 = 10, T__10 = 11, T__11 = 12, T__12 = 13, T__13 = 14, 
-    T__14 = 15, MUL = 16, RELOP = 17, SIGN = 18, BINARYSTRING = 19, REALNUM = 20, 
-    CID = 21, QID = 22, WS = 23
+    T__14 = 15, T__15 = 16, MUL = 17, RELOP = 18, SIGN = 19, BINARYSTRING = 20, 
+    REALNUM = 21, CID = 22, QID = 23, WS = 24
   };
 
   enum {
     RuleAssertion = 0, RuleDistribution_assertion = 1, RuleDis_or_expr = 2, 
     RuleDis_and_expr = 3, RuleDis_conv_expr = 4, RuleDis_not_expr = 5, RuleDis_atom = 6, 
-    RuleStates_assertion = 7, RuleStates_or_expr = 8, RuleStates_and_expr = 9, 
-    RuleStates_not_expr = 10, RuleStates_atom = 11, RuleQTerm2 = 12, RuleVector = 13, 
-    RuleRow = 14, RuleComplexNumber = 15, RuleRealPart = 16, RuleImagPart = 17, 
-    RuleMatrix = 18, RuleBList = 19, RuleQList = 20
+    RuleProb_term = 7, RuleStates_assertion = 8, RuleStates_or_expr = 9, 
+    RuleStates_and_expr = 10, RuleStates_not_expr = 11, RuleStates_atom = 12, 
+    RuleQTerm2 = 13, RuleVector = 14, RuleRow = 15, RuleComplexNumber = 16, 
+    RuleRealPart = 17, RuleImagPart = 18, RuleMatrix = 19, RuleBList = 20, 
+    RuleQList = 21
   };
 
   explicit AssertionParser(antlr4::TokenStream *input);
@@ -51,6 +52,7 @@ public:
   class Dis_conv_exprContext;
   class Dis_not_exprContext;
   class Dis_atomContext;
+  class Prob_termContext;
   class States_assertionContext;
   class States_or_exprContext;
   class States_and_exprContext;
@@ -206,13 +208,13 @@ public:
     virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
   };
 
-  class  Symbolic_probContext : public Dis_atomContext {
+  class  Atom_terminalContext : public Dis_atomContext {
   public:
-    Symbolic_probContext(Dis_atomContext *ctx);
+    Atom_terminalContext(Dis_atomContext *ctx);
 
-    States_assertionContext *states_assertion();
+    std::vector<Prob_termContext *> prob_term();
+    Prob_termContext* prob_term(size_t i);
     antlr4::tree::TerminalNode *RELOP();
-    antlr4::tree::TerminalNode *REALNUM();
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
 
@@ -220,6 +222,54 @@ public:
   };
 
   Dis_atomContext* dis_atom();
+
+  class  Prob_termContext : public antlr4::ParserRuleContext {
+  public:
+    Prob_termContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+   
+    Prob_termContext() = default;
+    void copyFrom(Prob_termContext *context);
+    using antlr4::ParserRuleContext::copyFrom;
+
+    virtual size_t getRuleIndex() const override;
+
+   
+  };
+
+  class  Const_probContext : public Prob_termContext {
+  public:
+    Const_probContext(Prob_termContext *ctx);
+
+    antlr4::tree::TerminalNode *REALNUM();
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  Symbolic_probContext : public Prob_termContext {
+  public:
+    Symbolic_probContext(Prob_termContext *ctx);
+
+    States_assertionContext *states_assertion();
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  Trace_probContext : public Prob_termContext {
+  public:
+    Trace_probContext(Prob_termContext *ctx);
+
+    QTerm2Context *qTerm2();
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  Prob_termContext* prob_term();
 
   class  States_assertionContext : public antlr4::ParserRuleContext {
   public:
