@@ -202,6 +202,17 @@ Experiment(name, precision, with_thermalization, min_horizon, max_horizon, false
             }
             return result;
         }
+
+        string get_precondition(const MethodType &method) override {
+            assert(method == MethodType::SingleDistBellman);
+            string state000 = "[1,0,0,0,0,0,0,0]";
+            return "P([q0,q1,q2]="+state000+") = 1";
+        }
+
+        string get_target_postcondition(const double &threshold) override {
+            string  ghzstate = "[0.70710678,0,0,0,0,0,0,0.70710678]";
+            return "P([q0,q1,q2]="+ ghzstate +") >= " + to_string(threshold);
+        }
 };
 
 // GHZ state preparation of 4 qubits
@@ -264,5 +275,12 @@ class GHZStatePreparation4 : public GHZStatePreparation3 {
             }
             return result;
         }
+
+    string get_precondition(const MethodType &method) override {
+        throw runtime_error("Not implemented");
+    }
+    string get_target_postcondition(const double &threshold) override {
+        throw runtime_error("Not implemented");
+    }
 };
 #endif

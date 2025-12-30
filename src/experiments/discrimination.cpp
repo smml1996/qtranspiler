@@ -246,4 +246,17 @@ public:
         new_head->children.push_back(normalize_algorithm(h0_node));
         return new_head;
     }
+
+    string get_precondition(const MethodType &method) override {
+        assert (method == MethodType::ConvexDist);
+        string state00 = "[1,0,0,0]";
+        string statePP = "[0.70710678,0.70710678,0.70710678,0.70710678]"; // |++>
+
+        return string("P([q0,q1] = "+ state00 +" and [x0] = 0 ) = 1 + ") +
+            "P([q0,q1] = "+ statePP + " and [x0] = 0) = 1 + ";
+    }
+
+    string get_target_postcondition(const double &threshold) override {
+        return "P(([q1] = [1,0] and [x0] = 0) or ([q1] = [0.70710678,0.70710678] and [x0] = 1)) >= " + to_string(threshold);
+    }
 };

@@ -69,6 +69,7 @@ protected:
     virtual void run();
     virtual bool guard(const shared_ptr<POMDPVertex>&, const unordered_map<int, int>&, const shared_ptr<POMDPAction>&) const;
     virtual void make_setup_file() const;
+    virtual string get_postcondition(const MethodType &method);
 
     // for an experiment we need to define at least these functions
     virtual vector<pair<shared_ptr<HybridState>, double>> get_initial_distribution(unordered_map<int, int> &embedding) const = 0;
@@ -77,6 +78,10 @@ protected:
     virtual vector<shared_ptr<POMDPAction>> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) const = 0;
     virtual vector<unordered_map<int, int>> get_hardware_scenarios(HardwareSpecification const & hardware_spec) const = 0;
     map<string, shared_ptr<POMDPAction>> get_actions_dictionary(HardwareSpecification &hardware_spec, const int &);
+    virtual string get_precondition(const MethodType &method) = 0;
+    virtual string get_target_postcondition(const double &threshold) = 0;
+
+
 
     // textbook algorithm
     virtual shared_ptr<Algorithm> get_textbook_algorithm(MethodType &method, const int &horizon);

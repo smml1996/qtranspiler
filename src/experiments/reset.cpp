@@ -126,5 +126,19 @@ Experiment(name, precision, with_thermalization, min_horizon, max_horizon, false
         }
         return normalize_algorithm(this->build_meas_sequence(horizon-1, 0, action_mappings["P0"], make_shared<ClassicalState>(), on0, on1));
     }
+
+    string get_precondition(const MethodType &method) override {
+        string state0 = "[1,0]";
+        string state1 = "[0,1]";
+        if (method == MethodType::SingleDistBellman) {
+            return "P([q0] = "+ state0+" and [x0] = 0) = 0.5 and " + "P([q0] = "+ state1+" and [x0] = 0) = 0.5";
+        }
+        assert(method == MethodType::ConvexDist);
+        return "P([q0] = "+ state0+" and [x0] = 0) = 1 + " + "P([q0] = "+ state1+" and [x0] = 0) = 1";
+    }
+
+    string get_target_postcondition(const double &threshold) override {
+        return "P([q0] = [1,0]) >= " + to_string(threshold);
+    }
 };
 #endif

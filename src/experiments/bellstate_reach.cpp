@@ -30,7 +30,7 @@ class BellStateReach : public IPMABitflip {
         auto X0 = Instruction(GateName::X, embedding.at(0));
         auto Z0 = Instruction(GateName::Z, embedding.at(0));
 
-        auto X3 = Instruction(GateName::X, embedding.at(3));
+        auto X2 = Instruction(GateName::X, embedding.at(2));
 
         auto  state0 =  make_shared<QuantumState>(get_qubits_used(embedding), this->precision);
         result.push_back(make_pair(make_shared<HybridState>(state0, classical_state0), 0.2)); // |00>
@@ -39,7 +39,7 @@ class BellStateReach : public IPMABitflip {
         result.push_back(make_pair(make_shared<HybridState>(state1, classical_state0), 0.2));
 
         auto state_plus = state0->apply_instruction(H0);
-        state_plus = state_plus->apply_instruction(X3); // |+1>
+        state_plus = state_plus->apply_instruction(X2); // |+1>
         result.push_back(make_pair(make_shared<HybridState>(state_plus, classical_state0), 0.3));
 
         auto state_minus = state_plus->apply_instruction(Z0);
@@ -59,7 +59,7 @@ class BellStateReach : public IPMABitflip {
             } else {
                 auto hybrid_state = it.first->hybrid_state;
                 auto qs = hybrid_state->quantum_state;
-                auto current_rho = qs->multi_partial_trace(vector<int>({embedding.at(3)}));
+                auto current_rho = qs->multi_partial_trace(vector<int>({embedding.at(2)}));
                 assert (current_rho.size() == 4);
                 if (are_matrices_equal(current_rho, this->BELL0, this->precision) || are_matrices_equal(current_rho, this->BELL1, this->precision)) { // equality up to a threshold because there might be floating point overflow
                     result = result + it.second;
@@ -84,7 +84,7 @@ class BellStateReach : public IPMABitflip {
             } else {
                 auto hybrid_state = it.first->hybrid_state;
                 auto qs = hybrid_state->quantum_state;
-                auto current_rho = qs->multi_partial_trace(vector<int>({embedding.at(3)}));
+                auto current_rho = qs->multi_partial_trace(vector<int>({embedding.at(2)}));
                 assert (current_rho.size() == 4);
                 if (are_matrices_equal(current_rho, this->BELL0, this->precision) || are_matrices_equal(current_rho, this->BELL1, this->precision)) { // equality up to a threshold because there might be floating point overflow
                     result = result + it.second;
@@ -107,11 +107,11 @@ class BellStateReach : public IPMABitflip {
         assert(embedding.size() == 3);
         assert(embedding.find(0) != embedding.end());
         assert(embedding.find(1) != embedding.end());
-        assert(embedding.find(3) != embedding.end());
+        assert(embedding.find(2) != embedding.end());
 
 
-        vector<Instruction> meas_data_seq({Instruction(GateName::Meas, embedding.at(3), 3)});
-        vector<Instruction> v_meas_data_seq({Instruction(GateName::Meas, 3, 3)});
+        vector<Instruction> meas_data_seq({Instruction(GateName::Meas, embedding.at(2), 2)});
+        vector<Instruction> v_meas_data_seq({Instruction(GateName::Meas, 2, 2)});
         auto MEASData = make_shared<POMDPAction>("MEASData",meas_data_seq, this->precision, v_meas_data_seq);
 
         vector<Instruction> seq_prepare_bell;
@@ -188,7 +188,7 @@ class BellStateReach : public IPMABitflip {
             unordered_map<int, int> m;
             m[0] = 0;
             m[1] = 1;
-            m[3] = 3;
+            m[2] = 2;
             return {m};
         }
         vector<unordered_map<int, int>> result;
@@ -206,11 +206,11 @@ class BellStateReach : public IPMABitflip {
             auto qubit1 = it_source.second;
             assert(qubit0 != qubit1);
             auto possible_fourth = get_fourth(hardware_spec, {qubit0, qubit1});
-            for (auto qubit3 : possible_fourth) {
+            for (auto qubit2 : possible_fourth) {
                 unordered_map<int, int> m;
                 m[0] = qubit0;
                 m[1] = qubit1;
-                m[3] = qubit3;
+                m[2] = qubit2;
                 result.push_back(m);
             }
 
@@ -224,7 +224,7 @@ class BellStateReach : public IPMABitflip {
         unordered_map<int, int> embedding;
         embedding[0] = 0;
         embedding[1] = 1;
-        embedding[3] = 3;
+        embedding[2] = 2;
 
         auto actions = this->get_actions(hardware_spec, embedding);
 
@@ -250,6 +250,28 @@ class BellStateReach : public IPMABitflip {
             return new_head;
         }
 
-        return normalize_algorithm(this->build_meas_sequence(horizon-1, 3, meas_action, make_shared<ClassicalState>(), on0_algorithm, on1_algorithm));
+        return normalize_algorithm(this->build_meas_sequence(horizon-1, 2, meas_action, make_shared<ClassicalState>(), on0_algorithm, on1_algorithm));
+    }
+
+    string get_precondition(const MethodType &method) override {
+        assert (this->precision == 8);
+        string state000 = "[0.70710678,0,0,0,0,0,0,0]";
+        string state100 = "[0,0.70710678,0,0,0,0,0,0]";
+        string statePlus = "[0,0.70710678,0,0,0, 0.70710678,0,0]";
+        string stateMinus = "[0,0.70710678,0,0,0,-0.70710678,0,0]";
+        if (method == MethodType::SingleDistBellman) {
+            return string("P([q0,q1,q2] = "+ state000 +" and [x2] = 0 ) = 0.2") + // |000>
+            "P([q0,q1,q2] = "+ state100 + " and [x2] = 0) = 0.2" + // |100>
+            "P([q0,q1,q2] = " + statePlus + " and [x2] = 0) = 0.3" + // |+01>
+            "P([q0,q1,q2] = " + stateMinus + " and [x2] = 0) = 0.3"  // |-01>
+            ;
+        }
+
+        assert (method == MethodType::ConvexDist);
+        return string("P([q0,q1,q2] = "+ state000 +" and [x2] = 0 ) = 1 + ") + // |00> + |11>
+            "P([q0,q1,q2] = "+ state100 + " and [x2] = 0) = 1 + " + // |00> + |11>
+            "P([q0,q1,q2] = " + statePlus + " and [x2] = 0) = 1 + " + // |01> + |10>
+            "P([q0,q1,q2] = " + stateMinus + " and [x2] = 0) = 1"  // |01> - |10>
+            ;
     }
 };

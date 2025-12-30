@@ -268,6 +268,27 @@ class IPMABitflip : public Experiment {
             second_cx->children.push_back(this->build_meas_sequence(horizon-3, 2, action_mappings["P2"], make_shared<ClassicalState>(), on0, on1));
             return normalize_algorithm(first_cx);
     }
+
+    string get_precondition(const MethodType &method) override {
+        assert (this->precision == 8);
+        string bell0_str = "[0.70710678,0,0,0,0,0,0.70710678,0]";
+        string bell1_str = "[0.70710678,0,0,0,0,-0.70710678,0]";
+        string bell2_str = "[0,0,0.70710678,0,0.70710678,0,0]";
+        string bell3_str = "[0,0,0.70710678,0,-0.70710678,0,0]";
+
+        assert (method == MethodType::SingleDistBellman);
+        return string("P([q0,q1,q2] = "+ bell0_str +" and [x2] = 0 ) = 0.25") + // |00> + |11>
+            "P([q0,q1,q2] = "+ bell1_str + " and [x2] = 0) = 0.25" + // |00> + |11>
+            "P([q0,q1,q2] = " + bell2_str + " and [x2] = 0) = 0.25" + // |01> + |10>
+            "P([q0,q1,q2] = " + bell3_str + " and [x2] = 0) = 0.25"  // |01> - |10>
+            ;
+    }
+
+    string get_target_postcondition(const double &threshold) override {
+        string bell0_str = "[0.70710678,0,0,0.70710678]";
+        string bell1_str = "[0.70710678,0,0,-0.70710678]";
+        return "P([q0,q1] = "+ bell0_str + " or [q0,q1] = " + bell1_str  + ") >= " + to_string(threshold);
+    }
 };
 
 

@@ -422,6 +422,10 @@ map<string, shared_ptr<POMDPAction>> Experiment::get_actions_dictionary(Hardware
     return actions_dictionary;
 }
 
+string Experiment::get_postcondition(const MethodType &method) {
+     throw runtime_error("not implemented!");
+}
+
 shared_ptr<Algorithm> Experiment::get_textbook_algorithm(MethodType &method, const int &horizon) {
     throw runtime_error("Not implemented");
 }
