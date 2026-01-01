@@ -295,11 +295,11 @@ string to_string(const POMDPAction &action) {
     assert(action.name.size() > 0);
     string result = "";
     if (action.name == HALT_ACTION.name) {
-        return "HALT";
+        return "skip;";
     }
 
     for (auto instruction : action.pseudo_instruction_sequence) {
-        result += to_string(instruction);
+        result += to_string(instruction) + ";";
     }
     return result;
 }

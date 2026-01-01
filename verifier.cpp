@@ -14,7 +14,7 @@
 
 #include "grammars/assertions/AssertionLexer.h"
 #include "grammars/assertions/AssertionParser.h"
-#include "verification_utils.hpp"
+#include "verification.hpp"
 #include <memory>
 
 // Boost AFTER clean-up
@@ -28,27 +28,6 @@
 
 
 using namespace std;
-
-
-// Helper: check if expr 'var' appears in expr 'e'
-bool expr_contains_var(const z3::expr &e, const z3::expr &var) {
-    if (e.is_const() && e.hash() == var.hash()) return true;
-    for (unsigned i = 0; i < e.num_args(); ++i) {
-        if (expr_contains_var(e.arg(i), var)) return true;
-    }
-    return false;
-}
-
-// Filter bound_vars to keep only the ones that appear in 'body'
-z3::expr_vector filter_used_vars(const z3::expr_vector &bound_vars, const z3::expr &body) {
-    z3::expr_vector used_vars(body.ctx());
-    for (unsigned i = 0; i < bound_vars.size(); ++i) {
-        if (expr_contains_var(body, bound_vars[i])) {
-            used_vars.push_back(bound_vars[i]);
-        }
-    }
-    return used_vars;
-}
 
 int main(int argc, char* argv[]) {
     HardwareSpecification hardware_specification(QuantumHardware::PerfectHardware, false, true);

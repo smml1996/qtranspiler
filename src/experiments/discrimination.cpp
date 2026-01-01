@@ -9,6 +9,8 @@ public:
     BasisStatesDiscrimination(const string &name, int precision, bool with_thermalization, int min_horizon, int max_horizon,
         const set<MethodType> &method_types, const set<QuantumHardware>& hw_list, bool optimize) : ResetProblem(name, precision, with_thermalization, min_horizon, max_horizon, method_types, hw_list, optimize) {
         this->set_hidden_index = true;
+        this->nqvars = 2;
+        this->ncvars = 1;
     };
 
     BasisStatesDiscrimination() {
@@ -18,6 +20,8 @@ public:
         this->with_thermalization = false;
         this->min_horizon = 1;
         this->max_horizon = 3;
+        this->nqvars = 2;
+        this->ncvars = 1;
     };
 
     MyFloat postcondition(const Belief &belief, const unordered_map<int, int> &embedding) override {

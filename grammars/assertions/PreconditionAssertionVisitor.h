@@ -1,5 +1,5 @@
 
-// Generated from ../grammars/assertions/PreconditionAssertion.g4 by ANTLR 4.13.2
+// Generated from grammars/assertions/PreconditionAssertion.g4 by ANTLR 4.13.2
 
 #pragma once
 
@@ -22,6 +22,8 @@ public:
     virtual std::any visitPrecon_assertion(PreconditionAssertionParser::Precon_assertionContext *context) = 0;
 
     virtual std::any visitDistribution_assertion(PreconditionAssertionParser::Distribution_assertionContext *context) = 0;
+
+    virtual std::any visitPolygon_assertion(PreconditionAssertionParser::Polygon_assertionContext *context) = 0;
 
     virtual std::any visitSingle_distribution(PreconditionAssertionParser::Single_distributionContext *context) = 0;
 

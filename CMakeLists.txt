@@ -48,11 +48,14 @@ set(SOURCES
 )
 
 add_executable(main ${SOURCES})
-
+#target_include_directories(main PRIVATE /opt/homebrew/Cellar/antlr4-cpp-runtime/4.13.2/include/antlr4-runtime)
+#target_link_directories(main PRIVATE /opt/homebrew/lib)
 target_link_libraries(main PRIVATE
+        antlr4-runtime
         ortools::ortools
         nlohmann_json::nlohmann_json
         c++      # libc++
+        z3
 )
 
 add_executable(parse_results parse_results.cpp src/algorithm.cpp
@@ -209,34 +212,4 @@ add_executable(test_experiments tests/test_experiments.cpp
 target_link_libraries(test_experiments GTest::gtest_main ortools::ortools nlohmann_json::nlohmann_json)
 gtest_discover_tests(test_experiments)
 
-# all tests in one file
-
-# Your executable and source files
-add_executable(verifier
-        src/floats.cpp
-        src/utils.cpp
-        src/hardware_specification.cpp
-        src/instruction.cpp
-        src/channels.cpp
-        src/pomdp.cpp
-        src/quantum_gates.cpp
-        src/states.cpp
-        src/verification_utils.cpp
-        grammars/PL/ProgrammingLanguageLexer.cpp
-        grammars/PL/ProgrammingLanguageParser.cpp
-        grammars/PL/ProgrammingLanguageBaseVisitor.cpp
-        grammars/assertions/PreconditionAssertionLexer.cpp
-        grammars/assertions/PreconditionAssertionParser.cpp
-        grammars/assertions/PreconditionAssertionBaseVisitor.cpp
-        grammars/assertions/AssertionParser.cpp
-        grammars/assertions/AssertionLexer.cpp
-        grammars/assertions/AssertionBaseVisitor.h
-        grammars/assertions/AssertionBaseVisitor.cpp
-        verifier.cpp
-)
-
-# Link against the ANTLR C++ runtime
-target_include_directories(verifier PRIVATE /opt/homebrew/Cellar/antlr4-cpp-runtime/4.13.2/include/antlr4-runtime)
-target_link_directories(verifier PRIVATE /opt/homebrew/lib)
-target_link_libraries(verifier PRIVATE antlr4-runtime nlohmann_json::nlohmann_json ortools::ortools c++ z3)
 

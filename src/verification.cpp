@@ -1,107 +1,77 @@
 //
 // Created by Stefanie Muroya Lei on 21.11.25.
 //
-#include "verification_utils.hpp"
+// ANTLR first
+#include "antlr4-runtime.h"
+#include "grammars/PL/ProgrammingLanguageLexer.h"
+#include "grammars/PL/ProgrammingLanguageParser.h"
+#include "grammars/assertions/PreconditionAssertionLexer.h"
+#include "grammars/assertions/PreconditionAssertionParser.h"
 
-template <typename FloatT>
-int Ensemble<FloatT>::does_hybrid_state_exists(shared_ptr<HybridState> &state) const{
-    for (int i = 0; i < this->probs.size(); i++) {
-        auto hs = this->probs[i];
-        if (*hs.first == *state) {
-            return i;
-        }
-    }
-    return -1;
-}
+#include "grammars/assertions/AssertionLexer.h"
+#include "grammars/assertions/AssertionParser.h"
+#include <memory>
+#include <utility>
 
-template <typename FloatT>
-void Ensemble<FloatT>::add_prob(shared_ptr<HybridState> &hs, FloatT value) {
-    assert(this->precision != -1);
-    int index = this->does_hybrid_state_exists(hs);
-    if (index == -1) {
-        this->probs.push_back(make_pair(hs, value));
-        return;
-    }
-    auto temp = this->probs[index];
-    this->probs[index] = make_pair(hs, value + temp.second) ;
-}
+// Boost AFTER clean-up
 
-template <>
-bool Ensemble<MyFloat>::operator==(const Ensemble<MyFloat> &other) const {
-    if (other.probs.size() != this->probs.size()) return false;
-    for (auto e : other.probs) {
-        auto index = this->does_hybrid_state_exists(e.first);
-        if (index == -1) return false;
-        if (e.second != other.probs[index].second) return false;
-    }
-    return true;
-}
+#include "boost_clean.hpp"
+#include "utils.hpp"
+#include "floats.hpp"
+#include "hardware_specification.hpp"
+#include "pomdp.hpp"
+#include "states.hpp"
+#include "cxxopts.hpp"
+#include "grammars/assertions/PreconditionAssertionBaseVisitor.cpp"
+#include "grammars/assertions/AssertionBaseVisitor.cpp"
 
-template <>
-bool Ensemble<double>::operator==(const Ensemble<double> &other) const {
-    if (other.probs.size() != this->probs.size()) return false;
-    for (auto e : other.probs) {
-        auto index = this->does_hybrid_state_exists(e.first);
-        if (index == -1) return false;
-        if (!is_close(e.second,other.probs[index].second, this->precision)) return false;
-    }
-    return true;
-}
+inline int mc_precision;
+inline int max_depth;
 
-template <>
-bool Ensemble<z3::expr>::operator==(const Ensemble<z3::expr> &other) const {
-    if (other.probs.size() != this->probs.size()) return false;
-    for (auto e : other.probs) {
-        auto index = this->does_hybrid_state_exists(e.first);
-        if (index == -1) return false;
-        if (!is_close(e.second,other.probs[index].second, this->precision)) return false;
-    }
-    return true;
-}
-
-template <>
-double Ensemble<double>::get_weight() {
-    double result = 0;
-
-    for (auto e : this->probs) {
-        result += e.second;
-    }
-    return result;
-}
-
-template <>
-z3::expr Ensemble<z3::expr>::get_weight() {
-    throw runtime_error("get_weight not implemented for Ensemble<MyFloat>");
-}
-
-template <>
-MyFloat Ensemble<MyFloat>::get_weight() {
-    MyFloat result("0", this->precision);
-
-    for (auto e : this->probs) {
-        result = result + e.second;
+class Configuration {
+public:
+    shared_ptr<Ensemble<double>> ensemble;
+    ProgrammingLanguageParser::ProgramContext* program;
+    Configuration(ProgrammingLanguageParser::ProgramContext* program_, shared_ptr<Ensemble<double>> ensemble_) {
+        this->ensemble = std::move(ensemble_);
+        this->program = program_;
     }
 
-    return result;
-}
+    [[nodiscard]] bool is_atomic_program() const;
 
-template<>
-void Ensemble<double>::normalize() {
-    auto w = get_weight();
-    for (int i = 0; i < this->probs.size(); i++) {
-        this->probs[i].second = round_to(this->probs[i].second/w, this->precision);
-    }
-}
+    shared_ptr<Configuration> get_atomic_program_ensemble(HardwareSpecification &spec, const unordered_map<int, int> &embedding);
 
-template<>
-void Ensemble<MyFloat>::normalize() {
-    throw runtime_error("normalize not implemented for Ensemble<MyFloat>");
-}
+};
 
-template<>
-void Ensemble<z3::expr>::normalize() {
-    throw runtime_error("normalize not implemented for Ensemble<z3::expr>");
-}
+class MarkovChain {
+public:
+    HardwareSpecification spec;
+    unordered_map<int, int> embedding;
+
+    MarkovChain(HardwareSpecification spec_,
+                const std::unordered_map<int,int> &embedding_)
+        : spec(std::move(spec_)), embedding(embedding_)  // <-- Initialization happens here
+    {};
+
+    shared_ptr<Ensemble<MyFloat>> get_final_ensemble (const shared_ptr<Configuration> &config);
+
+
+    static int get_depth(const shared_ptr<Configuration> &config);
+};
+
+class Verifier {
+public:
+    HardwareSpecification spec;
+    unordered_map<int, int> embedding;
+    Experiment *experiment;
+    int nqvars, ncvars;
+
+    Verifier(HardwareSpecification spec_, const unordered_map<int, int> &embedding_,
+             Experiment *experiment, const int &nqvars_, const int &ncvars_) : spec(std::move(spec_)),embedding(embedding_),  experiment(experiment), nqvars(nqvars_), ncvars(ncvars_) {
+    };
+    [[nodiscard]] bool verify(const string &raw_precondition, const string &raw_program, const string &raw_postcondition) const;
+};
+
 
 Ensemble<z3::expr> get_symbolic_ensemble(const std::vector<shared_ptr<Ensemble<MyFloat>>> &ensembles, const z3::expr_vector &weights, z3::context &ctx) {
     Ensemble<z3::expr> result(mc_precision);
@@ -114,8 +84,6 @@ Ensemble<z3::expr> get_symbolic_ensemble(const std::vector<shared_ptr<Ensemble<M
     }
     return result;
 }
-
-
 
 shared_ptr<Ensemble<MyFloat>> to_myfloat(const shared_ptr<Ensemble<double>> &ensemble) {
     shared_ptr<Ensemble<MyFloat>> result = make_shared<Ensemble<MyFloat>>(mc_precision * (max_depth + 1));
@@ -172,8 +140,8 @@ shared_ptr<Configuration> Configuration::get_atomic_program_ensemble(HardwareSpe
                     result_ensemble->add_prob( temp,this->ensemble->probs[i].second);
                 }
             }
-            else if (auto a = dynamic_cast<ProgrammingLanguageParser::AssignOneContext*>(c)) {
-                string cid = a->CID()->toString();
+            else if (auto assign_one_context = dynamic_cast<ProgrammingLanguageParser::AssignOneContext*>(c)) {
+                string cid = assign_one_context->CID()->toString();
                 int index = std::stoi(cid.substr(1));
                 Instruction W1 = Instruction(GateName::Write1, index);
                 for (int i = 0; i < this->ensemble->probs.size(); i++) {
@@ -181,9 +149,9 @@ shared_ptr<Configuration> Configuration::get_atomic_program_ensemble(HardwareSpe
                     result_ensemble->add_prob( temp,this->ensemble->probs[i].second);
                 }
             }
-            else if (auto a = dynamic_cast<ProgrammingLanguageParser::AssignCopyContext*>(c)) {
-                string write_cid = a->CID()[0]->toString();
-                string read_cid = a->CID()[1]->toString();
+            else if (auto assign_copy_context = dynamic_cast<ProgrammingLanguageParser::AssignCopyContext*>(c)) {
+                string write_cid = assign_copy_context->CID()[0]->toString();
+                string read_cid = assign_copy_context->CID()[1]->toString();
                 int w_index = std::stoi(write_cid.substr(1));
                 int r_index = std::stoi(read_cid.substr(1));
                 for (int i = 0; i < this->ensemble->probs.size(); i++) {
@@ -198,9 +166,9 @@ shared_ptr<Configuration> Configuration::get_atomic_program_ensemble(HardwareSpe
                     auto temp = this->ensemble->probs[i].first->apply_instruction(instruction);
                     result_ensemble->add_prob( temp,this->ensemble->probs[i].second);
                 }
-            } else if (auto a = dynamic_cast<ProgrammingLanguageParser::AssignMeasureContext*>(c)) {
-                string cid = a->CID()->toString();
-                string qid = a->QID()->toString();
+            } else if (auto measure_context = dynamic_cast<ProgrammingLanguageParser::AssignMeasureContext*>(c)) {
+                string cid = measure_context->CID()->toString();
+                string qid = measure_context->QID()->toString();
                 int c_index = std::stoi(cid.substr(1));
                 int q_index = embedding.at(std::stoi(qid.substr(1)));
                 Instruction meas_ins = Instruction(GateName::Meas, q_index, c_index);
@@ -208,8 +176,8 @@ shared_ptr<Configuration> Configuration::get_atomic_program_ensemble(HardwareSpe
                     POMDPAction action = POMDPAction("some action", {meas_ins}, mc_precision, {});
                     shared_ptr<POMDPVertex> current_vertex = make_shared<POMDPVertex>(this->ensemble->probs[i].first);
                     auto succs = action.get_successor_states(spec, current_vertex);
-                    for (auto t : succs) {
-                        result_ensemble->add_prob( t.first->hybrid_state,this->ensemble->probs[i].second * t.second);
+                    for (const auto& [fst, snd] : succs) {
+                        result_ensemble->add_prob( fst->hybrid_state,this->ensemble->probs[i].second * snd);
                     }
                 }
             } else {
@@ -241,8 +209,8 @@ shared_ptr<Configuration> Configuration::get_atomic_program_ensemble(HardwareSpe
                 POMDPAction action = POMDPAction("some action", spec.to_basis_gates_impl(instruction), mc_precision, {});
                 shared_ptr<POMDPVertex> current_vertex = make_shared<POMDPVertex>(this->ensemble->probs[i].first);
                 auto succs = action.get_successor_states(spec, current_vertex);
-                for (auto t : succs) {
-                    result_ensemble->add_prob( t.first->hybrid_state,this->ensemble->probs[i].second * t.second);
+                for (const auto& [fst, snd] : succs) {
+                    result_ensemble->add_prob( fst->hybrid_state,this->ensemble->probs[i].second * snd);
                 }
             }
         }
@@ -379,3 +347,135 @@ int MarkovChain::get_depth(const shared_ptr<Configuration> &config) {
 
         throw runtime_error("Programming language error");
     }
+
+bool Verifier::verify(const string &raw_precondition, const string &raw_program, const string &raw_postcondition) const {
+     // parse precondition
+    antlr4::ANTLRInputStream prec_input(raw_precondition);
+    PreconditionAssertionLexer prec_lexer(&prec_input);
+    antlr4::CommonTokenStream prec_tokens(&prec_lexer);
+    PreconditionAssertionParser prec_parser(&prec_tokens);
+    antlr4::tree::ParseTree *raw_prec = prec_parser.precon_assertion();
+
+    // std::cout << precondition->toStringTree(&prec_parser) << std::endl;
+
+    // program parsing
+    antlr4::ANTLRInputStream input(raw_program);
+    ProgrammingLanguageLexer lexer(&input);
+    antlr4::CommonTokenStream tokens(&lexer);
+    ProgrammingLanguageParser parser(&tokens);
+    antlr4::tree::ParseTree *tree = parser.program();
+    auto *program = dynamic_cast<ProgrammingLanguageParser::ProgramContext*>(tree);
+
+
+    // initial ensembles
+    PreconVisitor visitor(nqvars, ncvars, mc_precision);
+    auto polygons = std::any_cast<vector<Polygon<double>>>(visitor.visit(raw_prec));
+    auto first_polygon = polygons[0];
+    auto some_ensemble = first_polygon.corners[0];
+    // for (auto polygon : polygons) {
+    //     cout << "****** ensemble ******" << endl;
+    //     for (auto e : ensemble->probs) {
+    //         cout << *e.first << " " << e.second << endl;
+    //     }
+    //     cout << endl;
+    // }
+
+
+    MarkovChain mc(this->spec, this->embedding);
+    max_depth = MarkovChain::get_depth(make_shared<Configuration>(program, some_ensemble));
+    cout << "max depth: " << max_depth << endl;
+    // the depth is independent of the initial ensemble (FIX this!)
+    //
+    vector<shared_ptr<Ensemble<MyFloat>>> final_ensembles;
+    for (const auto& [corners] : polygons) {
+        for (const auto& initial_ensemble : corners) {
+            auto final_ensemble = mc.get_final_ensemble(make_shared<Configuration>(program, initial_ensemble));
+            if (is_new_ensemble(final_ensembles, final_ensemble)) {
+                final_ensembles.push_back(final_ensemble);
+            }
+        }
+    }
+
+    cout << "final ensembles:" << endl;
+    for (const auto& ensemble : final_ensembles) {
+        cout << "****** ensemble ******" << endl;
+        for (const auto& [fst, snd] : ensemble->probs) {
+            cout << *fst << " " << snd << endl;
+        }
+        cout << endl;
+    }
+
+    // Determine if there exists a convex combination of final ensembles
+
+    z3::context ctx;
+    z3::solver solver(ctx);
+
+    // create bounded variables
+    z3::expr body = ctx.bool_val(true);
+    z3::expr sum = ctx.real_val("0");
+    z3::sort R = ctx.real_sort();
+
+    z3::expr_vector bound_vars(ctx);
+    for (int i = 0; i < final_ensembles.size(); i++) {
+        Z3_mk_bound(ctx, i, R);  // raw AST for bound variable
+        bound_vars.push_back(ctx.real_const(("w" + std::to_string(i)).c_str()));
+    }
+
+
+    for (auto v : bound_vars) assert(&v.ctx() == &ctx);
+
+    for (int i = 0; i < final_ensembles.size(); i++) {
+        body = body && (bound_vars[i] >= 0);
+        sum = sum + bound_vars[i];
+    }
+
+
+    body = body && (sum == 1);
+
+    // postcondition parsing
+    antlr4::ANTLRInputStream post_input(raw_postcondition);
+    AssertionLexer post_lexer(&post_input);
+    antlr4::CommonTokenStream post_tokens(&post_lexer);
+    AssertionParser post_parser(&post_tokens);
+    antlr4::tree::ParseTree *raw_post = post_parser.assertion();
+
+
+
+    Z3AssertionVisitor post_visitor(ctx, solver);
+    post_visitor.ensemble_stack.push_back(get_symbolic_ensemble(final_ensembles, bound_vars, ctx));
+    auto post_expr = std::any_cast<z3::expr>(post_visitor.visit(raw_post));
+    body = z3::implies(body, post_expr);
+    body = body.simplify();
+
+    // Only wrap in forall if body is non-constant
+    if (!body.is_true() && !body.is_false() && !body.is_quantifier()) {
+        z3::expr forall_weights = z3::forall(bound_vars, body);
+        solver.add(forall_weights);
+    } else {
+        // If body is trivial, just add it directly
+        solver.add(body);
+    }
+
+    return solver.check() == z3::sat;
+}
+
+
+// Helper: check if expr 'var' appears in expr 'e'
+bool expr_contains_var(const z3::expr &e, const z3::expr &var) {
+    if (e.is_const() && e.hash() == var.hash()) return true;
+    for (unsigned i = 0; i < e.num_args(); ++i) {
+        if (expr_contains_var(e.arg(i), var)) return true;
+    }
+    return false;
+}
+
+// Filter bound_vars to keep only the ones that appear in 'body'
+z3::expr_vector filter_used_vars(const z3::expr_vector &bound_vars, const z3::expr &body) {
+    z3::expr_vector used_vars(body.ctx());
+    for (const auto & bound_var : bound_vars) {
+        if (expr_contains_var(body, bound_var)) {
+            used_vars.push_back(bound_var);
+        }
+    }
+    return used_vars;
+}

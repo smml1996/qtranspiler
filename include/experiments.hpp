@@ -29,6 +29,7 @@ class Experiment {
 protected:
         bool with_thermalization;
         int min_horizon;
+        int nqvars = -1, ncvars = -1;
 
         set<MethodType> method_types;
         set<QuantumHardware> hw_list;
@@ -36,6 +37,7 @@ protected:
         bool optimize;
 
     fs::path get_wd() const;
+    fs::path get_final_wd() const;
     bool setup_working_dir() const;
 
 
@@ -44,7 +46,7 @@ protected:
     vector<shared_ptr<POMDPVertex>> get_initial_states(const POMDP &pomdp) const;
 
     // textbook algorithms helper functions
-    void update_classical_state(shared_ptr<Algorithm> algorithm,const cpp_int &classical_state);
+        static void update_classical_state(const shared_ptr<Algorithm> &algorithm,const cpp_int &classical_state);
     shared_ptr<Algorithm> build_meas_sequence(const int &total_meas, const int &write_address,
         const shared_ptr<POMDPAction> &meas_action,
         const shared_ptr<ClassicalState> &current_cstate,
@@ -67,6 +69,7 @@ protected:
     static vector<int> get_qubits_used(const unordered_map<int, int> &embedding);
     virtual set<QuantumHardware> get_allowed_hardware() const;
     virtual void run();
+    virtual void verify();
     virtual bool guard(const shared_ptr<POMDPVertex>&, const unordered_map<int, int>&, const shared_ptr<POMDPAction>&) const;
     virtual void make_setup_file() const;
     virtual string get_postcondition(const MethodType &method);
@@ -77,7 +80,7 @@ protected:
     virtual double postcondition_double(const VertexDict &belief, const unordered_map<int, int> &embedding) = 0;
     virtual vector<shared_ptr<POMDPAction>> get_actions(HardwareSpecification &hardware_spec, const unordered_map<int, int> &embedding) const = 0;
     virtual vector<unordered_map<int, int>> get_hardware_scenarios(HardwareSpecification const & hardware_spec) const = 0;
-    map<string, shared_ptr<POMDPAction>> get_actions_dictionary(HardwareSpecification &hardware_spec, const int &);
+    map<string, shared_ptr<POMDPAction>> get_actions_dictionary(HardwareSpecification &hardware_spec, const int &) const;
     virtual string get_precondition(const MethodType &method) = 0;
     virtual string get_target_postcondition(const double &threshold) = 0;
 
@@ -98,7 +101,7 @@ set<int> get_meas_pivot_qubits(const HardwareSpecification &hardware_spec, const
 
 
 // utils for running experiments in server
-void generate_experiment_file(const string& experiment_name, const string& method, int min_horizon, int max_horizon);
+void generate_experiment_file(const string& experiment_name, const string& method, int min_horizon, int max_horizon); // synthesis
 void generate_all_experiments_file();
 std::string join(const std::vector<std::string>& parts, const std::string& delimiter);
 

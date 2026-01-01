@@ -150,6 +150,70 @@ string to_string(shared_ptr<Algorithm> algorithm, const string& tabs) {
     return result;
 }
 
+string v_to_string(shared_ptr<Algorithm> algorithm, const string& tabs) {
+    if (algorithm == nullptr) return "";
+
+    string result = "";
+    if (*algorithm->action == random_branch) {
+        if (algorithm->children.size() == 1) {
+            return v_to_string(algorithm->children.at(0));
+        }
+        if (algorithm->children.size() == 2) {
+            result += tabs + "{\n";
+            string current_tabs = tabs + "\t";
+
+            double condition_prob = algorithm->children_probs.at(1);
+
+            result += v_to_string(algorithm->children.at(0), tabs + "\t");
+            result += "\n} %" + to_string(condition_prob) +" %" + " {\n";
+            result += v_to_string(algorithm->children.at(1), tabs+ "\t");
+            result += tabs + "}\n";
+            return result;
+
+        }
+        assert(algorithm->children.size() > 2);
+        result += tabs + "{\n";
+        string current_tabs = tabs + "\t";
+
+        auto temp_algorithm = make_shared<Algorithm>(algorithm->action, algorithm->classical_state, algorithm->precision, algorithm->depth);
+        double condition_prob = 0.0;
+        vector<shared_ptr<Algorithm>> new_children;
+        for (size_t i = 1; i < algorithm->children.size(); ++i) {
+            condition_prob += algorithm->children_probs.at(i);
+            temp_algorithm->children.push_back(algorithm->children.at(i));
+            temp_algorithm->children_probs[i-1] = algorithm->children_probs.at(i);
+        }
+
+        result += v_to_string(algorithm->children.at(0), tabs + "\t");
+        result += "\n } % " + to_string(condition_prob) + " % {\n";
+        result += v_to_string(temp_algorithm, tabs+ "\t");
+        result += tabs + "}\n";
+    } else {
+        result = tabs + to_string(algorithm->action) + "\n";
+        int index_child = 0;
+        for(auto child : algorithm->children) {
+            {
+                if (algorithm->children.size() > 1) {
+                    if (index_child > 0) {
+                        result += tabs + " else { ";
+                    }
+                    result += tabs + "if (" + child->classical_state.str() + ") {\n" ;
+                    result += v_to_string(child, tabs+"\t");
+                    result += tabs + "}";
+                    if (index_child > 0) {
+                        result += tabs + "}";
+                    }
+                    result += tabs + "}\n";
+                    index_child +=1;
+                } else {
+                    result += v_to_string(child, tabs);
+                }
+            }
+        }
+    }
+    return result;
+}
+
 bool dump_to_file(const fs::path &path, const shared_ptr<Algorithm> &algorithm) {
     // Open file for writing
     std::ofstream out(path);  // creates the file or overwrites if it exists

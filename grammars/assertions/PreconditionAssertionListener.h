@@ -1,5 +1,5 @@
 
-// Generated from ../grammars/assertions/PreconditionAssertion.g4 by ANTLR 4.13.2
+// Generated from grammars/assertions/PreconditionAssertion.g4 by ANTLR 4.13.2
 
 #pragma once
 
@@ -19,6 +19,9 @@ public:
 
   virtual void enterDistribution_assertion(PreconditionAssertionParser::Distribution_assertionContext *ctx) = 0;
   virtual void exitDistribution_assertion(PreconditionAssertionParser::Distribution_assertionContext *ctx) = 0;
+
+  virtual void enterPolygon_assertion(PreconditionAssertionParser::Polygon_assertionContext *ctx) = 0;
+  virtual void exitPolygon_assertion(PreconditionAssertionParser::Polygon_assertionContext *ctx) = 0;
 
   virtual void enterSingle_distribution(PreconditionAssertionParser::Single_distributionContext *ctx) = 0;
   virtual void exitSingle_distribution(PreconditionAssertionParser::Single_distributionContext *ctx) = 0;

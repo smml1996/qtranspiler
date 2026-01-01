@@ -8,7 +8,7 @@
 
 // Generated from grammars/assertions/Assertion.g4 by ANTLR 4.13.2
 
-#include "verification_utils.hpp"
+#include "verification.hpp"
 #include <z3++.h>
 
 class Z3AssertionVisitor : public AssertionBaseVisitor {

@@ -4,7 +4,7 @@
 
 #include "PreconditionAssertionBaseVisitor.h"
 #include <cassert>
-#include "verification_utils.hpp"
+#include "verification.hpp"
 
 using namespace std;
 
@@ -41,7 +41,7 @@ class PreconVisitor : public PreconditionAssertionBaseVisitor {
         }
     }
 public:
-    std::vector<shared_ptr<Ensemble<double>>> ensembles;
+
     int num_qvars;
     int num_cvars;
     int precision;
@@ -62,13 +62,25 @@ public:
         PreconditionAssertionParser::Distribution_assertionContext *ctx
     ) override
     {
-        for (auto sd : ctx->single_distribution()) {
-            auto temp_e = std::any_cast<Ensemble<double>>(visitSingle_distribution(sd));
-            ensembles.push_back(
-                make_shared<Ensemble<double>>(temp_e)
+        std::vector<Polygon<double>> polygons; // each vector in this vector is a polygon
+        for (auto sd : ctx->polygon_assertion()) {
+            auto temp_e = std::any_cast<Polygon<double>>(visitPolygon_assertion(sd));
+            polygons.push_back(
+                temp_e
             );
         }
-        return nullptr;
+        return polygons;
+    }
+
+    antlrcpp::Any visitPolygon_assertion(PreconditionAssertionParser::Polygon_assertionContext *ctx) override {
+        Polygon<double> polygon;
+
+        for (auto sd : ctx->single_distribution()) {
+            auto temp = std::any_cast<Ensemble<double>>(visitSingle_distribution(sd));
+            polygon.corners.push_back(make_shared<Ensemble<double>>(temp));
+        }
+
+        return polygon;
     }
 
     // Build one distribution

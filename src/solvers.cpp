@@ -4,6 +4,10 @@
 
 #include <cassert>
 
+// #include "grammars/assertions/PreconditionAssertionLexer.h"
+// #include "grammars/assertions/PreconditionAssertionParser.h"
+// #include "grammars/assertions/PreconditionAssertionBaseVisitor.cpp"
+
 bool SingleDistributionSolver::is_belief_visited(const Belief &belief) const {
     for (const auto& it : this->beliefs_to_rewards) {
         if (it.first == belief) {
@@ -246,6 +250,29 @@ ConvexDistributionSolver::ConvexDistributionSolver(const POMDP &pomdp, const f_r
     this->initial_classical_state = -1;
     this->guard = g;
 }
+
+// shared_ptr<Algorithm> GeneralSolver::solve(const string &raw_precondition, const string &raw_postcondition) {
+//      // parse precondition
+//     antlr4::ANTLRInputStream prec_input(raw_precondition);
+//     PreconditionAssertionLexer prec_lexer(&prec_input);
+//     antlr4::CommonTokenStream prec_tokens(&prec_lexer);
+//     PreconditionAssertionParser prec_parser(&prec_tokens);
+//     antlr4::tree::ParseTree *raw_prec = prec_parser.precon_assertion();
+//
+//     // initial ensembles
+//     PreconVisitor visitor(this->nqvars, this->ncvars, mc_precision);
+//     visitor.visit(raw_prec);
+//     auto initial_ensembles = visitor.polygons;
+//
+//
+//     vector<shared_ptr<Ensemble<MyFloat>>> final_ensembles;
+//     for (auto initial_ensemble : initial_ensembles) {
+//         auto final_ensemble = mc.get_final_ensemble(make_shared<Configuration>(program, initial_ensemble));
+//         if (is_new_ensemble(final_ensembles, final_ensemble)) {
+//             final_ensembles.push_back(final_ensemble);
+//         }
+//     }
+// }
 
 MyFloat get_algorithm_acc(POMDP &pomdp, const shared_ptr<Algorithm>& algorithm, const Belief &current_belief, const f_reward_type &get_reward, const unordered_map<int, int> &embedding, int precision) {
     MyFloat curr_belief_val = get_reward(current_belief, embedding);

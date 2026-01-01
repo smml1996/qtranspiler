@@ -17,6 +17,8 @@ Experiment(name, precision, with_thermalization, min_horizon, max_horizon, false
             this->min_horizon = 2;
             this->max_horizon = 7;
             this->set_hidden_index = false;
+            this->nqvars = 1;
+            this->ncvars = 1;
         }
 
         vector<pair<shared_ptr<HybridState>, double>> get_initial_distribution(unordered_map<int, int> &embedding) const override {

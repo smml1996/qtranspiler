@@ -4,8 +4,10 @@ precon_assertion : distribution_assertion EOF ;
 
 
 distribution_assertion
-    : single_distribution ('+' single_distribution)*;
+    :  polygon_assertion ('or' polygon_assertion)*;
 
+polygon_assertion
+    : single_distribution ('+' single_distribution)*;
 
 single_distribution
     : canon_clause ('and' canon_clause)*;
