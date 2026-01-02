@@ -66,6 +66,8 @@ Experiment(name, precision, with_thermalization, min_horizon, max_horizon, false
             this->max_horizon = 3;
             this->set_hidden_index = false;
             this->method_types.erase(MethodType::ConvexDist); // there is only one initial state, is not worth it
+            this->nqvars = 3;
+            this->ncvars = 0;
         };
 
         virtual shared_ptr<QuantumState> get_target_state(const unordered_map<int, int> &embedding) const {

@@ -20,16 +20,6 @@
 using namespace std;
 namespace fs = std::filesystem;
 
-void split_str(string const &str, const char delim, vector<string> &out) {
-    stringstream s(str);
-
-    string s2;
-
-    while(getline(s, s2, delim)){
-        out.push_back(s2);
-    }
-}
-
 unordered_set<shared_ptr<Instruction>, InstructionHash, InstructionPtrEqual> get_unique_instructions(const vector<shared_ptr<POMDPAction>> &actions) {
     unordered_set<shared_ptr<Instruction>, InstructionHash, InstructionPtrEqual> result;
     for (auto action : actions) {

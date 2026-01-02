@@ -1,5 +1,5 @@
 
-// Generated from ../grammars/PL/ProgrammingLanguage.g4 by ANTLR 4.13.2
+// Generated from grammars/PL/ProgrammingLanguage.g4 by ANTLR 4.13.2
 
 #pragma once
 
@@ -15,7 +15,7 @@ public:
     T__0 = 1, T__1 = 2, T__2 = 3, T__3 = 4, MEASURE = 5, SKIPKW = 6, SEMICOLON = 7, 
     IF = 8, ELSE = 9, LPAREN = 10, RPAREN = 11, LBRACE = 12, RBRACE = 13, 
     LBRACKET = 14, RBRACKET = 15, PERCENT = 16, WS = 17, UNITARY = 18, REALNUM = 19, 
-    CID = 20, QID = 21
+    INTEGER = 20, CID = 21, QID = 22
   };
 
   enum {
@@ -93,8 +93,12 @@ public:
   public:
     ProbContext(ProgramContext *ctx);
 
+    std::vector<antlr4::tree::TerminalNode *> LBRACE();
+    antlr4::tree::TerminalNode* LBRACE(size_t i);
     std::vector<ProgramContext *> program();
     ProgramContext* program(size_t i);
+    std::vector<antlr4::tree::TerminalNode *> RBRACE();
+    antlr4::tree::TerminalNode* RBRACE(size_t i);
     std::vector<antlr4::tree::TerminalNode *> PERCENT();
     antlr4::tree::TerminalNode* PERCENT(size_t i);
     antlr4::tree::TerminalNode *REALNUM();
@@ -132,7 +136,7 @@ public:
 
     antlr4::tree::TerminalNode *IF();
     antlr4::tree::TerminalNode *LPAREN();
-    antlr4::tree::TerminalNode *CID();
+    antlr4::tree::TerminalNode *INTEGER();
     antlr4::tree::TerminalNode *RPAREN();
     std::vector<antlr4::tree::TerminalNode *> LBRACE();
     antlr4::tree::TerminalNode* LBRACE(size_t i);
@@ -248,6 +252,7 @@ public:
 
       return result;
     }
+   
   };
 
   QlistContext* qlist();

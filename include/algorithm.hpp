@@ -39,6 +39,7 @@ public:
 };
 
 string to_string(shared_ptr<Algorithm> algorithm, const string& tabs="");
+string v_to_string(shared_ptr<Algorithm> algorithm, const string& tabs ="");
 
 bool dump_to_file(const fs::path &, const shared_ptr<Algorithm> &);
 

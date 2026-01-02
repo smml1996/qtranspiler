@@ -1,5 +1,5 @@
 
-// Generated from ../grammars/assertions/PreconditionAssertion.g4 by ANTLR 4.13.2
+// Generated from grammars/assertions/PreconditionAssertion.g4 by ANTLR 4.13.2
 
 #pragma once
 
@@ -20,6 +20,10 @@ public:
   }
 
   virtual std::any visitDistribution_assertion(PreconditionAssertionParser::Distribution_assertionContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitPolygon_assertion(PreconditionAssertionParser::Polygon_assertionContext *ctx) override {
     return visitChildren(ctx);
   }
 
@@ -46,5 +50,7 @@ public:
   virtual std::any visitQList(PreconditionAssertionParser::QListContext *ctx) override {
     return visitChildren(ctx);
   }
+
+
 };
 

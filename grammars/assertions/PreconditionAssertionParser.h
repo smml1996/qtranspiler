@@ -1,5 +1,5 @@
 
-// Generated from ../grammars/assertions/PreconditionAssertion.g4 by ANTLR 4.13.2
+// Generated from grammars/assertions/PreconditionAssertion.g4 by ANTLR 4.13.2
 
 #pragma once
 
@@ -13,13 +13,14 @@ class  PreconditionAssertionParser : public antlr4::Parser {
 public:
   enum {
     T__0 = 1, T__1 = 2, T__2 = 3, T__3 = 4, T__4 = 5, T__5 = 6, T__6 = 7, 
-    T__7 = 8, BINARYSTRING = 9, REALNUM = 10, CID = 11, QID = 12, WS = 13
+    T__7 = 8, T__8 = 9, BINARYSTRING = 10, REALNUM = 11, CID = 12, QID = 13, 
+    WS = 14
   };
 
   enum {
-    RulePrecon_assertion = 0, RuleDistribution_assertion = 1, RuleSingle_distribution = 2, 
-    RuleCanon_clause = 3, RuleCanon_state = 4, RuleRow = 5, RuleBList = 6, 
-    RuleQList = 7
+    RulePrecon_assertion = 0, RuleDistribution_assertion = 1, RulePolygon_assertion = 2, 
+    RuleSingle_distribution = 3, RuleCanon_clause = 4, RuleCanon_state = 5, 
+    RuleRow = 6, RuleBList = 7, RuleQList = 8
   };
 
   explicit PreconditionAssertionParser(antlr4::TokenStream *input);
@@ -41,6 +42,7 @@ public:
 
   class Precon_assertionContext;
   class Distribution_assertionContext;
+  class Polygon_assertionContext;
   class Single_distributionContext;
   class Canon_clauseContext;
   class Canon_stateContext;
@@ -68,6 +70,22 @@ public:
   public:
     Distribution_assertionContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
+    std::vector<Polygon_assertionContext *> polygon_assertion();
+    Polygon_assertionContext* polygon_assertion(size_t i);
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Distribution_assertionContext* distribution_assertion();
+
+  class  Polygon_assertionContext : public antlr4::ParserRuleContext {
+  public:
+    Polygon_assertionContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
     std::vector<Single_distributionContext *> single_distribution();
     Single_distributionContext* single_distribution(size_t i);
 
@@ -78,7 +96,7 @@ public:
    
   };
 
-  Distribution_assertionContext* distribution_assertion();
+  Polygon_assertionContext* polygon_assertion();
 
   class  Single_distributionContext : public antlr4::ParserRuleContext {
   public:

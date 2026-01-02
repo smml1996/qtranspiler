@@ -598,3 +598,10 @@ pair<shared_ptr<Algorithm>, double> ConvexDistributionSolver::solve(const vector
     this->pomdp.actions.pop_back();
     return make_pair(mixed_algorithm, result.second);
 }
+
+// class GeneralSolver {
+//     MarkovChain mc;
+//     int nqvars, ncvars;
+//     GeneralSolver(const MarkovChain &mc_, const int &nqvars_, const int &ncvars_) : mc(mc_), nqvars(nqvars_), ncvars(ncvars_) {};
+//     shared_ptr<Algorithm> solve(const string &raw_precondition, const string &raw_postcondition);
+// };

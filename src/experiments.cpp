@@ -108,10 +108,14 @@ fs::path Experiment::get_wd() const {
     return  fs::path("..") / "results" / this->name;
 }
 
+fs::path Experiment::get_final_wd() const {
+    return fs::path("..") / "parsed_results" / this->name;
+}
+
 bool Experiment::setup_working_dir() const {
 
     fs::path dir_path = this->get_wd();
-    
+
     if (!fs::exists(dir_path)) {
         if (fs::create_directories(dir_path)) {
             std::cout << "main experiments directory created successfully.\n";
@@ -122,7 +126,7 @@ bool Experiment::setup_working_dir() const {
     }
 
     dir_path = fs::path("..") / "results" / this->name / "algorithms";
-    
+
     if (!fs::exists(dir_path)) {
         if (fs::create_directories(dir_path)) {
             std::cout << "Algorithms directory created successfully.\n";
@@ -158,7 +162,7 @@ set<QuantumHardware> Experiment::get_allowed_hardware() const {
 vector<HardwareSpecification> Experiment::get_hardware_specs() const {
     auto  quantum_hardwares = this->get_allowed_hardware();
     vector<HardwareSpecification> result;
-    
+
     result.reserve(quantum_hardwares.size());
 for (QuantumHardware qw : quantum_hardwares) {
         result.emplace_back(qw, this->with_thermalization, this->optimize);
@@ -208,7 +212,7 @@ vector<shared_ptr<POMDPVertex>> Experiment::get_initial_states(const POMDP &pomd
     return initial_states;
 }
 
-void Experiment::update_classical_state(shared_ptr<Algorithm> algorithm, const cpp_int &classical_state) {
+void Experiment::update_classical_state(const shared_ptr<Algorithm> &algorithm, const cpp_int &classical_state) {
     algorithm->classical_state = classical_state;
     for (auto child : algorithm->children) {
         update_classical_state(child, classical_state);
@@ -272,7 +276,7 @@ void Experiment::run() {
     }
 
     // write header in results file
-    results_file << join(vector<string>({"hardware", 
+    results_file << join(vector<string>({"hardware",
         "embedding_index",
         "horizon",
         "pomdp_build_time",
@@ -373,7 +377,7 @@ void Experiment::run() {
                         unique_algorithms.push_back(result.first);
                     }
 
-                    results_file << join(vector<string>({hardware_name, 
+                    results_file << join(vector<string>({hardware_name,
                                                     to_string(embedding_index),
                                                     to_string(horizon),
                                                     to_string(round_to(pomdp_build_time, Experiment::round_in_file)),
@@ -408,7 +412,111 @@ void Experiment::run() {
     cout << "Done" << endl;
 }
 
-map<string, shared_ptr<POMDPAction>> Experiment::get_actions_dictionary(HardwareSpecification &hardware_spec, const int &num_qubits) {
+void Experiment::verify() {
+
+
+    fs::path results_path = this->get_final_wd() / "verify.csv";
+
+    // Open file for writing (this overwrites the file if it exists)
+    std::ofstream results_file(results_path);
+
+    if (!results_file.is_open()) {
+        std::cerr << "Failed to open file: " << results_path << "\n";
+        return;
+    }
+
+    // hardware specifications
+    vector<HardwareSpecification> hardware_specs = this->get_hardware_specs();
+
+    // load algorithms and thesholds
+    //                                          embedding_index                              horizon
+    unordered_map<QuantumHardware, unordered_map<int, unordered_map<MethodType, unordered_map<int, string>>>> m_algorithms;
+    unordered_map<QuantumHardware, unordered_map<int, unordered_map<MethodType, unordered_map<int, double>>>> m_thresholds;
+
+    std::ifstream stats_file(this->get_wd() / "stats.csv");
+    if (!stats_file.is_open()) {
+        std::cerr << "Failed to open stats file: " << (this->get_wd() / "stats.csv") << "\n";
+        return;
+    }
+
+    string line;
+    getline(stats_file, line); // do not use header line
+    while (getline(stats_file, line)) {
+        vector<string> tokens;
+        split_str(line, ',', tokens);
+        auto quantum_hardware = to_quantum_hardware(tokens[0]);
+        auto embedding_index = stoi(tokens[1]);
+        auto horizon = stoi(tokens[2]);
+        auto threshold = stod(tokens[4]);
+
+        MethodType method;
+        if (tokens[5] == "bellman") {
+            method = MethodType::SingleDistBellman;
+        } else {
+            assert(tokens[5] == "convex");
+            method = MethodType::ConvexDist;
+        }
+
+        auto algorithm_index = stoi(tokens[7]);
+        std::ifstream curr_alg_file(get_final_wd() / "raw_algorithms" / ("R_" + to_string(algorithm_index) + ".txt"));
+        json current_algorithm;
+        curr_alg_file >> current_algorithm;
+        curr_alg_file.close();
+        Algorithm alg_object(current_algorithm);
+
+        m_thresholds[quantum_hardware][embedding_index][method][horizon] = threshold;
+        m_algorithms[quantum_hardware][embedding_index][method][horizon] = v_to_string(make_shared<Algorithm>(current_algorithm));
+    }
+
+    stats_file.close();
+
+
+    // write header in results file
+    results_file << join(vector<string>({"hardware",
+        "embedding_index",
+        "horizon",
+        "method",
+        "time",
+        "result"
+        })
+        , ",") << "\n";
+
+    for (HardwareSpecification hardware_spec : hardware_specs) {
+        cout << "Verifying: " << hardware_spec.get_hardware_name() << endl;
+        auto embeddings = this->get_hardware_scenarios(hardware_spec);
+
+        int embedding_index = 0;
+        for (auto embedding : embeddings) {
+            for (int horizon = this->min_horizon; horizon <= this->max_horizon; horizon++) {
+                for (auto method : this->method_types) {
+                    auto threshold = m_thresholds.at(hardware_spec.get_hardware()).at(embedding_index).at(method).at(horizon);
+                    auto precondition = this->get_precondition(method);
+                    auto algorithm = m_algorithms.at(hardware_spec.get_hardware()).at(embedding_index).at(method).at(horizon);
+                    auto postcondition = this->get_target_postcondition(threshold);
+
+                    auto verifier = Verifier(hardware_spec, embedding, this->nqvars, this->ncvars, this->precision);
+                    auto start_method = chrono::high_resolution_clock::now();
+                    auto is_sat = verifier.verify(precondition, postcondition, algorithm);
+                    auto end_method = chrono::high_resolution_clock::now();
+                    auto method_time = chrono::duration<double>(end_method - start_method).count();
+                    results_file << join(vector<string> ({
+                    hardware_spec.get_hardware_name(),
+                        to_string(embedding_index),
+                        to_string(horizon),
+                        gate_to_string(method),
+                        to_string(round_to(method_time, Experiment::round_in_file)),
+                        to_string(is_sat)
+                    }), ",");
+                }
+            }
+            embedding_index += 1;
+        }
+        results_file.flush();
+    }
+    results_file.close();
+}
+
+map<string, shared_ptr<POMDPAction>> Experiment::get_actions_dictionary(HardwareSpecification &hardware_spec, const int &num_qubits) const {
     map<string, shared_ptr<POMDPAction>> actions_dictionary;
     unordered_map<int, int> embedding;
     for (int i = 0; i< num_qubits; i++) embedding[i] = i;

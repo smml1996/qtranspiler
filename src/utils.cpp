@@ -119,4 +119,12 @@ set<int> get_intersection(set<int> set1, set<int> set2) {
     return result;
 }
 
- 
+void split_str(string const &str, const char delim, vector<string> &out) {
+    stringstream s(str);
+
+    string s2;
+
+    while(getline(s, s2, delim)){
+        out.push_back(s2);
+    }
+}
