@@ -1,5 +1,5 @@
 
-// Generated from grammars/PL/ProgrammingLanguage.g4 by ANTLR 4.13.2
+// Generated from ../grammars/PL/ProgrammingLanguage.g4 by ANTLR 4.13.2
 
 #pragma once
 
@@ -33,9 +33,7 @@ public:
 
     virtual std::any visitSeq(ProgrammingLanguageParser::SeqContext *context) = 0;
 
-    virtual std::any visitAssignZero(ProgrammingLanguageParser::AssignZeroContext *context) = 0;
-
-    virtual std::any visitAssignOne(ProgrammingLanguageParser::AssignOneContext *context) = 0;
+    virtual std::any visitConstAssign(ProgrammingLanguageParser::ConstAssignContext *context) = 0;
 
     virtual std::any visitAssignCopy(ProgrammingLanguageParser::AssignCopyContext *context) = 0;
 

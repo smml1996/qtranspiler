@@ -187,6 +187,7 @@ class BellStateReach : public IPMABitflip {
         }
         return {};
     }
+
     vector<unordered_map<int, int>> get_hardware_scenarios(HardwareSpecification const & hardware_spec) const override {
         if (hardware_spec.get_hardware() == QuantumHardware::PerfectHardware ) {
             unordered_map<int, int> m;
@@ -264,18 +265,18 @@ class BellStateReach : public IPMABitflip {
         string statePlus = "[0,0.70710678,0,0,0, 0.70710678,0,0]";
         string stateMinus = "[0,0.70710678,0,0,0,-0.70710678,0,0]";
         if (method == MethodType::SingleDistBellman) {
-            return string("P([q0,q1,q2] = "+ state000 +" and [x2] = 0 ) = 0.2") + // |000>
-            "P([q0,q1,q2] = "+ state100 + " and [x2] = 0) = 0.2" + // |100>
-            "P([q0,q1,q2] = " + statePlus + " and [x2] = 0) = 0.3" + // |+01>
-            "P([q0,q1,q2] = " + stateMinus + " and [x2] = 0) = 0.3"  // |-01>
+            return string("P([q0,q1,q2] = "+ state000 +" and [x2] = b0 ) = 0.2 and ") + // |000>
+            "P([q0,q1,q2] = "+ state100 + " and [x2] = b0) = 0.2 and " + // |100>
+            "P([q0,q1,q2] = " + statePlus + " and [x2] = b0) = 0.3 and " + // |+01>
+            "P([q0,q1,q2] = " + stateMinus + " and [x2] = b0) = 0.3"  // |-01>
             ;
         }
 
         assert (method == MethodType::ConvexDist);
-        return string("P([q0,q1,q2] = "+ state000 +" and [x2] = 0 ) = 1 + ") + // |00> + |11>
-            "P([q0,q1,q2] = "+ state100 + " and [x2] = 0) = 1 + " + // |00> + |11>
-            "P([q0,q1,q2] = " + statePlus + " and [x2] = 0) = 1 + " + // |01> + |10>
-            "P([q0,q1,q2] = " + stateMinus + " and [x2] = 0) = 1"  // |01> - |10>
+        return string("P([q0,q1,q2] = "+ state000 +" and [x2] = b0 ) = 1 + ") + // |00> + |11>
+            "P([q0,q1,q2] = "+ state100 + " and [x2] = b0) = 1 + " + // |00> + |11>
+            "P([q0,q1,q2] = " + statePlus + " and [x2] = b0) = 1 + " + // |01> + |10>
+            "P([q0,q1,q2] = " + stateMinus + " and [x2] = b0) = 1"  // |01> - |10>
             ;
     }
 };

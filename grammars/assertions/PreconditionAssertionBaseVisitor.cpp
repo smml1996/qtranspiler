@@ -32,7 +32,7 @@ class PreconVisitor : public PreconditionAssertionBaseVisitor {
     }
 
     void check_bitstring(const string &bitstring) {
-        assert(bitstring.size() == this->num_cvars);
+        assert(bitstring.size()-1 == this->num_cvars);
     }
 
     void check_cvars(const vector<int> &cvars) {
@@ -150,7 +150,8 @@ public:
 
         // Classics
         st.cvars = parseBList(ctx->bList());
-        st.bitstring = ctx->BINARYSTRING()->getText();
+        assert(ctx->BINARYSTRING()->getText().at(0) == 'b');
+        st.bitstring = ctx->BINARYSTRING()->getText().substr(1);
         return st;
     }
 

@@ -1,12 +1,7 @@
 
 // Generated from grammars/assertions/Assertion.g4 by ANTLR 4.13.2
 
-
 #include "AssertionBaseVisitor.h"
-
-
-
-// Generated from grammars/assertions/Assertion.g4 by ANTLR 4.13.2
 
 #include "ensemble.hpp"
 #include <z3++.h>

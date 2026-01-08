@@ -31,21 +31,20 @@ shared_ptr<Configuration> Configuration::get_atomic_program_ensemble(HardwareSpe
         }
         auto *c = dynamic_cast<ProgrammingLanguageParser::Classical_statementContext*>(program->children[0]);
         if (program->children.size() == 1  && c) {
-            if (auto a = dynamic_cast<ProgrammingLanguageParser::AssignZeroContext*>(c)) {
+            if (auto a = dynamic_cast<ProgrammingLanguageParser::ConstAssignContext*>(c)) {
+                int val = stoi(a->REALNUM()->toString());
                 string cid = a->CID()->toString();
                 int index = std::stoi(cid.substr(1));
-                Instruction W0 = Instruction(GateName::Write0, index);
-                for (int i = 0; i < this->ensemble->probs.size(); i++) {
-                    auto temp = this->ensemble->probs[i].first->apply_instruction(W0);
-                    result_ensemble->add_prob( temp,this->ensemble->probs[i].second);
+                Instruction w_instruction;
+                if (val == 0) {
+                    w_instruction = Instruction(GateName::Write0, index);
+                } else {
+                    assert (val == 1);
+                    w_instruction = Instruction(GateName::Write1, index);
                 }
-            }
-            else if (auto assign_one_context = dynamic_cast<ProgrammingLanguageParser::AssignOneContext*>(c)) {
-                string cid = assign_one_context->CID()->toString();
-                int index = std::stoi(cid.substr(1));
-                Instruction W1 = Instruction(GateName::Write1, index);
+
                 for (int i = 0; i < this->ensemble->probs.size(); i++) {
-                    auto temp = this->ensemble->probs[i].first->apply_instruction(W1);
+                    auto temp = this->ensemble->probs[i].first->apply_instruction(w_instruction);
                     result_ensemble->add_prob( temp,this->ensemble->probs[i].second);
                 }
             }
@@ -127,7 +126,7 @@ shared_ptr<Ensemble<MyFloat>> MarkovChain::get_final_ensemble (const shared_ptr<
 
         if (auto s = dynamic_cast<ProgrammingLanguageParser::IfContext*>(program)) {
             assert (s->program().size() == 2);
-            int classical_val = stoi(s->INTEGER()->toString());
+            int classical_val = stoi(s->REALNUM()->toString());
 
 
             ProgrammingLanguageParser::ProgramContext* program_left = dynamic_cast<ProgrammingLanguageParser::ProgramContext*>(s->program()[0]);

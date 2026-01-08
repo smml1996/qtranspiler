@@ -17,44 +17,16 @@
 #include "grammars/assertions/PreconditionAssertionBaseVisitor.cpp"
 #include "grammars/assertions/AssertionBaseVisitor.cpp"
 
-bool Verifier::verify(const string &raw_precondition, const string &raw_program, const string &raw_postcondition) const {
-     // parse precondition
-    antlr4::ANTLRInputStream prec_input(raw_precondition);
-    PreconditionAssertionLexer prec_lexer(&prec_input);
-    antlr4::CommonTokenStream prec_tokens(&prec_lexer);
-    PreconditionAssertionParser prec_parser(&prec_tokens);
-    antlr4::tree::ParseTree *raw_prec = prec_parser.precon_assertion();
-
-    // std::cout << precondition->toStringTree(&prec_parser) << std::endl;
-
-    // program parsing
-    antlr4::ANTLRInputStream input(raw_program);
-    ProgrammingLanguageLexer lexer(&input);
-    antlr4::CommonTokenStream tokens(&lexer);
-    ProgrammingLanguageParser parser(&tokens);
-    antlr4::tree::ParseTree *tree = parser.program();
-    auto *program = dynamic_cast<ProgrammingLanguageParser::ProgramContext*>(tree);
-
-    MarkovChain mc(this->spec, this->embedding, this->precision);
-
-    // initial ensembles
-    PreconVisitor visitor(nqvars, ncvars, mc.mc_precision);
-    auto polygons = std::any_cast<vector<Polygon<double>>>(visitor.visit(raw_prec));
-    auto first_polygon = polygons[0];
-    auto some_ensemble = first_polygon.corners[0];
-
-    mc.max_depth = MarkovChain::get_depth(make_shared<Configuration>(program, some_ensemble));
-    // the depth is independent of the initial ensemble (FIX this!)
-    //
+bool Verifier::check_polygon(const Polygon<double> &polygon, MarkovChain &mc,
+    ProgrammingLanguageParser::ProgramContext *program, const string &raw_postcondition) {
     vector<shared_ptr<Ensemble<MyFloat>>> final_ensembles;
-    for (const auto& [corners] : polygons) {
-        for (const auto& initial_ensemble : corners) {
-            auto final_ensemble = mc.get_final_ensemble(make_shared<Configuration>(program, initial_ensemble));
-            if (is_new_ensemble(final_ensembles, final_ensemble)) {
-                final_ensembles.push_back(final_ensemble);
-            }
+    for (const auto& initial_ensemble : polygon.corners) {
+        auto final_ensemble = mc.get_final_ensemble(make_shared<Configuration>(program, initial_ensemble));
+        if (is_new_ensemble(final_ensembles, final_ensemble)) {
+            final_ensembles.push_back(final_ensemble);
         }
     }
+
 
     // Determine if there exists a convex combination of final ensembles
 
@@ -90,8 +62,6 @@ bool Verifier::verify(const string &raw_precondition, const string &raw_program,
     AssertionParser post_parser(&post_tokens);
     antlr4::tree::ParseTree *raw_post = post_parser.assertion();
 
-
-
     Z3AssertionVisitor post_visitor(ctx, solver);
     post_visitor.ensemble_stack.push_back(get_symbolic_ensemble(final_ensembles, bound_vars, ctx, mc.mc_precision));
     auto post_expr = std::any_cast<z3::expr>(post_visitor.visit(raw_post));
@@ -108,4 +78,42 @@ bool Verifier::verify(const string &raw_precondition, const string &raw_program,
     }
 
     return solver.check() == z3::sat;
+}
+
+bool Verifier::verify(const string &raw_precondition, const string &raw_program, const string &raw_postcondition) {
+     // parse precondition
+    antlr4::ANTLRInputStream prec_input(raw_precondition);
+    PreconditionAssertionLexer prec_lexer(&prec_input);
+    antlr4::CommonTokenStream prec_tokens(&prec_lexer);
+    PreconditionAssertionParser prec_parser(&prec_tokens);
+    antlr4::tree::ParseTree *raw_prec = prec_parser.precon_assertion();
+
+    // std::cout << precondition->toStringTree(&prec_parser) << std::endl;
+
+    // program parsing
+    antlr4::ANTLRInputStream input(raw_program);
+    ProgrammingLanguageLexer lexer(&input);
+    antlr4::CommonTokenStream tokens(&lexer);
+    ProgrammingLanguageParser parser(&tokens);
+    antlr4::tree::ParseTree *tree = parser.program();
+    auto *program = dynamic_cast<ProgrammingLanguageParser::ProgramContext*>(tree);
+
+    MarkovChain mc(this->spec, this->embedding, this->precision);
+
+    // initial ensembles
+    PreconVisitor visitor(nqvars, ncvars, mc.mc_precision);
+    auto polygons = std::any_cast<vector<Polygon<double>>>(visitor.visit(raw_prec));
+    auto first_polygon = polygons[0];
+    auto some_ensemble = first_polygon.corners[0];
+
+    mc.max_depth = MarkovChain::get_depth(make_shared<Configuration>(program, some_ensemble));
+    // the depth is independent of the initial ensemble (FIX this!)
+
+    // check that every polygon satisfies the postcondition
+    for (auto polygon : polygons) {
+        if (!this->check_polygon(polygon, mc, program, raw_postcondition)) {
+            return false;
+        }
+    }
+    return true;
 }

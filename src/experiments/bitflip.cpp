@@ -62,6 +62,18 @@ class IPMABitflip : public Experiment {
 
         }
 
+        set<QuantumHardware> get_allowed_hardware() const override {
+            set<QuantumHardware> result;
+            for (int i = 0; i < QuantumHardware::HardwareCount; i++) {
+                QuantumHardware quantum_hardware = static_cast<QuantumHardware>(i);
+                HardwareSpecification hs(quantum_hardware, false, false);
+                if (hs.basis_gates_type != BasisGates::TYPE5 && hs.basis_gates_type != BasisGates::TYPE2) {
+                    result.insert(quantum_hardware);
+                }
+            }
+            return result;
+        }
+
         void setup() {
             this->BELL0 = vector<vector<complex<double>>>(
                 4, vector<complex<double>>(4)
@@ -279,10 +291,10 @@ class IPMABitflip : public Experiment {
         string bell3_str = "[0,0,0.70710678,0,-0.70710678,0,0]";
 
         assert (method == MethodType::SingleDistBellman);
-        return string("P([q0,q1,q2] = "+ bell0_str +" and [x2] = 0 ) = 0.25") + // |00> + |11>
-            "P([q0,q1,q2] = "+ bell1_str + " and [x2] = 0) = 0.25" + // |00> + |11>
-            "P([q0,q1,q2] = " + bell2_str + " and [x2] = 0) = 0.25" + // |01> + |10>
-            "P([q0,q1,q2] = " + bell3_str + " and [x2] = 0) = 0.25"  // |01> - |10>
+        return string("P([q0,q1,q2] = "+ bell0_str +" and [x2] = b0 ) = 0.25") + // |00> + |11>
+            "and P([q0,q1,q2] = "+ bell1_str + " and [x2] = b0) = 0.25 and " + // |00> + |11>
+            "P([q0,q1,q2] = " + bell2_str + " and [x2] = b0) = 0.25 and " + // |01> + |10>
+            "P([q0,q1,q2] = " + bell3_str + " and [x2] = b0) = 0.25"  // |01> - |10>
             ;
     }
 

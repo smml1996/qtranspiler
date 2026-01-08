@@ -65,6 +65,7 @@ void normalize(vertex_dict &v);
 string to_string(const POMDPAction &action);
 
 string to_string(const shared_ptr<POMDPAction> &action);
+string v_to_string(const shared_ptr<POMDPAction> &action);
 
 inline json to_json(const POMDPAction &a) {
     vector<json> v;

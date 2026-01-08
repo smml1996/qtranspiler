@@ -9,15 +9,14 @@ program
     | classical_statement                   # Classical
     | UNITARY LPAREN LBRACKET qlist RBRACKET RPAREN  # Unitary
     | program SEMICOLON program             # Seq
-    | IF LPAREN INTEGER RPAREN LBRACE program RBRACE
+    | IF LPAREN REALNUM RPAREN LBRACE program RBRACE
       ELSE LBRACE program RBRACE            # If
     | LBRACE program RBRACE PERCENT REALNUM PERCENT LBRACE program RBRACE # Prob
     ;
 
 
 classical_statement
-    : CID ':=' '0'                                # AssignZero
-    | CID ':=' '1'                                # AssignOne
+    : CID ':=' REALNUM                                # ConstAssign
     | CID ':=' CID                                # AssignCopy
     | CID ':=' MEASURE LPAREN QID RPAREN          # AssignMeasure
     ;
@@ -40,6 +39,5 @@ qlist : QID (',' QID)* ;
 WS : [ \t\r\n]+ -> skip ;
 UNITARY: 'X' | 'CX' | 'H';
 REALNUM : [0-9]+ ('.' [0-9]+)?;
-INTEGER: [0-9]+;
 CID  : 'x' [0-9]+ ;
 QID : 'q' [0-9]+ ;

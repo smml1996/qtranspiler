@@ -9,7 +9,10 @@ class ResetProblem : public Experiment {
     public:
     ResetProblem(const string &name, int precision, bool with_thermalization, int min_horizon, int max_horizon,
 const set<MethodType> &method_types, const set<QuantumHardware> &hw_list, bool optimize) :
-Experiment(name, precision, with_thermalization, min_horizon, max_horizon, false, method_types, hw_list, optimize){};
+Experiment(name, precision, with_thermalization, min_horizon, max_horizon, false, method_types, hw_list, optimize) {
+        this->nqvars = 1;
+        this->ncvars = 1;
+    };
         ResetProblem () : Experiment() {
             this-> name = "reset";
             this->precision = 8;
@@ -133,10 +136,10 @@ Experiment(name, precision, with_thermalization, min_horizon, max_horizon, false
         string state0 = "[1,0]";
         string state1 = "[0,1]";
         if (method == MethodType::SingleDistBellman) {
-            return "P([q0] = "+ state0+" and [x0] = 0) = 0.5 and " + "P([q0] = "+ state1+" and [x0] = 0) = 0.5";
+            return "P([q0] = "+ state0+" and [x0] = b0) = 0.5 and " + "P([q0] = "+ state1+" and [x0] = b0) = 0.5";
         }
         assert(method == MethodType::ConvexDist);
-        return "P([q0] = "+ state0+" and [x0] = 0) = 1 + " + "P([q0] = "+ state1+" and [x0] = 0) = 1";
+        return "P([q0] = "+ state0+" and [x0] = b0) = 1 + " + "P([q0] = "+ state1+" and [x0] = b0) = 1";
     }
 
     string get_target_postcondition(const double &threshold) override {

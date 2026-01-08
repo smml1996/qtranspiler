@@ -256,8 +256,8 @@ public:
         string state00 = "[1,0,0,0]";
         string statePP = "[0.70710678,0.70710678,0.70710678,0.70710678]"; // |++>
 
-        return string("P([q0,q1] = "+ state00 +" and [x0] = 0 ) = 1 + ") +
-            "P([q0,q1] = "+ statePP + " and [x0] = 0) = 1 + ";
+        return string("P([q0,q1] = "+ state00 +" and [x0] = b0 ) = 1 + ") +
+            "P([q0,q1] = "+ statePP + " and [x0] = b0) = 1";
     }
 
     string get_target_postcondition(const double &threshold) override {

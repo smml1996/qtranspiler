@@ -112,6 +112,10 @@ fs::path Experiment::get_final_wd() const {
     return fs::path("..") / "parsed_results" / this->name;
 }
 
+fs::path get_final_wd(const string &name) {
+    return fs::path("..") / "parsed_results" / name;
+}
+
 bool Experiment::setup_working_dir() const {
 
     fs::path dir_path = this->get_wd();
@@ -413,8 +417,6 @@ void Experiment::run() {
 }
 
 void Experiment::verify() {
-
-
     fs::path results_path = this->get_final_wd() / "verify.csv";
 
     // Open file for writing (this overwrites the file if it exists)
@@ -433,9 +435,9 @@ void Experiment::verify() {
     unordered_map<QuantumHardware, unordered_map<int, unordered_map<MethodType, unordered_map<int, string>>>> m_algorithms;
     unordered_map<QuantumHardware, unordered_map<int, unordered_map<MethodType, unordered_map<int, double>>>> m_thresholds;
 
-    std::ifstream stats_file(this->get_wd() / "stats.csv");
+    std::ifstream stats_file(this->get_final_wd() / "stats.csv");
     if (!stats_file.is_open()) {
-        std::cerr << "Failed to open stats file: " << (this->get_wd() / "stats.csv") << "\n";
+        std::cerr << "Failed to open stats file: " << (this->get_final_wd() / "stats.csv") << "\n";
         return;
     }
 
@@ -496,7 +498,7 @@ void Experiment::verify() {
 
                     auto verifier = Verifier(hardware_spec, embedding, this->nqvars, this->ncvars, this->precision);
                     auto start_method = chrono::high_resolution_clock::now();
-                    auto is_sat = verifier.verify(precondition, postcondition, algorithm);
+                    auto is_sat = verifier.verify(precondition,  algorithm, postcondition);
                     auto end_method = chrono::high_resolution_clock::now();
                     auto method_time = chrono::duration<double>(end_method - start_method).count();
                     results_file << join(vector<string> ({
@@ -885,3 +887,53 @@ MyFloat precise_verify_algorithm(POMDP &pomdp, Experiment &experiment, const Alg
         return current_val;
     }
 }
+
+StatsLine::StatsLine(const string &exp_name, const string &line, const unordered_map<QuantumHardware,
+    vector<unordered_map<int, int>>> &embeddings) : algorithm(make_shared<POMDPAction>(HALT_ACTION), 0,0,-1) {
+    vector<string> tokens;
+    split_str(line, ',', tokens);
+    this->quantum_hardware = to_quantum_hardware(tokens[0]);
+    this->embedding_index = stoi(tokens[1]);
+    assert(embedding_index < embeddings.size());
+    this->embedding = embeddings.at(this->quantum_hardware)[embedding_index];
+    this->horizon = stoi(tokens[2]);
+    this->threshold = stod(tokens[4]);
+
+    if (tokens[5] == "bellman") {
+        this->method = MethodType::SingleDistBellman;
+    } else {
+        assert(tokens[5] == "convex");
+        this->method = MethodType::ConvexDist;
+    }
+
+    this->algorithm_index = stoi(tokens[7]);
+    std::ifstream curr_alg_file(
+        get_final_wd(exp_name) / "raw_algorithms" / ("R_" + to_string(algorithm_index) + ".txt"));
+    json current_algorithm;
+    curr_alg_file >> current_algorithm;
+    curr_alg_file.close();
+    this->algorithm = Algorithm(current_algorithm);
+}
+
+StatsFile::StatsFile(const string &experiment_name_, const Experiment &experiment) {
+    // experiment object is only used to get hardware used in the experiment and to get hardware scenarios
+    this->experiment_name = experiment_name_;
+    std::ifstream stats_file(get_final_wd(experiment_name_) / "stats.csv");
+    if (!stats_file.is_open()) {
+        std::cerr << "Failed to open stats file: " << (get_final_wd(experiment_name_) / "stats.csv") << "\n";
+        return;
+    }
+    unordered_map<QuantumHardware, vector<unordered_map<int, int>>> hardware_to_embeddings;
+
+    for (auto quantum_hardware : experiment.get_allowed_hardware()) {
+        auto hardware_spec = HardwareSpecification(quantum_hardware, false, true);
+        hardware_to_embeddings[quantum_hardware] = experiment.get_hardware_scenarios(hardware_spec);
+    }
+
+    string line;
+    getline(stats_file, line); // do not use header line
+    while (getline(stats_file, line)) {
+        this->stats.emplace_back(this->experiment_name, line, hardware_to_embeddings);
+    }
+}
+

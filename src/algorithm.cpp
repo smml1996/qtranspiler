@@ -149,6 +149,20 @@ string to_string(shared_ptr<Algorithm> algorithm, const string& tabs) {
     }
     return result;
 }
+string to_string_if_else(const vector<shared_ptr<Algorithm>> &children, const int &current_index, const string &tabs) {
+    auto classical_val = children.at(current_index)->classical_state;
+    string result = tabs + "if (" + to_string(classical_val) + ") {\n";
+    result += v_to_string(children.at(current_index), tabs+"\t");
+    result += "\n";
+    result += tabs + "} else {\n";
+    if (current_index == children.size() -1) {
+        result += tabs + "skip\n";
+    } else {
+        result += to_string_if_else(children, current_index+1, tabs + "\t");
+    }
+    result += tabs + "}\n";
+    return result;
+}
 
 string v_to_string(shared_ptr<Algorithm> algorithm, const string& tabs) {
     if (algorithm == nullptr) return "";
@@ -189,25 +203,12 @@ string v_to_string(shared_ptr<Algorithm> algorithm, const string& tabs) {
         result += v_to_string(temp_algorithm, tabs+ "\t");
         result += tabs + "}\n";
     } else {
-        result = tabs + to_string(algorithm->action) + "\n";
-        int index_child = 0;
-        for(auto child : algorithm->children) {
-            {
-                if (algorithm->children.size() > 1) {
-                    if (index_child > 0) {
-                        result += tabs + " else { ";
-                    }
-                    result += tabs + "if (" + child->classical_state.str() + ") {\n" ;
-                    result += v_to_string(child, tabs+"\t");
-                    result += tabs + "}";
-                    if (index_child > 0) {
-                        result += tabs + "}";
-                    }
-                    result += tabs + "}\n";
-                    index_child +=1;
-                } else {
-                    result += v_to_string(child, tabs);
-                }
+        result = tabs + v_to_string(algorithm->action) + "\n";
+        if (algorithm->children.size() > 0) {
+            if (algorithm->children.size() == 1) {
+                result += v_to_string(algorithm->children.at(0), tabs);
+            } else {
+                result += to_string_if_else(algorithm->children, 0, tabs);
             }
         }
     }

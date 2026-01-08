@@ -5,6 +5,9 @@
 #ifndef PROBABILISTC_HOARE_TRIPLES_VERIFIER_H
 #define PROBABILISTC_HOARE_TRIPLES_VERIFIER_H
 #include "hardware_specification.hpp"
+#include "verifier.hpp"
+#include "markov_chain.hpp"
+#include "ensemble.hpp"
 
 class Verifier {
 public:
@@ -17,7 +20,10 @@ public:
              const int &nqvars_, const int &ncvars_, const int &precision_) :
     spec(std::move(spec_)),embedding(embedding_),  nqvars(nqvars_),
     ncvars(ncvars_), precision(precision_) {};
-    [[nodiscard]] bool verify(const string &raw_precondition, const string &raw_program, const string &raw_postcondition) const;
+    bool check_polygon(const Polygon<double> &polygon, MarkovChain &mc,
+        ProgrammingLanguageParser::ProgramContext* program,
+        const string &raw_postcondition);
+    bool verify(const string &raw_precondition, const string &raw_program, const string &raw_postcondition);
 };
 
 

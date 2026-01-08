@@ -115,14 +115,14 @@ target_link_libraries(parse_results PRIVATE
 # testing
 
 # Download and build GoogleTest automatically
-#FetchContent_Declare(
-#        googletest
-#        URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
-#)
+FetchContent_Declare(
+        googletest
+        URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
+)
 ## For Windows/MSVC only: avoid overriding parent project's compiler settings
-#set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-#FetchContent_MakeAvailable(googletest)
-#include(GoogleTest)
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(googletest)
+include(GoogleTest)
 #
 ## test floats
 #add_executable(test_floats tests/test_floats.cpp src/floats.cpp)
@@ -243,5 +243,41 @@ target_link_libraries(parse_results PRIVATE
 #target_link_libraries(test_experiments GTest::gtest_main ortools::ortools nlohmann_json::nlohmann_json)
 #gtest_discover_tests(test_experiments)
 
-# all tests in one file
+## test verification
+add_executable(test_verification tests/test_verification.cpp
+        src/algorithm.cpp
+        src/Belief.cpp
+        src/channels.cpp
+        src/experiments.cpp
+        src/floats.cpp
+        src/hardware_specification.cpp
+        src/instruction.cpp
+        src/quantum_gates.cpp
+        src/solvers.cpp
+        src/states.cpp
+        src/utils.cpp
+        src/pomdp.cpp
+        src/experiments/bitflip.cpp
+        src/experiments/ghz.cpp
+        src/experiments/reset.cpp
+        src/rationals.cpp
+        src/experiments/discrimination.cpp
+        src/experiments/bellstate_reach.cpp
+        grammars/PL/ProgrammingLanguageLexer.cpp
+        grammars/PL/ProgrammingLanguageParser.cpp
+        grammars/PL/ProgrammingLanguageBaseVisitor.cpp
+        grammars/assertions/PreconditionAssertionLexer.cpp
+        grammars/assertions/PreconditionAssertionParser.cpp
+        grammars/assertions/PreconditionAssertionBaseVisitor.cpp
+        grammars/assertions/AssertionParser.cpp
+        grammars/assertions/AssertionLexer.cpp
+        grammars/assertions/AssertionBaseVisitor.h
+        grammars/assertions/AssertionBaseVisitor.cpp
+        src/ensemble.cpp
+        src/markov_chain.cpp
+        src/verifier.cpp)
+target_include_directories(test_verification PRIVATE /opt/homebrew/Cellar/antlr4-cpp-runtime/4.13.2/include/antlr4-runtime)
+target_link_directories(test_verification PRIVATE /opt/homebrew/lib)
+target_link_libraries(test_verification antlr4-runtime GTest::gtest_main ortools::ortools nlohmann_json::nlohmann_json z3)
+gtest_discover_tests(test_verification)
 
