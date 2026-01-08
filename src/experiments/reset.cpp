@@ -143,7 +143,7 @@ Experiment(name, precision, with_thermalization, min_horizon, max_horizon, false
     }
 
     string get_target_postcondition(const double &threshold) override {
-        return "P([q0] = [1,0]) >= " + to_string(threshold);
+        return "P( q0 = [1,0]) >= " + to_string(threshold);
     }
 };
 #endif

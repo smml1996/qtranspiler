@@ -218,7 +218,8 @@ public:
             result += "0";
           }
         }
-      return result == ctx->BINARYSTRING()->getText();
+      assert(ctx->BINARYSTRING()->getText().at(0) == 'b');
+      return result == ctx->BINARYSTRING()->getText().substr(1);
 
 
     }

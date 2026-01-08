@@ -301,7 +301,7 @@ class IPMABitflip : public Experiment {
     string get_target_postcondition(const double &threshold) override {
         string bell0_str = "[0.70710678,0,0,0.70710678]";
         string bell1_str = "[0.70710678,0,0,-0.70710678]";
-        return "P([q0,q1] = "+ bell0_str + " or [q0,q1] = " + bell1_str  + ") >= " + to_string(threshold);
+        return "P( q0,q1 = "+ bell0_str + " or q0,q1 = " + bell1_str  + ") >= " + to_string(threshold);
     }
 };
 

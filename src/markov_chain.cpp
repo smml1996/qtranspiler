@@ -95,7 +95,7 @@ shared_ptr<Configuration> Configuration::get_atomic_program_ensemble(HardwareSpe
             if (unitary == "X") {
                 assert(qlist.size() == 1);
                 instruction = Instruction(GateName::X, qlist[0]);
-            } else if (unitary == "CX") {
+            } else if (unitary == "CX" || unitary == "CNOT") {
                 assert(qlist.size() == 2);
                 instruction = Instruction(GateName::Cnot, vector<int>({qlist[0]}), qlist[1]);
             } else if (unitary == "H") {

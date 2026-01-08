@@ -225,7 +225,7 @@ Experiment(name, precision, with_thermalization, min_horizon, max_horizon, false
 
         string get_target_postcondition(const double &threshold) override {
             string  ghzstate = "[0.70710678,0,0,0,0,0,0,0.70710678]";
-            return "P([q0,q1,q2]="+ ghzstate +") >= " + to_string(threshold);
+            return "P( q0,q1,q2 ="+ ghzstate +") >= " + to_string(threshold);
         }
 };
 

@@ -72,36 +72,40 @@ TEST(AllExperiments, ProgramParser) {
     }
 }
 
-// TEST(AllExperiments, ProgramDepth) {
-//     auto experiments = get_experiments();
-//     for (auto experiment : experiments) {
-//         auto f = StatsFile(experiment->name, *experiment);
-//         unordered_set<int> processed_algs;
-//         for (auto row : f.stats) {
-//             if (processed_algs.find(row.algorithm_index) == processed_algs.end()) {
-//                 processed_algs.insert(row.algorithm_index);
-//
-//                 // process algorithm
-//                 auto raw_program = v_to_string(make_shared<Algorithm>(row.algorithm));
-//                 antlr4::ANTLRInputStream input(raw_program);
-//                 ProgrammingLanguageLexer lexer(&input);
-//                 antlr4::CommonTokenStream tokens(&lexer);
-//                 ProgrammingLanguageParser parser(&tokens);
-//                 antlr4::tree::ParseTree *tree = parser.program();
-//                 auto *program = dynamic_cast<ProgrammingLanguageParser::ProgramContext*>(tree);
-//
-//                 // some ensemble (it doesn't matter for computing the depth)
-//                 Ensemble<double> some_ensemble;
-//
-//                 // Markov Chain
-//                 HardwareSpecification spec(row.quantum_hardware, false, true);
-//                 MarkovChain mc(spec, row.embedding, 8);
-//                 int depth = MarkovChain::get_depth(make_shared<Configuration>(program, make_shared<Ensemble<double>>(some_ensemble)));
-//                 EXPECT_LE(depth, row.horizon);
-//             }
-//         }
-//     }
-// }
+TEST(AllExperiments, ProgramDepth) {
+    auto experiments = get_experiments();
+    for (auto experiment : experiments) {
+        auto f = StatsFile(experiment->name, *experiment);
+        unordered_set<int> processed_algs;
+        for (auto row : f.stats) {
+            if (processed_algs.find(row.algorithm_index) == processed_algs.end()) {
+                cout << "experiment " << experiment->name << " " << to_string(row.quantum_hardware) << " " << row.horizon << " " << row.embedding_index << endl;
+                processed_algs.insert(row.algorithm_index);
+
+                // process algorithm
+                auto raw_program = v_to_string(make_shared<Algorithm>(row.algorithm));
+                cout << to_string(make_shared<Algorithm>(row.algorithm)) << endl;
+                antlr4::ANTLRInputStream input(raw_program);
+                ProgrammingLanguageLexer lexer(&input);
+                antlr4::CommonTokenStream tokens(&lexer);
+                ProgrammingLanguageParser parser(&tokens);
+                antlr4::tree::ParseTree *tree = parser.program();
+                auto *program = dynamic_cast<ProgrammingLanguageParser::ProgramContext*>(tree);
+
+                // some ensemble (it doesn't matter for computing the depth)
+                Ensemble<double> some_ensemble;
+
+                // Markov Chain
+                HardwareSpecification spec(row.quantum_hardware, false, true);
+                MarkovChain mc(spec, row.embedding, 8);
+                int depth = MarkovChain::get_depth(make_shared<Configuration>(program, make_shared<Ensemble<double>>(some_ensemble)));
+                EXPECT_LE(depth, row.horizon+1);
+
+                cout << "********" << endl;
+            }
+        }
+    }
+}
 
 TEST(AllExperiments, Precondition) {
     auto experiments = get_experiments();
@@ -128,15 +132,15 @@ TEST(AllExperiments, Postcondition) {
     auto experiments = get_experiments();
     for (auto experiment : experiments) {
         auto postcondition = experiment->get_target_postcondition(0.75);
-        cout << experiment->name << endl;
-        cout << postcondition << endl;
+        // cout << experiment->name << endl;
+        // cout << postcondition << endl;
         antlr4::ANTLRInputStream postcon_input(postcondition);
         AssertionLexer post_lexer(&postcon_input);
         antlr4::CommonTokenStream post_tokens(&post_lexer);
         AssertionParser post_parser(&post_tokens);
         antlr4::tree::ParseTree* tree = post_parser.assertion();
-        std::cout << tree->toStringTree(&post_parser) << std::endl;
+        // std::cout << tree->toStringTree(&post_parser) << std::endl;
         EXPECT_EQ(post_parser.getNumberOfSyntaxErrors(), 0);
-        cout << "*******" << endl;
+        // cout << "*******" << endl;
     }
 }

@@ -261,6 +261,6 @@ public:
     }
 
     string get_target_postcondition(const double &threshold) override {
-        return "P(([q1] = [1,0] and [x0] = 0) or ([q1] = [0.70710678,0.70710678] and [x0] = 1)) >= " + to_string(threshold);
+        return "P( q1 = [1,0] and x0 = b0 or q1 = [0.70710678,0.70710678] and x0 = b1 ) >= " + to_string(threshold);
     }
 };

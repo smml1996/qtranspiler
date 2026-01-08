@@ -100,7 +100,7 @@ MUL : '*' | '·';
 RELOP: '>=' | '<=' | '=' | '<' | '>' ;
 SIGN : [+-];
 REALNUM : [0-9]+ ('.' [0-9]+)?;
-BINARYSTRING: ( '0' | '1' )+;
+BINARYSTRING: 'b'( '0' | '1' )+;
 CID  : 'x' [0-9]+ ;
 QID : 'q' [0-9]+ ;
 WS : [ \t\r\n]+ -> skip ;
