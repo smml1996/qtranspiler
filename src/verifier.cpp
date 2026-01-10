@@ -26,10 +26,14 @@ bool Verifier::check_polygon(const Polygon<double> &polygon, MarkovChain &mc,
             final_ensembles.push_back(final_ensemble);
         }
     }
-
+    // cout << "final ensembles" << endl;
+     // for (auto e : final_ensembles) {
+    //     for (auto s : e->probs) {
+    //         cout << *s.first << " " << s.second << endl;
+    //     }
+    // }
 
     // Determine if there exists a convex combination of final ensembles
-
     z3::context ctx;
     z3::solver solver(ctx);
 
@@ -62,7 +66,7 @@ bool Verifier::check_polygon(const Polygon<double> &polygon, MarkovChain &mc,
     AssertionParser post_parser(&post_tokens);
     antlr4::tree::ParseTree *raw_post = post_parser.assertion();
 
-    Z3AssertionVisitor post_visitor(ctx, solver);
+    Z3AssertionVisitor post_visitor(ctx, solver, this->embedding);
     post_visitor.ensemble_stack.push_back(get_symbolic_ensemble(final_ensembles, bound_vars, ctx, mc.mc_precision));
     auto post_expr = std::any_cast<z3::expr>(post_visitor.visit(raw_post));
     body = z3::implies(body, post_expr);
@@ -101,8 +105,17 @@ bool Verifier::verify(const string &raw_precondition, const string &raw_program,
     MarkovChain mc(this->spec, this->embedding, this->precision);
 
     // initial ensembles
-    PreconVisitor visitor(nqvars, ncvars, mc.mc_precision);
+    PreconVisitor visitor(nqvars, ncvars, mc.mc_precision, this->embedding);
     auto polygons = std::any_cast<vector<Polygon<double>>>(visitor.visit(raw_prec));
+     // for (auto polygon : polygons) {
+     //   for (auto corner : polygon.corners) {
+     //   cout << "------" << endl;
+     //       for (auto s : corner->probs) {
+     //           cout << *s.first << " " << s.second << endl;
+     //       }
+     //   }
+     // }
+     // cout << " **********" << endl;
     auto first_polygon = polygons[0];
     auto some_ensemble = first_polygon.corners[0];
 

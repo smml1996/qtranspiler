@@ -68,7 +68,10 @@ shared_ptr<Configuration> Configuration::get_atomic_program_ensemble(HardwareSpe
             } else if (auto measure_context = dynamic_cast<ProgrammingLanguageParser::AssignMeasureContext*>(c)) {
                 string cid = measure_context->CID()->toString();
                 string qid = measure_context->QID()->toString();
+                assert(cid.size() > 1);
+                assert(qid.size() > 1);
                 int c_index = std::stoi(cid.substr(1));
+                assert(embedding.find(std::stoi(qid.substr(1))) != embedding.end());
                 int q_index = embedding.at(std::stoi(qid.substr(1)));
                 Instruction meas_ins = Instruction(GateName::Meas, q_index, c_index);
                 for (int i = 0; i < this->ensemble->probs.size(); i++) {
@@ -89,6 +92,7 @@ shared_ptr<Configuration> Configuration::get_atomic_program_ensemble(HardwareSpe
             Instruction instruction;
             auto qlist = U->UnitaryContext::qlist()->getQList();
             for (int & i : qlist) {
+                assert(embedding.find(i) != embedding.end());
                 i = embedding.at(i);
             }
 
@@ -158,7 +162,6 @@ shared_ptr<Ensemble<MyFloat>> MarkovChain::get_final_ensemble (const shared_ptr<
                     final_ensemble->add_prob(p.first,  p.second);
                 }
             }
-
 
             if (!ensemble_false->probs.empty()) {
                 auto config_right = make_shared<Configuration>(program_right, ensemble_false);

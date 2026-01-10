@@ -260,10 +260,10 @@ class BellStateReach : public IPMABitflip {
 
     string get_precondition(const MethodType &method) override {
         assert (this->precision == 8);
-        string state000 = "[0.70710678,0,0,0,0,0,0,0]";
-        string state100 = "[0,0.70710678,0,0,0,0,0,0]";
-        string statePlus = "[0,0.70710678,0,0,0, 0.70710678,0,0]";
-        string stateMinus = "[0,0.70710678,0,0,0,-0.70710678,0,0]";
+        string state000 = "[1,0,0,0,0,0,0,0]";
+        string state100 = "[0,1,0,0,0,0,0,0]";
+        string statePlus = "[0,0,0,0, 0.70710678, 0.70710678, 0,0]";
+        string stateMinus = "[0,0,0,0, 0.70710678, -0.70710678, 0,0]";
         if (method == MethodType::SingleDistBellman) {
             return string("P([q0,q1,q2] = "+ state000 +" and [x2] = b0 ) = 0.2 and ") + // |000>
             "P([q0,q1,q2] = "+ state100 + " and [x2] = b0) = 0.2 and " + // |100>

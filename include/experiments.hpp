@@ -85,8 +85,6 @@ protected:
     virtual string get_precondition(const MethodType &method) = 0;
     virtual string get_target_postcondition(const double &threshold) = 0;
 
-
-
     // textbook algorithm
     virtual shared_ptr<Algorithm> get_textbook_algorithm(MethodType &method, const int &horizon);
 };

@@ -430,47 +430,13 @@ void Experiment::verify() {
     // hardware specifications
     vector<HardwareSpecification> hardware_specs = this->get_hardware_specs();
 
-    // load algorithms and thesholds
-    //                                          embedding_index                              horizon
-    unordered_map<QuantumHardware, unordered_map<int, unordered_map<MethodType, unordered_map<int, string>>>> m_algorithms;
-    unordered_map<QuantumHardware, unordered_map<int, unordered_map<MethodType, unordered_map<int, double>>>> m_thresholds;
+    unordered_map<QuantumHardware, HardwareSpecification> m_hardware_specs;
 
-    std::ifstream stats_file(this->get_final_wd() / "stats.csv");
-    if (!stats_file.is_open()) {
-        std::cerr << "Failed to open stats file: " << (this->get_final_wd() / "stats.csv") << "\n";
-        return;
+    for (auto hs : hardware_specs) {
+        m_hardware_specs.insert({hs.get_hardware(), hs});
     }
 
-    string line;
-    getline(stats_file, line); // do not use header line
-    while (getline(stats_file, line)) {
-        vector<string> tokens;
-        split_str(line, ',', tokens);
-        auto quantum_hardware = to_quantum_hardware(tokens[0]);
-        auto embedding_index = stoi(tokens[1]);
-        auto horizon = stoi(tokens[2]);
-        auto threshold = stod(tokens[4]);
-
-        MethodType method;
-        if (tokens[5] == "bellman") {
-            method = MethodType::SingleDistBellman;
-        } else {
-            assert(tokens[5] == "convex");
-            method = MethodType::ConvexDist;
-        }
-
-        auto algorithm_index = stoi(tokens[7]);
-        std::ifstream curr_alg_file(get_final_wd() / "raw_algorithms" / ("R_" + to_string(algorithm_index) + ".txt"));
-        json current_algorithm;
-        curr_alg_file >> current_algorithm;
-        curr_alg_file.close();
-        Algorithm alg_object(current_algorithm);
-
-        m_thresholds[quantum_hardware][embedding_index][method][horizon] = threshold;
-        m_algorithms[quantum_hardware][embedding_index][method][horizon] = v_to_string(make_shared<Algorithm>(current_algorithm));
-    }
-
-    stats_file.close();
+    StatsFile stats_file(this->name, *this);
 
 
     // write header in results file
@@ -483,37 +449,26 @@ void Experiment::verify() {
         })
         , ",") << "\n";
 
-    for (HardwareSpecification hardware_spec : hardware_specs) {
-        cout << "Verifying: " << hardware_spec.get_hardware_name() << endl;
-        auto embeddings = this->get_hardware_scenarios(hardware_spec);
-
-        int embedding_index = 0;
-        for (auto embedding : embeddings) {
-            for (int horizon = this->min_horizon; horizon <= this->max_horizon; horizon++) {
-                for (auto method : this->method_types) {
-                    auto threshold = m_thresholds.at(hardware_spec.get_hardware()).at(embedding_index).at(method).at(horizon);
-                    auto precondition = this->get_precondition(method);
-                    auto algorithm = m_algorithms.at(hardware_spec.get_hardware()).at(embedding_index).at(method).at(horizon);
-                    auto postcondition = this->get_target_postcondition(threshold);
-
-                    auto verifier = Verifier(hardware_spec, embedding, this->nqvars, this->ncvars, this->precision);
-                    auto start_method = chrono::high_resolution_clock::now();
-                    auto is_sat = verifier.verify(precondition,  algorithm, postcondition);
-                    auto end_method = chrono::high_resolution_clock::now();
-                    auto method_time = chrono::duration<double>(end_method - start_method).count();
-                    results_file << join(vector<string> ({
-                    hardware_spec.get_hardware_name(),
-                        to_string(embedding_index),
-                        to_string(horizon),
-                        gate_to_string(method),
-                        to_string(round_to(method_time, Experiment::round_in_file)),
-                        to_string(is_sat)
-                    }), ",");
-                }
-            }
-            embedding_index += 1;
-        }
-        results_file.flush();
+    for (auto line : stats_file.stats) {
+        cout << to_string(line.quantum_hardware) << " horizon=" << line.horizon << " embedding=" << line.embedding_index << " algorithm=" << line.algorithm_index<< "\n";
+            auto threshold = line.threshold - 0.001;
+            auto precondition = this->get_precondition(line.method);
+            auto algorithm = v_to_string(make_shared<Algorithm>(line.algorithm));
+            auto postcondition = this->get_target_postcondition(threshold);
+            assert (m_hardware_specs.find(line.quantum_hardware) != m_hardware_specs.end());
+            auto verifier = Verifier(m_hardware_specs.at(line.quantum_hardware), line.embedding, this->nqvars, this->ncvars, this->precision);
+            auto start_method = chrono::high_resolution_clock::now();
+            auto is_sat = verifier.verify(precondition,  algorithm, postcondition);
+            auto end_method = chrono::high_resolution_clock::now();
+            auto method_time = chrono::duration<double>(end_method - start_method).count();
+            results_file << join(vector<string> ({
+            to_string(line.quantum_hardware),
+                to_string(line.embedding_index),
+                to_string(line.horizon),
+                gate_to_string(line.method),
+                to_string(round_to(method_time, Experiment::round_in_file)),
+                to_string(is_sat)
+            }), ",") << endl;
     }
     results_file.close();
 }
@@ -894,8 +849,18 @@ StatsLine::StatsLine(const string &exp_name, const string &line, const unordered
     split_str(line, ',', tokens);
     this->quantum_hardware = to_quantum_hardware(tokens[0]);
     this->embedding_index = stoi(tokens[1]);
-    assert(embedding_index < embeddings.size());
+    assert(embedding_index < embeddings.at(this->quantum_hardware).size());
     this->embedding = embeddings.at(this->quantum_hardware)[embedding_index];
+    // add qubit for hidden index in state discrimination problem
+    if (exp_name == "basic_zero_plus_discr") {
+        assert (this->embedding.find(0) != this->embedding.end());
+        if (this->embedding.at(0) == 0) {
+            this->embedding[1] = 1;
+        } else {
+            this->embedding[1] = 0;
+        }
+    }
+
     this->horizon = stoi(tokens[2]);
     this->threshold = stod(tokens[4]);
 
@@ -921,6 +886,7 @@ StatsFile::StatsFile(const string &experiment_name_, const Experiment &experimen
     std::ifstream stats_file(get_final_wd(experiment_name_) / "stats.csv");
     if (!stats_file.is_open()) {
         std::cerr << "Failed to open stats file: " << (get_final_wd(experiment_name_) / "stats.csv") << "\n";
+        assert(false);
         return;
     }
     unordered_map<QuantumHardware, vector<unordered_map<int, int>>> hardware_to_embeddings;

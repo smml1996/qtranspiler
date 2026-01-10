@@ -9,14 +9,14 @@
                 "name": "MEASData",
                 "seq": [
                     {
-                        "c_target": 3,
+                        "c_target": 2,
                         "controls": [],
                         "gate_name": 18,
                         "instruction_type": 0,
                         "matrix": [],
                         "params": [],
                         "params_": [],
-                        "target": 3
+                        "target": 2
                     }
                 ]
             },
@@ -157,19 +157,19 @@
                                     },
                                     "children": [],
                                     "children_probs": [],
-                                    "classical_state": "8",
+                                    "classical_state": "4",
                                     "depth": 4,
                                     "precision": 32
                                 }
                             ],
                             "children_probs": [],
-                            "classical_state": "8",
+                            "classical_state": "4",
                             "depth": 3,
                             "precision": 32
                         }
                     ],
                     "children_probs": [],
-                    "classical_state": "8",
+                    "classical_state": "4",
                     "depth": 2,
                     "precision": 32
                 }

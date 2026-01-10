@@ -12,8 +12,9 @@ public:
   z3::solver &solver;
   std::vector<Ensemble<z3::expr>> ensemble_stack;
   shared_ptr<HybridState> current_hs;
+  unordered_map<int, int> embedding;
 
-  Z3AssertionVisitor(z3::context &_context, z3::solver &_solver) : context(_context), solver(_solver), current_hs(nullptr) {};
+  Z3AssertionVisitor(z3::context &_context, z3::solver &_solver, const unordered_map<int, int> &embedding_) : context(_context), solver(_solver), current_hs(nullptr), embedding(embedding_) {};
 
   antlrcpp::Any visitAssertion( AssertionParser::AssertionContext *ctx) override
   {
@@ -218,6 +219,7 @@ public:
             result += "0";
           }
         }
+      assert(ctx->BINARYSTRING()->getText().size() > 0);
       assert(ctx->BINARYSTRING()->getText().at(0) == 'b');
       return result == ctx->BINARYSTRING()->getText().substr(1);
 
@@ -227,7 +229,7 @@ public:
   antlrcpp::Any visitQterm(AssertionParser::QtermContext *ctx) override {
         auto result = std::any_cast<vector<vector<complex<double>>>>(visit(ctx->qTerm2()));
         auto pt = get_density_matrix(ctx->qList());
-        return pt == result; // FIX ME: this might cause trouble
+        return are_matrices_equal(pt, result, 5); // FIX ME: this might cause trouble
   }
 
   static vector<int> get_cvars_list(AssertionParser::BListContext *ctx) {
@@ -251,7 +253,13 @@ public:
   }
 
   vector<vector<complex<double>>> get_density_matrix(AssertionParser::QListContext *ctx) const {
-    auto vars = get_qvars_list(ctx);
+    auto vars_ = get_qvars_list(ctx);
+
+    set<int> vars;
+    for (auto v : vars_) {
+      assert(this->embedding.find(v) != this->embedding.end());
+      vars.insert(this->embedding.at(v));
+    }
 
     vector<int> remove_indices;
 
@@ -260,8 +268,22 @@ public:
         remove_indices.push_back(q);
       }
     }
-    return current_hs->quantum_state->multi_partial_trace(remove_indices);
-
+    auto result = current_hs->quantum_state->multi_partial_trace(remove_indices);
+    // cout << "-------" << endl;
+    // cout << "remove indices: ";
+    // for (auto i : remove_indices) {
+    //   cout << i << " ";
+    // }
+    // cout << endl;
+    // cout << *current_hs << endl;
+    // for (auto row : result) {
+    //   for (auto val : row) {
+    //     cout << val << " ";
+    //   }
+    //   cout << endl;
+    // }
+    // cout << "-------" << endl << endl;
+    return result;
   }
 
   antlrcpp::Any visitRow(AssertionParser::RowContext *ctx) override {
@@ -377,5 +399,4 @@ public:
 
     return magnitude;
   }
-
 };

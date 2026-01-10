@@ -1,8 +1,8 @@
 {
 	x0 := measure(q0); 
-	if c = 9:
+	if c = 1:
 		HALT
-	if c = 8:
+	if c = 0:
 		HALT
 
 } ⊕_0.325464 {

@@ -59,11 +59,13 @@ public:
 
         vector<Instruction> H_seq = hardware_spec.to_basis_gates_impl(Instruction(GateName::H,
             embedding.at(0)));
-        H_seq.emplace_back(GateName::Write1, 2);
+        // H_seq.emplace_back(GateName::Write1, 2);
         auto H0 = make_shared<POMDPAction>("H0", H_seq, this->precision, vector<Instruction>({Instruction(GateName::H, 0)}));
 
         auto P0 = make_shared<POMDPAction>("P0",
-            vector<Instruction>({Instruction(GateName::Meas, embedding.at(0), 0), Instruction(GateName::Write1, 3)}),
+            vector<Instruction>({Instruction(GateName::Meas, embedding.at(0), 0),
+                // Instruction(GateName::Write1, 3)
+                }),
             this->precision,
             vector<Instruction>({Instruction(GateName::Meas, 0, 0)}));
 
@@ -254,13 +256,13 @@ public:
     string get_precondition(const MethodType &method) override {
         assert (method == MethodType::ConvexDist);
         string state00 = "[1,0,0,0]";
-        string statePP = "[0.70710678,0.70710678,0.70710678,0.70710678]"; // |++>
+        string statePP = "[0.5,0.5,0.5,0.5]"; // |++>
 
         return string("P([q0,q1] = "+ state00 +" and [x0] = b0 ) = 1 + ") +
             "P([q0,q1] = "+ statePP + " and [x0] = b0) = 1";
     }
 
     string get_target_postcondition(const double &threshold) override {
-        return "P( q1 = [1,0] and x0 = b0 or q1 = [0.70710678,0.70710678] and x0 = b1 ) >= " + to_string(threshold);
+        return "P( q1 = [1,0] and x0 = b0 or q1 = [0.70710, 0.70710] and x0 = b1 ) >= " + to_string(threshold);
     }
 };
