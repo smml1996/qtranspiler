@@ -6,6 +6,7 @@
 #include <filesystem>
 
 #include "algorithm.hpp"
+#include "verifier.hpp"
 
 using namespace std;
 namespace fs = std::filesystem;
@@ -29,7 +30,6 @@ class Experiment {
 protected:
         bool with_thermalization;
         int min_horizon;
-        int nqvars = -1, ncvars = -1;
 
         set<MethodType> method_types;
         set<QuantumHardware> hw_list;
@@ -37,7 +37,6 @@ protected:
         bool optimize;
 
     fs::path get_wd() const;
-    fs::path get_final_wd() const;
     bool setup_working_dir() const;
 
 
@@ -56,11 +55,13 @@ protected:
         int zeros_count=0);
 
     public:
+    int nqvars = -1, ncvars = -1;
     int precision;
     string name;
     bool set_hidden_index;
     int max_horizon;
     static int round_in_file;
+    fs::path get_final_wd() const;
     Experiment(const string &name, int precision, bool with_thermalization, int min_horizon, int max_horizon,
         bool set_hidden_index, const set<MethodType> &method_types, const set<QuantumHardware> &hw_list, bool optimize);
     virtual ~Experiment() = default;
@@ -84,8 +85,6 @@ protected:
     virtual string get_precondition(const MethodType &method) = 0;
     virtual string get_target_postcondition(const double &threshold) = 0;
 
-
-
     // textbook algorithm
     virtual shared_ptr<Algorithm> get_textbook_algorithm(MethodType &method, const int &horizon);
 };
@@ -104,8 +103,29 @@ set<int> get_meas_pivot_qubits(const HardwareSpecification &hardware_spec, const
 void generate_experiment_file(const string& experiment_name, const string& method, int min_horizon, int max_horizon); // synthesis
 void generate_all_experiments_file();
 std::string join(const std::vector<std::string>& parts, const std::string& delimiter);
+fs::path get_final_wd(const string &name);
 
 double verify_algorithm(POMDP &pomdp, Experiment &experiment, const Algorithm &algorithm, HardwareSpecification &hardware_spec,
     unordered_map<int, int> &embedding, bool is_convex, int max_horizon);
 MyFloat precise_verify_algorithm(POMDP &pomdp, Experiment &experiment, const Algorithm &algorithm, unordered_map<int, int> &embedding, bool is_convex, int max_horizon);
+
+class StatsLine {
+public:
+    QuantumHardware quantum_hardware;
+    unordered_map<int, int> embedding;
+    int embedding_index;
+    int horizon;
+    MethodType method;
+    int algorithm_index;
+    Algorithm algorithm;
+    double threshold;
+    StatsLine(const string &exp_name, const string &line, const unordered_map<QuantumHardware, vector<unordered_map<int, int>>> &embeddings);
+};
+
+class StatsFile {
+public:
+    string experiment_name;
+    vector<StatsLine> stats;
+    StatsFile(const string &experiment_name_, const Experiment &experiment);
+};
 #endif

@@ -295,16 +295,37 @@ string to_string(const POMDPAction &action) {
     assert(action.name.size() > 0);
     string result = "";
     if (action.name == HALT_ACTION.name) {
-        return "skip;";
+        return "HALT";
     }
 
     for (auto instruction : action.pseudo_instruction_sequence) {
-        result += to_string(instruction) + ";";
+        result += to_string(instruction);
+    }
+    return result;
+}
+
+string v_to_string(const POMDPAction &action) {
+    assert(action.name.size() > 0);
+    string result = "";
+    if (action.name == HALT_ACTION.name) {
+        return "HALT";
+    }
+
+    for (auto instruction : action.pseudo_instruction_sequence) {
+        result += to_string(instruction);
     }
     return result;
 }
 
 string to_string(const shared_ptr<POMDPAction> &action) {
+    return to_string(*action);
+}
+
+string v_to_string(const shared_ptr<POMDPAction> &action) {
+    assert(action != nullptr);
+    if (action->name == HALT_ACTION.name) {
+        return "skip";
+    }
     return to_string(*action);
 }
 

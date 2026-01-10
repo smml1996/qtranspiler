@@ -1,5 +1,5 @@
 
-// Generated from ../grammars/PL/ProgrammingLanguage.g4 by ANTLR 4.13.2
+// Generated from grammars/PL/ProgrammingLanguage.g4 by ANTLR 4.13.2
 
 #pragma once
 
@@ -43,11 +43,7 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual std::any visitAssignZero(ProgrammingLanguageParser::AssignZeroContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual std::any visitAssignOne(ProgrammingLanguageParser::AssignOneContext *ctx) override {
+  virtual std::any visitConstAssign(ProgrammingLanguageParser::ConstAssignContext *ctx) override {
     return visitChildren(ctx);
   }
 

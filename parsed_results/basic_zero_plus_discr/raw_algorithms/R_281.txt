@@ -85,7 +85,7 @@
                     },
                     "children": [],
                     "children_probs": [],
-                    "classical_state": "9",
+                    "classical_state": "1",
                     "depth": 2,
                     "precision": 32
                 },
@@ -96,7 +96,7 @@
                     },
                     "children": [],
                     "children_probs": [],
-                    "classical_state": "8",
+                    "classical_state": "0",
                     "depth": 2,
                     "precision": 32
                 }

@@ -1,5 +1,5 @@
 
-// Generated from ../grammars/PL/ProgrammingLanguage.g4 by ANTLR 4.13.2
+// Generated from grammars/PL/ProgrammingLanguage.g4 by ANTLR 4.13.2
 
 #pragma once
 
@@ -37,11 +37,8 @@ public:
   virtual void enterSeq(ProgrammingLanguageParser::SeqContext * /*ctx*/) override { }
   virtual void exitSeq(ProgrammingLanguageParser::SeqContext * /*ctx*/) override { }
 
-  virtual void enterAssignZero(ProgrammingLanguageParser::AssignZeroContext * /*ctx*/) override { }
-  virtual void exitAssignZero(ProgrammingLanguageParser::AssignZeroContext * /*ctx*/) override { }
-
-  virtual void enterAssignOne(ProgrammingLanguageParser::AssignOneContext * /*ctx*/) override { }
-  virtual void exitAssignOne(ProgrammingLanguageParser::AssignOneContext * /*ctx*/) override { }
+  virtual void enterConstAssign(ProgrammingLanguageParser::ConstAssignContext * /*ctx*/) override { }
+  virtual void exitConstAssign(ProgrammingLanguageParser::ConstAssignContext * /*ctx*/) override { }
 
   virtual void enterAssignCopy(ProgrammingLanguageParser::AssignCopyContext * /*ctx*/) override { }
   virtual void exitAssignCopy(ProgrammingLanguageParser::AssignCopyContext * /*ctx*/) override { }

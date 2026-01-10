@@ -1,5 +1,5 @@
 
-// Generated from ../grammars/PL/ProgrammingLanguage.g4 by ANTLR 4.13.2
+// Generated from grammars/PL/ProgrammingLanguage.g4 by ANTLR 4.13.2
 
 #pragma once
 
@@ -12,10 +12,10 @@
 class  ProgrammingLanguageLexer : public antlr4::Lexer {
 public:
   enum {
-    T__0 = 1, T__1 = 2, T__2 = 3, T__3 = 4, MEASURE = 5, SKIPKW = 6, SEMICOLON = 7, 
-    IF = 8, ELSE = 9, LPAREN = 10, RPAREN = 11, LBRACE = 12, RBRACE = 13, 
-    LBRACKET = 14, RBRACKET = 15, PERCENT = 16, WS = 17, UNITARY = 18, REALNUM = 19, 
-    CID = 20, QID = 21
+    T__0 = 1, T__1 = 2, MEASURE = 3, SKIPKW = 4, SEMICOLON = 5, IF = 6, 
+    ELSE = 7, LPAREN = 8, RPAREN = 9, LBRACE = 10, RBRACE = 11, LBRACKET = 12, 
+    RBRACKET = 13, PERCENT = 14, WS = 15, UNITARY = 16, REALNUM = 17, CID = 18, 
+    QID = 19
   };
 
   explicit ProgrammingLanguageLexer(antlr4::CharStream *input);

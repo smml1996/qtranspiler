@@ -1,5 +1,5 @@
 
-// Generated from ../grammars/PL/ProgrammingLanguage.g4 by ANTLR 4.13.2
+// Generated from grammars/PL/ProgrammingLanguage.g4 by ANTLR 4.13.2
 
 
 #include "ProgrammingLanguageListener.h"
@@ -56,38 +56,38 @@ void programminglanguageParserInitialize() {
       "language", "program", "classical_statement", "qlist"
     },
     std::vector<std::string>{
-      "", "':='", "'0'", "'1'", "','", "'measure'", "'skip'", "';'", "'if'", 
-      "'else'", "'('", "')'", "'{'", "'}'", "'['", "']'", "'%'"
+      "", "':='", "','", "'measure'", "'skip'", "';'", "'if'", "'else'", 
+      "'('", "')'", "'{'", "'}'", "'['", "']'", "'%'"
     },
     std::vector<std::string>{
-      "", "", "", "", "", "MEASURE", "SKIPKW", "SEMICOLON", "IF", "ELSE", 
-      "LPAREN", "RPAREN", "LBRACE", "RBRACE", "LBRACKET", "RBRACKET", "PERCENT", 
-      "WS", "UNITARY", "REALNUM", "CID", "QID"
+      "", "", "", "MEASURE", "SKIPKW", "SEMICOLON", "IF", "ELSE", "LPAREN", 
+      "RPAREN", "LBRACE", "RBRACE", "LBRACKET", "RBRACKET", "PERCENT", "WS", 
+      "UNITARY", "REALNUM", "CID", "QID"
     }
   );
   static const int32_t serializedATNSegment[] = {
-  	4,1,21,74,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,1,0,1,0,1,0,1,1,1,1,1,1,1,1,
+  	4,1,19,76,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,1,0,1,0,1,0,1,1,1,1,1,1,1,1,
   	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-  	1,3,1,34,8,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,5,1,44,8,1,10,1,12,1,47,
-  	9,1,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,3,2,64,
-  	8,2,1,3,1,3,1,3,5,3,69,8,3,10,3,12,3,72,9,3,1,3,0,1,2,4,0,2,4,6,0,0,78,
-  	0,8,1,0,0,0,2,33,1,0,0,0,4,63,1,0,0,0,6,65,1,0,0,0,8,9,3,2,1,0,9,10,5,
-  	0,0,1,10,1,1,0,0,0,11,12,6,1,-1,0,12,34,5,6,0,0,13,34,3,4,2,0,14,15,5,
-  	18,0,0,15,16,5,10,0,0,16,17,5,14,0,0,17,18,3,6,3,0,18,19,5,15,0,0,19,
-  	20,5,11,0,0,20,34,1,0,0,0,21,22,5,8,0,0,22,23,5,10,0,0,23,24,5,20,0,0,
-  	24,25,5,11,0,0,25,26,5,12,0,0,26,27,3,2,1,0,27,28,5,13,0,0,28,29,5,9,
-  	0,0,29,30,5,12,0,0,30,31,3,2,1,0,31,32,5,13,0,0,32,34,1,0,0,0,33,11,1,
-  	0,0,0,33,13,1,0,0,0,33,14,1,0,0,0,33,21,1,0,0,0,34,45,1,0,0,0,35,36,10,
-  	3,0,0,36,37,5,7,0,0,37,44,3,2,1,4,38,39,10,1,0,0,39,40,5,16,0,0,40,41,
-  	5,19,0,0,41,42,5,16,0,0,42,44,3,2,1,2,43,35,1,0,0,0,43,38,1,0,0,0,44,
-  	47,1,0,0,0,45,43,1,0,0,0,45,46,1,0,0,0,46,3,1,0,0,0,47,45,1,0,0,0,48,
-  	49,5,20,0,0,49,50,5,1,0,0,50,64,5,2,0,0,51,52,5,20,0,0,52,53,5,1,0,0,
-  	53,64,5,3,0,0,54,55,5,20,0,0,55,56,5,1,0,0,56,64,5,20,0,0,57,58,5,20,
-  	0,0,58,59,5,1,0,0,59,60,5,5,0,0,60,61,5,10,0,0,61,62,5,21,0,0,62,64,5,
-  	11,0,0,63,48,1,0,0,0,63,51,1,0,0,0,63,54,1,0,0,0,63,57,1,0,0,0,64,5,1,
-  	0,0,0,65,70,5,21,0,0,66,67,5,4,0,0,67,69,5,21,0,0,68,66,1,0,0,0,69,72,
-  	1,0,0,0,70,68,1,0,0,0,70,71,1,0,0,0,71,7,1,0,0,0,72,70,1,0,0,0,5,33,43,
-  	45,63,70
+  	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3,1,44,8,1,1,1,1,1,1,1,5,1,
+  	49,8,1,10,1,12,1,52,9,1,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,
+  	2,3,2,66,8,2,1,3,1,3,1,3,5,3,71,8,3,10,3,12,3,74,9,3,1,3,0,1,2,4,0,2,
+  	4,6,0,0,79,0,8,1,0,0,0,2,43,1,0,0,0,4,65,1,0,0,0,6,67,1,0,0,0,8,9,3,2,
+  	1,0,9,10,5,0,0,1,10,1,1,0,0,0,11,12,6,1,-1,0,12,44,5,4,0,0,13,44,3,4,
+  	2,0,14,15,5,16,0,0,15,16,5,8,0,0,16,17,5,12,0,0,17,18,3,6,3,0,18,19,5,
+  	13,0,0,19,20,5,9,0,0,20,44,1,0,0,0,21,22,5,6,0,0,22,23,5,8,0,0,23,24,
+  	5,17,0,0,24,25,5,9,0,0,25,26,5,10,0,0,26,27,3,2,1,0,27,28,5,11,0,0,28,
+  	29,5,7,0,0,29,30,5,10,0,0,30,31,3,2,1,0,31,32,5,11,0,0,32,44,1,0,0,0,
+  	33,34,5,10,0,0,34,35,3,2,1,0,35,36,5,11,0,0,36,37,5,14,0,0,37,38,5,17,
+  	0,0,38,39,5,14,0,0,39,40,5,10,0,0,40,41,3,2,1,0,41,42,5,11,0,0,42,44,
+  	1,0,0,0,43,11,1,0,0,0,43,13,1,0,0,0,43,14,1,0,0,0,43,21,1,0,0,0,43,33,
+  	1,0,0,0,44,50,1,0,0,0,45,46,10,3,0,0,46,47,5,5,0,0,47,49,3,2,1,4,48,45,
+  	1,0,0,0,49,52,1,0,0,0,50,48,1,0,0,0,50,51,1,0,0,0,51,3,1,0,0,0,52,50,
+  	1,0,0,0,53,54,5,18,0,0,54,55,5,1,0,0,55,66,5,17,0,0,56,57,5,18,0,0,57,
+  	58,5,1,0,0,58,66,5,18,0,0,59,60,5,18,0,0,60,61,5,1,0,0,61,62,5,3,0,0,
+  	62,63,5,8,0,0,63,64,5,19,0,0,64,66,5,9,0,0,65,53,1,0,0,0,65,56,1,0,0,
+  	0,65,59,1,0,0,0,66,5,1,0,0,0,67,72,5,19,0,0,68,69,5,2,0,0,69,71,5,19,
+  	0,0,70,68,1,0,0,0,71,74,1,0,0,0,72,70,1,0,0,0,72,73,1,0,0,0,73,7,1,0,
+  	0,0,74,72,1,0,0,0,4,43,50,65,72
   };
   staticData->serializedATN = antlr4::atn::SerializedATNView(serializedATNSegment, sizeof(serializedATNSegment) / sizeof(serializedATNSegment[0]));
 
@@ -265,12 +265,28 @@ std::any ProgrammingLanguageParser::UnitaryContext::accept(tree::ParseTreeVisito
 }
 //----------------- ProbContext ------------------------------------------------------------------
 
+std::vector<tree::TerminalNode *> ProgrammingLanguageParser::ProbContext::LBRACE() {
+  return getTokens(ProgrammingLanguageParser::LBRACE);
+}
+
+tree::TerminalNode* ProgrammingLanguageParser::ProbContext::LBRACE(size_t i) {
+  return getToken(ProgrammingLanguageParser::LBRACE, i);
+}
+
 std::vector<ProgrammingLanguageParser::ProgramContext *> ProgrammingLanguageParser::ProbContext::program() {
   return getRuleContexts<ProgrammingLanguageParser::ProgramContext>();
 }
 
 ProgrammingLanguageParser::ProgramContext* ProgrammingLanguageParser::ProbContext::program(size_t i) {
   return getRuleContext<ProgrammingLanguageParser::ProgramContext>(i);
+}
+
+std::vector<tree::TerminalNode *> ProgrammingLanguageParser::ProbContext::RBRACE() {
+  return getTokens(ProgrammingLanguageParser::RBRACE);
+}
+
+tree::TerminalNode* ProgrammingLanguageParser::ProbContext::RBRACE(size_t i) {
+  return getToken(ProgrammingLanguageParser::RBRACE, i);
 }
 
 std::vector<tree::TerminalNode *> ProgrammingLanguageParser::ProbContext::PERCENT() {
@@ -364,8 +380,8 @@ tree::TerminalNode* ProgrammingLanguageParser::IfContext::LPAREN() {
   return getToken(ProgrammingLanguageParser::LPAREN, 0);
 }
 
-tree::TerminalNode* ProgrammingLanguageParser::IfContext::CID() {
-  return getToken(ProgrammingLanguageParser::CID, 0);
+tree::TerminalNode* ProgrammingLanguageParser::IfContext::REALNUM() {
+  return getToken(ProgrammingLanguageParser::REALNUM, 0);
 }
 
 tree::TerminalNode* ProgrammingLanguageParser::IfContext::RPAREN() {
@@ -478,7 +494,7 @@ ProgrammingLanguageParser::ProgramContext* ProgrammingLanguageParser::program(in
   try {
     size_t alt;
     enterOuterAlt(_localctx, 1);
-    setState(33);
+    setState(43);
     _errHandler->sync(this);
     switch (_input->LA(1)) {
       case ProgrammingLanguageParser::SKIPKW: {
@@ -528,7 +544,7 @@ ProgrammingLanguageParser::ProgramContext* ProgrammingLanguageParser::program(in
         setState(22);
         match(ProgrammingLanguageParser::LPAREN);
         setState(23);
-        match(ProgrammingLanguageParser::CID);
+        match(ProgrammingLanguageParser::REALNUM);
         setState(24);
         match(ProgrammingLanguageParser::RPAREN);
         setState(25);
@@ -548,60 +564,57 @@ ProgrammingLanguageParser::ProgramContext* ProgrammingLanguageParser::program(in
         break;
       }
 
+      case ProgrammingLanguageParser::LBRACE: {
+        _localctx = _tracker.createInstance<ProbContext>(_localctx);
+        _ctx = _localctx;
+        previousContext = _localctx;
+        setState(33);
+        match(ProgrammingLanguageParser::LBRACE);
+        setState(34);
+        program(0);
+        setState(35);
+        match(ProgrammingLanguageParser::RBRACE);
+        setState(36);
+        match(ProgrammingLanguageParser::PERCENT);
+        setState(37);
+        match(ProgrammingLanguageParser::REALNUM);
+        setState(38);
+        match(ProgrammingLanguageParser::PERCENT);
+        setState(39);
+        match(ProgrammingLanguageParser::LBRACE);
+        setState(40);
+        program(0);
+        setState(41);
+        match(ProgrammingLanguageParser::RBRACE);
+        break;
+      }
+
     default:
       throw NoViableAltException(this);
     }
     _ctx->stop = _input->LT(-1);
-    setState(45);
+    setState(50);
     _errHandler->sync(this);
-    alt = getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 2, _ctx);
+    alt = getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 1, _ctx);
     while (alt != 2 && alt != atn::ATN::INVALID_ALT_NUMBER) {
       if (alt == 1) {
         if (!_parseListeners.empty())
           triggerExitRuleEvent();
         previousContext = _localctx;
-        setState(43);
-        _errHandler->sync(this);
-        switch (getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 1, _ctx)) {
-        case 1: {
-          auto newContext = _tracker.createInstance<SeqContext>(_tracker.createInstance<ProgramContext>(parentContext, parentState));
-          _localctx = newContext;
-          pushNewRecursionContext(newContext, startState, RuleProgram);
-          setState(35);
+        auto newContext = _tracker.createInstance<SeqContext>(_tracker.createInstance<ProgramContext>(parentContext, parentState));
+        _localctx = newContext;
+        pushNewRecursionContext(newContext, startState, RuleProgram);
+        setState(45);
 
-          if (!(precpred(_ctx, 3))) throw FailedPredicateException(this, "precpred(_ctx, 3)");
-          setState(36);
-          match(ProgrammingLanguageParser::SEMICOLON);
-          setState(37);
-          program(4);
-          break;
-        }
-
-        case 2: {
-          auto newContext = _tracker.createInstance<ProbContext>(_tracker.createInstance<ProgramContext>(parentContext, parentState));
-          _localctx = newContext;
-          pushNewRecursionContext(newContext, startState, RuleProgram);
-          setState(38);
-
-          if (!(precpred(_ctx, 1))) throw FailedPredicateException(this, "precpred(_ctx, 1)");
-          setState(39);
-          match(ProgrammingLanguageParser::PERCENT);
-          setState(40);
-          match(ProgrammingLanguageParser::REALNUM);
-          setState(41);
-          match(ProgrammingLanguageParser::PERCENT);
-          setState(42);
-          program(2);
-          break;
-        }
-
-        default:
-          break;
-        } 
+        if (!(precpred(_ctx, 3))) throw FailedPredicateException(this, "precpred(_ctx, 3)");
+        setState(46);
+        match(ProgrammingLanguageParser::SEMICOLON);
+        setState(47);
+        program(4); 
       }
-      setState(47);
+      setState(52);
       _errHandler->sync(this);
-      alt = getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 2, _ctx);
+      alt = getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 1, _ctx);
     }
   }
   catch (RecognitionException &e) {
@@ -668,53 +681,32 @@ std::any ProgrammingLanguageParser::AssignMeasureContext::accept(tree::ParseTree
   else
     return visitor->visitChildren(this);
 }
-//----------------- AssignZeroContext ------------------------------------------------------------------
+//----------------- ConstAssignContext ------------------------------------------------------------------
 
-tree::TerminalNode* ProgrammingLanguageParser::AssignZeroContext::CID() {
+tree::TerminalNode* ProgrammingLanguageParser::ConstAssignContext::CID() {
   return getToken(ProgrammingLanguageParser::CID, 0);
 }
 
-ProgrammingLanguageParser::AssignZeroContext::AssignZeroContext(Classical_statementContext *ctx) { copyFrom(ctx); }
-
-void ProgrammingLanguageParser::AssignZeroContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<ProgrammingLanguageListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterAssignZero(this);
-}
-void ProgrammingLanguageParser::AssignZeroContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<ProgrammingLanguageListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitAssignZero(this);
+tree::TerminalNode* ProgrammingLanguageParser::ConstAssignContext::REALNUM() {
+  return getToken(ProgrammingLanguageParser::REALNUM, 0);
 }
 
-std::any ProgrammingLanguageParser::AssignZeroContext::accept(tree::ParseTreeVisitor *visitor) {
+ProgrammingLanguageParser::ConstAssignContext::ConstAssignContext(Classical_statementContext *ctx) { copyFrom(ctx); }
+
+void ProgrammingLanguageParser::ConstAssignContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<ProgrammingLanguageListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterConstAssign(this);
+}
+void ProgrammingLanguageParser::ConstAssignContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<ProgrammingLanguageListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitConstAssign(this);
+}
+
+std::any ProgrammingLanguageParser::ConstAssignContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<ProgrammingLanguageVisitor*>(visitor))
-    return parserVisitor->visitAssignZero(this);
-  else
-    return visitor->visitChildren(this);
-}
-//----------------- AssignOneContext ------------------------------------------------------------------
-
-tree::TerminalNode* ProgrammingLanguageParser::AssignOneContext::CID() {
-  return getToken(ProgrammingLanguageParser::CID, 0);
-}
-
-ProgrammingLanguageParser::AssignOneContext::AssignOneContext(Classical_statementContext *ctx) { copyFrom(ctx); }
-
-void ProgrammingLanguageParser::AssignOneContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<ProgrammingLanguageListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterAssignOne(this);
-}
-void ProgrammingLanguageParser::AssignOneContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<ProgrammingLanguageListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitAssignOne(this);
-}
-
-std::any ProgrammingLanguageParser::AssignOneContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ProgrammingLanguageVisitor*>(visitor))
-    return parserVisitor->visitAssignOne(this);
+    return parserVisitor->visitConstAssign(this);
   else
     return visitor->visitChildren(this);
 }
@@ -759,59 +751,47 @@ ProgrammingLanguageParser::Classical_statementContext* ProgrammingLanguageParser
     exitRule();
   });
   try {
-    setState(63);
+    setState(65);
     _errHandler->sync(this);
-    switch (getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 3, _ctx)) {
+    switch (getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 2, _ctx)) {
     case 1: {
-      _localctx = _tracker.createInstance<ProgrammingLanguageParser::AssignZeroContext>(_localctx);
+      _localctx = _tracker.createInstance<ProgrammingLanguageParser::ConstAssignContext>(_localctx);
       enterOuterAlt(_localctx, 1);
-      setState(48);
+      setState(53);
       match(ProgrammingLanguageParser::CID);
-      setState(49);
+      setState(54);
       match(ProgrammingLanguageParser::T__0);
-      setState(50);
-      match(ProgrammingLanguageParser::T__1);
+      setState(55);
+      match(ProgrammingLanguageParser::REALNUM);
       break;
     }
 
     case 2: {
-      _localctx = _tracker.createInstance<ProgrammingLanguageParser::AssignOneContext>(_localctx);
+      _localctx = _tracker.createInstance<ProgrammingLanguageParser::AssignCopyContext>(_localctx);
       enterOuterAlt(_localctx, 2);
-      setState(51);
+      setState(56);
       match(ProgrammingLanguageParser::CID);
-      setState(52);
+      setState(57);
       match(ProgrammingLanguageParser::T__0);
-      setState(53);
-      match(ProgrammingLanguageParser::T__2);
+      setState(58);
+      match(ProgrammingLanguageParser::CID);
       break;
     }
 
     case 3: {
-      _localctx = _tracker.createInstance<ProgrammingLanguageParser::AssignCopyContext>(_localctx);
-      enterOuterAlt(_localctx, 3);
-      setState(54);
-      match(ProgrammingLanguageParser::CID);
-      setState(55);
-      match(ProgrammingLanguageParser::T__0);
-      setState(56);
-      match(ProgrammingLanguageParser::CID);
-      break;
-    }
-
-    case 4: {
       _localctx = _tracker.createInstance<ProgrammingLanguageParser::AssignMeasureContext>(_localctx);
-      enterOuterAlt(_localctx, 4);
-      setState(57);
-      match(ProgrammingLanguageParser::CID);
-      setState(58);
-      match(ProgrammingLanguageParser::T__0);
+      enterOuterAlt(_localctx, 3);
       setState(59);
-      match(ProgrammingLanguageParser::MEASURE);
+      match(ProgrammingLanguageParser::CID);
       setState(60);
-      match(ProgrammingLanguageParser::LPAREN);
+      match(ProgrammingLanguageParser::T__0);
       setState(61);
-      match(ProgrammingLanguageParser::QID);
+      match(ProgrammingLanguageParser::MEASURE);
       setState(62);
+      match(ProgrammingLanguageParser::LPAREN);
+      setState(63);
+      match(ProgrammingLanguageParser::QID);
+      setState(64);
       match(ProgrammingLanguageParser::RPAREN);
       break;
     }
@@ -883,17 +863,17 @@ ProgrammingLanguageParser::QlistContext* ProgrammingLanguageParser::qlist() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(65);
+    setState(67);
     match(ProgrammingLanguageParser::QID);
-    setState(70);
+    setState(72);
     _errHandler->sync(this);
     _la = _input->LA(1);
-    while (_la == ProgrammingLanguageParser::T__3) {
-      setState(66);
-      match(ProgrammingLanguageParser::T__3);
-      setState(67);
+    while (_la == ProgrammingLanguageParser::T__1) {
+      setState(68);
+      match(ProgrammingLanguageParser::T__1);
+      setState(69);
       match(ProgrammingLanguageParser::QID);
-      setState(72);
+      setState(74);
       _errHandler->sync(this);
       _la = _input->LA(1);
     }
@@ -921,7 +901,6 @@ bool ProgrammingLanguageParser::sempred(RuleContext *context, size_t ruleIndex, 
 bool ProgrammingLanguageParser::programSempred(ProgramContext *_localctx, size_t predicateIndex) {
   switch (predicateIndex) {
     case 0: return precpred(_ctx, 3);
-    case 1: return precpred(_ctx, 1);
 
   default:
     break;

@@ -1,5 +1,5 @@
 
-// Generated from ../grammars/PL/ProgrammingLanguage.g4 by ANTLR 4.13.2
+// Generated from grammars/PL/ProgrammingLanguage.g4 by ANTLR 4.13.2
 
 #pragma once
 
@@ -12,10 +12,10 @@
 class  ProgrammingLanguageParser : public antlr4::Parser {
 public:
   enum {
-    T__0 = 1, T__1 = 2, T__2 = 3, T__3 = 4, MEASURE = 5, SKIPKW = 6, SEMICOLON = 7, 
-    IF = 8, ELSE = 9, LPAREN = 10, RPAREN = 11, LBRACE = 12, RBRACE = 13, 
-    LBRACKET = 14, RBRACKET = 15, PERCENT = 16, WS = 17, UNITARY = 18, REALNUM = 19, 
-    CID = 20, QID = 21
+    T__0 = 1, T__1 = 2, MEASURE = 3, SKIPKW = 4, SEMICOLON = 5, IF = 6, 
+    ELSE = 7, LPAREN = 8, RPAREN = 9, LBRACE = 10, RBRACE = 11, LBRACKET = 12, 
+    RBRACKET = 13, PERCENT = 14, WS = 15, UNITARY = 16, REALNUM = 17, CID = 18, 
+    QID = 19
   };
 
   enum {
@@ -93,8 +93,12 @@ public:
   public:
     ProbContext(ProgramContext *ctx);
 
+    std::vector<antlr4::tree::TerminalNode *> LBRACE();
+    antlr4::tree::TerminalNode* LBRACE(size_t i);
     std::vector<ProgramContext *> program();
     ProgramContext* program(size_t i);
+    std::vector<antlr4::tree::TerminalNode *> RBRACE();
+    antlr4::tree::TerminalNode* RBRACE(size_t i);
     std::vector<antlr4::tree::TerminalNode *> PERCENT();
     antlr4::tree::TerminalNode* PERCENT(size_t i);
     antlr4::tree::TerminalNode *REALNUM();
@@ -132,7 +136,7 @@ public:
 
     antlr4::tree::TerminalNode *IF();
     antlr4::tree::TerminalNode *LPAREN();
-    antlr4::tree::TerminalNode *CID();
+    antlr4::tree::TerminalNode *REALNUM();
     antlr4::tree::TerminalNode *RPAREN();
     std::vector<antlr4::tree::TerminalNode *> LBRACE();
     antlr4::tree::TerminalNode* LBRACE(size_t i);
@@ -190,22 +194,12 @@ public:
     virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
   };
 
-  class  AssignZeroContext : public Classical_statementContext {
+  class  ConstAssignContext : public Classical_statementContext {
   public:
-    AssignZeroContext(Classical_statementContext *ctx);
+    ConstAssignContext(Classical_statementContext *ctx);
 
     antlr4::tree::TerminalNode *CID();
-    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
-    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-
-    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-  };
-
-  class  AssignOneContext : public Classical_statementContext {
-  public:
-    AssignOneContext(Classical_statementContext *ctx);
-
-    antlr4::tree::TerminalNode *CID();
+    antlr4::tree::TerminalNode *REALNUM();
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
 
@@ -239,13 +233,11 @@ public:
     virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
     std::vector<int> getQList() {
       std::vector<int> result;
-
       for (antlr4::tree::TerminalNode* qid : this->QID()) {
         std::string text = qid->getText();    // "q0", "q1", "q23", ...
         int index = std::stoi(text.substr(1)); // drop leading 'q'
         result.push_back(index);
       }
-
       return result;
     }
   };

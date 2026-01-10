@@ -1,6 +1,7 @@
 #ifndef STATES_H
 #define STATES_H
 
+#include "boost_clean.hpp"
 #include <unordered_map>
 #include <complex>
 #include <vector>

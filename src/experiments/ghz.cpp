@@ -67,8 +67,20 @@ Experiment(name, precision, with_thermalization, min_horizon, max_horizon, false
             this->set_hidden_index = false;
             this->method_types.erase(MethodType::ConvexDist); // there is only one initial state, is not worth it
             this->nqvars = 3;
-            this->ncvars = 0;
+            this->ncvars = 1;
         };
+
+        set<QuantumHardware> get_allowed_hardware() const override{
+            set<QuantumHardware> result;
+            for (int i = 0; i < QuantumHardware::HardwareCount; i++) {
+                QuantumHardware quantum_hardware = static_cast<QuantumHardware>(i);
+                HardwareSpecification hs(quantum_hardware, false, false);
+                if (hs.basis_gates_type != BasisGates::TYPE5 && hs.basis_gates_type != BasisGates::TYPE2) {
+                    result.insert(quantum_hardware);
+                }
+            }
+            return result;
+        }
 
         virtual shared_ptr<QuantumState> get_target_state(const unordered_map<int, int> &embedding) const {
             auto H0 = Instruction(GateName::H, embedding.at(0));
@@ -208,12 +220,12 @@ Experiment(name, precision, with_thermalization, min_horizon, max_horizon, false
         string get_precondition(const MethodType &method) override {
             assert(method == MethodType::SingleDistBellman);
             string state000 = "[1,0,0,0,0,0,0,0]";
-            return "P([q0,q1,q2]="+state000+") = 1";
+            return "P([q0,q1,q2]="+state000+" and [x0] = b0) = 1";
         }
 
         string get_target_postcondition(const double &threshold) override {
             string  ghzstate = "[0.70710678,0,0,0,0,0,0,0.70710678]";
-            return "P([q0,q1,q2]="+ ghzstate +") >= " + to_string(threshold);
+            return "P( q0,q1,q2 ="+ ghzstate +") >= " + to_string(threshold);
         }
 };
 
