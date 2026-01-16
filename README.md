@@ -3,7 +3,7 @@
 ## Setup
 
 ```sh
-pip install qiskit==2.2.3
+pip install qiskit==2.2.3 qiskit_ibm_runtime==0.45.0 qiskit_aer==0.17.2
 ```
 
 ## Benchmarks

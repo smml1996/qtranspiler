@@ -3,6 +3,7 @@ benchmarks_dir = "benchmarks" # QASM files of benchmarks used for experiments
 results_dir = "results" # experiments results
 benchmarks_stats = "benchmarks/stats.csv"
 
-[paths.qiskit_outputs]
-circuits = "circuits" # circuits that qiskit transpiler produces
-stats = "stats.csv" # time taken by the transpiler
+[small_experiments]
+exp_dir = "small_experiments"
+logs = "logs.log"
+results = "results.csv" # time taken by the transpiler
