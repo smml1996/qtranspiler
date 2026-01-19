@@ -1,15 +1,12 @@
-from qiskit import QuantumCircuit, generate_preset_pass_manager
-from qiskit.quantum_info import Statevector
+from qiskit import generate_preset_pass_manager
 from qiskit_ibm_runtime.fake_provider import *
-from qiskit_aer import AerSimulator
-from qiskit_aer.noise import NoiseModel
 import tomli
 from pathlib import Path
 import csv
-from qiskit.quantum_info import SuperOp, process_fidelity
 import logging
 
 from benchmark import get_benchmarks
+from utils import to_algorithm
 
 trials_ = 1  # since the transpiler follows randomized heuristics we try this many times for each quantum circuit
 max_qubits = 5  # we consider benchmarks that utilize at most this amount of qubit
@@ -27,9 +24,10 @@ with open("config.toml", "rb") as f:
 
 results_dir = Path(cfg["paths"]["results_dir"])
 exp_dir = results_dir / cfg["small_experiments"]["dir"]
+transpiled_circuits_dir = exp_dir / cfg["small_experiments"]["transpiled_circuits_dir"]
 
 logs_path = exp_dir / cfg["small_experiments"]["logs_file"]
-results_path = exp_dir / cfg["small_experiments"]["results_file"]
+results_path = exp_dir / cfg["small_experiments"]["qiskit_indices"]
 
 exp_dir.mkdir(parents=True, exist_ok=True)
 
@@ -54,21 +52,12 @@ for benchmark in benchmarks:
                 # therefore we just need to test once
                 for seed in range(trials):
                     try:
-                        simulator = AerSimulator(method="superop",
-                                                 noise_model=NoiseModel.from_backend(backend))
                         pm = generate_preset_pass_manager(
                             optimization_level=opt_level,
-                            backend=simulator,
+                            backend=backend,
                             seed_transpiler=seed
                         )
                         qiskit_qc = pm.run(benchmark.qc)
-                        qiskit_qc.save_superop()
-                        res_qiskit = simulator.run(qiskit_qc).result()
-                        simulator.set_options(noise_model=None)
-                        res_ideal = simulator.run(qiskit_qc).result()
-
-                        superop_ideal = res_ideal.data()['superop']
-                        superop_qiskit = res_qiskit.data()['superop']
 
                         row = {
                             'benchmark': benchmark.benchmark_name,
@@ -83,14 +72,14 @@ for benchmark in benchmarks:
                             # raw qiskit results
                             'q_depth': qiskit_qc.depty(),
                             'q_n_ops': qiskit_qc.size(),
-                            'q_fidelity': round(process_fidelity(superop_ideal, superop_qiskit), 8),
-
-                            # method results
-                            'our_depth': our_depth,
-                            'our_n_ops': our_n_ops,
-                            'our_fidelity': our_fidelity
                         }
                         rows.append(row)
+
+                        # save transpiled circuit
+                        circuit_path = (transpiled_circuits_dir /
+                                        f"{benchmark.benchmark_name}_{benchmark.circuit_name}_{seed}.json")
+                        algorithm = to_algorithm(qiskit_qc)
+                        algorithm.dump_json(circuit_path)
                     except Exception as e:
                         logger.warning(f"{backend.name}--seed={seed}--opt_level={opt_level}--{benchmark.benchmark_name}/{benchmark.circuit_name}: {e.__str__()}")
 

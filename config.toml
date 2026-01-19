@@ -6,4 +6,6 @@ benchmarks_stats = "benchmarks/stats.csv"
 [small_experiments]
 exp_dir = "small_experiments"
 logs = "logs.log"
+transpiled_circuits_dir = "transpiled_circuits"
+qiskit_indices = "qiskit_transpiled.csv"
 results = "results.csv" # time taken by the transpiler
