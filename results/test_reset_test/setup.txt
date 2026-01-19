@@ -1,8 +1,0 @@
-name: test_reset_test
-precision: 8
-thermalization: 0
-min. horizon: 1
-max. horizon: 3
-hidden index: 0
-methods: convex
-quantum hardware: kolkata
